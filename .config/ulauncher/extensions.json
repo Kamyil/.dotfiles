@@ -1,0 +1,72 @@
+{
+    "com.github.johnghill.ulauncher-datediff": {
+        "id": "com.github.johnghill.ulauncher-datediff",
+        "url": "https://github.com/johnghill/ulauncher-datediff",
+        "updated_at": "2023-11-16T13:46:27.122336",
+        "last_commit": "c641afe37dfd903a278cec0e94ab29011b697a24",
+        "last_commit_time": "2023-07-31T13:46:23"
+    },
+    "com.github.fernaper.ulauncher-vscode": {
+        "id": "com.github.fernaper.ulauncher-vscode",
+        "url": "https://github.com/fernaper/ulauncher-vscode",
+        "updated_at": "2023-11-16T13:47:22.471117",
+        "last_commit": "7cfa181dd34dfef49b9587998d4b10c529bf5eb9",
+        "last_commit_time": "2022-08-20T17:52:13"
+    },
+    "com.github.abhishekmj303.ulauncher-playerctl": {
+        "id": "com.github.abhishekmj303.ulauncher-playerctl",
+        "url": "https://github.com/abhishekmj303/ulauncher-playerctl",
+        "updated_at": "2023-11-16T13:48:44.049294",
+        "last_commit": "5f52e6c949ee9793ba60b5385df4744b134c3369",
+        "last_commit_time": "2023-06-23T15:13:13"
+    },
+    "com.github.lighttigerxiv.ulauncher-session-manager": {
+        "id": "com.github.lighttigerxiv.ulauncher-session-manager",
+        "url": "https://github.com/lighttigerXIV/ulauncher-session-manager",
+        "updated_at": "2023-11-16T13:49:57.699546",
+        "last_commit": "39218fddb79d86150c4624d96b1a162eba89c993",
+        "last_commit_time": "2023-05-23T08:14:57"
+    },
+    "com.github.noam09.ulauncher-maim": {
+        "id": "com.github.noam09.ulauncher-maim",
+        "url": "https://github.com/noam09/ulauncher-maim",
+        "updated_at": "2023-11-16T14:26:02.315432",
+        "last_commit": "7b50285ea179059673d8b87cbce186b600cb97b3",
+        "last_commit_time": "2021-03-11T11:02:34"
+    },
+    "com.github.friday.ulauncher-clipboard": {
+        "id": "com.github.friday.ulauncher-clipboard",
+        "url": "https://github.com/friday/ulauncher-clipboard",
+        "updated_at": "2023-11-16T14:44:19.865429",
+        "last_commit": "a4b25346745b4b58f08152f69fcf232065d704bc",
+        "last_commit_time": "2023-11-15T23:44:18"
+    },
+    "com.github.noam09.ulauncher-units": {
+        "id": "com.github.noam09.ulauncher-units",
+        "url": "https://github.com/noam09/ulauncher-units",
+        "updated_at": "2023-11-16T14:45:51.408211",
+        "last_commit": "0b0a5f8c760b9b369baac1499484c0d00847e349",
+        "last_commit_time": "2021-12-21T06:32:17"
+    },
+    "com.github.brpaz.ulauncher-currency": {
+        "id": "com.github.brpaz.ulauncher-currency",
+        "url": "https://github.com/brpaz/ulauncher-currency",
+        "updated_at": "2023-11-16T14:46:24.461558",
+        "last_commit": "262ed206057d38cec97e94297ab94246a43468cd",
+        "last_commit_time": "2021-12-12T15:45:10"
+    },
+    "com.github.pywkm.ulauncher-spotify": {
+        "id": "com.github.pywkm.ulauncher-spotify",
+        "url": "https://github.com/pywkm/ulauncher-spotify",
+        "updated_at": "2023-11-16T14:46:56.112416",
+        "last_commit": "89d9b02316aaccea0d70b458bb97b3976287f03e",
+        "last_commit_time": "2020-02-17T16:20:21"
+    },
+    "com.github.ulauncher.ulauncher-emoji": {
+        "id": "com.github.ulauncher.ulauncher-emoji",
+        "url": "https://github.com/Ulauncher/ulauncher-emoji",
+        "updated_at": "2023-11-16T14:48:20.188064",
+        "last_commit": "827cfe5e1d2f89f742f811f981759787b0654fa9",
+        "last_commit_time": "2023-11-04T18:37:13"
+    }
+}
