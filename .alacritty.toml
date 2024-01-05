@@ -1,0 +1,49 @@
+import = [
+  # uncomment the flavour you want below:
+  "~/.config/alacritty/catppuccin-mocha.toml"
+  # "~/.config/alacritty/catppuccin-macchiato.toml"
+  # "~/.config/alacritty/catppuccin-frappe.toml"
+  # "~/.config/alacritty/catppuccin-latte.toml"
+]
+live_config_reload = true
+
+[font]
+size = 13
+builtin_box_drawing = true
+
+[font.normal]
+family = "JetBrainsMonoNL Nerd Font Propo"
+style = "Medium"
+
+[font.bold]
+family = "JetBrainsMonoNL Nerd Font Propo"
+style = "Bold"
+
+[font.italic]
+family = "JetBrainsMonoNL Nerd Font Propo"
+style = "Medium Italic"
+
+[font.bold_italic]
+family = "JetBrainsMonoNL Nerd Font Propo"
+style = "Bold Italic"
+
+[font.glyph_offset]
+x = 0
+y = 0
+
+[font.offset]
+x = 0
+y = 0
+
+[window]
+decorations = "Buttonless"
+opacity = 0.95
+blur = true
+title = "Terminal"
+dynamic_padding = true
+
+[window.padding]
+x = 5
+
+[env]
+TERM = "xterm-256color"

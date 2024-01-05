@@ -1,10 +1,10 @@
 # -- Changing Window Focus --
 
 # change window focus within space
-alt - j : yabai -m window --focus south;
-alt - k : yabai -m window --focus north;
-alt - h : yabai -m window --focus west;
-alt - l : yabai -m window --focus east;
+ctrl - j : yabai -m window --focus south;
+ctrl - k : yabai -m window --focus north;
+ctrl - h : yabai -m window --focus west;
+ctrl - l : yabai -m window --focus east;
 
 # change focus between external displays (left and right)
 alt - s: yabai -m display --focus west;
@@ -60,3 +60,6 @@ shift + alt - 5 : yabai -m window --space 5;
 shift + alt - 6 : yabai -m window --space 6;
 shift + alt - 7 : yabai -m window --space 7;
 
+# create and destroy workspaces
+ctrl + alt - t : yabai -m space --create
+ctrl + alt - w : yabai -m space --destroy
