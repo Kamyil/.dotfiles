@@ -1,4 +1,6 @@
 source "$HOME/.slimzsh/slim.zsh"
+# Set config directory for macOS
+export XDG_CONFIG_HOME="$HOME/.config"
 # Use powerline
 USE_POWERLINE="true"
 # Has weird character width
@@ -25,6 +27,7 @@ export NVM_DIR="$HOME/.nvm"
 alias sd="cd ~/Work/ && cd \$(find * -type d | fzf)"
 alias n="nvim ."
 alias lg="lazygit"
+alias ls="exa"
 
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
