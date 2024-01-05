@@ -1,5 +1,4 @@
-export BROWSER='/usr/bin/brave'
-
+source "$HOME/.slimzsh/slim.zsh"
 # Use powerline
 USE_POWERLINE="true"
 # Has weird character width
@@ -24,4 +23,9 @@ export NVM_DIR="$HOME/.nvm"
 # Aliases
 
 alias sd="cd ~ && cd \$(find * -type d | fzf)"
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
+if [[ ! $TERM =~ screen ]]; then
+    exec tmux
+fi
