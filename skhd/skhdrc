@@ -7,8 +7,8 @@ ctrl - h : yabai -m window --focus west;
 ctrl - l : yabai -m window --focus east;
 
 # change focus between external displays (left and right)
-alt - s: yabai -m display --focus west;
-alt - g: yabai -m display --focus east;
+# alt - s: yabai -m display --focus west;
+# alt - g: yabai -m display --focus east;
 
 # -- Modifying the Layout --
 
@@ -63,3 +63,4 @@ shift + alt - 7 : yabai -m window --space 7;
 # create and destroy workspaces
 ctrl + alt - t : yabai -m space --create
 ctrl + alt - w : yabai -m space --destroy
+
