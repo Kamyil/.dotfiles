@@ -19,7 +19,7 @@ export NVM_DIR="$HOME/.nvm"
 alias sd="cd ~/Work/ && cd \$(find * -type d | fzf)"
 alias n="nvim ."
 alias lg="lazygit"
-alias ls="exa"
+alias ls="lsd"
 # Colorful grep output
 alias grep="grep --color=auto"
 
@@ -42,3 +42,9 @@ export FZF_DEFAULT_OPTS=" \
 --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
 --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
+
+# Maybe we can switch to it later
+# eval "$(starship init zsh)"
+#
+alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
+alias nks='nvim-kickstart'

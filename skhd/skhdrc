@@ -1,3 +1,5 @@
+
+#------------------------------------------------------------------------
 # -- Changing Window Focus --
 
 # change window focus within space
@@ -21,6 +23,8 @@ shift + alt - x : yabai -m space --mirror x-axis;
 # toggle window float
 shift + alt - t : yabai -m window --toggle float --grid 4:4:1:1:2:2;
 
+
+#------------------------------------------------------------------------
 # -- Modifying Window Size --
 
 # maximize a window
@@ -29,6 +33,10 @@ shift + alt - m : yabai -m window --toggle zoom-fullscreen;
 # balance out tree of windows (resize to occupy same area)
 shift + alt - e : yabai -m space --balance;
 
+#------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------
 # -- Moving Windows Around --
 
 # swap windows
@@ -48,8 +56,8 @@ shift + alt - s : yabai -m window --display west; yabai -m display --focus west;
 shift + alt - g : yabai -m window --display east; yabai -m display --focus east;
 
 # move window to prev and next space
-shift + alt - p : yabai -m window --space prev;
-shift + alt - n : yabai -m window --space next;
+# shift + alt - p : yabai -m window --space prev;
+# shift + alt - n : yabai -m window --space next;
 
 # move window to space
 shift + alt - 1 : yabai -m window --space 1;
@@ -61,6 +69,12 @@ shift + alt - 6 : yabai -m window --space 6;
 shift + alt - 7 : yabai -m window --space 7;
 
 # create and destroy workspaces
-ctrl + alt - t : yabai -m space --create
-ctrl + alt - w : yabai -m space --destroy
+# ctrl + alt - t : yabai -m space --create
+# ctrl + alt - w : yabai -m space --destroy
+     
+# ------------comma 
+alt + cmd - comma : yabai -m space --display 1
+# ------------ dot/period
+alt + cmd - dot : yabai -m space --display 2
 
+#------------------------------------------------------------------------
