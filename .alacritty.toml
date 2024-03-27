@@ -7,6 +7,7 @@ import = [
   # "~/.config/alacritty/rose-pine.toml"
   # "~/.config/alacritty/rose-pine-moon.toml"
   # "~/.config/alacritty/rose-pine-dawn.toml"
+  # "~/.config/alacritty/everforest.toml"
 ]
 live_config_reload = true
 
@@ -17,6 +18,20 @@ builtin_box_drawing = true
 [font.normal]
 family = "JetBrainsMonoNL Nerd Font Propo"
 style = "Medium"
+
+
+# [font.normal]
+# family = "Bitstream Vera Sans Mono"
+# style = "Medium"
+
+# [font.normal]
+# family = "Hack Nerd Font Mono"
+# style = "Regular"
+
+# [font.normal]
+# family = "MonoLisa Nerd Font Mono"
+# style = "Regular"
+
 
 [font.bold]
 family = "JetBrainsMonoNL Nerd Font Propo"
@@ -40,7 +55,7 @@ y = 0
 
 [window]
 decorations = "Buttonless"
-opacity = 0.9
+opacity = 0.89
 blur = true
 
 title = "Terminal"
