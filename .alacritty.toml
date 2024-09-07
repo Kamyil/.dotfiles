@@ -8,21 +8,26 @@ import = [
   # "~/.config/alacritty/rose-pine-moon.toml"
   # "~/.config/alacritty/rose-pine-dawn.toml"
   # "~/.config/alacritty/everforest.toml"
+  # "~/.config/alacritty/gruvbox-dark.toml"
 ]
 live_config_reload = true
 
 [font]
-size = 13
-builtin_box_drawing = true
+size = 14
+# builtin_box_drawing = true
 
 [font.normal]
 family = "JetBrainsMonoNL Nerd Font Propo"
 style = "Medium"
 
-
 # [font.normal]
 # family = "Bitstream Vera Sans Mono"
 # style = "Medium"
+
+
+# [font.normal]
+# family = "FiraCode Nerd Font Mono"
+# style = "Retina"
 
 # [font.normal]
 # family = "Hack Nerd Font Mono"
@@ -55,14 +60,14 @@ y = 0
 
 [window]
 decorations = "Buttonless"
-opacity = 0.89
+opacity = 0.95
 blur = true
 
 title = "Terminal"
 
 [window.padding]
-x = 10
-y = 10
+x = 15 
+y = 15
 
 [env]
 TERM = "xterm-256color"

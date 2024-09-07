@@ -1,18 +1,45 @@
 # Reference: https://github.com/i3/i3/blob/next/etc/config
 
-enable-normalization-flatten-containers = false
-enable-normalization-opposite-orientation-for-nested-containers = false
+# Start AeroSpace at login
+start-at-login = true 
+
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+accordion-padding = 20
+
+
+
+# Run Sketchybar together with AeroSpace
+# sketchbar has a built-in detection of already running process,
+# so it won't be run twice on AeroSpace restart
+after-startup-command = ['exec-and-forget sketchybar']
+
+# Notify Sketchybar about workspace change
+exec-on-workspace-change = ['/bin/bash', '-c',
+    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
+]
+
+# TODO: Make this work
+# [workspace-to-monitor-force-assignment]
+# 1 = 1                            # Monitor sequence number from left to right. 1-based indexing
+# 2 = 'main'                       # Main monitor
+# 3 = 'secondary'                  # Non-main monitor in case when there are only two monitors
+# 4 = 'built-in'                   # Case insensitive regex substring
+# 5 = '^built-in retina display$'  # Case insensitive regex match
+# 6 = ['secondary', 'dell']        # You can specify multiple patterns. The first matching pattern will be used
 
 [mode.main.binding]
 # alt-shift-t = 'exec-and-forget open -n /System/Applications/Alacritty.app'
 
-alt-j = 'focus left'
-alt-k = 'focus down'
-alt-l = 'focus up'
-alt-semicolon = 'focus right'
+ctrl-alt-j = 'focus left'
+ctrl-alt-k = 'focus down'
+ctrl-alt-l = 'focus up'
+ctrl-alt-semicolon = 'focus right'
 
-alt-h = 'split horizontal'
-alt-v = 'split vertical'
+
+# alt-h = 'split horizontal'
+# alt-v = 'split vertical'
 
 
 # alt-f = 'fullscreen'
@@ -37,18 +64,18 @@ cmd-6 = 'workspace 6'
 cmd-7 = 'workspace 7'
 cmd-8 = 'workspace 8'
 cmd-9 = 'workspace 9'
-cmd-0 = 'workspace 10'
+# cmd-0 = 'workspace 10'
 
-cmd-shift-1 = 'move-node-to-workspace 1'
-cmd-shift-2 = 'move-node-to-workspace 2'
-cmd-shift-3 = 'move-node-to-workspace 3'
-cmd-shift-4 = 'move-node-to-workspace 4'
-cmd-shift-5 = 'move-node-to-workspace 5'
-cmd-shift-6 = 'move-node-to-workspace 6'
-cmd-shift-7 = 'move-node-to-workspace 7'
-cmd-shift-8 = 'move-node-to-workspace 8'
-cmd-shift-9 = 'move-node-to-workspace 9'
-cmd-shift-0 = 'move-node-to-workspace 10'
+cmd-alt-shift-1 = 'move-node-to-workspace 1'
+cmd-alt-shift-2 = 'move-node-to-workspace 2'
+cmd-alt-shift-3 = 'move-node-to-workspace 3'
+cmd-alt-shift-4 = 'move-node-to-workspace 4'
+cmd-alt-shift-5 = 'move-node-to-workspace 5'
+cmd-alt-shift-6 = 'move-node-to-workspace 6'
+cmd-alt-shift-7 = 'move-node-to-workspace 7'
+cmd-alt-shift-8 = 'move-node-to-workspace 8'
+cmd-alt-shift-9 = 'move-node-to-workspace 9'
+# cmd-alt-shift-0 = 'move-node-to-workspace 10'
 
 cmd-shift-comma = 'move-workspace-to-monitor --wrap-around prev'
 cmd-shift-period = 'move-workspace-to-monitor --wrap-around next'
@@ -68,3 +95,62 @@ k = 'resize height -50'
 l = 'resize width +50'
 enter = 'mode main'
 esc = 'mode main'
+
+[gaps]
+inner.horizontal = 10
+inner.vertical =   10
+
+outer.left =       20
+outer.right =      20
+
+outer.top =        40
+outer.bottom =     10
+
+# automations
+# Browser
+[[on-window-detected]]
+if.app-id = 'company.thebrowser.Browser' # Arc
+run = 'move-node-to-workspace 1'
+[[on-window-detected]]
+if.app-id = 'Zen Browser.app' # Zen Browser
+run = 'move-node-to-workspace 1'
+
+# IDE / Code editor
+[[on-window-detected]]
+if.app-id = 'net.kovidgoyal.kitty'
+run = 'move-node-to-workspace 2'
+
+# Company messaging app
+[[on-window-detected]]
+if.app-id = 'com.tinyspeck.slackmacgap'
+run = 'move-node-to-workspace 3'
+
+# Music app
+[[on-window-detected]]
+if.app-id = 'com.apple.Music'
+run = 'move-node-to-workspace 4'
+
+# Private messaging app
+[[on-window-detected]]
+if.app-id = 'com.apple.MobileSMS'
+run = 'move-node-to-workspace 5'
+
+# Note taking app
+[[on-window-detected]]
+if.app-id = 'md.obsidian'
+run = 'move-node-to-workspace 6'
+
+# TODO: Put something here
+# [[on-window-detected]]
+# if.app-id = 'com.slack'
+# run = 'move-node-to-workspace 7'
+#
+# TODO: Put something here
+# [[on-window-detected]]
+# if.app-id = 'com.slack'
+# run = 'move-node-to-workspace 8'
+
+# Password manager
+[[on-window-detected]]
+if.app-id = 'org.keepassxc.keepassxc'
+run = 'move-node-to-workspace 9'
