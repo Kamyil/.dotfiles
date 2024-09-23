@@ -100,10 +100,10 @@ esc = 'mode main'
 inner.horizontal = 10
 inner.vertical =   10
 
-outer.left =       20
-outer.right =      20
+outer.left =       10
+outer.right =      10
 
-outer.top =        40
+outer.top =        10
 outer.bottom =     10
 
 # automations
@@ -112,8 +112,12 @@ outer.bottom =     10
 if.app-id = 'company.thebrowser.Browser' # Arc
 run = 'move-node-to-workspace 1'
 [[on-window-detected]]
-if.app-id = 'Zen Browser.app' # Zen Browser
+if.app-id = 'org.mozilla.com.zen.browser' # Zen Browser
 run = 'move-node-to-workspace 1'
+[[on-window-detected]]
+# Run Picture-In-Picture in floating window rather than occupying existing space (since it doesn't make sense otherwise)
+if.window-title-regex-substring = 'Picture-in-Picture'
+run = 'layout floating'
 
 # IDE / Code editor
 [[on-window-detected]]

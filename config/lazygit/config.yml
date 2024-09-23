@@ -2,6 +2,10 @@ git:
   paging:
     colorArg: always
     pager: delta --dark --paging=never
+    # pager: difft
+    # externalDiffCommand: difft --color=always
+    # externalDiffCommand: difft --color=always --display=inline --syntax-highlight=on
+    
 
 theme:
   activeBorderColor:
