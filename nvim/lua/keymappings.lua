@@ -77,7 +77,7 @@ helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
   map('<leader>ss', telescope_builtin.builtin, '[S]earch [S]elect Telescope')
   map('<leader>sd', telescope_builtin.diagnostics, '[S]earch [D]iagnostics')
   map('<leader>sr', telescope_builtin.resume, '[S]earch [R]esume')
-  map('<leader>sl', telescope_builtin.oldfiles, '[S]earch [L] files')
+  map('<leader>sl', telescope_builtin.oldfiles, '[S]earch [L]ast files')
   map('<leader><leader>', telescope_builtin.buffers, '[ ] Find existing buffers')
 
   map('gd', require('telescope.builtin').lsp_definitions, '[G]o to [D]efinition')
@@ -225,7 +225,7 @@ map('<leader>0', '<Cmd>BufferLast<CR>', 'Go to last buffer')
 
 -- Buffer actions
 map('<A-p>', '<Cmd>BufferPin<CR>', 'Pin/unpin buffer')
-map('<A-c>', '<Cmd>BufferClose<CR>', 'Close buffer')
+map('<leader>c', '<Cmd>BufferClose<CR>', 'Close buffer')
 map('<C-p>', '<Cmd>BufferPick<CR>', 'Magic buffer-picking mode')
 map('<Space>bb', '<Cmd>BufferOrderByBufferNumber<CR>', 'Order buffers by number')
 map('<Space>bn', '<Cmd>BufferOrderByName<CR>', 'Order buffers by name')
