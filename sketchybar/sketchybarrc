@@ -20,12 +20,15 @@ sketchybar --bar height=37        \
                  y_offset=0 \
                  corner_radius=10 \
                  blur_radius=9   \
+                 blur_radius=100 \
+                 popup.blur_radius=50 \
                  position=top     \
                  sticky=on       \
                  padding_left=10  \
                  padding_right=10 \
+                 padding_bottom=100 \
                  font_smoothing=on \
-                 topmost=on \
+                 topmost=off \
                  color=$BAR_COLOR
 
 ##### Changing Defaults #####
