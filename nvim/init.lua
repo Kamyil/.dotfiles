@@ -81,7 +81,7 @@ vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 
 -- Load keymaps/mappings
-require 'mappings'
+require 'keymappings'
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -122,11 +122,6 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup {
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
 
-  -- NOTE: Plugins can also be added by using a table,
-  -- with the first argument being the link and the following
-  -- keys can be used to configure plugin behavior/loading/etc.
-  --
-  -- Use `opts = {}` to force a plugin to be loaded.
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   { import = 'plugins' },
