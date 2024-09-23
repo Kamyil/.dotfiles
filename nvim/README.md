@@ -9,7 +9,7 @@ This config is ready to be cloned and ready to go
 # Built with... 
 This config is built with these things in mind:
 - it has to be **reliable! (no.1)** (it has to be working for 100% since I'm using it in work as well. So no crashes or bugs allowed)
-- it has to be **blazingly fast** (startup time need to be as low as possible and each action needs to be instant - lags and slows are not allowed) 
+- it has to be **blazingly fast** (startup time need to be as low as possible [current ~80ms on M1 Pro] and each action needs to be instant - lags and slows are not allowed) 
 - it has to be **reduced to absolute necessity** - each addition has to have meaningful purpose. It contains
 - it has to be **practical and easy-to-use** - it has to contain very simple and practical functionalities that helps you do things, mental overhead is not allowed here
 ... and lastly
@@ -17,6 +17,7 @@ This config is built with these things in mind:
 to make it enjoybale to **use** and look at
 
 # Features
+- It's fast (~80ms startup time on M1 Pro)
 - It obviously has syntax-highlighting with treeparser and Mason for installing LSPs
 - It obviously has telescope for running Search through multiple things. Just check `<Space>S`
 - It's using `barbar.nvim`, to have practical tabs at top, which I found it most easy and straight-forward to use. 
