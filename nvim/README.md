@@ -1,10 +1,11 @@
+![Showcase](./kamyil_nvim.png "Showcase")
+
 # Intro
 My personal rewrite of my previously battle-tested extended config based on Astronvim
 But this time, it's rewritten from scratch with help of [nvim_kickstart](https://github.com/nvim-lua/kickstart.nvim) project
 which allows you to write your own config from scratch but with little hinting comments making this process way way faster
 
 This config is ready to be cloned and ready to go 
-
 
 # Built with... 
 This config is built with these things in mind:
