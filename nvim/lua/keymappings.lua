@@ -15,6 +15,8 @@ end
 
 local helpers = require 'helpers'
 
+map('<leader>Q', '<cmd>q!<CR>', 'Quickly quit (aborting everything in the same time)')
+
 -- Open neo-tree at current file or working directory
 map('<leader>e', function()
   local reveal_file = vim.fn.expand '%:p'
@@ -39,7 +41,7 @@ map('<leader>e', function()
   }
 end, 'Open neo-tree at current file or working directory')
 
-map('<leader>w', '<cmd>w<cmd>', 'Save file')
+map('<leader>w', '<cmd>w<CR>', 'Save file')
 
 -- Attempt to load Telescope
 helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
@@ -281,4 +283,8 @@ helpers.on_lazy_plugin_loaded('smart-splits', function(smart_splits)
 
   -- Start persistent resize mode
   map('<leader>rs', '<cmd>lua smart_splits.start_resize_mode()<CR>', 'Start Resize Mode')
+end)
+
+helpers.on_lazy_plugin_loaded('lazygit', function(lazygit)
+  map('<leader>gg', '<cmd>LazyGit<CR>', 'Open Lazygit')
 end)
