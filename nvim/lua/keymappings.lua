@@ -74,7 +74,7 @@ helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
 
   map('<leader>sh', telescope_builtin.help_tags, '[S]earch [H]elp')
   map('<leader>sk', telescope_builtin.keymaps, '[S]earch [K]eymaps')
-  map('<leader>ss', telescope_builtin.builtin, '[S]earch [S]elect Telescope')
+  map('<leader>st', telescope_builtin.builtin, '[S]earch [S]elect Telescope')
   map('<leader>sd', telescope_builtin.diagnostics, '[S]earch [D]iagnostics')
   map('<leader>sr', telescope_builtin.resume, '[S]earch [R]esume')
   map('<leader>sl', telescope_builtin.oldfiles, '[S]earch [L]ast files')
