@@ -11,11 +11,11 @@ This config is ready to be cloned and ready to go
 This config is built with these things in mind:
 - it has to be **reliable! (no.1)** (it has to be working for 100% since I'm using it in work as well. So no crashes or bugs allowed)
 - it has to be **blazingly fast** (startup time need to be as low as possible [current ~80ms on M1 Pro] and each action needs to be instant - lags and slows are not allowed) 
-- it has to be **reduced to absolute necessity** - each addition has to have meaningful purpose. It contains
+- it has to be **reduced to absolute necessity** - each addition has to have meaningful purpose. There is even a file in `lua/plugins/reason_per_plugin.md` file containing the reasoning behind the given plugin
 - it has to be **practical and easy-to-use** - it has to contain very simple and practical functionalities that helps you do things, mental overhead is not allowed here
 ... and lastly
-- it should be *beautiful*, but it can't compromise these 4 ^. These 4 comes first **ALWAYS**, then we can kinda experiment with the looks
-to make it enjoybale to **use** and look at
+- it should be *beautiful*, but it can't compromise these 4 ^. These 4 comes first **ALWAYS**, then we can kinda experiment with the looks to make it enjoybale to **use** and look at.
+Work has to give nice vibes in order to make it a please, but it can't sacrifice the reliability :)
 
 # Features
 - It's fast (~80ms startup time on M1 Pro)
