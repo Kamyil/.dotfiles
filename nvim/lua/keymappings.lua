@@ -47,37 +47,37 @@ map('<leader>w', '<cmd>w<CR>', 'Save file')
 helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
   -- now we can do the telescope mappings
   -- Telescope mappings
-  map('<leader>sf', telescope_builtin.find_files, '[S]earch [F]iles')
+  map('<leader>ff', telescope_builtin.find_files, '[F]ind [F]iles')
   -- Find files, including gitignored and hidden ones
-  map('<leader>sF', function()
+  map('<leader>fF', function()
     telescope_builtin.find_files {
       no_ignore = true,
       hidden = true,
     }
-  end, '[S]earch (ALL) [F]iles (including hidden & gitignored ones)')
+  end, '[F]ind (ALL) [F]iles (including hidden & gitignored ones)')
 
   -- Normal search through git included files
-  map('<leader>sw', telescope_builtin.live_grep, '[S]earch [W]ord (by using grep)')
+  map('<leader>fw', telescope_builtin.live_grep, '[F]ind [W]ord (by using grep)')
   -- Live grep, including gitignored and hidden ones
-  map('<leader>sW', function()
+  map('<leader>fW', function()
     telescope_builtin.live_grep {
       additional_args = function()
         return { '--no-ignore' }
       end,
     }
-  end, '[S]earch [W]ords (including hidden & gitignored ones)')
+  end, '[F]ind [W]ords (including hidden & gitignored ones)')
 
   -- Searches for the word (or string) under your cursor or the one you provide when invoking the command.
   -- It's like running grep for a specific string or word without further input, typically on the current word or a provided string.
-  -- Example use case: You place your cursor on a word (e.g., functionName) and then press <leader>sw. It will immediately search all occurrences of that word across your project without any further input.
-  map('<leader>scw', telescope_builtin.grep_string, '[S]earch [C]urrent [W]ord')
+  -- Example use case: You place your cursor on a word (e.g., functionName) and then press <leader>fw. It will immediately search all occurrences of that word across your project without any further input.
+  map('<leader>fcw', telescope_builtin.grep_string, '[F]ind [C]urrent [W]ord')
 
-  map('<leader>sh', telescope_builtin.help_tags, '[S]earch [H]elp')
-  map('<leader>sk', telescope_builtin.keymaps, '[S]earch [K]eymaps')
-  map('<leader>st', telescope_builtin.builtin, '[S]earch [S]elect Telescope')
-  map('<leader>sd', telescope_builtin.diagnostics, '[S]earch [D]iagnostics')
-  map('<leader>sr', telescope_builtin.resume, '[S]earch [R]esume')
-  map('<leader>sl', telescope_builtin.oldfiles, '[S]earch [L]ast files')
+  map('<leader>fh', telescope_builtin.help_tags, '[F]ind [H]elp')
+  map('<leader>fk', telescope_builtin.keymaps, '[F]ind [K]eymaps')
+  map('<leader>ft', telescope_builtin.builtin, '[F]ind [S]elect Telescope')
+  map('<leader>fd', telescope_builtin.diagnostics, '[F]ind [D]iagnostics')
+  map('<leader>fr', telescope_builtin.resume, '[F]ind [R]esume')
+  map('<leader>fl', telescope_builtin.oldfiles, '[F]ind [L]ast files')
   map('<leader><leader>', telescope_builtin.buffers, '[ ] Find existing buffers')
 
   map('gd', require('telescope.builtin').lsp_definitions, '[G]o to [D]efinition')
@@ -109,17 +109,17 @@ helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
   map('<leader>lws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[L]SP [W]orkspace [S]ymbols')
 
   -- Live grep with additional options
-  map('<leader>s/', function()
+  map('<leader>f/', function()
     telescope_builtin.live_grep {
       grep_open_files = true,
       prompt_title = 'Live Grep in Open Files',
     }
-  end, '[S]earch [/] in Open Files')
+  end, '[F]ind [/] in Open Files')
 
   -- Search Neovim configuration files
-  map('<leader>sn', function()
+  map('<leader>fn', function()
     telescope_builtin.find_files { cwd = vim.fn.stdpath 'config' }
-  end, '[S]earch [N]eovim files')
+  end, '[F]ind [N]eovim files')
 end)
 
 -- Rename the variable under your cursor.
@@ -287,7 +287,4 @@ end)
 
 helpers.on_lazy_plugin_loaded('lazygit', function(lazygit)
   map('<leader>gg', '<cmd>LazyGit<CR>', 'Open Lazygit')
-end)
-helpers.on_lazy_plugin_loaded('lazydocker', function(lazygit)
-  map('<leader>dd', '<cmd>LazyDocker<CR>', 'Open Lazygit')
 end)

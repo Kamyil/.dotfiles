@@ -1,7 +1,6 @@
 return {
   'nvim-tree/nvim-web-devicons',
-  lazy = true,
-  enabled = vim.g.icons_enabled ~= false,
+  lazy = false,
   opts = function()
     return {
       override = {

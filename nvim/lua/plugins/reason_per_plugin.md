@@ -23,7 +23,6 @@
 - todo-comments - for inline highlighting TODO/FIXME/WARNING/BUG etc. comments which gives little nice and pleasing visual indicator marking there is such thing. Without it it would be easy to miss such comment
 - transparent - for enabling transparency which gives way different vibes while editing
 - undotree - for having the tree and history of all Undo's, so you don't have to completely rely on Git when you want to revert the changes to state from given time
-- vim-sleuth - for detecting `tabstop` and `shiftwidth` automatically. // TODO: Check if it works, since most likely it's not and this is why I added `guess-indent` to fix that
 - webdevicons - for having nice collection of file icons
 - which-key - for displaying the shortcuts and their descriptions after heading <leader> 
 
@@ -32,4 +31,3 @@ My colleciton of themes that I found most practical and useful and pretty
 - catppuccin (currently using)
 - tokyonight
 - rosepine 
-

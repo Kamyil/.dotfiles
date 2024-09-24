@@ -1,4 +1,3 @@
 return {
- 'wmac427/guess-indent.nvim',
-  event = 'BufEnter'
+  'nmac427/guess-indent.nvim',
 }
