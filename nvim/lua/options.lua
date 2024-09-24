@@ -1,4 +1,6 @@
 -- Contains all vim options settings
+--
+local helpers = require 'helpers'
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -73,8 +75,16 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
--- Enable settings per project 
+-- Enable settings per project
 vim.g.editorconfig = false
 
 -- Enable icons (`nvim-tree/nvim-web-devicons` plugin in this case)
 vim.g.icons_enabled = true
+
+-- and finally... set the colorscheme :)
+helpers.on_lazy_plugin_loaded('catppuccin', function()
+  vim.cmd.colorscheme 'catppuccin-mocha'
+
+  -- You can configure highlights by doing something like:
+  vim.cmd.hi 'Comment gui=none'
+end)

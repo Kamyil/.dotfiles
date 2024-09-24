@@ -6,7 +6,7 @@ M.get_project_root = function()
   return vim.fn.getcwd() -- you can modify this to use a more complex project root detection method if needed
 end
 
--- Helper function to load a plugin using lazy.nvim user events
+-- Helper function allowing to run a callback while making sure it's loaded by lazy.nvim
 M.on_lazy_plugin_loaded = function(plugin_name, callback)
   -- Create an autocommand for the VeryLazy event to ensure all lazy plugins are loaded
   vim.api.nvim_create_autocmd('User', {
