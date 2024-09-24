@@ -1,7 +1,7 @@
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
--- for consistent mapping
+-- helper for consistent key mapping
 local map = function(keys, func, desc, mode)
   mode = mode or 'n'
   if type(mode) == 'table' then
@@ -15,7 +15,7 @@ end
 
 local helpers = require 'helpers'
 
-map('<leader>Q', '<cmd>q!<CR>', 'Quickly quit (aborting everything in the same time)')
+map('<leader>qq', '<cmd>q!<CR>', 'Quickly quit (aborting everything in the same time)')
 
 -- Open neo-tree at current file or working directory
 map('<leader>e', function()
@@ -160,7 +160,7 @@ end, 'Open neo-tree at current file or working directory')
 map('<Esc>', '<cmd>nohlsearch<CR>', 'Clear highlights on search')
 
 -- Diagnostic quickfix
-map('<leader>q', vim.diagnostic.setloclist, 'Open diagnostic [Q]uickfix list')
+map('<leader>qf', vim.diagnostic.setloclist, 'Open diagnostic [Q]uickfix list')
 
 -- Exit terminal mode
 map('<Esc><Esc>', '<C-\\><C-n>', 'Exit terminal mode', 't')

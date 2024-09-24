@@ -297,6 +297,7 @@ alias ls="lsd"
 alias finder="open"
 alias grep="grep --color=auto"
 alias reset_zsh="source ~/.zshrc"
+alias clear_nvim_cache="rm -rf ~/.local/share/nvim"
 alias cat='bat' 
 alias jira="~/bin/jira"
 alias serpl="~/bin/serpl"
