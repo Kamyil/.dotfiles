@@ -75,3 +75,6 @@ vim.opt.scrolloff = 10
 
 -- Enable settings per project 
 vim.g.editorconfig = false
+
+-- Enable icons (`nvim-tree/nvim-web-devicons` plugin in this case)
+vim.g.icons_enabled = true
