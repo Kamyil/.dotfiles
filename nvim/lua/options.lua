@@ -81,10 +81,5 @@ vim.g.editorconfig = false
 -- Enable icons (`nvim-tree/nvim-web-devicons` plugin in this case)
 vim.g.icons_enabled = true
 
--- and finally... set the colorscheme :)
-helpers.on_lazy_plugin_loaded('catppuccin', function()
-  vim.cmd.colorscheme 'catppuccin-mocha'
-
-  -- You can configure highlights by doing something like:
-  vim.cmd.hi 'Comment gui=none'
-end)
+-- Colorscheme is unfortunetly set in lua/plugins/catppuccin.lua, because barbar wasn't applying catppuccin styles
+-- when setting colorscheme was placed here :(
