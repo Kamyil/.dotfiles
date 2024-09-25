@@ -15,7 +15,7 @@
 - neo-tree - for having convinient and easy-to-use file-tree
 - neogen - for better markdown annotations
 - nvim-cmp - for autocompletion, powered by both LSP and Snippets 
-- nvim-treesitter - for syntax_highlighting and understanding the syntax allowing to do some text-object manipulations
+- nvim-treesitter - for syntax highlighting and understanding the syntax allowing to do some text-object manipulations
 - nvim_tmux_navigation - for easy movement between neovim and tmux panes using simple Ctrl + hjkl. So basically you can now consistently move between neo-tree <-> neovim splits <-> tmux using same intuitive shortcuts
 - obsidian - for Obsidian integration, making possible to ditch Electron-based GUI app in favor of note-taking in Neovim completely
 - render-markdown - for inline rendering Markdown like in Obsidian, so thanks to it you don't have to rely on external Markdown preview rendereds 
@@ -27,9 +27,17 @@
 - webdevicons - for having nice collection of file icons
 - which-key - for displaying the shortcuts and their descriptions after heading <leader> 
 - vim-dadbod-ui - for having Database viewer and SQL runner
+- legendary - for nice command-palette that comes quite handy when you don't remember how some command was named
+- yankbank - for having persistent yank (copy) history across sessions (kinda like clipboard history but for yanks (copies)) 
+- git-conflict - for visualizing and resolving git conflicts in inline fashion (kinda like in VSCode)
 
 # Themes
-My colleciton of themes that I found most practical and useful and pretty 
+My colleciton of themes that I found most practical and useful and pretty:
+
 - catppuccin (currently using)
 - tokyonight
 - rosepine 
+
+
+# Maybe will add, maybe not. Still thinking...
+- [ ] [persisted.nvim](https://github.com/olimorris/persisted.nvim) for Session Managment
