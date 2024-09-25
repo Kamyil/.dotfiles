@@ -15,7 +15,8 @@ end
 
 local helpers = require 'helpers'
 
-map('<leader>qq', '<cmd>q!<CR>', 'Quickly quit (aborting everything in the same time)')
+map('<leader>cp', '<cmd>Legendary<CR>', '[C]ommand [P]alette')
+map('<leader>qq', '<cmd>q!<CR><cmd>Neotree close<CR>', 'Quickly quit (aborting everything in the same time)')
 
 -- Open neo-tree at current file or working directory
 map('<leader>e', function()
@@ -291,3 +292,12 @@ helpers.on_lazy_plugin_loaded('lazygit', function(lazygit)
 end)
 
 map('<leader>gb', '<cmd>BlameToggle window<CR>', '[G]it [Blame]')
+map('<leader>gcc', '<cmd>GitConflictChooseOurs<CR>', '[G]it [C]onflict Choose [C]urrent')
+map('<leader>gci', '<cmd>GitConflictChooseTheirs<CR>', '[G]it [C]onflict Choose [I]ncoming')
+map('<leader>gcb', '<cmd>GitConflictChooseBoth<CR>', '[G]it [Conflict] Choose [B]oth')
+map('<leader>gcn', '<cmd>GitConflictChooseOurs<CR>', '[G]it [Conflict] Choose [N]one')
+map('<leader>gcn', '<cmd>GitConflictChooseOurs<CR>', '[G]it [Conflict] Choose [N]one')
+map('<leader>gc[', '<cmd>GitConflictChooseOurs<CR>', '[G]it [Conflict] Previous')
+map('<leader>gc]', '<cmd>GitConflictChooseOurs<CR>', '[G]it [Conflict] Next')
+
+map('<leader>yh', '<cmd>YankBank<CR>', '[Y]ank [H]istory')
