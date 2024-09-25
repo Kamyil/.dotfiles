@@ -26,6 +26,7 @@
 - undotree - for having the tree and history of all Undo's, so you don't have to completely rely on Git when you want to revert the changes to state from given time
 - webdevicons - for having nice collection of file icons
 - which-key - for displaying the shortcuts and their descriptions after heading <leader> 
+- vim-dadbod-ui - for having Database viewer and SQL runner
 
 # Themes
 My colleciton of themes that I found most practical and useful and pretty 
