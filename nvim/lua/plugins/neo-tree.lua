@@ -1,3 +1,5 @@
+local options = require 'options'
+--
 -- For Sidebar file-tree explorer
 return {
   'nvim-neo-tree/neo-tree.nvim',
@@ -16,7 +18,6 @@ return {
     vim.fn.sign_define('DiagnosticSignHint', { text = '󰌵', texthl = 'DiagnosticSignHint' })
 
     require('neo-tree').setup {
-      close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
       popup_border_style = 'rounded',
       enable_git_status = true,
       enable_diagnostics = true,
@@ -43,7 +44,7 @@ return {
           last_indent_marker = '└',
           highlight = 'NeoTreeIndentMarker',
           -- expander config, needed for nesting files
-          with_expanders = nil, -- if nil and file nesting is enabled, will enable expanders
+          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
           expander_collapsed = '',
           expander_expanded = '',
           expander_highlight = 'NeoTreeExpander',

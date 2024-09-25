@@ -1,6 +1,8 @@
 -- Contains all vim options settings
 --
-local helpers = require 'helpers'
+
+-- Needed for very own specific settings that are not related to vim globals
+local M = {}
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -86,3 +88,6 @@ vim.diagnostic.config { virtual_text = false }
 
 -- Colorscheme is unfortunetly set in lua/plugins/catppuccin.lua, because barbar wasn't applying catppuccin styles
 -- when setting colorscheme was placed here :(
+--
+--
+return M
