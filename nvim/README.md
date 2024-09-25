@@ -1,4 +1,5 @@
 ![Showcase](./kamyil_nvim.png "Showcase")
+![Showcase2](./kamyil_nvim2.png "Showcase2")
 
 # Intro
 My personal rewrite of my previously battle-tested extended config based on Astronvim
