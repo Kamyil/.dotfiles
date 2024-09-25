@@ -1,6 +1,9 @@
 -- LSP Plugins
 return {
   {
+    'onsails/lspkind.nvim',
+  },
+  {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
     -- used for completion, annotations and signatures of Neovim apis
     'folke/lazydev.nvim',
@@ -149,21 +152,21 @@ return {
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
-        'lua-language-server', -- For Lua
-        'phpactor', -- For PHP (maybe not best, but at least it doesn't requires payment
-        'svelte-language-server', -- For Svelte
-        'tailwindcss-language-server', -- For Tailwind
-        'vtsls', -- For TypeScript (better than ts-server)
-        'write-good', -- Don't know what it is really. Testing it...
-        'sqlls', -- For TypeScript (better than ts-server)
-        'rust_analyzer', -- For Rust
-        'prettier',
-      })
 
       -- Install on startup if there are any LSPs missing
       vim.api.nvim_create_user_command('MasonInstallEnsured', function()
+        vim.list_extend(ensure_installed, {
+          'stylua', -- Used to format Lua code
+          'lua_ls', -- For Lua
+          'phpactor', -- For PHP (maybe not best, but at least it doesn't requires payment
+          'svelte-language-server', -- For Svelte
+          'tailwindcss-language-server', -- For Tailwind
+          'vtsls', -- For TypeScript (better than ts-server)
+          'write-good', -- Don't know what it is really. Testing it...
+          'sqlls', -- For TypeScript (better than ts-server)
+          'rust_analyzer', -- For Rust
+          'prettier',
+        })
         vim.cmd('MasonInstall ' .. table.concat(ensure_installed, ' '))
       end, {})
 

@@ -81,5 +81,8 @@ vim.g.editorconfig = false
 -- Enable icons (`nvim-tree/nvim-web-devicons` plugin in this case)
 vim.g.icons_enabled = true
 
+-- Disable default LSP inline diagnostic, in favor of `lsp-lines.nvim`
+vim.diagnostic.config { virtual_text = false }
+
 -- Colorscheme is unfortunetly set in lua/plugins/catppuccin.lua, because barbar wasn't applying catppuccin styles
 -- when setting colorscheme was placed here :(

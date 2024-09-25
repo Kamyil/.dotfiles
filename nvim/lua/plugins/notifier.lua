@@ -1,0 +1,3 @@
+return { 
+	"vigoux/notifier.nvim" 
+}
