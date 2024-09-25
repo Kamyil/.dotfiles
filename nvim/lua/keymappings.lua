@@ -290,4 +290,4 @@ helpers.on_lazy_plugin_loaded('lazygit', function(lazygit)
   map('<leader>gg', '<cmd>LazyGit<CR>', 'Open Lazygit')
 end)
 
-map('<leader>gb', '<cmd>BlameToggle<CR>', '[G]it [Blame]')
+map('<leader>gb', '<cmd>BlameToggle window<CR>', '[G]it [Blame]')
