@@ -160,7 +160,7 @@ end, 'Open neo-tree at current file or working directory')
 map('<Esc>', '<cmd>nohlsearch<CR>', 'Clear highlights on search')
 
 -- Diagnostic quickfix
-map('<leader>qf', vim.diagnostic.setloclist, 'Open diagnostic [Q]uickfix list')
+map('<leader>qf', vim.diagnostic.setloclist, 'Open diagnostic [Q]uick[F]ix list')
 
 -- Exit terminal mode
 map('<Esc><Esc>', '<C-\\><C-n>', 'Exit terminal mode', 't')
@@ -285,6 +285,9 @@ helpers.on_lazy_plugin_loaded('smart-splits', function(smart_splits)
   map('<leader>rs', '<cmd>lua smart_splits.start_resize_mode()<CR>', 'Start Resize Mode')
 end)
 
+-- GIT related
 helpers.on_lazy_plugin_loaded('lazygit', function(lazygit)
   map('<leader>gg', '<cmd>LazyGit<CR>', 'Open Lazygit')
 end)
+
+map('<leader>gb', '<cmd>BlameToggle<CR>', '[G]it [Blame]')
