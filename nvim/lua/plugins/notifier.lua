@@ -1,3 +1,3 @@
-return { 
-	"vigoux/notifier.nvim" 
+return {
+  'vigoux/notifier.nvim',
 }
