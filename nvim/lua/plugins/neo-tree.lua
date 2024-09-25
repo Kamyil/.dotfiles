@@ -18,6 +18,16 @@ return {
     vim.fn.sign_define('DiagnosticSignHint', { text = '󰌵', texthl = 'DiagnosticSignHint' })
 
     require('neo-tree').setup {
+      -- This for some reason is actually a solution for having relativenumbers inside neo-tree o_0
+      -- https://github.com/nvim-neo-tree/neo-tree.nvim/discussions/843
+      event_handlers = {
+        {
+          event = 'neo_tree_buffer_enter',
+          handler = function(arg)
+            vim.opt.relativenumber = true
+          end,
+        },
+      },
       popup_border_style = 'rounded',
       enable_git_status = true,
       enable_diagnostics = true,

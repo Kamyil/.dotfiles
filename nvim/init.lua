@@ -30,9 +30,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- NOTE: Setup lazy nvim which is the package manager for your plugins
-require('lazy').setup {
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
-  { lazy = true, import = 'plugins' },
-  --
-}
+
+require('lazy').setup('plugins', {
+  change_detection = {
+    -- this option finally disables the annoying blocking notification
+    -- https://github.com/folke/lazy.nvim/issues/32#issuecomment-1443733721
+    notify = false,
+  },
+})
