@@ -7,6 +7,7 @@
 - guess-indent - for auto inferring spacing/tabs per project if they're not defined inside `.editorconfig`
 - indent-blankline - for having indentation guides (lines indicating where given function/class etc. end)
 - lazygit - for Lazygit integration (best GIT TUI so far)
+- blame - for handy git blame functionality
 - lsp-lines - for best error messages so far. They're not only displaying it under the line with error, but they also stack and also display EXACT place in the line where error occurs. Best plugin so far
 - lsp (Mason) - for installing LSPs and formatters
 - mini - some collections of little enhancements from whole mini.nvim ecosystem. In this case, it gives convinient text-manipulation motions  like better Around/Inside and Surroundings and also adds better Statusline.
