@@ -4,14 +4,20 @@ return { -- Highlight, edit, and navigate code
   main = 'nvim-treesitter.configs', -- Sets main module to use for opts
   init = function()
     -- Disable italics and other decorations
-    vim.cmd [[
+    vim.cmd([[
       highlight! Keyword gui=NONE
       highlight! Conditional gui=NONE
       highlight! Function gui=NONE
       highlight! Variable gui=NONE
       highlight! Comment gui=NONE
       highlight! typescriptConditional gui=NONE
-    ]]
+      highlight! typescriptClassBlock gui=NONE
+      highlight! typescriptBlock gui=NONE
+      highlight! rustConditional gui=NONE
+      highlight! link conditional.go Conditional
+      highlight! link conditional.typescript Conditional
+      highlight! link conditional.lua Conditional
+    ]])
   end,
   -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
   opts = {
@@ -35,7 +41,7 @@ return { -- Highlight, edit, and navigate code
     -- Autoinstall languages that are not installed
     auto_install = true,
     highlight = {
-      enable = false,
+      enable = true,
       -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
       --  If you are experiencing weird indenting issues, add the language to
       --  the list of additional_vim_regex_highlighting and disabled languages for indent.

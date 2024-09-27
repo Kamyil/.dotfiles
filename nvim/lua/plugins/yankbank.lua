@@ -4,8 +4,8 @@ return {
   dependencies = 'kkharji/sqlite.lua',
   lazy = false,
   config = function()
-    require('yankbank').setup {
+    require('yankbank').setup({
       persist_type = 'sqlite',
-    }
+    })
   end,
 }
