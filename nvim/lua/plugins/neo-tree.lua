@@ -1,5 +1,5 @@
-local options = require 'options'
---
+local options = require('options')
+
 -- For Sidebar file-tree explorer
 return {
   'nvim-neo-tree/neo-tree.nvim',
@@ -17,7 +17,7 @@ return {
     vim.fn.sign_define('DiagnosticSignInfo', { text = ' ', texthl = 'DiagnosticSignInfo' })
     vim.fn.sign_define('DiagnosticSignHint', { text = '󰌵', texthl = 'DiagnosticSignHint' })
 
-    require('neo-tree').setup {
+    require('neo-tree').setup({
       -- This for some reason is actually a solution for having relativenumbers inside neo-tree o_0
       -- https://github.com/nvim-neo-tree/neo-tree.nvim/discussions/843
       event_handlers = {
@@ -129,8 +129,8 @@ return {
       -- see `:h neo-tree-custom-commands-global`
       commands = {},
       window = {
-        position = 'left',
-        width = 40,
+        position = 'float',
+        window = 200,
         mapping_options = {
           noremap = true,
           nowait = true,
@@ -308,12 +308,12 @@ return {
           },
         },
       },
-    }
+    })
 
-    vim.cmd [[nnoremap \ :Neotree reveal<cr>]]
+    vim.cmd([[nnoremap \ :Neotree reveal<cr>]])
   end,
   vim.keymap.set('n', '-', function()
-    local reveal_file = vim.fn.expand '%:p'
+    local reveal_file = vim.fn.expand('%:p')
     if reveal_file == '' then
       reveal_file = vim.fn.getcwd()
     else
@@ -324,16 +324,16 @@ return {
         reveal_file = vim.fn.getcwd()
       end
     end
-    require('neo-tree.command').execute {
+    require('neo-tree.command').execute({
       action = 'focus', -- OPTIONAL, this is the default value
       source = 'filesystem', -- OPTIONAL, this is the default value
-      position = 'left', -- OPTIONAL, this is the default value
+      position = 'float', -- OPTIONAL, this is the default value
       reveal_file = reveal_file, -- path to file or folder to reveal
       reveal_force_cwd = true, -- change cwd without asking if needed
-    }
+    })
   end, { desc = 'Open neo-tree at current file or working directory' }),
   vim.keymap.set('n', '-', function()
-    local reveal_file = vim.fn.expand '%:p'
+    local reveal_file = vim.fn.expand('%:p')
     if reveal_file == '' then
       reveal_file = vim.fn.getcwd()
     else
@@ -344,16 +344,16 @@ return {
         reveal_file = vim.fn.getcwd()
       end
     end
-    require('neo-tree.command').execute {
+    require('neo-tree.command').execute({
       action = 'focus', -- OPTIONAL, this is the default value
       source = 'filesystem', -- OPTIONAL, this is the default value
-      position = 'left', -- OPTIONAL, this is the default value
+      position = 'float', -- OPTIONAL, this is the default value
       reveal_file = reveal_file, -- path to file or folder to reveal
       reveal_force_cwd = true, -- change cwd without asking if needed
-    }
+    })
   end, { desc = 'Open neo-tree at current file or working directory' }),
   vim.keymap.set('n', '-', function()
-    local reveal_file = vim.fn.expand '%:p'
+    local reveal_file = vim.fn.expand('%:p')
     if reveal_file == '' then
       reveal_file = vim.fn.getcwd()
     else
@@ -364,12 +364,12 @@ return {
         reveal_file = vim.fn.getcwd()
       end
     end
-    require('neo-tree.command').execute {
+    require('neo-tree.command').execute({
       action = 'focus', -- OPTIONAL, this is the default value
       source = 'filesystem', -- OPTIONAL, this is the default value
-      position = 'left', -- OPTIONAL, this is the default value
+      position = 'float', -- OPTIONAL, this is the default value
       reveal_file = reveal_file, -- path to file or folder to reveal
       reveal_force_cwd = true, -- change cwd without asking if needed
-    }
+    })
   end, { desc = 'Open neo-tree at current file or working directory' }),
 }

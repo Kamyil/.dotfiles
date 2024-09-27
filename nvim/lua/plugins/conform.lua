@@ -6,7 +6,7 @@ return { -- Autoformat
     {
       '<leader>lf',
       function()
-        require('conform').format { async = true, lsp_format = 'fallback' }
+        require('conform').format({ async = true, lsp_format = 'fallback' })
       end,
       mode = '',
       desc = '[L]SP [F]ormat file',

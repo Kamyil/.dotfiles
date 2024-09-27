@@ -4,8 +4,8 @@ return { -- Adds git related signs to the gutter, as well as utilities for manag
   lazy = true,
   opts = {
     signs = {
-      add = { text = '┃' },
-      change = { text = '┃' },
+      add = { text = '|' },
+      change = { text = '|' },
       delete = { text = '_' },
       topdelete = { text = '‾' },
       changedelete = { text = '~' },

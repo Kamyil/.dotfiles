@@ -13,14 +13,15 @@ local map = function(keys, func, desc, mode)
   end
 end
 
-local helpers = require 'helpers'
+local helpers = require('helpers')
 
 map('<leader>cp', '<cmd>Legendary<CR>', '[C]ommand [P]alette')
 map('<leader>qq', '<cmd>q!<CR><cmd>Neotree close<CR>', 'Quickly quit (aborting everything in the same time)')
 
 -- Open neo-tree at current file or working directory
 map('<leader>e', function()
-  local reveal_file = vim.fn.expand '%:p'
+  -- Helper function to calculate centered neo-tree width
+  local reveal_file = vim.fn.expand('%:p')
 
   if reveal_file == '' then
     reveal_file = vim.fn.getcwd()
@@ -33,14 +34,15 @@ map('<leader>e', function()
     end
   end
 
-  require('neo-tree.command').execute {
-    action = 'focus',
-    source = 'filesystem',
-    position = 'left',
-    reveal_file = reveal_file,
-    reveal_force_cwd = true,
-  }
-end, 'Open neo-tree at current file or working directory')
+  -- require('neo-tree.command').execute {
+  --   action = 'focus',
+  --   source = 'filesystem',
+  --   position = 'float',
+  --   reveal_file = reveal_file,
+  --   reveal_force_cwd = true,
+  -- }
+  vim.cmd('Neotree float')
+end, 'Open neo-tree at current file and center the code')
 
 map('<leader>w', '<cmd>w<CR>', 'Save file')
 
@@ -51,21 +53,21 @@ helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
   map('<leader>ff', telescope_builtin.find_files, '[F]ind [F]iles')
   -- Find files, including gitignored and hidden ones
   map('<leader>fF', function()
-    telescope_builtin.find_files {
+    telescope_builtin.find_files({
       no_ignore = true,
       hidden = true,
-    }
+    })
   end, '[F]ind (ALL) [F]iles (including hidden & gitignored ones)')
 
   -- Normal search through git included files
   map('<leader>fw', telescope_builtin.live_grep, '[F]ind [W]ord (by using grep)')
   -- Live grep, including gitignored and hidden ones
   map('<leader>fW', function()
-    telescope_builtin.live_grep {
+    telescope_builtin.live_grep({
       additional_args = function()
         return { '--no-ignore' }
       end,
-    }
+    })
   end, '[F]ind [W]ords (including hidden & gitignored ones)')
 
   -- Searches for the word (or string) under your cursor or the one you provide when invoking the command.
@@ -111,15 +113,15 @@ helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
 
   -- Live grep with additional options
   map('<leader>f/', function()
-    telescope_builtin.live_grep {
+    telescope_builtin.live_grep({
       grep_open_files = true,
       prompt_title = 'Live Grep in Open Files',
-    }
+    })
   end, '[F]ind [/] in Open Files')
 
   -- Search Neovim configuration files
   map('<leader>fn', function()
-    telescope_builtin.find_files { cwd = vim.fn.stdpath 'config' }
+    telescope_builtin.find_files({ cwd = vim.fn.stdpath('config') })
   end, '[F]ind [N]eovim files')
 end)
 
@@ -135,7 +137,7 @@ map('<leader>la', vim.lsp.buf.code_action, '[L]SP [A]ction', { 'n', 'x' })
 
 -- Open neo-tree at current file or working directory
 map('<leader>e', function()
-  local reveal_file = vim.fn.expand '%:p'
+  local reveal_file = vim.fn.expand('%:p')
 
   if reveal_file == '' then
     reveal_file = vim.fn.getcwd()
@@ -148,13 +150,13 @@ map('<leader>e', function()
     end
   end
 
-  require('neo-tree.command').execute {
+  require('neo-tree.command').execute({
     action = 'focus',
     source = 'filesystem',
-    position = 'left',
+    position = 'float',
     reveal_file = reveal_file,
     reveal_force_cwd = true,
-  }
+  })
 end, 'Open neo-tree at current file or working directory')
 
 -- Clear highlights on search
