@@ -14,6 +14,7 @@ return { -- Highlight, edit, and navigate code
       highlight! typescriptClassBlock gui=NONE
       highlight! typescriptBlock gui=NONE
       highlight! rustConditional gui=NONE
+      highlight! zshConditional gui=NONE
       highlight! link conditional.go Conditional
       highlight! link conditional.typescript Conditional
       highlight! link conditional.lua Conditional

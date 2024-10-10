@@ -17,6 +17,25 @@ vim.g.have_nerd_font = true
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
+--
+-- 4 space indents by default (overriden per project later)
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.smartindent = true
+-- I don't like line wrapping
+vim.opt.wrap = false
+
+-- Don't do swaps of a file, but rather save the state for undotree in order to be able to access file state from ages ago
+vim.opt.swapfile = false
+vim.opt.backup = false
+vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir'
+vim.opt.undofile = true
+
+vim.opt.incsearch = true
+
+vim.opt.termguicolors = true
 
 -- Make line numbers default
 vim.opt.number = true
@@ -52,7 +71,7 @@ vim.opt.smartcase = true
 vim.opt.signcolumn = 'yes'
 
 -- Decrease update time
-vim.opt.updatetime = 250
+vim.opt.updatetime = 50
 
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
