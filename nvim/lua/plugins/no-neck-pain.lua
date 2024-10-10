@@ -2,7 +2,6 @@ return {
   'shortcuts/no-neck-pain.nvim',
   version = '*',
   opts = {
-    debug = true,
     -- The width of the focused window that will be centered. When the terminal width is less than the `width` option, the side buffers won't be created.
     --- @type integer|"textwidth"|"colorcolumn"
     width = 150,
@@ -26,6 +25,7 @@ return {
       skipEnteringNoNeckPainBuffer = false,
     },
     buffers = {
+      setNames = false,
       colors = {
         blend = -0.2,
       },
@@ -35,15 +35,19 @@ return {
         enabled = true,
         -- set to `nil` to default
         -- to current working directory
-        location = './',
+        -- location = nil,
+        -- fileName = '.scratchpad',
+        pathToFile = './.scratchpad.md',
       },
-      bo = {
-        filetype = 'md',
-      },
+      bo = { filetype = 'md' },
       wo = {
         fillchars = 'eob: ',
       },
+      left = {
+        setNames = false,
+      },
       right = {
+        setNames = false,
         enabled = false,
       },
     },

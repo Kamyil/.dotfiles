@@ -17,6 +17,40 @@ return {
     vim.fn.sign_define('DiagnosticSignInfo', { text = ' ', texthl = 'DiagnosticSignInfo' })
     vim.fn.sign_define('DiagnosticSignHint', { text = '󰌵', texthl = 'DiagnosticSignHint' })
 
+    local colors = require('catppuccin.palettes').get_palette()
+
+    local NeoTreeColor = {
+      -- Main Neo-tree window background
+      NeoTreeNormal = { bg = colors.mantle, fg = colors.text },
+      NeoTreeNormalNC = { bg = colors.mantle, fg = colors.text },
+
+      -- Pop-up or floating window background
+      NeoTreeFloatNormal = { bg = colors.mantle, fg = colors.text },
+
+      -- Ensure no transparency for floating borders or titles
+      NeoTreeFloatBorder = { fg = colors.mantle, bg = colors.mantle },
+      NeoTreeFloatTitle = { fg = colors.cyan, bg = colors.mantle },
+
+      -- Remove transparent separators
+      NeoTreeWinSeparator = { fg = colors.mantle, bg = colors.mantle },
+
+      -- Cursor and selected line
+      NeoTreeCursorLine = { bg = colors.surface0 }, -- Highlight current line
+      NeoTreeDirectoryName = { fg = colors.blue },
+      NeoTreeDirectoryIcon = { fg = colors.blue },
+      NeoTreeRootName = { fg = colors.pink, bold = true },
+      NeoTreeGitAdded = { fg = colors.green },
+      NeoTreeGitDeleted = { fg = colors.red },
+      NeoTreeGitModified = { fg = colors.yellow },
+      NeoTreeGitUntracked = { fg = colors.yellow },
+      NeoTreeIndentMarker = { fg = colors.surface1 },
+      NeoTreeSymbolicLinkTarget = { fg = colors.pink },
+    }
+
+    for hl, col in pairs(NeoTreeColor) do
+      vim.api.nvim_set_hl(0, hl, col)
+    end
+
     require('neo-tree').setup({
       -- This for some reason is actually a solution for having relativenumbers inside neo-tree o_0
       -- https://github.com/nvim-neo-tree/neo-tree.nvim/discussions/843
@@ -312,64 +346,4 @@ return {
 
     vim.cmd([[nnoremap \ :Neotree reveal<cr>]])
   end,
-  vim.keymap.set('n', '-', function()
-    local reveal_file = vim.fn.expand('%:p')
-    if reveal_file == '' then
-      reveal_file = vim.fn.getcwd()
-    else
-      local f = io.open(reveal_file, 'r')
-      if f then
-        f.close(f)
-      else
-        reveal_file = vim.fn.getcwd()
-      end
-    end
-    require('neo-tree.command').execute({
-      action = 'focus', -- OPTIONAL, this is the default value
-      source = 'filesystem', -- OPTIONAL, this is the default value
-      position = 'float', -- OPTIONAL, this is the default value
-      reveal_file = reveal_file, -- path to file or folder to reveal
-      reveal_force_cwd = true, -- change cwd without asking if needed
-    })
-  end, { desc = 'Open neo-tree at current file or working directory' }),
-  vim.keymap.set('n', '-', function()
-    local reveal_file = vim.fn.expand('%:p')
-    if reveal_file == '' then
-      reveal_file = vim.fn.getcwd()
-    else
-      local f = io.open(reveal_file, 'r')
-      if f then
-        f.close(f)
-      else
-        reveal_file = vim.fn.getcwd()
-      end
-    end
-    require('neo-tree.command').execute({
-      action = 'focus', -- OPTIONAL, this is the default value
-      source = 'filesystem', -- OPTIONAL, this is the default value
-      position = 'float', -- OPTIONAL, this is the default value
-      reveal_file = reveal_file, -- path to file or folder to reveal
-      reveal_force_cwd = true, -- change cwd without asking if needed
-    })
-  end, { desc = 'Open neo-tree at current file or working directory' }),
-  vim.keymap.set('n', '-', function()
-    local reveal_file = vim.fn.expand('%:p')
-    if reveal_file == '' then
-      reveal_file = vim.fn.getcwd()
-    else
-      local f = io.open(reveal_file, 'r')
-      if f then
-        f.close(f)
-      else
-        reveal_file = vim.fn.getcwd()
-      end
-    end
-    require('neo-tree.command').execute({
-      action = 'focus', -- OPTIONAL, this is the default value
-      source = 'filesystem', -- OPTIONAL, this is the default value
-      position = 'float', -- OPTIONAL, this is the default value
-      reveal_file = reveal_file, -- path to file or folder to reveal
-      reveal_force_cwd = true, -- change cwd without asking if needed
-    })
-  end, { desc = 'Open neo-tree at current file or working directory' }),
 }

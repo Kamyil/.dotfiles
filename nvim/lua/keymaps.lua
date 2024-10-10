@@ -1,5 +1,6 @@
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+local helpers = require('helpers')
 
 -- helper for consistent key mapping
 local map = function(keys, func, desc, mode)
@@ -12,8 +13,6 @@ local map = function(keys, func, desc, mode)
     vim.keymap.set(mode, keys, func, { desc = desc })
   end
 end
-
-local helpers = require('helpers')
 
 map('<leader>cp', '<cmd>Legendary<CR>', '[C]ommand [P]alette')
 map('<leader>qq', '<cmd>q!<CR><cmd>Neotree close<CR>', 'Quickly quit (aborting everything in the same time)')
@@ -77,7 +76,8 @@ helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
 
   map('<leader>fh', telescope_builtin.help_tags, '[F]ind [H]elp')
   map('<leader>fk', telescope_builtin.keymaps, '[F]ind [K]eymaps')
-  map('<leader>ft', telescope_builtin.builtin, '[F]ind [S]elect Telescope')
+  map('<leader>fst', telescope_builtin.builtin, '[F]ind [S]elect Telescope')
+  map('<leader>fcs', telescope_builtin.colorscheme, '[F]ind [C]olor[S]chemes')
   map('<leader>fd', telescope_builtin.diagnostics, '[F]ind [D]iagnostics')
   map('<leader>fr', telescope_builtin.resume, '[F]ind [R]esume')
   map('<leader>fl', telescope_builtin.oldfiles, '[F]ind [L]ast files')
@@ -250,9 +250,7 @@ map('K', ":m '<-2<CR>gv=gv", 'Move selected line(s) up', 'v')
 map('<leader>r', '"_dP', 'Replace selection with register content', 'x')
 
 -- SQL client toggle
-map('<leader>sql', function()
-  require('dbee').toggle()
-end, 'Toggle DBee (sql client)')
+map('<leader>sql', '<cmd>DBUIToggle<CR>', '[S][Q][L] (DB) viewer')
 
 -- Open project scratchpad
 map('<leader>ss', function()
@@ -292,7 +290,7 @@ end)
 helpers.on_lazy_plugin_loaded('lazygit', function(lazygit)
   map('<leader>gg', '<cmd>LazyGit<CR>', 'Open Lazygit')
 end)
-
+-- -- Git Conflicts
 map('<leader>gb', '<cmd>BlameToggle window<CR>', '[G]it [Blame]')
 map('<leader>gcc', '<cmd>GitConflictChooseOurs<CR>', '[G]it [C]onflict Choose [C]urrent')
 map('<leader>gci', '<cmd>GitConflictChooseTheirs<CR>', '[G]it [C]onflict Choose [I]ncoming')
@@ -303,3 +301,30 @@ map('<leader>gc[', '<cmd>GitConflictChooseOurs<CR>', '[G]it [Conflict] Previous'
 map('<leader>gc]', '<cmd>GitConflictChooseOurs<CR>', '[G]it [Conflict] Next')
 
 map('<leader>yh', '<cmd>YankBank<CR>', '[Y]ank [H]istory')
+
+-- Git Hunks
+-- Actions
+
+helpers.on_lazy_plugin_loaded('gitsigns', function(gitsigns)
+  map('<leader>ghs', gitsigns.stage_hunk, '[G]it [H]unk [Stage]')
+  map('<leader>ghr', gitsigns.reset_hunk, '[G]it [H]unk [R]eset')
+  map('<leader>ghs', function()
+    gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+  end, '[G]it [H]unk [Stage]', 'v')
+  map('<leader>ghr', function()
+    gitsigns.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+  end, '[G]it [H]unk [R]eset lines', 'v')
+  map('<leader>ghS', gitsigns.stage_buffer, '[G]it [H]unk [S]tage')
+  map('<leader>ghus', gitsigns.undo_stage_hunk, '[G]it [H]unk [U]ndo [Stage]')
+  map('<leader>ghR', gitsigns.reset_buffer, '[G]it [H]unk [R]eset File')
+  map('<leader>ghp', gitsigns.preview_hunk, '[G]it [H]unk [P]review')
+  map('<leader>ghb', function()
+    gitsigns.blame_line({ full = true })
+  end, '[G]it [H]unk [B]lame line')
+  map('<leader>ghtb', gitsigns.toggle_current_line_blame, '[G]it [H]unk [T]oggle [B]lame')
+  map('<leader>ghd', gitsigns.diffthis, '[G]it [H]unk [D]iff these lines')
+  map('<leader>ghD', function()
+    gitsigns.diffthis('~')
+  end, '[G]it [H]unk [D]iff (whole file)')
+  map('<leader>ghtd', gitsigns.toggle_deleted, '[G]it [H]unk [T]oggle [D]eleted')
+end)
