@@ -32,16 +32,8 @@ map('<leader>e', function()
       reveal_file = vim.fn.getcwd()
     end
   end
-
-  -- require('neo-tree.command').execute {
-  --   action = 'focus',
-  --   source = 'filesystem',
-  --   position = 'float',
-  --   reveal_file = reveal_file,
-  --   reveal_force_cwd = true,
-  -- }
-  vim.cmd('Neotree float')
-end, 'Open neo-tree at current file and center the code')
+  vim.cmd('Neotree left')
+end, 'Open neo-tree at current file')
 
 map('<leader>w', '<cmd>w<CR>', 'Save file')
 
@@ -153,7 +145,7 @@ map('<leader>e', function()
   require('neo-tree.command').execute({
     action = 'focus',
     source = 'filesystem',
-    position = 'float',
+    position = 'left',
     reveal_file = reveal_file,
     reveal_force_cwd = true,
   })
