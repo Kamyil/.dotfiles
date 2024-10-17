@@ -27,6 +27,11 @@ vim.opt.smartindent = true
 -- I don't like line wrapping
 vim.opt.wrap = false
 
+-- Set encoding to UTF-8
+vim.o.encoding = 'utf-8'
+vim.o.fileencoding = 'utf-8'
+vim.o.fileencodings = 'utf-8'
+
 -- Don't do swaps of a file, but rather save the state for undotree in order to be able to access file state from ages ago
 vim.opt.swapfile = false
 vim.opt.backup = false
