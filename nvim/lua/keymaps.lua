@@ -17,6 +17,8 @@ end
 map('<leader>cp', '<cmd>Legendary<CR>', '[C]ommand [P]alette')
 map('<leader>qq', '<cmd>q!<CR><cmd>Neotree close<CR>', 'Quickly quit (aborting everything in the same time)')
 
+map('<leader>/', '<cmd>gcc<CR>', 'Comment the line or selection')
+
 -- Open neo-tree at current file or working directory
 map('<leader>e', function()
   -- Helper function to calculate centered neo-tree width
