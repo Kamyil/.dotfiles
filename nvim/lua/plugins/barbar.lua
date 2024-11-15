@@ -23,10 +23,10 @@ return {
       button = '',
       -- Enables / disables diagnostic symbols
       diagnostics = {
-        [vim.diagnostic.severity.ERROR] = { enabled = true, icon = 'ﬀ' },
+        [vim.diagnostic.severity.ERROR] = { enabled = false, icon = 'ﬀ' },
         [vim.diagnostic.severity.WARN] = { enabled = false },
         [vim.diagnostic.severity.INFO] = { enabled = false },
-        [vim.diagnostic.severity.HINT] = { enabled = true },
+        [vim.diagnostic.severity.HINT] = { enabled = false },
       },
       gitsigns = {
         added = { enabled = true, icon = '+' },
@@ -56,17 +56,17 @@ return {
 
       -- Configure the icons on the bufferline based on the visibility of a buffer.
       -- Supports all the base icon options, plus `modified` and `pinned`.
-      alternate = { filetype = { enabled = false } },
+      alternate = { filetype = { enabled = true } },
       current = { buffer_index = true },
       inactive = { button = '×' },
       visible = { modified = { buffer_number = false } },
     },
     -- Set the filetypes which barbar will offset itself for
     sidebar_filetypes = {
-      markdown = {
-        text = 'no-neck-pain',
-        align = 'center', -- *optionally* specify an alignment (either 'left', 'center', or 'right')
-      },
+      -- markdown = {
+      --   text = 'no-neck-pain',
+      --   align = 'center', -- *optionally* specify an alignment (either 'left', 'center', or 'right')
+      -- },
       ---- Use the default values: {event = 'BufWinLeave', text = '', align = 'left'}
       --NvimTree = true,
       ---- Or, specify the text used for the offset:
