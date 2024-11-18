@@ -10,7 +10,7 @@
 - blame - for handy git blame functionality
 - lsp-lines - for best error messages so far. They're not only displaying it under the line with error, but they also stack and also display EXACT place in the line where error occurs. Best plugin so far
 - lsp (Mason) - for installing LSPs and formatters
-- mini - some collections of little enhancements from whole mini.nvim ecosystem. In this case, it gives convinient text-manipulation motions  like better Around/Inside and Surroundings and also adds better Statusline.
+- mini - some collections of little enhancements from whole mini.nvim ecosystem. In this case, it gives convinient text-manipulation motions  like better Around/Inside and Surroundings and also adds better Statusline and autocloses brackets
 - modes - for inline displaying color of your current mode on cursor, instead having to look down to check which mode you're in. It's convenient and visually practical and functional
 - neo-tree - for having convinient and easy-to-use file-tree
 - neogen - for better markdown annotations
