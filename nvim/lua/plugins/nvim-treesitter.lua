@@ -15,8 +15,10 @@ return { -- Highlight, edit, and navigate code
       highlight! typescriptBlock gui=NONE
       highlight! rustConditional gui=NONE
       highlight! zshConditional gui=NONE
-      highlight! link conditional.go Conditional
+
+      highlight! link conditional.javascript Conditional
       highlight! link conditional.typescript Conditional
+      highlight! link conditional.go Conditional
       highlight! link conditional.lua Conditional
     ]])
   end,
@@ -50,6 +52,7 @@ return { -- Highlight, edit, and navigate code
     },
     custom_highlight = {
       -- Override Treesitter highlights
+      ['Conditional'] = { style = 'NONE' },
       ['@keyword.conditional'] = { style = 'NONE' }, -- Disable italics for conditionals
       ['@keyword'] = { style = 'NONE' }, -- Disable italics for all keywords
       ['@function'] = { style = 'NONE' }, -- Disable italics for functions
