@@ -1,6 +1,6 @@
 -- For handling big files
 return {
-  'LunarVim/bigfile.nvim',
-  event = 'BufReadPre',
+  'mireq/large_file',
+  enabled = true,
   opts = {},
 }

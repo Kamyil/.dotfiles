@@ -1,6 +1,8 @@
 -- For better markdown annotations
 return {
   'danymat/neogen',
+
+  enabled = true,
   dependencies = {},
   cmd = 'Neogen',
   opts = {

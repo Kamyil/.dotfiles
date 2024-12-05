@@ -1,12 +1,17 @@
 -- LSP Plugins
 return {
+
   {
     'onsails/lspkind.nvim',
+
+    enabled = true,
   },
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
     -- used for completion, annotations and signatures of Neovim apis
     'folke/lazydev.nvim',
+
+    enabled = true,
     event = 'BufReadPost',
     ft = 'lua',
     opts = {
@@ -16,10 +21,12 @@ return {
       },
     },
   },
-  { 'Bilal2453/luvit-meta', lazy = true },
+  { 'Bilal2453/luvit-meta', enabled = true, lazy = true },
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
+
+    enabled = true,
     event = 'BufReadPost',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
@@ -29,10 +36,12 @@ return {
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim', enabled = true, opts = {} },
 
       -- Allows extra capabilities provided by nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
+
+      enabled = true,
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -193,6 +202,14 @@ return {
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
+            require('lspconfig').smarty_ls.setup({
+              css = {
+                validate = true,
+              },
+              smarty = {
+                pluginDirs = {},
+              },
+            })
           end,
         },
       })

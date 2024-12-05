@@ -1,5 +1,6 @@
 return {
   'epwalsh/obsidian.nvim',
+  enabled = true,
   -- the obsidian vault in this default config  ~/obsidian-vault
   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand':
   -- event = { "bufreadpre " .. vim.fn.expand "~" .. "/my-vault/**.md" },

@@ -1,3 +1,7 @@
+<a href="https://dotfyle.com/plugins/Kamyil/{name}">
+  <img src="https://dotfyle.com/plugins/{owner}/{name}/shield" />
+</a>
+
 ![Showcase](./kamyil_nvim.png "Showcase")
 ![Showcase2](./kamyil_nvim2.png "Showcase2")
 
