@@ -1,5 +1,6 @@
 return { -- Fuzzy Finder (files, lsp, etc)
   'nvim-telescope/telescope.nvim',
+  enabled = true,
   event = 'VimEnter',
   branch = '0.1.x',
   dependencies = {
@@ -89,11 +90,20 @@ return { -- Fuzzy Finder (files, lsp, etc)
       vim.api.nvim_set_hl(0, hl, col)
     end
 
+    -- These are the default values
+    require('file_history').setup({
+      -- This is the location where it will create your file history repository
+      backup_dir = '~/.file-history-git',
+      -- command line to execute git
+      git_cmd = 'git',
+    })
+
     -- Enable Telescope extensions if they are installed
     pcall(require('telescope').load_extension, 'fzf')
     pcall(require('telescope').load_extension, 'ui-select')
     pcall(require('telescope').load_extension('lazy'))
     pcall(require('telescope').load_extension('lazygit'))
+    pcall(require('telescope').load_extension('file_history'))
 
     -- See `:help telescope.builtin`
   end,

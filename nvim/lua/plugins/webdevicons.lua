@@ -1,5 +1,6 @@
 return {
   'nvim-tree/nvim-web-devicons',
+  enabled = false,
   lazy = false,
   ft = '*',
   opts = function()

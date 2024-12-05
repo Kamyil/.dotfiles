@@ -1,6 +1,8 @@
 -- For nice command-palette that comes quite handy when you don't remember how some command was named
 return {
   'mrjones2014/legendary.nvim',
+
+  enabled = true,
   version = 'v2.13.9',
   -- since legendary.nvim handles all your keymaps/commands,
   -- its recommended to load legendary.nvim before other plugins

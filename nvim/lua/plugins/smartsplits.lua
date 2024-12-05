@@ -1,3 +1,3 @@
-return { 'mrjones2014/smart-splits.nvim', lazy = true, opts = {
+return { 'mrjones2014/smart-splits.nvim', enabled = true, lazy = true, opts = {
   ignored_filetypes = { 'NvimTree' },
 } }

@@ -1,5 +1,7 @@
 return {
   'Darazaki/indent-o-matic',
+
+  enabled = true,
   ft = '*',
   opts = {
     -- Number of lines without indentation before giving up (use -1 for infinite)

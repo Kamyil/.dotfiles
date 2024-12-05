@@ -1,5 +1,6 @@
 return {
   'catppuccin/nvim',
+  enabled = true,
   name = 'catppuccin',
   lazy = true,
   priority = 1000,
@@ -54,10 +55,12 @@ return {
       treesitter = true,
       notify = true,
       telescope = false,
-      barbar = true,
+      barbar = false,
       gitsigns = true,
       neotree = true,
       which_key = true,
+      harpoon = true,
+      lualine = true,
 
       mini = {
         enabled = true,

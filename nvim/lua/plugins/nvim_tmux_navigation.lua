@@ -1,1 +1,1 @@
-return { 'alexghergh/nvim-tmux-navigation' }
+return { 'alexghergh/nvim-tmux-navigation', enabled = true }

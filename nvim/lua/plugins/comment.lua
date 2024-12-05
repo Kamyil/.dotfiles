@@ -1,6 +1,7 @@
 -- For smart comments on <leader>/
 return {
   'numToStr/Comment.nvim',
+  enabled = true,
   lazy = true,
   opts = {
     -- add any options here

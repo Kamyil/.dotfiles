@@ -3,6 +3,8 @@ local options = require('options')
 -- For Sidebar file-tree explorer
 return {
   'nvim-neo-tree/neo-tree.nvim',
+
+  enabled = true,
   branch = 'v3.x',
   dependencies = {
     'nvim-lua/plenary.nvim',
@@ -18,6 +20,8 @@ return {
     vim.fn.sign_define('DiagnosticSignHint', { text = '󰌵', texthl = 'DiagnosticSignHint' })
 
     local colors = require('catppuccin.palettes').get_palette()
+    colors.overlay0 = '#6c7086'
+    colors.overlay2 = '#9399b2'
 
     local NeoTreeColor = {
       -- Main Neo-tree window background
@@ -36,8 +40,8 @@ return {
 
       -- Cursor and selected line
       NeoTreeCursorLine = { bg = colors.surface0 }, -- Highlight current line
-      NeoTreeDirectoryName = { fg = colors.blue },
-      NeoTreeDirectoryIcon = { fg = colors.blue },
+      NeoTreeDirectoryName = { fg = colors.overlay2 },
+      NeoTreeDirectoryIcon = { fg = colors.overlay2 },
       NeoTreeRootName = { fg = colors.pink, bold = true },
       NeoTreeGitAdded = { fg = colors.green },
       NeoTreeGitDeleted = { fg = colors.red },
@@ -94,24 +98,25 @@ return {
           expander_highlight = 'NeoTreeExpander',
         },
         icon = {
-          folder_closed = '',
-          folder_open = '',
-          folder_empty = '󰜌',
-          provider = function(icon, node, state) -- default icon provider utilizes nvim-web-devicons if available
-            if node.type == 'file' or node.type == 'terminal' then
-              local success, web_devicons = pcall(require, 'nvim-web-devicons')
-              local name = node.type == 'terminal' and 'terminal' or node.name
-              if success then
-                local devicon, hl = web_devicons.get_icon(name)
-                icon.text = devicon or icon.text
-                icon.highlight = hl or icon.highlight
-              end
-            end
-          end,
-          -- The next two settings are only a fallback, if you use nvim-web-devicons and configure default icons there
-          -- then these will never be used.
-          default = '*',
-          highlight = 'NeoTreeFileIcon',
+          folder_closed = '',
+          folder_open = '',
+          folder_empty = '',
+          folder_empty_open = '',
+        },
+        git_status = {
+          symbols = {
+            -- Change type
+            added = '',
+            deleted = '',
+            modified = '',
+            renamed = '',
+            -- Status type
+            untracked = '',
+            ignored = '',
+            unstaged = '',
+            staged = '',
+            conflict = '',
+          },
         },
         modified = {
           symbol = '[+]',
@@ -121,21 +126,6 @@ return {
           trailing_slash = false,
           use_git_status_colors = true,
           highlight = 'NeoTreeFileName',
-        },
-        git_status = {
-          symbols = {
-            -- Change type
-            added = '', -- added (e.g., "+" symbol)
-            modified = '', -- modified (small circle or pencil icon)
-            deleted = '', -- deleted (trash or "x" icon)
-            renamed = '', -- renamed (arrow symbol)
-            -- Status type
-            untracked = '', -- untracked (question mark)
-            ignored = '', -- ignored (dimmed icon)
-            unstaged = '', -- unstaged (small exclamation mark)
-            staged = '', -- staged (check mark)
-            conflict = '', -- conflict (exclamation or warning symbol)
-          },
         },
         -- If you don't want to use these columns, you can set `enabled = false` for each of them individually
         file_size = {
@@ -155,13 +145,59 @@ return {
           required_width = 110, -- min width of window required to show this column
         },
         symlink_target = {
-          enabled = false,
+          enabled = true,
         },
       },
       -- A list of functions, each representing a global custom command
       -- that will be available in all sources (if not overridden in `opts[source_name].commands`)
       -- see `:h neo-tree-custom-commands-global`
-      commands = {},
+      commands = {
+        show_diff = function(state)
+          -- some variables. use any if you want
+          local node = state.tree:get_node()
+          -- local abs_path = node.path
+          -- local rel_path = vim.fn.fnamemodify(abs_path, ":~:.")
+          -- local file_name = node.name
+          local is_file = node.type == 'file'
+          if not is_file then
+            vim.notify('Diff only for files', vim.log.levels.ERROR)
+            return
+          end
+          -- open file
+          local cc = require('neo-tree.sources.common.commands')
+          cc.open(state, function()
+            -- do nothing for dirs
+          end)
+
+          -- I recommend using one of below to show the diffs
+
+          -- Raw vim
+          -- git show ...: change arg as you want
+          -- @: current file vs git head
+          -- @^: current file vs previous commit
+          -- @^^^^: current file vs 4 commits before head and so on...
+          vim.cmd([[
+      !git show @^:% > /tmp/%
+      vert diffs /tmp/%
+      ]])
+
+          -- Fugitive
+          vim.cmd([[Gdiffsplit]]) -- or
+          vim.cmd([[Ghdiffsplit]]) -- or
+          vim.cmd([[Gvdiffsplit]])
+
+          -- diffview.nvim
+          vim.cmd([[DiffviewOpen -- %]])
+        end,
+      },
+      source_selector = {
+        winbar = true,
+        sources = {
+          { source = 'filesystem', display_name = '   Files ' },
+          { source = 'buffers', display_name = '   Bufs ' },
+          { source = 'git_status', display_name = '   Git ' },
+        },
+      },
       window = {
         position = 'left',
         window = 200,
@@ -332,6 +368,7 @@ return {
             ['gc'] = 'git_commit',
             ['gp'] = 'git_push',
             ['gg'] = 'git_commit_and_push',
+            ['d'] = 'git_diff',
             ['o'] = { 'show_help', nowait = false, config = { title = 'Order by', prefix_key = 'o' } },
             ['oc'] = { 'order_by_created', nowait = false },
             ['od'] = { 'order_by_diagnostics', nowait = false },

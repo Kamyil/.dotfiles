@@ -1,6 +1,7 @@
 -- For Yank (copy) history. Kinda like clipboard history but for yanks (copies)
 return {
   'ptdewey/yankbank-nvim',
+  enabled = false,
   dependencies = 'kkharji/sqlite.lua',
   lazy = false,
   config = function()

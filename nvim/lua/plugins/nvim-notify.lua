@@ -2,6 +2,8 @@
 -- but since default notifications are blocking, I need some way to make notifications non-blocking current editing
 return {
   'rcarriga/nvim-notify',
+
+  enabled = true,
   lazy = true,
   keys = {
     {

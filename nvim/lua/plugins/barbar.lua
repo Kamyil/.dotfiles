@@ -1,6 +1,7 @@
 -- For having tabs
 return {
   'romgrk/barbar.nvim',
+  enabled = true,
   dependencies = {
     'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
     'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
@@ -23,7 +24,7 @@ return {
       button = '',
       -- Enables / disables diagnostic symbols
       diagnostics = {
-        [vim.diagnostic.severity.ERROR] = { enabled = false, icon = 'ﬀ' },
+        [vim.diagnostic.severity.ERROR] = { enabled = true, icon = 'ﬀ' },
         [vim.diagnostic.severity.WARN] = { enabled = false },
         [vim.diagnostic.severity.INFO] = { enabled = false },
         [vim.diagnostic.severity.HINT] = { enabled = false },
@@ -41,7 +42,7 @@ return {
         -- Requires `nvim-web-devicons` if `true`
         enabled = true,
       },
-      separator = { left = '▎', right = '' },
+      separator = { left = ' ▎', right = '' },
 
       -- If true, add an additional separator at the end of the buffer list
       separator_at_end = true,
@@ -61,6 +62,7 @@ return {
       inactive = { button = '×' },
       visible = { modified = { buffer_number = false } },
     },
+    no_name_title = nil,
     -- Set the filetypes which barbar will offset itself for
     sidebar_filetypes = {
       -- markdown = {

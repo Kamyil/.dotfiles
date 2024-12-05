@@ -1,1 +1,1 @@
-return { 'rose-pine/neovim', name = 'rose-pine' }
+return { 'rose-pine/neovim', enabled = true, name = 'rose-pine' }
