@@ -1,6 +1,6 @@
 return { -- Useful plugin to show you pending keybinds.
   'folke/which-key.nvim',
-  enabled = false,
+  enabled = true,
   event = 'VimEnter', -- Sets the loading event to 'VimEnter'
   setup = {
     triggers_blacklist = {
