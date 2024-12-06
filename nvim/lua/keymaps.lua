@@ -253,6 +253,9 @@ map('<leader>ss', function()
   vim.cmd('edit ' .. scratchpad_path)
 end, 'Open project scratchpad')
 
+-- Go to the scratchpad buffer by name
+vim.api.nvim_set_keymap('n', '<A-s>', ':BufferGoto ' .. vim.fn.bufnr('scratchpad.md') .. '<CR>', { noremap = true, silent = true })
+
 helpers.on_lazy_plugin_loaded('smart-splits', function(smart_splits)
   -- Splitting windows
   map('|', '<cmd>vsplit<CR>', 'Vertical Split')

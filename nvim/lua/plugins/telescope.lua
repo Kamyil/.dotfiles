@@ -105,6 +105,14 @@ return { -- Fuzzy Finder (files, lsp, etc)
     pcall(require('telescope').load_extension('lazygit'))
     pcall(require('telescope').load_extension('file_history'))
 
+    -- Auto center on entering live_grep results
+    vim.cmd([[
+      augroup TelescopeAutoCenter
+        autocmd!
+        autocmd User TelescopePreviewerLoaded lua vim.cmd('normal! zz')
+      augroup END
+    ]])
+
     -- See `:help telescope.builtin`
   end,
 }

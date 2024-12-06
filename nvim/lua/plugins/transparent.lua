@@ -1,7 +1,6 @@
 return {
   'xiyaowong/transparent.nvim',
-
-  enabled = false,
+  enabled = true,
   opts = {
     groups = {
       'Normal',
