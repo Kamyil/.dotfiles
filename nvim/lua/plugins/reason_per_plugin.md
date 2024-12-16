@@ -18,7 +18,7 @@
 - nvim-treesitter - for syntax highlighting and understanding the syntax allowing to do some text-object manipulations
 - nvim_tmux_navigation - for easy movement between neovim and tmux panes using simple Ctrl + hjkl. So basically you can now consistently move between neo-tree <-> neovim splits <-> tmux using same intuitive shortcuts
 - obsidian - for Obsidian integration, making possible to ditch Electron-based GUI app in favor of note-taking in Neovim completely
-- render-markdown - for inline rendering Markdown like in Obsidian, so thanks to it you don't have to rely on external Markdown preview rendereds 
+- markview - for inline rendering Markdown like in Obsidian, so thanks to it you don't have to rely on external Markdown preview rendereds 
 - smartsplits - for having ability so split and conviniently move between those splits by using Ctrl + hjkl
 - telescope - **CORE** plugin. Adds searcher for searching through files, contents and others
 - todo-comments - for inline highlighting TODO/FIXME/WARNING/BUG etc. comments which gives little nice and pleasing visual indicator marking there is such thing. Without it it would be easy to miss such comment
