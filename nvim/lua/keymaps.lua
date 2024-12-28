@@ -20,6 +20,7 @@ map('<leader>qq', '<cmd>q!<CR><cmd>Neotree close<CR>', 'Quickly quit (aborting e
 map('<leader>/', '<cmd>gcc<CR>', 'Comment the line or selection')
 
 -- Open neo-tree at current file or working directory
+-- INFO: Replace with yazi plugin
 map('<leader>e', function()
   -- Helper function to calculate centered neo-tree width
   local reveal_file = vim.fn.expand('%:p')
@@ -128,30 +129,6 @@ map('<leader>lr', vim.lsp.buf.rename, '[L]SP [R]ename')
 map('<leader>la', vim.lsp.buf.code_action, '[L]SP [A]ction', { 'n', 'x' })
 
 -- Continue with your other mappings...
-
--- Open neo-tree at current file or working directory
-map('<leader>e', function()
-  local reveal_file = vim.fn.expand('%:p')
-
-  if reveal_file == '' then
-    reveal_file = vim.fn.getcwd()
-  else
-    local f = io.open(reveal_file, 'r')
-    if f then
-      f:close()
-    else
-      reveal_file = vim.fn.getcwd()
-    end
-  end
-
-  require('neo-tree.command').execute({
-    action = 'focus',
-    source = 'filesystem',
-    position = 'left',
-    reveal_file = reveal_file,
-    reveal_force_cwd = true,
-  })
-end, 'Open neo-tree at current file or working directory')
 
 -- Clear highlights on search
 map('<Esc>', '<cmd>nohlsearch<CR>', 'Clear highlights on search')
@@ -326,9 +303,11 @@ helpers.on_lazy_plugin_loaded('gitsigns', function(gitsigns)
   map('<leader>ghtd', gitsigns.toggle_deleted, '[G]it [H]unk [T]oggle [D]eleted')
 end)
 
-helpers.on_lazy_plugin_loaded('buffer_manager.ui', function(bmui)
-  map('<leader>p', bmui.toggle_quick_menu)
-end)
+map('<leader>p', function()
+  local padding_width = math.floor((vim.o.columns - vim.bo.textwidth) / 2 - 1)
+  vim.cmd('topleft ' .. padding_width .. 'vsplit _padding_')
+  vim.cmd('wincmd p')
+end, 'Center the code by adding [p]adding')
 
 -- -- Harpoon
 -- --

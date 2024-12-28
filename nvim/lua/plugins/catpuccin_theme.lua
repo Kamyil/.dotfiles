@@ -1,6 +1,6 @@
 return {
   'catppuccin/nvim',
-  enabled = true,
+  enabled = false,
   name = 'catppuccin',
   lazy = true,
   priority = 1000,
@@ -52,6 +52,8 @@ return {
     default_integrations = false,
     integrations = {
       cmp = true,
+      blink = true,
+      yazi = true,
       treesitter = true,
       notify = true,
       telescope = false,

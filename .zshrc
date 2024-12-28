@@ -2,9 +2,9 @@ source "$HOME/.zsh_config_aliases"
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-# fi
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 plugins=(git golang symfony node docker git-prompt history kitty macos npm nvm postgres rust ssh tmux vi-mode alias-finder git-extras safe-paste zsh-interactive-cd)
 # Path to your Oh My Zsh installation.
@@ -104,7 +104,7 @@ zstyle ':completion:*:*:docker-*:*' option-stacking yes
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='mvim'
+  export EDITOR='nvim'
 fi
 
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -171,6 +171,10 @@ setopt hist_verify
 # completion using arrow keys (based on history)
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
+
+weather() {
+  curl "wttr.in/$1"
+}
 
 # (fuzzly) Search directory (and `cd` into it)
 sd() {
@@ -292,7 +296,7 @@ alias x="exit"
 alias q="exit"
 alias lg="lazygit"
 alias ldk="lazydocker"
-alias lsql="~/lazysql_Darwin_arm64/lazysql"
+# alias lsql="~/lazysql_Darwin_arm64/lazysql"
 alias ls="lsd"
 alias finder="open"
 alias grep="grep --color=auto"
@@ -312,6 +316,8 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 source /Users/kamil/.config/broot/launcher/bash/br
+# turn fzf git on
+source /Users/kamil/.dotfiles/config/scripts/fzf-git.sh
 export BAT_THEME="Catppuccin Mocha"
 
 

@@ -2,7 +2,7 @@ return {
   -- Autocompletion
   'hrsh7th/nvim-cmp',
 
-  enabled = true,
+  enabled = false,
   event = 'InsertEnter',
   dependencies = {
     -- Snippet Engine & its associated nvim-cmp source
@@ -10,7 +10,7 @@ return {
     'saadparwaiz1/cmp_luasnip',
 
     -- Adds LSP completion capabilities
-    'hrsh7th/cmp-nvim-lsp',
+    -- 'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-path',
 
     -- Adds a number of user-friendly snippets
@@ -93,10 +93,10 @@ return {
           end
         end, { 'i', 's' }),
       }),
-      window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-      },
+      -- window = {
+      --   completion = cmp.config.window.bordered(),
+      --   documentation = cmp.config.window.bordered(),
+      -- },
       sources = {
         { name = 'copilot' },
         { name = 'nvim_lsp' },
