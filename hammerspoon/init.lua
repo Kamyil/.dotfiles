@@ -15,9 +15,17 @@ hs.hotkey.bind(hs_prefix_key, "S", draw_on_screen.stopDrawing)
 hs.hotkey.bind({ "cmd" }, "1", function()
 	hs.application.launchOrFocus("Zen Browser")
 end)
+-- INFO: Toggle it when needing to do an Resource Override [unfortunetly it's unstable on Zen :( ]
+-- hs.hotkey.bind({ "cmd" }, "1", function()
+-- 	hs.application.launchOrFocus("Brave Browser")
+-- end)
 hs.hotkey.bind({ "cmd" }, "2", function()
 	hs.application.launchOrFocus("WezTerm")
 end)
+-- INFO: Maybe some day
+-- hs.hotkey.bind({ "cmd" }, "2", function()
+-- 	hs.application.launchOrFocus("Ghostty")
+-- end)
 hs.hotkey.bind({ "cmd" }, "3", function()
 	hs.application.launchOrFocus("Slack")
 end)
@@ -30,7 +38,7 @@ end)
 -- TODO: Fill 6 with something useful
 -- TODO: Fill 7 with something useful
 -- TODO: Fill 8 with something useful
--- TODO: Fill 9 with something useful
+-- TODO: Fill 6 with something useful
 hs.hotkey.bind({ "cmd" }, "9", function()
 	hs.application.launchOrFocus("KeePassX")
 end)
