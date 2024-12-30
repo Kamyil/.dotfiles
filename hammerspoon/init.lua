@@ -46,6 +46,9 @@ hs.hotkey.bind({ "cmd" }, "0", function()
 	hs.application.launchOrFocus("ChatGPT")
 end)
 
+hs.hotkey.bind(hs_prefix_key, ",", window_management.moveToLeftDisplay)
+hs.hotkey.bind(hs_prefix_key, ".", window_management.moveToRightDisplay)
+
 -- [[
 -- -- Window Management
 -- ]]

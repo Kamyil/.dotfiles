@@ -45,4 +45,38 @@ M.bigger = function()
 	})
 end
 
+-- Move window to the left display
+M.moveToLeftDisplay = function()
+	local focusedWindow = hs.window.focusedWindow()
+	if not focusedWindow then
+		return
+	end
+
+	local screen = focusedWindow:screen()
+	local targetScreen = screen:toWest()
+
+	if targetScreen then
+		focusedWindow:moveToScreen(targetScreen, true, true)
+	else
+		hs.alert.show("No display to the left")
+	end
+end
+
+-- Move window to the right display
+M.moveToRightDisplay = function()
+	local focusedWindow = hs.window.focusedWindow()
+	if not focusedWindow then
+		return
+	end
+
+	local screen = focusedWindow:screen()
+	local targetScreen = screen:toEast()
+
+	if targetScreen then
+		focusedWindow:moveToScreen(targetScreen, true, true)
+	else
+		hs.alert.show("No display to the right")
+	end
+end
+
 return M
