@@ -1,6 +1,6 @@
 local wezterm = require("wezterm")
 
-local function is_vim(pane)
+local function pane_has_nvim(pane)
 	-- this is set by the plugin, and unset on ExitPre in Neovim
 	return pane:get_user_vars().IS_NVIM == "true"
 end
@@ -22,7 +22,7 @@ local function split_nav(resize_or_move, key)
 		key = key,
 		mods = resize_or_move == "resize" and "META" or "CTRL",
 		action = wezterm.action_callback(function(win, pane)
-			if is_vim(pane) then
+			if pane_has_nvim(pane) then
 				-- pass the keys through to vim/nvim
 				win:perform_action({
 					SendKey = { key = key, mods = resize_or_move == "resize" and "META" or "CTRL" },

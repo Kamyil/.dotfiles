@@ -14,10 +14,9 @@ local nvim_split_navigator = require("./nvim_split_navigator")
 -- General settings
 -- config.enable_tab_bar = false -- Disable tabs
 config.front_end = "WebGpu" -- Use WebGPU for rendering
-config.dpi = 144.0
+-- config.dpi = 144.0
 config.freetype_load_flags = "NO_HINTING"
 config.harfbuzz_features = { "calt=0", "clig=0", "liga=0" }
-config.skip_close_confirmation_for_processes_named = { "zsh", "bash", "fish" }
 config.audible_bell = "Disabled"
 
 -- Font settings
@@ -35,9 +34,10 @@ config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Regula
 -- config.font = wezterm.font("ZedMono Nerd Font")
 
 config.font_size = 12
+config.default_cursor_style = "BlinkingBar"
 config.automatically_reload_config = true -- Reload the config automatically when modified
 config.enable_kitty_graphics = true -- Enable support for Kitty graphics protocol
-config.window_close_confirmation = "NeverPrompt" -- Skip confirmation on close
+config.window_close_confirmation = "AlwaysPrompt" -- Since WezTerm workspaces do not have tmux-like living sessions in the background, we need to make our ass safe from exiting
 config.custom_block_glyphs = true -- Improve rendering of block glyphs
 config.animation_fps = 120 -- Increase frame rate for smoother animations
 config.max_fps = 120 -- Match your display's refresh rate to save resources
@@ -52,26 +52,27 @@ config.adjust_window_size_when_changing_font_size = false
 -- On Mac itself:
 -- config.cell_width = 1.00
 
-config.line_height = 1.0
+config.line_height = 1.10
 -- To disable ligatures, use:
 -- config.harfbuzz_features = { "liga=0" }
 
 -- Window decorations
-config.window_decorations = "NONE | RESIZE" -- Minimal decorations (no title bar)
+config.window_decorations = "RESIZE" -- Minimal decorations (no title bar)
 
 -- Background opacity and blur
--- config.macos_window_background_blur = 100 -- Blur on macOS
+-- config.window_background_opacity = 0.1
+-- config.macos_window_background_blur = 0 -- Blur on macOS
 config.scrollback_lines = 10000 -- Increase scrollback buffer (default is 3500)
 config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" } -- Enable ligatures
 config.enable_wayland = false -- (Mac doesn’t use Wayland but avoids auto checks)
 
 -- Window padding
--- config.window_padding = {
--- 	left = "3cell",
--- 	right = "3cell",
--- 	top = "1cell",
--- 	bottom = "1cell",
--- }
+config.window_padding = {
+	-- 	left = "3cell",
+	-- 	right = "3cell",
+	-- 	top = "1cell",
+	bottom = "0",
+}
 
 -- Color scheme
 config.color_scheme = "Kanagawa (Gogh)" -- Set the Kanagawa color scheme
@@ -104,6 +105,7 @@ config.colors = {
 		active_tab = {
 			-- The color of the background area for the tab
 			bg_color = "transparent",
+			-- bg_color = "#000000",
 			-- The color of the text for the tab
 			-- fg_color = "#000000",
 			fg_color = "#E6C384",
@@ -170,9 +172,9 @@ config.colors = {
 }
 
 -- Environment variables
-config.set_environment_variables = {
-	TERM = "xterm-256color", -- Set TERM environment variable
-}
+-- config.set_environment_variables = {
+-- 	TERM = "xterm-256color", -- Set TERM environment variable
+-- }
 
 -- Mouse bindings
 config.mouse_bindings = {
@@ -233,15 +235,15 @@ config.background = {
 		},
 	},
 	-- Darken layer to make text more contrast
-	{
-		source = {
-			Color = "#16161D",
-			-- Color = "#E6C384",
-		},
-		width = "100%",
-		height = "100%",
-		opacity = 0.01,
-	},
+	-- {
+	-- 	source = {
+	-- 		Color = "#16161D",
+	-- 		-- Color = "#E6C384",
+	-- 	},
+	-- 	width = "100%",
+	-- 	height = "100%",
+	-- 	opacity = 0.01,
+	-- },
 }
 
 -- Merge my_own_tmux keys into config keys

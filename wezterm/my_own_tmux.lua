@@ -4,10 +4,12 @@ local my_own_tmux = {
 	-- Keybindings
 	keys = {
 		-- Create a tab
-		{ key = "t", mods = "CTRL", action = wezterm.action({ SpawnTab = "CurrentPaneDomain" }) },
+		{ key = "n", mods = "CTRL", action = wezterm.action({ SpawnTab = "CurrentPaneDomain" }) },
+		-- { key = "t", mods = "CTRL", action = wezterm.action({ SpawnTab = "CurrentPaneDomain" }) },
 
 		-- Close the tab
 		{ key = "w", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = true } }) },
+		{ key = "c", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = true } }) },
 		{
 			mods = "CTRL",
 			key = "z",
@@ -99,7 +101,7 @@ local my_own_tmux = {
 			action = wezterm.action.EmitEvent("toggle_second_brain"),
 		},
 
-		{ key = "d", mods = "CTRL", action = wezterm.action.ShowDebugOverlay },
+		{ key = "i", mods = "CTRL", action = wezterm.action.ShowDebugOverlay },
 	},
 
 	-- 1-Based Indexing
