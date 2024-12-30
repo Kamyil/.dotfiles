@@ -1,6 +1,5 @@
 return {
   'Darazaki/indent-o-matic',
-
   enabled = true,
   ft = '*',
   opts = {

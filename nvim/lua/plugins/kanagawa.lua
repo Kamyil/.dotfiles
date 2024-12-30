@@ -1,6 +1,6 @@
 return {
   'rebelot/kanagawa.nvim',
-  enabled = true,
+  enabled = false,
   init = function()
     -- Load the colorscheme here.
     -- Like many other themes, this one has different styles, and you could load
@@ -14,7 +14,7 @@ return {
     vim.cmd('highlight TelescopeTitle guibg=none')
   end,
   setup = {
-    transparent = false, -- do not set background color
+    transparent = true, -- do not set background color
     theme = 'wave', -- Load "wave" theme when 'background' option is not set
     undercurl = true, -- enable undercurls
     commentStyle = { italic = false },
@@ -30,7 +30,6 @@ return {
       end
 
       return {
-
         -- Completion (cmp)
         Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 }, -- add `blend = vim.o.pumblend` to enable transparency
         PmenuSel = { fg = 'NONE', bg = theme.ui.bg_p2 },

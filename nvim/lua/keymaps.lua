@@ -38,6 +38,8 @@ map('<leader>e', function()
   vim.cmd('Neotree left')
 end, 'Open neo-tree at current file')
 
+map('<leader>E', '<cmd>Yazi<cr>', 'Open Yazi in current directory')
+
 map('<leader>w', '<cmd>w<CR>', 'Save file')
 
 -- Attempt to load Telescope
