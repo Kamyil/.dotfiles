@@ -1,106 +1,14 @@
-source "$HOME/.zsh_config_aliases"
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+eval "$(starship init zsh)"
 
-plugins=(git golang symfony node docker git-prompt history kitty macos npm nvm postgres rust ssh tmux vi-mode alias-finder git-extras safe-paste zsh-interactive-cd)
-# Path to your Oh My Zsh installation.
-#
-export ZSH=$HOME/.oh-my-zsh
+source "$HOME/.zsh_config_aliases"
+
+# export ZSH=$HOME/.oh-my-zsh
 export WEZTERM_CONFIG_FILE=$HOME/.config/wezterm/init.lua
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
-
-
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time Oh My Zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# Cool ones so far
-# ZSH_THEME="dst"
-# ZSH_THEME="muse"
-source ~/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme 
-ZSH_THEME=”powerlevel10k.powerlevel10k”
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-#ln -s ~/.dotfiles/nvim  Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-
-
-zstyle ':completion:*:*:docker:*' option-stacking yes
-zstyle ':completion:*:*:docker-*:*' option-stacking yes
-
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
 # Preferred editor for local and remote sessions
+#
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
@@ -115,6 +23,11 @@ export XDG_CONFIG_HOME="$HOME/.config"
 
 
 # set the Catppuccin theme for `fzf` command
+#
+# --color=bg:-1,bg:-1,spinner:#f5e0dc,hl:#f5c2e7 \
+# --color=fg:-1,bg:-1,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+# --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f5c2e7 \
+#
 export FZF_DEFAULT_OPTS=" \
 --multi \
 --height=50% \
@@ -125,11 +38,13 @@ export FZF_DEFAULT_OPTS=" \
 --prompt='$>' \
 --pointer='→' \
 --marker='♡' \
+
+ --color=bg:-1,bg:-1,spinner:#f5e0dc,hl:#7AA89F \
+ --color=fg:-1,bg:-1,header:#DCD7BA,info:#7AA89F,pointer:#f5e0dc \
+ --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#7AA89F,hl+:#7AA89F \
+
 --header='CTRL-c or ESC to quit' \
 --preview 'bat --style=numbers --color=always --line-range :500 {}' \
---color=bg:-1,bg:-1,spinner:#f5e0dc,hl:#f5c2e7 \
---color=fg:-1,bg:-1,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
---color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f5c2e7 \
 --height 70% --layout reverse --border top" 
 # display hidden files, and exclude the '.git' directory.
 export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
@@ -154,11 +69,11 @@ HAS_WIDECHARS="false"
 
 
 # COWPATH="$COWPATH:$HOME/.cowsay/cowfiles"
-COWPATH="$COWPATH:$HOME/.cowsay/cowfiles"
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
+# COWPATH="$COWPATH:$HOME/.cowsay/cowfiles"
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+#
 # History related changes
 HISTFILE=$HOME/.zhistory
 SAVEHIST=1000
@@ -173,7 +88,7 @@ bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 
 weather() {
-  curl "wttr.in/$1"
+  curl "wttr.in/$1?lang=pl"
 }
 
 # (fuzzly) Search directory (and `cd` into it)
@@ -231,7 +146,7 @@ config() {
 }
 
 # Fuzzly search websites via alias and open them in default browser
-browser() {
+work_sites() {
   # Load the aliases from the file
   source "$HOME/.zsh_company_websites"
 
@@ -260,7 +175,7 @@ switch_branch() {
   fi
 }
 
-his() {
+hisf() {
   local commands_history_entries=$(history | sed 's/.[ ]*.[0-9]*.[ ]*//' | uniq)
   local selected_command_from_history=$(printf '%s\n' "${commands_history_entries[@]}" | fzf)
 
@@ -270,9 +185,6 @@ his() {
   fi
 }
 
-gs() {
-  git stash list | fzf
-}
 
 killf() {
   ps aux | fzf --preview="" --prompt="Select process to kill: " | awk '{print $2}' | xargs -r kill -9
@@ -284,6 +196,11 @@ color_palette() {
 
 sb() {
   cd ~/second-brain/ && nvim .
+}
+
+copy_to_clipboard() {
+  # $1 meaning path to the file
+ pbcopy < $1
 }
 
 # Other aliases
@@ -327,15 +244,6 @@ export BAT_THEME="Catppuccin Mocha"
 # Set up fzf key bindings and fuzzy completion
 eval "$(fzf --zsh)"
 
-# Setup "fuck" alias
-eval $(thefuck --alias)
-
-# Some python stuff
-PATH=$(pyenv root)/shims:$PATH
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-
 ZVM_VI_HIGHLIGHT_BACKGROUND=#A33FC4         # Hex value
 ZVM_LINE_INIT_MODE=$ZVM_MODE_NORMAL
 
@@ -348,78 +256,3 @@ export KEYTIMEOUT=1
 export VI_MODE_SET_CURSOR=true
 ## Init
 setopt PROMPT_SUBST
-
-source $ZSH/oh-my-zsh.sh
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-###-begin-npm-completion-###
-#
-# npm command completion script
-#
-# Installation: npm completion >> ~/.bashrc  (or ~/.zshrc)
-# Or, maybe: npm completion > /usr/local/etc/bash_completion.d/npm
-#
-
-if type complete &>/dev/null; then
-  _npm_completion () {
-    local words cword
-    if type _get_comp_words_by_ref &>/dev/null; then
-      _get_comp_words_by_ref -n = -n @ -n : -w words -i cword
-    else
-      cword="$COMP_CWORD"
-      words=("${COMP_WORDS[@]}")
-    fi
-
-    local si="$IFS"
-    if ! IFS=$'\n' COMPREPLY=($(COMP_CWORD="$cword" \
-                           COMP_LINE="$COMP_LINE" \
-                           COMP_POINT="$COMP_POINT" \
-                           npm completion -- "${words[@]}" \
-                           2>/dev/null)); then
-      local ret=$?
-      IFS="$si"
-      return $ret
-    fi
-    IFS="$si"
-    if type __ltrim_colon_completions &>/dev/null; then
-      __ltrim_colon_completions "${words[cword]}"
-    fi
-  }
-  complete -o default -F _npm_completion npm
-elif type compdef &>/dev/null; then
-  _npm_completion() {
-    local si=$IFS
-    compadd -- $(COMP_CWORD=$((CURRENT-1)) \
-                 COMP_LINE=$BUFFER \
-                 COMP_POINT=0 \
-                 npm completion -- "${words[@]}" \
-                 2>/dev/null)
-    IFS=$si
-  }
-  compdef _npm_completion npm
-elif type compctl &>/dev/null; then
-  _npm_completion () {
-    local cword line point words si
-    read -Ac words
-    read -cn cword
-    let cword-=1
-    read -l line
-    read -ln point
-    si="$IFS"
-    if ! IFS=$'\n' reply=($(COMP_CWORD="$cword" \
-                       COMP_LINE="$line" \
-                       COMP_POINT="$point" \
-                       npm completion -- "${words[@]}" \
-                       2>/dev/null)); then
-
-      local ret=$?
-      IFS="$si"
-      return $ret
-    fi
-    IFS="$si"
-  }
-  compctl -K _npm_completion npm
-fi
-###-end-npm-completion-###
