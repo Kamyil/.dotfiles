@@ -76,6 +76,7 @@ config.window_padding = {
 
 -- Color scheme
 config.color_scheme = "Kanagawa (Gogh)" -- Set the Kanagawa color scheme
+-- config.color_scheme = "Kanagawa Dragon (Gogh)" -- TODO: Check this one when it comes out to stable build
 -- config.color_scheme = "catppuccin-mocha"
 -- config.color_scheme = "Catppuccin Mocha (Gogh)"
 --
