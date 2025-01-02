@@ -9,7 +9,7 @@ local my_own_tmux = {
 
 		-- Close the tab
 		{ key = "w", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = true } }) },
-		{ key = "c", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = true } }) },
+		{ key = "x", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = true } }) },
 		{
 			mods = "CTRL",
 			key = "z",
