@@ -30,6 +30,20 @@ return {
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
+      -- cmdline = function()
+      --   local type = vim.fn.cetcmdtype()
+      --   -- Search forward and backwars
+      --   if type == '/' or type == '?' then
+      --     return { 'buffer' }
+      --   end
+      --
+      --   -- Commands
+      --   if type == ':' then
+      --     return { 'cmdline' }
+      --   end
+      --
+      --   return {}
+      -- end,
       -- snippets = {
       --   expand = function(snippet, _)
       --     return LazyVim.cmp.expand(snippet)
