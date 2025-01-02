@@ -70,9 +70,9 @@ HAS_WIDECHARS="false"
 
 # COWPATH="$COWPATH:$HOME/.cowsay/cowfiles"
 # COWPATH="$COWPATH:$HOME/.cowsay/cowfiles"
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 #
 # History related changes
 HISTFILE=$HOME/.zhistory
@@ -142,6 +142,22 @@ config() {
   # If a key is selected, evaluate and run the associated command (the value from the key-value pair)
   if [[ -n $selected_key ]]; then
     eval "${CONFIG_ALIASES[$selected_key]}"
+  fi
+}
+
+db() {
+  # Load the db urls and their picker aliases from the file
+  source "$HOME/.zsh_db_configs"
+
+  # Get the key names from the array (only keys for selection)
+  local config_keys=("${(k)DB_CONFIGS[@]}")
+
+  # Use fzf to select a config alias key
+  local selected_key=$(printf '%s\n' "${config_keys[@]}" | fzf)
+
+  # If a key is selected, evaluate and run the associated command (the value from the key-value pair)
+  if [[ -n $selected_key ]]; then
+    eval "${DB_CONFIGS[$selected_key]}"
   fi
 }
 
@@ -226,6 +242,7 @@ alias json="fx"
 alias doom="~/.config/emacs/bin/doom"
 alias chsh="~/.local/scripts/tmux-cht/tmux-cht.sh"
 alias private_gitignore="nvim .git/info/exclude"
+alias git_log="serie"
 
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
@@ -256,3 +273,10 @@ export KEYTIMEOUT=1
 export VI_MODE_SET_CURSOR=true
 ## Init
 setopt PROMPT_SUBST
+
+# bun completions
+[ -s "/Users/kamil/.bun/_bun" ] && source "/Users/kamil/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
