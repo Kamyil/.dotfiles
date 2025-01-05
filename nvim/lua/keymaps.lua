@@ -35,12 +35,16 @@ map('<leader>e', function()
       reveal_file = vim.fn.getcwd()
     end
   end
-  vim.cmd('Neotree left')
+  vim.cmd('Neotree reveal_file=%')
 end, 'Open neo-tree at current file')
 
 map('<leader>E', '<cmd>Yazi<cr>', 'Open Yazi in current directory')
 
 map('<leader>w', '<cmd>w<CR>', 'Save file')
+
+-- INFO: Solve issues reported by LSP with help of folke/trouble.nvim plugin
+map('<leader>dd', '<cmd>Trouble diagnostics toggle<cr>', 'Toggle LSP diagnostics (via trouble)')
+map('<leader>dq', '<cmd>Trouble qflist toggle<cr>', 'Move diagnostics to quickfix list')
 
 -- Attempt to load Telescope
 helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
