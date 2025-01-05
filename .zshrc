@@ -219,6 +219,10 @@ copy_to_clipboard() {
  pbcopy < $1
 }
 
+macos_set_proper_key_repeat() {
+   defaults write -g KeyRepeat -int 1 && defaults write -g InitialKeyRepeat -int 10
+}
+
 # Other aliases
 alias n="nvim ."
 alias y="yazi ."
