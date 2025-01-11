@@ -11,9 +11,9 @@ return {
     vim.cmd.colorscheme('kanagawa-paper')
 
     -- You can configure highlights by doing something like:
-    vim.cmd.hi('Comment gui=none')
+    -- vim.cmd.hi('Comment gui=none')
 
-    vim.cmd('highlight TelescopeBorder guibg=none')
-    vim.cmd('highlight TelescopeTitle guibg=none')
+    -- vim.cmd('highlight TelescopeBorder guibg=none')
+    -- vim.cmd('highlight TelescopeTitle guibg=none')
   end,
 }
