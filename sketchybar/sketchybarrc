@@ -45,13 +45,13 @@ sketchybar --bar height=37        \
 # label.font="Liga SFMono Nerd Font:Regular:13.0" \
                      
 
-sketchybar --default icon.font="JetBrainsMonoNL Nerd Font Propo:Bold Italic:11.0"  \
+sketchybar --default icon.font="JetBrainsMonoNL Nerd Font Propo:Bold:10.0"  \
                      icon.color=$WHITE                    \
-                     label.font="JetBrainsMonoNL Nerd Font Propo:Bold Italic:11.0" \
+                     label.font="JetBrainsMonoNL Nerd Font Propo:Bold:10.0" \
                      label.color=$WHITE                   \
                      background.color=$ITEM_BG_COLOR      \
                      background.corner_radius=5           \
-                     background.height=20                 \
+                     background.height=24                 \
                      padding_left=5                       \
                      padding_right=5                      \
                      label.padding_left=5                \
@@ -105,15 +105,15 @@ sketchybar --add item tmux.attached left \
 # https://felixkratz.github.io/SketchyBar/config/events
 #
 # Add music event
-sketchybar -m --add event song_update com.apple.iTunes.playerInfo
+# sketchybar -m --add event song_update com.apple.iTunes.playerInfo
 
 # Add Music Item
-sketchybar -m --add item music right                         \
-    --set music script="~/.config/sketchybar/scripts/music.sh"  \
-    click_script="~/.config/sketchybar/scripts/music_click.sh"  \
-    label.padding_right=10                                   \
-    drawing=off                                              \
-    --subscribe music song_update
+# sketchybar -m --add item music right                         \
+#     --set music script="~/.config/sketchybar/scripts/music.sh"  \
+#     click_script="~/.config/sketchybar/scripts/music_click.sh"  \
+#     label.padding_right=10                                   \
+#     drawing=off                                              \
+#     --subscribe music song_update
 
 sketchybar --add item clock right \
            --add item volume right \
