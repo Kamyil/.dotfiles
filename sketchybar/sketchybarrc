@@ -12,22 +12,21 @@ ITEM_DIR="$CONFIG_DIR/items"
 # https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
 
 # Animations
-sketchybar --animate sin 30 --bar y_offset=10 y_offset=0
+# sketchybar --animate sin 30 --bar y_offset=10 y_offset=0
 
 
-sketchybar --bar height=37        \
-                 margin=2   \
+sketchybar --bar height=36        \
+                 margin=0   \
                  y_offset=0 \
-                 corner_radius=10 \
-                 blur_radius=9   \
-                 blur_radius=100 \
-                 popup.blur_radius=50 \
+                 corner_radius=0 \
+                 blur_radius=20   \
+                 popup.blur_radius=20 \
                  position=top     \
                  sticky=on       \
                  padding_left=10  \
                  padding_right=10 \
                  padding_bottom=100 \
-                 font_smoothing=on \
+                 font_smoothing=false \
                  topmost=off \
                  color=$BAR_COLOR
 
@@ -65,7 +64,7 @@ sketchybar --default icon.font="JetBrainsMonoNL Nerd Font Propo:Bold:10.0"  \
 #
 
 # - Left side items 
-# source $ITEM_DIR/front_app.sh
+source $ITEM_DIR/front_app.sh
 
 # -- Right Side Of Notch Items --
 # source $ITEM_DIR/media.sh
@@ -81,9 +80,10 @@ source $ITEM_DIR/battery.sh
 # only the properties deviating from the current defaults need to be set
 
 sketchybar --add item chevron left \
-           --set chevron icon= label.drawing=off \
+           --set chevron icon= label.drawing=true \
            --add item front_app left \
-           --set front_app icon.drawing=off script="$PLUGIN_DIR/front_app.sh" \
+           --set front_app icon.background.drawing=on script="$PLUGIN_DIR/front_app.sh" \
+           --set front_app click_script="open -a 'Mission Control'"\
            --subscribe front_app front_app_switched
 
 sketchybar --add item tmux.attached left \
@@ -117,7 +117,9 @@ sketchybar --add item tmux.attached left \
 
 sketchybar --add item clock right \
            --add item volume right \
+		   --add item spotify right \
            --set volume script="$PLUGIN_DIR/volume.sh" \
+		   --set spotify.anchor label="$ARTIST - $TRACK" \
            --subscribe volume volume_change \
            --add item battery right \
            --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
@@ -126,20 +128,20 @@ sketchybar --add item clock right \
            # --set clock update_freq=10 icon=  script="$PLUGIN_DIR/clock.sh" \
 
 
-sketchybar --add event aerospace_workspace_change
+# sketchybar --add event aerospace_workspace_change
 
-for sid in $(aerospace list-workspaces --all); do
-    sketchybar --add item space.$sid left \
-        --subscribe space.$sid aerospace_workspace_change \
-        --set space.$sid \
-        background.color=0x44ffffff \
-        background.corner_radius=5 \
-        background.height=20 \
-        background.drawing=on \
-        label="$sid" \
-        click_script="aerospace workspace $sid" \
-        script="$CONFIG_DIR/plugins/aerospace.sh $sid"
-done
+# for sid in $(aerospace list-workspaces --all); do
+#     sketchybar --add item space.$sid left \
+#         --subscribe space.$sid aerospace_workspace_change \
+#         --set space.$sid \
+#         background.color=0x44ffffff \
+#         background.corner_radius=5 \
+#         background.height=20 \
+#         background.drawing=on \
+#         label="$sid" \
+#         click_script="aerospace workspace $sid" \
+#         script="$CONFIG_DIR/plugins/aerospace.sh $sid"
+# done
 
 ##### Force all scripts to run the first time (never do this in a script) #####
 
