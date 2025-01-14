@@ -70,9 +70,9 @@ HAS_WIDECHARS="false"
 
 # COWPATH="$COWPATH:$HOME/.cowsay/cowfiles"
 # COWPATH="$COWPATH:$HOME/.cowsay/cowfiles"
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 #
 # History related changes
 HISTFILE=$HOME/.zhistory
@@ -214,7 +214,7 @@ sb() {
   cd ~/second-brain/ && nvim .
 }
 
-copy_to_clipboard() {
+macos_copy_to_clipboard() {
   # $1 meaning path to the file
  pbcopy < $1
 }
@@ -256,7 +256,7 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 source /Users/kamil/.config/broot/launcher/bash/br
 # turn fzf git on
 source /Users/kamil/.dotfiles/config/scripts/fzf-git.sh
-export BAT_THEME="Catppuccin Mocha"
+export BAT_THEME="Kanagawa"
 
 
 # Maybe we can switch to it later
