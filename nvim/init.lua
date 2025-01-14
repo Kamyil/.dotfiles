@@ -14,27 +14,8 @@ require('keymaps')
 -- Load autocommands
 require('autocommands')
 
--- [[ Install `lazy.nvim` plugin manager ]]
---    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
+-- Load lazy.nvim package manager (and before it - install if it's not installed into computer)
+require('lazy_plugin_manager')
 
-local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
-
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath })
-  if vim.v.shell_error ~= 0 then
-    error('Error cloning lazy.nvim:\n' .. out)
-  end
-end
-
-vim.opt.rtp:prepend(lazypath)
-
--- NOTE: Setup lazy nvim which is the package manager for your plugins
-
-require('lazy').setup('plugins', {
-  change_detection = {
-    -- this option finally disables the annoying blocking notification
-    -- https://github.com/folke/lazy.nvim/issues/32#issuecomment-1443733721
-    notify = false,
-  },
-})
+-- then if some plugins won't be installed, Lazy will automatically install it
+-- if all are installed, then simply finish nvim startup
