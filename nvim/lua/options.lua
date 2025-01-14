@@ -31,6 +31,9 @@ vim.o.encoding = 'utf-8'
 vim.o.fileencoding = 'utf-8'
 vim.o.fileencodings = 'utf-8'
 
+-- set global statusline across all splits
+vim.opt.laststatus = 3
+
 -- Don't do swaps of a file, but rather save the state for undotree in order to be able to access file state from ages ago
 vim.opt.swapfile = false
 vim.opt.backup = false

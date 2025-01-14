@@ -266,7 +266,7 @@ helpers.on_lazy_plugin_loaded('smart-splits', function(smart_splits)
   map('<leader>rs', '<cmd>lua smart_splits.start_resize_mode()<CR>', 'Start Resize Mode')
 end)
 
--- GIT related
+-- INFO: GIT related
 helpers.on_lazy_plugin_loaded('lazygit', function(lazygit)
   map('<leader>gg', '<cmd>LazyGit<CR>', 'Open Lazygit')
 end)
@@ -282,7 +282,7 @@ map('<leader>gc]', '<cmd>GitConflictChooseOurs<CR>', '[G]it [Conflict] Next')
 
 map('<leader>yh', '<cmd>YankBank<CR>', '[Y]ank [H]istory')
 
--- Git Hunks
+-- INFO: Git Hunks
 -- Actions
 
 helpers.on_lazy_plugin_loaded('gitsigns', function(gitsigns)
@@ -308,12 +308,6 @@ helpers.on_lazy_plugin_loaded('gitsigns', function(gitsigns)
   end, '[G]it [H]unk [D]iff (whole file)')
   map('<leader>ghtd', gitsigns.toggle_deleted, '[G]it [H]unk [T]oggle [D]eleted')
 end)
-
-map('<leader>p', function()
-  local padding_width = math.floor((vim.o.columns - vim.bo.textwidth) / 2 - 1)
-  vim.cmd('topleft ' .. padding_width .. 'vsplit _padding_')
-  vim.cmd('wincmd p')
-end, 'Center the code by adding [p]adding')
 
 -- -- Harpoon
 -- --

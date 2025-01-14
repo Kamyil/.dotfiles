@@ -1,26 +1,22 @@
 local wezterm = require("wezterm")
+local kanagawa_theme_palette = require("./custom_themes/kanagawa")
 -- Initialize the config builder
 local config = wezterm.config_builder()
 local my_own_tmux = require("./my_own_tmux")
 local utils = require("./utils")
 local nvim_split_navigator = require("./nvim_split_navigator")
 
--- -- The filled in variant of the < symbol
--- local SOLID_LEFT_ARROW = wezterm.nerdfonts.pl_right_hard_divider
---
--- -- The filled in variant of the > symbol
--- local SOLID_RIGHT_ARROW = wezterm.nerdfonts.pl_left_hard_divider
-
 -- General settings
 -- config.enable_tab_bar = false -- Disable tabs
 config.front_end = "WebGpu" -- Use WebGPU for rendering
--- config.dpi = 144.0
-config.freetype_load_flags = "NO_HINTING"
-config.harfbuzz_features = { "calt=0", "clig=0", "liga=0" }
+-- config.dpi = 92
+-- config.freetype_load_flags = "NO_HINTING"
+config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
 config.audible_bell = "Disabled"
 
 -- Font settings
 config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Regular" })
+-- config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Bold" })
 
 -- Alternative fonts for testing:
 --
@@ -33,8 +29,8 @@ config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Regula
 -- config.font = wezterm.font("RobotoMono Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("ZedMono Nerd Font")
 
-config.font_size = 12
-config.default_cursor_style = "BlinkingBar"
+config.font_size = 10
+config.default_cursor_style = "SteadyBlock"
 config.automatically_reload_config = true -- Reload the config automatically when modified
 config.enable_kitty_graphics = true -- Enable support for Kitty graphics protocol
 config.window_close_confirmation = "AlwaysPrompt" -- Since WezTerm workspaces do not have tmux-like living sessions in the background, we need to make our ass safe from exiting
@@ -42,6 +38,7 @@ config.custom_block_glyphs = true -- Improve rendering of block glyphs
 config.animation_fps = 120 -- Increase frame rate for smoother animations
 config.max_fps = 120 -- Match your display's refresh rate to save resources
 config.prefer_egl = true -- Prefer to use Apple's Metal rather than OpenGL
+config.use_ime = true
 
 -- Adjust font cell dimensions
 config.adjust_window_size_when_changing_font_size = false
@@ -50,9 +47,8 @@ config.adjust_window_size_when_changing_font_size = false
 -- On work monitor:
 -- config.cell_width = 0.95
 -- On Mac itself:
--- config.cell_width = 1.00
-
-config.line_height = 1.10
+config.cell_width = 1.00
+config.line_height = 1.00
 -- To disable ligatures, use:
 -- config.harfbuzz_features = { "liga=0" }
 
@@ -60,117 +56,114 @@ config.line_height = 1.10
 config.window_decorations = "RESIZE" -- Minimal decorations (no title bar)
 
 -- Background opacity and blur
--- config.window_background_opacity = 0.1
 -- config.macos_window_background_blur = 0 -- Blur on macOS
 config.scrollback_lines = 10000 -- Increase scrollback buffer (default is 3500)
-config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" } -- Enable ligatures
+-- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" } -- Enable ligatures
 config.enable_wayland = false -- (Mac doesn’t use Wayland but avoids auto checks)
 
 -- Window padding
 config.window_padding = {
-	-- 	left = "3cell",
-	-- 	right = "3cell",
-	-- 	top = "1cell",
+	-- left = "3cell",
+	-- right = "3cell",
+	-- top = "1cell",
 	bottom = "0",
 }
 
 -- Color scheme
-config.color_scheme = "Kanagawa (Gogh)" -- Set the Kanagawa color scheme
--- config.color_scheme = "Kanagawa Dragon (Gogh)" -- TODO: Check this one when it comes out to stable build
--- config.color_scheme = "catppuccin-mocha"
--- config.color_scheme = "Catppuccin Mocha (Gogh)"
---
+-- config.color_scheme = "Kanagawa (Gogh)"
+
 config.inactive_pane_hsb = {
-	saturation = 0.9,
-	brightness = 0.8,
+	saturation = 1.0,
+	brightness = 1.0,
+}
+
+config.colors = {
+	-- The default text color
+	foreground = kanagawa_theme_palette.dragonWhite,
+	-- The default background color
+	background = kanagawa_theme_palette.dragonBlack0,
+
+	-- Overrides the cell background color when the current cell is occupied by the
+	-- cursor and the cursor style is set to Block
+	cursor_bg = kanagawa_theme_palette.dragonYellow,
+	-- Overrides the text color when the current cell is occupied by the cursor
+	cursor_fg = "black",
+	-- Specifies the border color of the cursor when the cursor style is set to Block,
+	-- or the color of the vertical or horizontal bar when the cursor style is set to
+	-- Bar or Underline.
+	cursor_border = kanagawa_theme_palette.dragonYellow,
+
+	-- the foreground color of selected text
+	selection_fg = "black",
+	-- the background color of selected text
+	selection_bg = "#fffacd",
+
+	-- The color of the scrollbar "thumb"; the portion that represents the current viewport
+	scrollbar_thumb = "#222222",
+
+	-- The color of the split lines between panes
+	split = kanagawa_theme_palette.dragonBlack3,
+
+	ansi = {
+		-- "black",
+		kanagawa_theme_palette.dragonBlack2,
+
+		-- "maroon" (redish),
+		kanagawa_theme_palette.dragonRed,
+
+		-- "green",
+		kanagawa_theme_palette.dragonGreen,
+
+		-- "olive",
+		kanagawa_theme_palette.dragonGreen2,
+
+		-- "navy" (blueish),
+		kanagawa_theme_palette.dragonBlue,
+
+		-- "purple",
+		kanagawa_theme_palette.dragonPink,
+
+		-- "teal",
+		kanagawa_theme_palette.dragonAqua,
+
+		-- "silver",
+		kanagawa_theme_palette.dragonWhite,
+	},
+
+	-- Arbitrary colors of the palette in the range from 16 to 255
+	-- indexed = { [136] = "#af8700" },
+
+	-- Since: 20220319-142410-0fcdea07
+	-- When the IME, a dead key or a leader key are being processed and are effectively
+	-- holding input pending the result of input composition, change the cursor
+	-- to this color to give a visual cue about the compose state.
+	-- compose_cursor = "orange",
+
+	-- Colors for copy_mode and quick_select
+	-- available since: 20220807-113146-c2fee766
+	-- In copy_mode, the color of the active text is:
+	-- 1. copy_mode_active_highlight_* if additional text was selected using the mouse
+	-- 2. selection_* otherwise
+	copy_mode_active_highlight_bg = { Color = "orange" },
+	-- use `AnsiColor` to specify one of the ansi color palette values
+	-- (index 0-15) using one of the names "Black", "Maroon", "Green",
+	--  "Olive", "Navy", "Purple", "Teal", "Silver", "Grey", "Red", "Lime",
+	-- "Yellow", "Blue", "Fuchsia", "Aqua" or "White".
+	copy_mode_active_highlight_fg = { Color = "#00FF00" },
+	copy_mode_inactive_highlight_bg = { Color = "#52ad70" },
+	copy_mode_inactive_highlight_fg = { Color = "White" },
+
+	quick_select_label_bg = { Color = "peru" },
+	quick_select_label_fg = { Color = "#ffffff" },
+	quick_select_match_bg = { AnsiColor = "Navy" },
+	quick_select_match_fg = { Color = "#ffffff" },
 }
 
 config.tab_bar_at_bottom = true
 config.use_fancy_tab_bar = false
 config.switch_to_last_active_tab_when_closing_tab = true
 config.tab_max_width = 128
-
-config.colors = {
-	background = "#00000b", -- Custom dark background
-	-- Alternative backgrounds:
-	-- background = "#0c0c14",
-	-- background = "#070711",
-	cursor_bg = "#E6C384", -- Cursor color
-
-	tab_bar = {
-		-- The color of the strip that goes along the top of the window
-		-- (does not apply when fancy tab bar is in use)
-		background = "transparent",
-
-		-- The active tab is the one that has focus in the window
-		active_tab = {
-			-- The color of the background area for the tab
-			bg_color = "transparent",
-			-- bg_color = "#000000",
-			-- The color of the text for the tab
-			-- fg_color = "#000000",
-			fg_color = "#E6C384",
-
-			-- Specify whether you want "Half", "Normal" or "Bold" intensity for the
-			-- label shown for this tab.
-			-- The default is "Normal"
-			intensity = "Bold",
-
-			-- Specify whether you want "None", "Single" or "Double" underline for
-			-- label shown for this tab.
-			-- The default is "None"
-			underline = "None",
-
-			-- Specify whether you want the text to be italic (true) or not (false)
-			-- for this tab.  The default is false.
-			italic = false,
-
-			-- Specify whether you want the text to be rendered with strikethrough (true)
-			-- or not for this tab.  The default is false.
-			strikethrough = false,
-		},
-
-		-- Inactive tabs are the tabs that do not have focus
-		inactive_tab = {
-			bg_color = "transparent",
-			fg_color = "#808080",
-
-			-- The same options that were listed under the `active_tab` section above
-			-- can also be used for `inactive_tab`.
-		},
-
-		-- You can configure some alternate styling when the mouse pointer
-		-- moves over inactive tabs
-		inactive_tab_hover = {
-			bg_color = "#111111",
-			fg_color = "#909090",
-			italic = true,
-
-			-- The same options that were listed under the `active_tab` section above
-			-- can also be used for `inactive_tab_hover`.
-		},
-
-		-- The new tab button that let you create new tabs
-		new_tab = {
-			bg_color = "transparent",
-			fg_color = "#808080",
-
-			-- The same options that were listed under the `active_tab` section above
-			-- can also be used for `new_tab`.
-		},
-
-		-- You can configure some alternate styling when the mouse pointer
-		-- moves over the new tab button
-		new_tab_hover = {
-			bg_color = "#111111",
-			fg_color = "#909090",
-			italic = true,
-
-			-- The same options that were listed under the `active_tab` section above
-			-- can also be used for `new_tab_hover`.
-		},
-	},
-}
+config.bold_brightens_ansi_colors = "No"
 
 -- Environment variables
 -- config.set_environment_variables = {
@@ -194,7 +187,7 @@ config.keys = {
 }
 
 -- Font rendering tweaks for macOS
--- config.freetype_load_target = "Light" -- Finer rendering control
+config.freetype_load_target = "Light" -- Finer rendering control
 -- config.freetype_render_target = "HorizontalLcd"
 
 -- Background customization
@@ -205,11 +198,14 @@ config.background = {
 			-- File = "/Users/kamil/Desktop/Wallpapers/Catppuccin/isekai.jpg",
 			-- File = "/Users/kamil/Desktop/Wallpapers/Catppuccin/misty-boat.jpg",
 			-- File = "/Users/kamil/Desktop/Wallpapers/Catppuccin/dark-forest.jpg",
-			-- File = "/Users/kamil/Desktop/Wallpapers/4k/witcher_4.jpeg",
+			-- File = "/Users/kamil/false/Wallpapers/4k/witcher_4.jpeg",
 			-- File = "/Users/kamil/Desktop/Wallpapers/4k/glass_rain.jpg",
 			-- File = "/Users/kamil/Desktop/Wallpapers/Kanagawa/colorful.jpg",
 			-- File = "/Users/kamil/Desktop/Wallpapers/Kanagawa/great-wave.jpg",
-			File = "/Users/kamil/Desktop/Wallpapers/Kanagawa/wp6265120-2509613833.jpg",
+			-- File = "/Users/kamil/Desktop/Wallpapers/Kanagawa/wp6265120-2509613833.jpg",
+			File = "/Users/kamil/Desktop/Wallpapers/Kanagawa/kanagawa-minimal.jpg",
+			-- File = "/Users/kamil/Desktop/Wallpapers/Kanagawa/black-and-red.jpg",
+			-- File = "/Users/kamil/Desktop/Wallpapers/Kanagawa/moon-lights-4k-art.jpg",
 
 			-- File options for GIFs:
 			-- File = "/Users/kamil/Desktop/Wallpapers/gif/witcher.gif",
@@ -231,8 +227,8 @@ config.background = {
 		vertical_align = "Middle",
 		repeat_y_size = "100%",
 		hsb = {
-			brightness = 0.01, -- Adjust brightness
-			saturation = 1.00, -- Full saturation
+			brightness = 0.007, -- Adjust brightness
+			saturation = 0.90, -- Full saturation
 		},
 	},
 	-- Darken layer to make text more contrast
