@@ -59,16 +59,29 @@ helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
     })
   end, '[F]ind (ALL) [F]iles (including hidden & gitignored ones)')
 
-  -- Normal search through git included files
-  map('<leader>fw', telescope_builtin.live_grep, '[F]ind [W]ord (by using grep)')
-  -- Live grep, including gitignored and hidden ones
+  -- M.setup = function()
+  --   vim.keymap.set('n', '<leader>fg', live_multigrep)
+  -- end
+
+  local multigrep = require('own_plugins.telescope_multigrep')
+
+  map('<leader>fw', multigrep.live_multigrep, '[F]ind [W]ords')
+  -- Live multigrep, including gitignored and hidden ones
   map('<leader>fW', function()
-    telescope_builtin.live_grep({
-      additional_args = function()
-        return { '--no-ignore' }
-      end,
-    })
-  end, '[F]ind [W]ords (including hidden & gitignored ones)')
+    -- TODO: let it search through all files
+    multigrep.live_multigrep()
+  end, '[F]ind (all) [W]ords (including hidden & gitignored ones)')
+
+  -- Normal word search through git included files, with ability to filter via extension
+  -- map('<leader>fw', telescope_builtin.live_grep, '[F]ind [W]ord (by using multigrep)')
+  -- -- Live multigrep, including gitignored and hidden ones
+  -- map('<leader>fW', function()
+  --   telescope_builtin.live_grep({
+  --     additional_args = function()
+  --       return { '--no-ignore' }
+  --     end,
+  --   })
+  -- end, '[F]ind [W]ords (including hidden & gitignored ones)')
 
   -- Searches for the word (or string) under your cursor or the one you provide when invoking the command.
   -- It's like running grep for a specific string or word without further input, typically on the current word or a provided string.
@@ -82,6 +95,9 @@ helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
   map('<leader>fd', telescope_builtin.diagnostics, '[F]ind [D]iagnostics')
   map('<leader>fr', telescope_builtin.resume, '[F]ind [R]esume')
   map('<leader>fl', telescope_builtin.oldfiles, '[F]ind [L]ast files')
+
+  map('<leader>fgb', '<cmd>Telescope git_branches<CR>', '[F]ind [G]it [B]ranches')
+
   map('<leader><leader>', telescope_builtin.buffers, '[ ] Find existing buffers')
 
   map('gd', require('telescope.builtin').lsp_definitions, '[G]o to [D]efinition')
@@ -138,6 +154,9 @@ map('<leader>la', vim.lsp.buf.code_action, '[L]SP [A]ction', { 'n', 'x' })
 
 -- Clear highlights on search
 map('<Esc>', '<cmd>nohlsearch<CR>', 'Clear highlights on search')
+
+-- INFO: Maybe some time
+-- map('jj', '<Esc>', 'Escape on hitting jj', { 'i' })
 
 -- Diagnostic quickfix
 map('<leader>qf', vim.diagnostic.setloclist, 'Open diagnostic [Q]uick[F]ix list')
@@ -353,3 +372,10 @@ end)
 -- better indenting
 vim.keymap.set('v', '<', '<gv')
 vim.keymap.set('v', '>', '>gv')
+
+-- Paste by Replacing contents with clipboard content
+vim.keymap.set('x', '<leader>p', [["_dP]])
+
+-- Move to next items inside quickfix list
+vim.keymap.set('n', ']q', '<cmd>cnext<CR>zz')
+vim.keymap.set('n', '[q', '<cmd>cprev<CR>zz')

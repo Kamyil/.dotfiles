@@ -99,11 +99,17 @@ return { -- Fuzzy Finder (files, lsp, etc)
     })
 
     -- Enable Telescope extensions if they are installed
-    pcall(require('telescope').load_extension, 'fzf')
-    pcall(require('telescope').load_extension, 'ui-select')
-    pcall(require('telescope').load_extension('lazy'))
-    pcall(require('telescope').load_extension('lazygit'))
-    pcall(require('telescope').load_extension('file_history'))
+    -- pcall(require('telescope').load_extension, 'fzf')
+    -- pcall(require('telescope').load_extension, 'ui-select')
+    -- pcall(require('telescope').load_extension, 'lazy')
+    -- pcall(require('telescope').load_extension, 'lazygit')
+    -- pcall(require('telescope').load_extension, 'file_history')
+
+    require('telescope').load_extension('fzf')
+    require('telescope').load_extension('ui-select')
+    require('telescope').load_extension('lazy')
+    require('telescope').load_extension('lazygit')
+    require('telescope').load_extension('file_history')
 
     -- Auto center on entering live_grep results
     vim.cmd([[

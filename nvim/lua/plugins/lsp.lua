@@ -201,14 +201,6 @@ return {
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
-            require('lspconfig').smarty_ls.setup({
-              css = {
-                validate = true,
-              },
-              smarty = {
-                pluginDirs = {},
-              },
-            })
           end,
         },
       })
