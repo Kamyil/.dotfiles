@@ -14,8 +14,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
-local smarty_augroup = vim.api.nvim_create_augroup('SmartyComment', { clear = true })
 -- Set the commentstring for Smarty templates
+local smarty_augroup = vim.api.nvim_create_augroup('SmartyComment', { clear = true })
 vim.api.nvim_create_autocmd('FileType', {
   desc = 'Set commentstring for Smarty templates',
   group = smarty_augroup,
