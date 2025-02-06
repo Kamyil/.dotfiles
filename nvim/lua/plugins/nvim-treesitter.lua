@@ -68,8 +68,8 @@ return { -- Highlight, edit, and navigate code
       ['@keyword.conditional'] = { style = 'NONE' }, -- Disable italics for conditionals
       ['@keyword'] = { style = 'NONE' }, -- Disable italics for all keywords
       ['@function'] = { style = 'NONE' }, -- Disable italics for functions
-      ['@variable'] = { style = 'NONE' }, -- Disable italics for variables
       ['@comment'] = { style = 'NONE' }, -- Disable italics for comments
+      ['@variable'] = { style = 'NONE' }, -- Disable italics for variables
     },
     indent = { enable = true, disable = { 'ruby' } },
   },

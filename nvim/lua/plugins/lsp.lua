@@ -139,7 +139,13 @@ return {
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
-        --
+        ['rust_analyzer'] = {
+          diagnostics = {
+            experimental = {
+              enable = true, -- Sometimes fixes missing diagnostic metadata
+            },
+          },
+        },
 
         lua_ls = {
           -- cmd = {...},
@@ -171,7 +177,7 @@ return {
           'tailwindcss-language-server', -- For Tailwind
           'vtsls', -- For TypeScript (better than ts-server)
           'write-good', -- Don't know what it is really. Testing it...
-          'sqlls', -- For TypeScript (better than ts-server)
+          'sqlls', -- For SQL
           'rust_analyzer', -- For Rust
           'prettier',
         })
