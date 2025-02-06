@@ -1,7 +1,7 @@
 return {
   'kdheepak/lazygit.nvim',
 
-  enabled = true,
+  enabled = false,
   name = 'lazygit',
   cmd = {
     'LazyGit',

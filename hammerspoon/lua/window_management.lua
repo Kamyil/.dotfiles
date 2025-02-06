@@ -23,6 +23,10 @@ M.reasonableSize = function()
 	hs.window.focusedWindow():moveToUnit({ 0.25, 0.25, 0.5, 0.5 })
 end
 
+M.center = function()
+	hs.window.focusedWindow():moveToUnit({ 0.5, 0.5 })
+end
+
 M.maximize = function()
 	hs.window.focusedWindow():maximize(0) -- Maximize without fullscreen
 end

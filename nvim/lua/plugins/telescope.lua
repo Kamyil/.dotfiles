@@ -20,6 +20,10 @@ return { -- Fuzzy Finder (files, lsp, etc)
     },
     { 'nvim-telescope/telescope-ui-select.nvim' },
 
+    { 'nvim-telescope/telescope-file-browser.nvim' },
+    { 'nvim-telescope/telescope-media-files.nvim' },
+    { 'https://codeberg.org/elfahor/telescope-just.nvim' },
+
     -- Useful for getting pretty icons, but requires a Nerd Font.
     { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
 
@@ -27,6 +31,24 @@ return { -- Fuzzy Finder (files, lsp, etc)
     { 'tsakirist/telescope-lazy.nvim' },
   },
   config = function()
+    -- Custom Telescope Previewer Maker to Disable Tree-sitter for Large Files
+    local telescope = require('telescope')
+    local actions = require('telescope.actions')
+
+    -- Function to disable Tree-sitter and syntax highlighting for a buffer
+    local function disable_syntax(bufnr)
+      -- Disable Tree-sitter highlighting
+      vim.cmd('TSBufDisable highlight')
+
+      -- Optionally disable regular syntax highlighting
+      vim.cmd('syntax off')
+
+      -- Optionally set filetype to 'text'
+      vim.bo[bufnr].filetype = 'text'
+
+      -- Notify the user
+      vim.notify('Syntax highlighting disabled for large file: ' .. bufnr, vim.log.levels.INFO)
+    end
     -- Telescope is a fuzzy finder that comes with a lot of different things that
     -- it can fuzzy find! It's more than just a "file finder", it can search
     -- many different aspects of Neovim, your workspace, LSP, and more!
@@ -57,9 +79,67 @@ return { -- Fuzzy Finder (files, lsp, etc)
       --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
       --   },
       -- },
+      defaults = {
+
+        -- Override the default buffer_previewer_maker, to disable Tree-sitter for big files, to not freeze Neovim
+        buffer_previewer_maker = function(filepath, bufnr, opts)
+          local MAX_FILESIZE = 1000000 -- 1,000,000 bytes = ~1MB, adjust as needed
+
+          -- Attempt to get file statistics
+          local ok, stats = pcall(vim.loop.fs_stat, filepath)
+          if ok and stats and stats.size > MAX_FILESIZE then
+            -- Disable Tree-sitter and syntax highlighting for large files
+            disable_syntax(bufnr)
+          end
+
+          -- Call the default buffer_previewer_maker
+          require('telescope.previewers').buffer_previewer_maker(filepath, bufnr, opts)
+        end,
+
+        mappings = {
+          -- Insert mode mappings
+          i = {
+            ['<C-j>'] = actions.move_selection_next, -- Ctrl+j to move down
+            ['<C-k>'] = actions.move_selection_previous, -- Ctrl+k to move up
+
+            -- Optional: Cycle through history
+            ['<C-n>'] = actions.cycle_history_next,
+            ['<C-p>'] = actions.cycle_history_prev,
+
+            -- Disable arrow keys if desired
+            ['<Down>'] = false,
+            ['<Up>'] = false,
+          },
+          -- Normal mode mappings
+          n = {
+            ['<C-j>'] = actions.move_selection_next, -- Ctrl+j to move down
+            ['<C-k>'] = actions.move_selection_previous, -- Ctrl+k to move up
+
+            -- Optional: Cycle through history
+            ['<C-n>'] = actions.cycle_history_next,
+            ['<C-p>'] = actions.cycle_history_prev,
+
+            -- Disable arrow keys if desired
+            ['<Down>'] = false,
+            ['<Up>'] = false,
+          },
+        },
+      },
       pickers = {
         find_files = {
           theme = 'dropdown',
+        },
+        buffers = {
+          show_all_buffers = true,
+          sort_mru = true,
+          mappings = {
+            n = {
+              ['<c-d>'] = 'delete_buffer',
+            },
+            i = {
+              ['<c-d>'] = 'delete_buffer',
+            },
+          },
         },
       },
       extensions = {
@@ -108,16 +188,16 @@ return { -- Fuzzy Finder (files, lsp, etc)
     require('telescope').load_extension('fzf')
     require('telescope').load_extension('ui-select')
     require('telescope').load_extension('lazy')
-    require('telescope').load_extension('lazygit')
     require('telescope').load_extension('file_history')
+    require('telescope').load_extension('file_browser')
 
     -- Auto center on entering live_grep results
     vim.cmd([[
-      augroup TelescopeAutoCenter
+        augroup TelescopeAutoCenter
         autocmd!
         autocmd User TelescopePreviewerLoaded lua vim.cmd('normal! zz')
-      augroup END
-    ]])
+        augroup END
+        ]])
 
     -- See `:help telescope.builtin`
   end,

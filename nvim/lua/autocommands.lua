@@ -45,3 +45,34 @@ vim.api.nvim_create_autocmd('BufNewFile', {
     end
   end,
 })
+
+-- Disable Tree-sitter for buffers larger than MAX_FILESIZE in order to not lag the Neovim
+vim.api.nvim_create_autocmd('BufReadPre', {
+  pattern = '*',
+  callback = function()
+    local MAX_FILESIZE = 1000000 -- 1MB
+    local filepath = vim.fn.expand('<afile>')
+    local ok, stats = pcall(vim.loop.fs_stat, filepath)
+
+    if ok and stats and stats.size > MAX_FILESIZE then
+      -- Temporarily disable Tree-sitter and syntax highlighting
+      vim.cmd('TSBufDisable highlight')
+      vim.cmd('syntax off')
+    end
+  end,
+})
+
+-- Open file at the last position it was edited earlier
+vim.api.nvim_create_autocmd('BufReadPost', {
+  desc = 'Open file at the last position it was edited earlier',
+  group = misc_augroup,
+  pattern = '*',
+  command = 'silent! normal! g`"zv',
+})
+
+-- -- reload config file on change
+-- vim.api.nvim_create_autocmd('BufWritePost', {
+--   group = 'bufcheck',
+--   pattern = vim.env.MYVIMRC,
+--   command = 'silent source %',
+-- })

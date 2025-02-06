@@ -115,7 +115,14 @@ vim.g.editorconfig = true
 vim.g.icons_enabled = true
 
 -- Disable default LSP inline diagnostic, in favor of `lsp-lines.nvim`
-vim.diagnostic.config({ virtual_text = false })
+vim.diagnostic.config({
+  virtual_text = false, -- Ensure virtual text is disabled since lsp_lines handles it
+  virtual_lines = { only_current_line = false },
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+  severity_sort = true,
+})
 
 vim.g.loaded_netrw = 1 -- disable netrw
 vim.g.loaded_netrwPlugin = 1 --  disable netrw
@@ -123,6 +130,14 @@ vim.opt.conceallevel = 0 -- so that `` is visible in markdown files
 vim.opt.ignorecase = true -- ignore case in search patterns
 vim.opt.smartcase = true -- smart case
 vim.opt.smartindent = true -- make indenting smarter again
+
+-- Undercurl errors and warnings like in VSCode
+vim.cmd([[let &t_Cs = "\e[4:3m"]])
+vim.cmd([[let &t_Ce = "\e[4:0m"]])
+
+-- Enable spell check
+vim.opt.spell = false
+vim.opt.spelllang = { 'en_us', 'pl_PL' }
 
 -- Colorscheme is unfortunetly set in lua/plugins/catppuccin.lua, because barbar wasn't applying catppuccin styles
 -- when setting colorscheme was placed here :(
