@@ -108,38 +108,43 @@ local my_own_tmux = {
 	--
 	-- This function returns the suggested title for a tab.
 
-	-- wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	-- 	-- It prefers the title that was set via `tab:set_title()`
-	-- 	-- or `wezterm cli set-tab-title`, but falls back to the
-	-- 	-- title of the active pane in that tab.
-	-- 	local tab_title = function(tab_info)
-	-- 		return string.format(" %d: %s ", tab.tab_index + 1, tab.active_pane.title)
-	-- 	end
+	wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+		-- It prefers the title that was set via `tab:set_title()`
+		-- or `wezterm cli set-tab-title`, but falls back to the
+		-- title of the active pane in that tab.
+		local tab_title = function(tab_info)
+			return string.format(" %d: %s ", tab.tab_index + 1, tab.active_pane.title)
+		end
+
+		local title = tab_title(tab)
+		if tab.is_active then
+			return {
+				{ Background = { Color = "#E6C384" } },
+				{ Foreground = { Color = "#000" } },
+				{ Text = " " .. title .. " " },
+			}
+			-- else
+			-- 	return {
+			-- 		{ Background = { Color = "#201F27" } },
+			-- 		{ Foreground = { Color = "#2A2937" } },
+			-- 		{ Text = " " .. title .. " " },
+			-- 	}
+		end
+	end),
 	--
-	-- 	local title = tab_title(tab)
-	-- 	if tab.is_active then
-	-- 		return {
-	-- 			{ Background = { Color = "#E6C384" } },
-	-- 			{ Foreground = { Color = "#000" } },
-	-- 			{ Text = " " .. title .. " " },
-	-- 		}
-	-- 	end
-	-- 	return title
-	-- end),
-	--
-	-- wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
-	-- 	local zoomed = ""
-	-- 	if tab.active_pane.is_zoomed then
-	-- 		zoomed = "[Z] "
-	-- 	end
-	--
-	-- 	local index = ""
-	-- 	if #tabs > 1 then
-	-- 		index = string.format("[%d/%d] ", tab.tab_index + 1, #tabs)
-	-- 	end
-	--
-	-- 	return zoomed .. index .. tab.active_pane.title
-	-- end),
+	wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
+		local zoomed = ""
+		if tab.active_pane.is_zoomed then
+			zoomed = "[Z] "
+		end
+
+		local index = ""
+		if #tabs > 1 then
+			index = string.format("[%d/%d] ", tab.tab_index + 1, #tabs)
+		end
+
+		return zoomed .. index .. tab.active_pane.title
+	end),
 
 	-- Mux Server for Persistent Sessions
 	default_prog = { "/usr/bin/env", "wezterm-mux-server" },
