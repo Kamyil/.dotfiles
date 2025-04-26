@@ -39,24 +39,48 @@ map('<leader>/', '<ESC><CMD>lua require("Comment.api").locked("toggle.linewise")
 
 map('<leader>E', '<cmd>Yazi<cr>', 'Open Yazi in current directory')
 
-map('<leader>w', '<cmd>w<CR>', 'Save file')
-map('<C-s>', '<cmd>w<CR>', 'Save file')
+-- saves file asynchronously, making a more snappy feeling
+local function save_file()
+  -- vim.lsp.buf.format({ async = true })
+  vim.defer_fn(function()
+    vim.cmd('silent! write')
+    vim.notify('saved')
+  end, 10)
+end
+map('<leader>w', save_file, 'Save file')
+map('<C-s>', save_file, 'Save file')
 
 -- INFO: Solve issues reported by LSP with help of folke/trouble.nvim plugin
 map('<leader>dd', '<cmd>Trouble diagnostics toggle<cr>', 'Toggle LSP diagnostics (via trouble)')
 map('<leader>dq', '<cmd>Trouble qflist toggle<cr>', 'Move diagnostics to quickfix list')
 
---- @type snacks
-helpers.on_lazy_plugin_loaded('snacks', function(Snacks)
-  map('<leader>e', function()
-    Snacks.explorer()
-  end, 'Open Snacks File Explorer')
+map('<leader>e', function()
+  vim.cmd([[ Neotree reveal_force_cwd ]])
+end, 'Open File Explorer')
 
-  map('<leader>ff', Snacks.picker.files, '[F]ind [F]iles (git included only)')
-  -- map('<leader>fF', Snacks.picker.files, '[F]ind [F]iles (ALL)')
+helpers.on_lazy_plugin_loaded('snacks', function(Snacks)
+  map('<leader>ff', function()
+    Snacks.picker.files({ hidden = false, ignored = false })
+  end, '[F]ind [F]iles (git included only)')
+  map('<leader>fF', function()
+    Snacks.picker.files({ hidden = true, ignored = true })
+  end, '[F]ind (all) [F]iles (git ignored too)')
   map('<leader>fw', Snacks.picker.grep, '[F]ind [W]ords')
+
+  map('<leader>fw', function()
+    Snacks.picker.grep({
+      -- pass in your transform
+      hidden = false,
+      ignored = false,
+    })
+  end, '[F]ind [W]ords')
+
+  map('<leader>fW', function()
+    Snacks.picker.grep({ hidden = true, ignored = true })
+  end, '[F]ind (all) [W]ords')
   map('<leader>fd', Snacks.picker.diagnostics, '[F]ind [D]iagnostics')
   map('<leader>fh', Snacks.picker.help, '[F]ind [H]elp')
+  map('<leader>fi', Snacks.picker.icons, '[F]ind [I]cons')
   map('<leader>fi', Snacks.picker.icons, '[F]ind [I]cons')
   map('<leader>fk', Snacks.picker.keymaps, '[F]ind [K]eymaps')
   map('<leader>fn', Snacks.picker.notifications, '[F]ind [N]otifications')
@@ -77,9 +101,14 @@ helpers.on_lazy_plugin_loaded('snacks', function(Snacks)
   map('<leader>fb', Snacks.picker.buffers, '[F]ind [B]uffers')
   map('<leader>fcs', Snacks.picker.colorschemes, '[F]ind [C]olor[S]chemes')
 
+  -- [ F ]ind [ H ]istory
+  map('<leader>fhcb', function()
+    vim.cmd([[ Telescope neoclip ]])
+  end, '[F]ind [C]lip[B]oard [H]istory')
+  map('<leader>fhcm', Snacks.picker.command_history, '[F]ind [C]o[M]mand [H]istory')
+
   map('<leader>fcm', Snacks.picker.commands, '[F]ind [C]o[M]mands')
   map('<C-S-p>', Snacks.picker.commands, '[F]ind [C]ommands [H]istory') -- similar to VSCode command pallette
-  map('<leader>fch', Snacks.picker.command_history, '[F]ind [C]ommand [H]istory')
 
   -- LSP
   map('gd', function()
@@ -104,8 +133,8 @@ helpers.on_lazy_plugin_loaded('snacks', function(Snacks)
   map('<leader>fgs', Snacks.picker.git_stash, '[F]ind [G]it [S]tash')
 
   map('<leader>fglp', Snacks.picker.git_log, '[F]ind [G]it [L]og [P]roject')
-  map('<leader>fglf', Snacks.picker.git_log_file, '[F]ind [G]it [L]og this [F]ile')
   map('<leader>fgll', Snacks.picker.git_log_line, '[F]ind [G]it [L]og this [L]ine')
+  map('<leader>fglf', Snacks.picker.git_log_file, '[F]ind [G]it [L]og this [F]ile')
 end)
 
 -- Attempt to load Telescope
@@ -282,7 +311,18 @@ map('<leader>lr', vim.lsp.buf.rename, '[L]SP [R]ename')
 
 -- Execute a code action, usually your cursor needs to be on top of an error
 -- or a suggestion from your LSP for this to activate.
-map('<leader>la', vim.lsp.buf.code_action, '[L]SP [A]ction', { 'n', 'x' })
+map('<leader>la', function()
+  vim.lsp.buf.code_action({})
+end, '[L]SP [A]ction', { 'n', 'x' })
+
+-- Show full diagnostic under the cursor in a pop-up
+map('<leader>lk', function()
+  vim.diagnostic.open_float(nil, {
+    scope = 'cursor', -- only diagnostics at the cursor position
+    border = 'rounded', -- nice rounded border
+    focusable = false, -- don’t steal focus
+  })
+end, '[L]SP [K] Show diagnostic under cursor', { 'n' })
 
 -- Clear highlights on search
 map('<Esc>', '<cmd>nohlsearch<CR>', 'Clear highlights on search')
@@ -303,32 +343,32 @@ map('<Esc><Esc>', '<C-\\><C-n>', 'Exit terminal mode', 't')
 -- map('<down>', '<cmd>echo "Use j to move!!"<CR>', 'Disable down arrow')
 
 -- Window navigation
-helpers.on_lazy_plugin_loaded('nvim-tmux-navigation', function(nvim_tmux_nav)
-  map('<C-h>', function()
-    nvim_tmux_nav.NvimTmuxNavigateLeft()
-  end, 'Move left to tmux pane or window')
-
-  map('<C-j>', function()
-    nvim_tmux_nav.NvimTmuxNavigateDown()
-  end, 'Move down to tmux pane or window')
-
-  map('<C-k>', function()
-    nvim_tmux_nav.NvimTmuxNavigateUp()
-  end, 'Move up to tmux pane or window')
-
-  map('<C-l>', function()
-    nvim_tmux_nav.NvimTmuxNavigateRight()
-  end, 'Move right to tmux pane or window')
-
-  map('<C-\\>', function()
-    nvim_tmux_nav.NvimTmuxNavigateLastActive()
-  end, 'Move to the last active tmux pane or window')
-
-  --[[ map('<C-Space>', function()
-    vim.notify 'Key <C-Space> pressed'
-    nvim_tmux_nav.NvimTmuxNavigateNext()
-  end, 'Move to the next tmux pane or window') ]]
-end)
+-- helpers.on_lazy_plugin_loaded('nvim-tmux-navigation', function(nvim_tmux_nav)
+--   map('<C-h>', function()
+--     nvim_tmux_nav.NvimTmuxNavigateLeft()
+--   end, 'Move left to tmux pane or window')
+--
+--   map('<C-j>', function()
+--     nvim_tmux_nav.NvimTmuxNavigateDown()
+--   end, 'Move down to tmux pane or window')
+--
+--   map('<C-k>', function()
+--     nvim_tmux_nav.NvimTmuxNavigateUp()
+--   end, 'Move up to tmux pane or window')
+--
+--   map('<C-l>', function()
+--     nvim_tmux_nav.NvimTmuxNavigateRight()
+--   end, 'Move right to tmux pane or window')
+--
+--   map('<C-\\>', function()
+--     nvim_tmux_nav.NvimTmuxNavigateLastActive()
+--   end, 'Move to the last active tmux pane or window')
+--
+--   --[[ map('<C-Space>', function()
+--     vim.notify 'Key <C-Space> pressed'
+--     nvim_tmux_nav.NvimTmuxNavigateNext()
+--   end, 'Move to the next tmux pane or window') ]]
+-- end)
 
 map('<C-Up>', '<cmd>resize +2<CR>', 'Resize split up')
 map('<C-Down>', '<cmd>resize -2<CR>', 'Resize split down')
@@ -383,6 +423,22 @@ helpers.on_lazy_plugin_loaded('harpoon', function(harpoon)
 
   vim.keymap.set('n', '<A-5>', function()
     harpoon:list():select(5)
+  end)
+
+  vim.keymap.set('n', '<A-6>', function()
+    harpoon:list():select(6)
+  end)
+
+  vim.keymap.set('n', '<A-7>', function()
+    harpoon:list():select(7)
+  end)
+
+  vim.keymap.set('n', '<A-8>', function()
+    harpoon:list():select(8)
+  end)
+
+  vim.keymap.set('n', '<A-9>', function()
+    harpoon:list():select(9)
   end)
 
   -- -- Toggle previous & next buffers stored within Harpoon list
@@ -442,10 +498,10 @@ helpers.on_lazy_plugin_loaded('smart-splits', function(smart_splits)
   map('<C-Down>', smart_splits.resize_down, 'Resize Down')
 
   -- Moving between splits
-  map('<C-h>', smart_splits.move_cursor_left, 'Move to Left Split')
-  map('<C-j>', smart_splits.move_cursor_down, 'Move to Bottom Split')
-  map('<C-k>', smart_splits.move_cursor_up, 'Move to Top Split')
-  map('<C-l>', smart_splits.move_cursor_right, 'Move to Right Split')
+  -- map('<C-h>', smart_splits.move_cursor_left, 'Move to Left Split')
+  -- map('<C-j>', smart_splits.move_cursor_down, 'Move to Bottom Split')
+  -- map('<C-k>', smart_splits.move_cursor_up, 'Move to Top Split')
+  -- map('<C-l>', smart_splits.move_cursor_right, 'Move to Right Split')
 
   -- Buffer swapping
   -- map('<leader>bH', smart_splits.swap_buf_left, 'Swap Buffer Left')
@@ -514,4 +570,9 @@ vim.keymap.set('n', '<leader>srg', '<cmd>lua require("spectre").toggle()<CR>', {
 })
 vim.keymap.set('n', '<leader>sr.', '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>', {
   desc = '[S]earch and [R]eplace [.] here',
+})
+
+-- # TOOLS # --
+vim.keymap.set('n', '<leader>tcp', '<cmd>CccPick<CR>', {
+  desc = '[T]ool: [C]olor[P]icker',
 })

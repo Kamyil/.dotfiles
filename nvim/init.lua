@@ -13,7 +13,7 @@ require('options')
 require('keymaps')
 -- Load autocommands
 require('autocommands')
--- Load lazy.nvim package manager (and before it - install if it's not installed into computer)
+-- Load lazy.nvim package manager (and before it - install if it's not installed)
 require('lazy_plugin_manager')
 
 -- then if some plugins won't be installed, Lazy will automatically install it

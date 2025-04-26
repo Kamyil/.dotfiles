@@ -3,9 +3,8 @@ local options = require('options')
 -- For Sidebar file-tree explorer
 return {
   'nvim-neo-tree/neo-tree.nvim',
-
-  enabled = false,
-  branch = 'v3.x',
+  enabled = true,
+  -- branch = 'v3.x',
   dependencies = {
     'nvim-lua/plenary.nvim',
     'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
@@ -20,9 +19,9 @@ return {
     vim.fn.sign_define('DiagnosticSignHint', { text = '󰌵', texthl = 'DiagnosticSignHint' })
 
     -- local colors = require('catppuccin.palettes').get_palette()
-    -- colors.overlay0 = '#6c7086'
-    -- colors.overlay2 = '#9399b2'
-
+    -- -- colors.overlay0 = '#6c7086'
+    -- -- colors.overlay2 = '#9399b2'
+    --
     -- local NeoTreeColor = {
     --   -- Main Neo-tree window background
     --   NeoTreeNormal = { bg = colors.mantle, fg = colors.text },
@@ -50,7 +49,7 @@ return {
     --   NeoTreeIndentMarker = { fg = colors.surface1 },
     --   NeoTreeSymbolicLinkTarget = { fg = colors.pink },
     -- }
-
+    --
     -- for hl, col in pairs(NeoTreeColor) do
     --   vim.api.nvim_set_hl(0, hl, col)
     -- end
@@ -177,9 +176,9 @@ return {
           -- @^: current file vs previous commit
           -- @^^^^: current file vs 4 commits before head and so on...
           vim.cmd([[
-      !git show @^:% > /tmp/%
-      vert diffs /tmp/%
-      ]])
+            !git show @^:% > /tmp/%
+            vert diffs /tmp/%
+          ]])
 
           -- Fugitive
           vim.cmd([[Gdiffsplit]]) -- or
@@ -263,9 +262,9 @@ return {
       filesystem = {
         filtered_items = {
           visible = false, -- when true, they will just be displayed differently than normal items
-          hide_dotfiles = true,
-          hide_gitignored = true,
-          hide_hidden = true, -- only works on Windows for hidden files/directories
+          hide_dotfiles = false,
+          hide_gitignored = false,
+          hide_hidden = false, -- only works on Windows for hidden files/directories
           hide_by_name = {
             --"node_modules"
           },
@@ -288,7 +287,7 @@ return {
           },
         },
         follow_current_file = {
-          enabled = false, -- This will find and focus the file in the active buffer every time
+          enabled = true, -- This will find and focus the file in the active buffer every time
           --               -- the current file is changed while the tree is open.
           leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
         },
@@ -298,7 +297,7 @@ return {
         -- "open_current",  -- netrw disabled, opening a directory opens within the
         -- window like netrw would, regardless of window.position
         -- "disabled",    -- netrw left alone, neo-tree does not handle opening dirs
-        use_libuv_file_watcher = false, -- This will use the OS level file watchers to detect changes
+        use_libuv_file_watcher = true, -- This will use the OS level file watchers to detect changes
         -- instead of relying on nvim autocmd events.
         window = {
           mappings = {

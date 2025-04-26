@@ -63,16 +63,46 @@ vim.api.nvim_create_autocmd('BufReadPre', {
 })
 
 -- Open file at the last position it was edited earlier
-vim.api.nvim_create_autocmd('BufReadPost', {
-  desc = 'Open file at the last position it was edited earlier',
-  group = misc_augroup,
-  pattern = '*',
-  command = 'silent! normal! g`"zv',
-})
+-- vim.api.nvim_create_autocmd('BufReadPost', {
+--   desc = 'Open file at the last position it was edited earlier',
+--   group = misc_augroup,
+--   pattern = '*',
+--   command = 'silent! normal! g`"zv',
+-- })
 
 -- -- reload config file on change
 -- vim.api.nvim_create_autocmd('BufWritePost', {
 --   group = 'bufcheck',
 --   pattern = vim.env.MYVIMRC,
 --   command = 'silent source %',
+-- })
+
+-- vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufNewFile' }, {
+--   pattern = { '*.tpl', '*.smarty' },
+--   callback = function()
+--     local current_buffer = vim.api.nvim_get_current_buf()
+--     local marek_template_lsp_client = vim.lsp.start_client({
+--       name = 'mccom-marek-template-language-server',
+--       cmd = { 'env', 'RUST_BACKTRACE=1', '/Users/kamil/Work/Projects/mccom/mccom-marek-lsp/target/debug/mccom-marek-lsp' },
+--     })
+--
+--     if not marek_template_lsp_client then
+--       vim.api.nvim_err_writeln('Failed to start Marek LSP')
+--       return
+--     end
+--
+--     local attached = vim.lsp.buf_attach_client(current_buffer, marek_template_lsp_client)
+--     if not attached then
+--       local clients = vim.lsp.get_clients()
+--       if #clients == 0 then
+--         vim.api.nvim_err_writeln('No active LSP clients found!')
+--       else
+--         vim.api.nvim_err_writeln('Available LSP clients: ' .. vim.inspect(clients))
+--       end
+--
+--       vim.api.nvim_err_writeln('Failed to attach Marek LSP to buffer: ' .. vim.inspect(marek_template_lsp_client))
+--     else
+--       print('Marek LSP successfully attached!')
+--     end
+--   end,
 -- })
