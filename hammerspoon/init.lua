@@ -11,6 +11,10 @@ local hs_prefix_key = { "cmd", "ctrl" }
 
 hs.window.setShadows(true)
 
+local function hideOtherWindowsBesideActiveOne()
+	hs.eventtap.keyStroke({ "cmd", "alt" }, "h")
+end
+
 -- hs.hotkey.bind(hs_prefix_key, "D", draw_on_screen.startDrawing)
 -- hs.hotkey.bind(hs_prefix_key, "S", draw_on_screen.stopDrawing)
 
@@ -18,12 +22,13 @@ hs.window.setShadows(true)
 -- -- Focus or launch apps
 -- ]]
 --
-hs.hotkey.bind({ "cmd" }, "`", function()
-	hs.application.launchOrFocus("Brave Browser")
-end)
+-- hs.hotkey.bind({ "cmd" }, "`", function()
+-- 	hs.application.launchOrFocus("Brave Browser")
+-- end)
 
 hs.hotkey.bind({ "cmd" }, "1", function()
 	-- hs.application.hide("Ghostty")
+	hideOtherWindowsBesideActiveOne()
 	hs.application.launchOrFocus("Zen Browser")
 
 	-- INFO: Toggle it when needing to do an Resource Override [unfortunetly it's unstable on Zen (Firefox) :c ]
@@ -32,22 +37,27 @@ hs.hotkey.bind({ "cmd" }, "1", function()
 	-- INFO: toggle it when need to debug Safari on iOS (iPhone/iPad)
 	-- hs.application.launchOrFocus("Safari")
 	-- hs.application.launchOrFocus("Simulator")
+
+	-- Hide other windows
 end)
 
 hs.hotkey.bind({ "cmd" }, "2", function()
 	-- hs.application.launchOrFocus("WezTerm")
-	-- hs.application.hide("Zen Browser")
 	hs.application.launchOrFocus("Ghostty")
+	-- hideOtherWindowsBesideActiveOne()
 end)
 
 hs.hotkey.bind({ "cmd" }, "3", function()
 	-- hs.window:minimize()
 	hs.application.launchOrFocus("Slack")
+
+	-- hideOtherWindowsBesideActiveOne()
 end)
 
 hs.hotkey.bind({ "cmd" }, "4", function()
 	-- hs.window:minimize()
 	hs.application.launchOrFocus("Spotify")
+	-- hideOtherWindowsBesideActiveOne()
 end)
 
 hs.hotkey.bind({ "cmd" }, "5", function()
@@ -60,10 +70,12 @@ end)
 -- TODO: Fill 6 with something useful
 hs.hotkey.bind({ "cmd" }, "9", function()
 	hs.application.launchOrFocus("KeePassX")
+	-- hideOtherWindowsBesideActiveOne()
 end)
 
 hs.hotkey.bind({ "cmd" }, "0", function()
 	hs.application.launchOrFocus("ChatGPT")
+	-- hideOtherWindowsBesideActiveOne()
 end)
 
 hs.hotkey.bind(hs_prefix_key, ",", window_management.moveToLeftDisplay)

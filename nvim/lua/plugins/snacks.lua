@@ -1,4 +1,48 @@
--- For handling big files
+local customFilter = {
+  -- Called on every item in the current file list
+  filter = function(item, filter)
+    -- `filter.input` is what you typed in the prompt
+    local input = filter.input or ''
+    -- If the user typed something like:   myTerm | .md
+    -- this pattern tries to capture "myTerm" as `term` and ".md" as `ext`.
+    local term, ext = input:match('^(.-)%s*|%s*(%S+)$')
+    if ext then
+      -- Build a Lua pattern that matches the extension at the end
+      -- e.g. ".md" -> "%.md$"
+      local extPattern = ext:gsub('%.', '%%.') .. '$'
+
+      -- If `term` is non-empty, do some basic substring matching on item.name
+      if term and #term > 0 then
+        if not item.name:lower():find(term:lower(), 1, true) then
+          return false
+        end
+      end
+
+      -- Now ensure the file path ends in that extension
+      if item.path and not item.path:match(extPattern) then
+        return false
+      end
+
+      -- Survived both checks => item is valid
+      return true
+    end
+
+    -- If there's no "| ext" in the input, fall back to normal
+    -- (i.e. don’t do any special filtering)
+    return true
+  end,
+
+  -- Optional: transform function, run before `filter` is applied
+  -- Return `true` if you want to “force refresh” the finder.
+  -- If you only want to do in‐memory filtering, you can usually skip this
+  -- or just return false.
+  transform = function(picker, filter)
+    -- If you want it to re-filter after every keystroke, you could do:
+    -- return true
+    return false
+  end,
+}
+
 return {
   'folke/snacks.nvim',
   ---@type snacks.Config
@@ -16,8 +60,12 @@ return {
       -- your explorer configuration comes here
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
-      replace_netrw = true, -- Replace netrw with the snacks explorer
+      disable = true,
+      replace_netrw = false, -- Replace netrw with the snacks explorer
       ui_select = true,
+      diagnostics_open = true,
+      git_status_open = true,
+      layout = { preset = 'vscode', preview = true },
     },
 
     -- Simple notifier
@@ -71,7 +119,18 @@ return {
       { win = 'list', border = 'none' },
       { win = 'preview', title = '{preview}', height = 0.4, border = 'top' },
     },
-    picker = {},
+
+    picker = {
+      ---@type "input"|"list"|false where to focus when the picker is opened (defaults to "input")
+      focus = 'input',
+      debug = {
+        scores = false, -- show scores in the list
+      },
+      matcher = {
+        frecency = true,
+      },
+      filter = customFilter,
+    },
 
     lazygit = {
       -- automatically configure lazygit to use the current colorscheme

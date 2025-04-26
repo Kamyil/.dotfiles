@@ -1,17 +1,18 @@
 return {
   'rebelot/kanagawa.nvim',
-  enabled = false,
+  enabled = true,
   init = function()
     -- Load the colorscheme here.
     -- Like many other themes, this one has different styles, and you could load
     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-    vim.cmd.colorscheme('kanagawa-dragon')
+    -- INFO:
+    -- vim.cmd.colorscheme('kanagawa-dragon')
 
     -- You can configure highlights by doing something like:
-    vim.cmd.hi('Comment gui=none')
-
-    vim.cmd('highlight TelescopeBorder guibg=none')
-    vim.cmd('highlight TelescopeTitle guibg=none')
+    -- vim.cmd.hi('Comment gui=none')
+    --
+    -- vim.cmd('highlight TelescopeBorder guibg=none')
+    -- vim.cmd('highlight TelescopeTitle guibg=none')
   end,
   setup = {
     transparent = true, -- do not set background color
@@ -19,8 +20,8 @@ return {
     undercurl = true, -- enable undercurls
     commentStyle = { italic = false },
     functionStyle = {},
-    keywordStyle = { italic = true },
-    statementStyle = { bold = true },
+    keywordStyle = { italic = false },
+    statementStyle = { bold = false },
 
     overrides = function(colors)
       local theme = colors.theme
@@ -45,7 +46,7 @@ return {
         BlinkCursorColumnVisual = { bg = colors.palette.springBlue },
         BlinkCursorColumnReplace = { bg = colors.palette.samuraiRed },
         -- Telescope
-        TelescopeTitle = { fg = theme.ui.special, bold = true },
+        TelescopeTitle = { fg = theme.ui.special, bold = false },
         TelescopePromptNormal = { bg = theme.ui.bg_p1 },
         TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
         TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },

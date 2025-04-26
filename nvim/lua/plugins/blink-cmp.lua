@@ -1,4 +1,5 @@
 -- Shameleslly copied from https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/extras/coding/blink.lua
+--
 return {
   {
     'hrsh7th/nvim-cmp',
@@ -31,6 +32,7 @@ return {
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
+
       -- cmdline = function()
       --   local type = vim.fn.cetcmdtype()
       --   -- Search forward and backwars
@@ -86,9 +88,8 @@ return {
       sources = {
         -- adding any nvim-cmp sources here will enable them
         -- with blink.compat
-        compat = {},
+        -- compat = {},
         default = { 'lsp', 'path', 'snippets', 'buffer' },
-        cmdline = {},
       },
 
       keymap = {
@@ -97,65 +98,65 @@ return {
       },
     },
     ---@param opts blink.cmp.Config | { sources: { compat: string[] } }
-    config = function(_, opts)
-      -- setup compat sources
-      local enabled = opts.sources.default
-      for _, source in ipairs(opts.sources.compat or {}) do
-        opts.sources.providers[source] = vim.tbl_deep_extend('force', { name = source, module = 'blink.compat.source' }, opts.sources.providers[source] or {})
-        if type(enabled) == 'table' and not vim.tbl_contains(enabled, source) then
-          table.insert(enabled, source)
-        end
-      end
-
-      -- add ai_accept to <Tab> key
-      if not opts.keymap['<Tab>'] then
-        if opts.keymap.preset == 'super-tab' then -- super-tab
-          opts.keymap['<Tab>'] = {
-            require('blink.cmp.keymap.presets')['super-tab']['<Tab>'][1],
-            -- LazyVim.cmp.map({ 'snippet_forward', 'ai_accept' }),
-            'fallback',
-          }
-        else -- other presets
-          opts.keymap['<Tab>'] = {
-            -- LazyVim.cmp.map({ 'snippet_forward', 'ai_accept' }),
-            'fallback',
-          }
-        end
-      end
-
-      -- Unset custom prop to pass blink.cmp validation
-      opts.sources.compat = nil
-
-      -- check if we need to override symbol kinds
-      for _, provider in pairs(opts.sources.providers or {}) do
-        ---@cast provider blink.cmp.SourceProviderConfig|{kind?:string}
-        if provider.kind then
-          local CompletionItemKind = require('blink.cmp.types').CompletionItemKind
-          local kind_idx = #CompletionItemKind + 1
-
-          CompletionItemKind[kind_idx] = provider.kind
-          ---@diagnostic disable-next-line: no-unknown
-          CompletionItemKind[provider.kind] = kind_idx
-
-          ---@type fun(ctx: blink.cmp.Context, items: blink.cmp.CompletionItem[]): blink.cmp.CompletionItem[]
-          local transform_items = provider.transform_items
-          ---@param ctx blink.cmp.Context
-          ---@param items blink.cmp.CompletionItem[]
-          provider.transform_items = function(ctx, items)
-            items = transform_items and transform_items(ctx, items) or items
-            for _, item in ipairs(items) do
-              item.kind = kind_idx or item.kind
-            end
-            return items
-          end
-
-          -- Unset custom prop to pass blink.cmp validation
-          provider.kind = nil
-        end
-      end
-
-      require('blink.cmp').setup(opts)
-    end,
+    -- config = function(_, opts)
+    --   -- setup compat sources
+    --   local enabled = opts.sources.default
+    --   for _, source in ipairs(opts.sources.compat or {}) do
+    --     opts.sources.providers[source] = vim.tbl_deep_extend('force', { name = source, module = 'blink.compat.source' }, opts.sources.providers[source] or {})
+    --     if type(enabled) == 'table' and not vim.tbl_contains(enabled, source) then
+    --       table.insert(enabled, source)
+    --     end
+    --   end
+    --
+    --   -- add ai_accept to <Tab> key
+    --   if not opts.keymap['<Tab>'] then
+    --     if opts.keymap.preset == 'super-tab' then -- super-tab
+    --       opts.keymap['<Tab>'] = {
+    --         require('blink.cmp.keymap.presets')['super-tab']['<Tab>'][1],
+    --         -- LazyVim.cmp.map({ 'snippet_forward', 'ai_accept' }),
+    --         'fallback',
+    --       }
+    --     else -- other presets
+    --       opts.keymap['<Tab>'] = {
+    --         -- LazyVim.cmp.map({ 'snippet_forward', 'ai_accept' }),
+    --         'fallback',
+    --       }
+    --     end
+    --   end
+    --
+    --   -- Unset custom prop to pass blink.cmp validation
+    --   opts.sources.compat = nil
+    --
+    --   -- check if we need to override symbol kinds
+    --   for _, provider in pairs(opts.sources.providers or {}) do
+    --     ---@cast provider blink.cmp.SourceProviderConfig|{kind?:string}
+    --     if provider.kind then
+    --       local CompletionItemKind = require('blink.cmp.types').CompletionItemKind
+    --       local kind_idx = #CompletionItemKind + 1
+    --
+    --       CompletionItemKind[kind_idx] = provider.kind
+    --       ---@diagnostic disable-next-line: no-unknown
+    --       CompletionItemKind[provider.kind] = kind_idx
+    --
+    --       ---@type fun(ctx: blink.cmp.Context, items: blink.cmp.CompletionItem[]): blink.cmp.CompletionItem[]
+    --       local transform_items = provider.transform_items
+    --       ---@param ctx blink.cmp.Context
+    --       ---@param items blink.cmp.CompletionItem[]
+    --       provider.transform_items = function(ctx, items)
+    --         items = transform_items and transform_items(ctx, items) or items
+    --         for _, item in ipairs(items) do
+    --           item.kind = kind_idx or item.kind
+    --         end
+    --         return items
+    --       end
+    --
+    --       -- Unset custom prop to pass blink.cmp validation
+    --       provider.kind = nil
+    --     end
+    --   end
+    --
+    --   require('blink.cmp').setup(opts)
+    -- end,
   },
 
   -- add icons
