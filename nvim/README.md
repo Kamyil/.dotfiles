@@ -26,6 +26,9 @@ I've also changed the way I'm switching between files. I've replaced barbar with
 which required manual tab clearing too often for me. In Harpoon I can go to buffers for temporary quick edits, but if I want some file to be easly accessable via keypress (cuz f.e. I'm working on it intensively), 
 then I add it to Harpoon List via Alt+A. You can edit the Harpoon List via Alt+E shortcut and there you can easly assign each file to each Alt+1/2/3/4/5 slot shortcut
 
+I've also replaced Telescope with Snacks.picker (together with other Snacks plugins), because I found it faster and more reliable in bigger projects
++makes whole experience more consistent, since those plugins are working within Snacks ecosystem
+
 I've also get rid of tmux in favor of Wezterm and I'm focusing mostly to integrate them well (since Wezterm has full CLI API and it also allows to have config in Lua) 
 But this config will also work great with Tmux, since I don't plan (nor want to) remove TMUX integration, so you can feel safe about it
 
