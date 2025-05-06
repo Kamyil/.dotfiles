@@ -1,3 +1,6 @@
+![Showcase](./kamyil_nvim.png "Showcase")
+
+
 # Intro
 My personal rewrite of my previously battle-tested extended config based on Astronvim
 But this time, it's rewritten from scratch with help of [nvim_kickstart](https://github.com/nvim-lua/kickstart.nvim) project
