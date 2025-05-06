@@ -1,9 +1,11 @@
 eval "$(starship init zsh)"
+DISABLE_AUTO_UPDATE=true
+
+export DISABLE_AUTO_TITLE=true
 
 source "$HOME/.zsh_config_aliases"
 
-# export ZSH=$HOME/.oh-my-zsh
-export WEZTERM_CONFIG_FILE=$HOME/.config/wezterm/init.lua
+# export ZSH=$HOME/.oh-my-zsh export WEZTERM_CONFIG_FILE=$HOME/.config/wezterm/init.lua
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
@@ -70,9 +72,9 @@ HAS_WIDECHARS="false"
 
 # COWPATH="$COWPATH:$HOME/.cowsay/cowfiles"
 # COWPATH="$COWPATH:$HOME/.cowsay/cowfiles"
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 #
 # History related changes
 HISTFILE=$HOME/.zhistory
@@ -121,6 +123,40 @@ sshf() {
   if [[ -n $selected_host ]]; then
     ssh "$selected_host"
   fi
+}
+
+remote_sshfs() {
+  local ssh_alias=$(awk '/^Host / {print $2}' ~/.ssh/config | fzf)
+
+  if [ -z "$ssh_alias" ]; then
+    echo "No alias selected!"
+    return 1
+  fi
+
+  local remote_base_path="/"
+  local remote_dir=$(ssh $ssh_alias "find $remote_base_path -maxdepth 1 -type d" | fzf)
+
+  if [ -z "$remote_dir" ]; then
+    echo "No directory selected!"
+    return 1
+  fi
+
+  local mount_point="$HOME/remote-repos/$ssh_alias"
+
+  mkdir -p $mount_point
+
+  echo "Mounting $remote_dir..."
+  sshfs -F ~/.ssh/config $ssh_alias:$remote_dir $mount_point
+
+  echo "Attaching to Docker container..."
+  ssh $ssh_alias "cd $remote_dir && docker-compose exec app bash"
+
+  # Open the mounted repo in Neovim
+  nvim $mount_point
+
+  # Unmount after Neovim is closed
+  echo "Unmounting $remote_dir..."
+  fusermount -u $mount_point
 }
 
 # (fuzzly) Search directory (and `cd` into it and run neovim on that directory)
@@ -202,9 +238,18 @@ hisf() {
 }
 
 
+
+
+
+
 killf() {
   ps aux | fzf --preview="" --prompt="Select process to kill: " | awk '{print $2}' | xargs -r kill -9
 }
+
+
+
+
+
 
 color_palette() {
   for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done
@@ -248,8 +293,17 @@ alias chsh="~/.local/scripts/tmux-cht/tmux-cht.sh"
 alias private_gitignore="nvim .git/info/exclude"
 alias git_log="serie"
 
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+# git aliases
+alias gpom="git pull origin master"
+alias gpod="git pull origin development"
+alias gc="git checkout"
+alias gcb="git checkout -b"
+alias gags="git add . && git stash"
+alias gsp="git stash pop"
+
+# export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 # disable Brew auto updates
 export HOMEBREW_NO_AUTO_UPDATE=1
 
@@ -279,8 +333,16 @@ export VI_MODE_SET_CURSOR=true
 setopt PROMPT_SUBST
 
 # bun completions
-[ -s "/Users/kamil/.bun/_bun" ] && source "/Users/kamil/.bun/_bun"
+# [ -s "/Users/kamil/.bun/_bun" ] && source "/Users/kamil/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/Users/kamil/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
