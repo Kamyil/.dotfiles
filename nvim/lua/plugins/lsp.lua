@@ -156,8 +156,19 @@ return {
           -- capabilities = {},
           settings = {
             Lua = {
+              diagnostics = {
+                enable = true,
+                globals = { 'love', 'vim' },
+                -- enable some extra strictness
+                unusedLocal = 'Warning', -- warn on unused locals
+                undefinedGlobal = 'Error', -- error on globals that don't exist
+                undefinedField = 'Error', -- warn on fields not listed in @field
+              },
               completion = {
                 callSnippet = 'Replace',
+              },
+              telemetry = {
+                enable = false,
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               -- diagnostics = { disable = { 'missing-fields' } },

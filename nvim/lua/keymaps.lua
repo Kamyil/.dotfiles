@@ -55,7 +55,7 @@ map('<leader>dd', '<cmd>Trouble diagnostics toggle<cr>', 'Toggle LSP diagnostics
 map('<leader>dq', '<cmd>Trouble qflist toggle<cr>', 'Move diagnostics to quickfix list')
 
 map('<leader>e', function()
-  vim.cmd([[ Neotree reveal_force_cwd ]])
+  vim.cmd([[ Neotree reveal_force_cwd toggle ]])
 end, 'Open File Explorer')
 
 helpers.on_lazy_plugin_loaded('snacks', function(Snacks)
@@ -498,10 +498,10 @@ helpers.on_lazy_plugin_loaded('smart-splits', function(smart_splits)
   map('<C-Down>', smart_splits.resize_down, 'Resize Down')
 
   -- Moving between splits
-  -- map('<C-h>', smart_splits.move_cursor_left, 'Move to Left Split')
-  -- map('<C-j>', smart_splits.move_cursor_down, 'Move to Bottom Split')
-  -- map('<C-k>', smart_splits.move_cursor_up, 'Move to Top Split')
-  -- map('<C-l>', smart_splits.move_cursor_right, 'Move to Right Split')
+  map('<C-h>', smart_splits.move_cursor_left, 'Move to Left Split')
+  map('<C-j>', smart_splits.move_cursor_down, 'Move to Bottom Split')
+  map('<C-k>', smart_splits.move_cursor_up, 'Move to Top Split')
+  map('<C-l>', smart_splits.move_cursor_right, 'Move to Right Split')
 
   -- Buffer swapping
   -- map('<leader>bH', smart_splits.swap_buf_left, 'Swap Buffer Left')

@@ -18,11 +18,10 @@ return {
     transparent = true, -- do not set background color
     theme = 'wave', -- Load "wave" theme when 'background' option is not set
     undercurl = true, -- enable undercurls
-    commentStyle = { italic = false },
     functionStyle = {},
-    keywordStyle = { italic = false },
     statementStyle = { bold = false },
-
+    commentStyle = { italic = false },
+    keywordStyle = { italic = false },
     overrides = function(colors)
       local theme = colors.theme
       local makeDiagnosticColor = function(color)
@@ -60,6 +59,8 @@ return {
         DiagnosticVirtualTextInfo = makeDiagnosticColor(theme.diag.info),
         DiagnosticVirtualTextWarn = makeDiagnosticColor(theme.diag.warning),
         DiagnosticVirtualTextError = makeDiagnosticColor(theme.diag.error),
+
+        ['@variable.builtin'] = { italic = false },
       }
     end,
   },

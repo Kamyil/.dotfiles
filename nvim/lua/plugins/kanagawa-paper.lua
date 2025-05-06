@@ -9,28 +9,28 @@ return {
     -- transparent background
     transparent = true,
     -- highlight background for the left gutter
-    gutter = false,
+    gutter = true,
     -- background for diagnostic virtual text
-    diag_background = false,
+    diag_background = true,
     -- dim inactive windows. Disabled when transparent
     dim_inactive = false,
     -- set colors for terminal buffers
     terminal_colors = true,
     -- cache highlights and colors for faster startup.
     -- see Cache section for more details.
-    cache = false,
+    cache = true,
 
     styles = {
       -- style for comments
-      comment = { italic = true },
+      comment = { italic = false, bold = false },
       -- style for functions
-      functions = { italic = false },
+      functions = { italic = false, bold = false },
       -- style for keywords
       keyword = { italic = false, bold = false },
       -- style for statements
       statement = { italic = false, bold = false },
       -- style for types
-      type = { italic = false },
+      type = { italic = false, bold = false },
     },
     -- override default palette and theme colors
     colors = {
@@ -74,6 +74,7 @@ return {
     },
   },
   init = function()
-    vim.cmd.colorscheme('kanagawa-dragon')
+    -- vim.cmd.colorscheme('kanagawa-dragon')
+    vim.cmd.colorscheme('kanagawa-paper-ink')
   end,
 }
