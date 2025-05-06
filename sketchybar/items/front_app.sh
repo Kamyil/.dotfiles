@@ -6,7 +6,7 @@ front_app=(
   label.padding_left=4
   label.padding_right=4
   # Using "JetBrainsMono Nerd Font"
-  label.font="JetBrainsMonoNL Nerd Font Propo:Bold:10.0"
+  label.font="$FONT"
   # Using default "SF Pro"
   # label.font="$FONT:Black:13.0"
   script="$PLUGIN_DIR/front_app.sh"

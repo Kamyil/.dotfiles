@@ -4,6 +4,14 @@ source "$CONFIG_DIR/colors.sh" # Loads all defined colors
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 ITEM_DIR="$CONFIG_DIR/items"
 
+# FONT="ComicShannsMono Nerd Font Propo:12.0"
+# FONT="Maple Mono:12.0"
+FONT="Berkeley Mono:12.0"
+# FONT="Comic Sans MS"
+# FONT="JetBrainsMonoNL Nerd Font Propo:Bold:10.0"
+# FONT="Helvetica:Regular:12.0"
+# FONT="GeistMono Nerd Font Propo:Regular:4.0"
+
 ##### Bar Appearance #####
 # Configuring the general appearance of the bar.
 # These are only some of the options available. For all options see:
@@ -26,7 +34,7 @@ sketchybar --bar height=36        \
                  padding_left=10  \
                  padding_right=10 \
                  padding_bottom=100 \
-                 font_smoothing=false \
+                 font_smoothing=true \
                  topmost=off \
                  color=$BAR_COLOR
 
@@ -44,11 +52,11 @@ sketchybar --bar height=36        \
 # label.font="Liga SFMono Nerd Font:Regular:13.0" \
                      
 
-sketchybar --default icon.font="JetBrainsMonoNL Nerd Font Propo:Bold:10.0"  \
+sketchybar --default icon.font="$FONT"  \
                      icon.color=$WHITE                    \
-                     label.font="JetBrainsMonoNL Nerd Font Propo:Bold:10.0" \
+                     label.font="$FONT" \
                      label.color=$WHITE                   \
-                     background.color=$ITEM_BG_COLOR      \
+                     background.color=$BLACK      \
                      background.corner_radius=5           \
                      background.height=24                 \
                      padding_left=5                       \
@@ -124,8 +132,7 @@ sketchybar --add item clock right \
            --add item battery right \
            --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
            --subscribe battery system_woke power_source_change
-
-           # --set clock update_freq=10 icon=  script="$PLUGIN_DIR/clock.sh" \
+           --set clock update_freq=1 icon=  script="$PLUGIN_DIR/clock.sh" \
 
 
 # sketchybar --add event aerospace_workspace_change
