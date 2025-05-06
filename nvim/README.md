@@ -14,7 +14,7 @@ This config is ready to be cloned and ready to go
 # Update (6th May 2025)
 
 **TL:DR;** Config changed A LOT, but for a good reasons. I just need to clean it up a little bit, after testing plugins and how they will work out in practice. Some of them work great, but some of them
-I didn't really found them useful. Expect cleaning commits in near future
+I didn't really found them useful. Setup is still fast, because they're lazy loaded, but expect cleaning commits in near future
 
 This config went through looooots and loooooots of changes, since I'm experimenting all the time with new plugins and ways to make work 
 more pleasing, more enjoyable (and in result - more productive)
