@@ -93,10 +93,10 @@ return {
           end
         end, { 'i', 's' }),
       }),
-      -- window = {
-      --   completion = cmp.config.window.bordered(),
-      --   documentation = cmp.config.window.bordered(),
-      -- },
+      window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
+      },
       sources = {
         { name = 'copilot' },
         { name = 'nvim_lsp' },

@@ -114,6 +114,17 @@ return {
         end,
       })
 
+      -- in your lsp setup / init.lua
+
+      -- choose whatever border you like: "single", "double", "rounded", "solid", "shadow"
+      local border_style = 'rounded'
+
+      -- override hover handler
+      vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = border_style })
+
+      -- override signature help handler
+      vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = border_style })
+
       -- LSP servers and clients are able to communicate to each other what features they support.
       --  By default, Neovim doesn't support everything that is in the LSP specification.
       --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.

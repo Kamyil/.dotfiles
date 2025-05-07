@@ -114,15 +114,21 @@ helpers.on_lazy_plugin_loaded('snacks', function(Snacks)
   map('gd', function()
     Snacks.picker.lsp_definitions()
   end, '[G]oto [D]efinition')
+  map('gD', function()
+    Snacks.picker.lsp_type_definitions()
+  end, '[G]oto [D]eclaration')
   map('gr', function()
     Snacks.picker.lsp_references()
   end, '[G]oto [R]eferences')
   map('gI', function()
     Snacks.picker.lsp_implementations()
   end, '[G]oto Implementation')
-  map('gy', function()
-    Snacks.picker.lsp_type_definitions()
-  end, '[G]oto T[y]pe Definition')
+  map('K', function()
+    vim.lsp.buf.hover({
+      -- choose whatever border you like: "single", "double", "rounded", "solid", "shadow"
+      border = 'double',
+    })
+  end)
   -- map(  "<leader>ss", function() Snacks.picker.lsp_symbols() end, "LSP Symbols"  )
 
   -- Git
