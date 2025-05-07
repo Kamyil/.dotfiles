@@ -41,10 +41,10 @@ map('<leader>E', '<cmd>Yazi<cr>', 'Open Yazi in current directory')
 
 -- saves file asynchronously, making a more snappy feeling
 local function save_file()
-  -- vim.lsp.buf.format({ async = true })
   vim.defer_fn(function()
     vim.cmd('silent! write')
-    vim.notify('saved')
+    local ts = os.date('%Y-%m-%d %H:%M:%S') -- full date+time
+    vim.notify('saved at ' .. ts)
   end, 10)
 end
 map('<leader>w', save_file, 'Save file')
