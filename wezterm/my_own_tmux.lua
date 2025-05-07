@@ -8,8 +8,8 @@ local my_own_tmux = {
 		-- { key = "t", mods = "CTRL", action = wezterm.action({ SpawnTab = "CurrentPaneDomain" }) },
 
 		-- Close the tab
-		{ key = "w", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = true } }) },
-		{ key = "x", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = true } }) },
+		{ key = "w", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = false } }) },
+		{ key = "x", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = false } }) },
 		{
 			mods = "CTRL",
 			key = "z",
@@ -41,8 +41,10 @@ local my_own_tmux = {
 
 		-- Split vertically
 		{ key = "\\", mods = "CTRL", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
+		{ key = "/", mods = "CTRL", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
 		-- Split horizontally
 		{ key = "-", mods = "CTRL", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
+		{ key = "=", mods = "CTRL", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
 
 		-- Switch to tabs (a.k.a. tmux windows)
 		{ key = "1", mods = "CTRL", action = wezterm.action({ ActivateTab = 0 }) },
@@ -101,7 +103,7 @@ local my_own_tmux = {
 			action = wezterm.action.EmitEvent("toggle_second_brain"),
 		},
 
-		{ key = "i", mods = "CTRL", action = wezterm.action.ShowDebugOverlay },
+		-- { key = "d", mods = "CTRL", action = wezterm.action.ShowDebugOverlay },
 	},
 
 	-- 1-Based Indexing
