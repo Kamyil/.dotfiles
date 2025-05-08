@@ -77,32 +77,19 @@ vim.api.nvim_create_autocmd('BufReadPre', {
 --   command = 'silent source %',
 -- })
 
--- vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufNewFile' }, {
---   pattern = { '*.tpl', '*.smarty' },
---   callback = function()
---     local current_buffer = vim.api.nvim_get_current_buf()
---     local marek_template_lsp_client = vim.lsp.start_client({
---       name = 'mccom-marek-template-language-server',
---       cmd = { 'env', 'RUST_BACKTRACE=1', '/Users/kamil/Work/Projects/mccom/mccom-marek-lsp/target/debug/mccom-marek-lsp' },
---     })
 --
---     if not marek_template_lsp_client then
---       vim.api.nvim_err_writeln('Failed to start Marek LSP')
---       return
---     end
---
---     local attached = vim.lsp.buf_attach_client(current_buffer, marek_template_lsp_client)
---     if not attached then
---       local clients = vim.lsp.get_clients()
---       if #clients == 0 then
---         vim.api.nvim_err_writeln('No active LSP clients found!')
---       else
---         vim.api.nvim_err_writeln('Available LSP clients: ' .. vim.inspect(clients))
---       end
---
---       vim.api.nvim_err_writeln('Failed to attach Marek LSP to buffer: ' .. vim.inspect(marek_template_lsp_client))
---     else
---       print('Marek LSP successfully attached!')
---     end
---   end,
--- })
+-- Autoformat setting
+local set_autoformat = function(pattern, bool_val)
+  vim.api.nvim_create_autocmd({ 'FileType' }, {
+    pattern = pattern,
+    callback = function()
+      vim.b.autoformat = bool_val
+    end,
+  })
+end
+
+set_autoformat({ 'cpp' }, true)
+set_autoformat({ 'fish' }, false)
+set_autoformat({ 'lua' }, false)
+set_autoformat({ 'perl' }, false)
+set_autoformat({ 'yaml' }, false)
