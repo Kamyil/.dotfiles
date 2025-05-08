@@ -139,6 +139,8 @@ vim.cmd([[let &t_Ce = "\e[4:0m"]])
 vim.opt.spell = false
 vim.opt.spelllang = { 'en_us', 'pl_PL' }
 
+vim.opt.winborder = 'single'
+
 -- Colorscheme is unfortunetly set in lua/plugins/catppuccin.lua, because barbar wasn't applying catppuccin styles
 -- when setting colorscheme was placed here :(
 --
