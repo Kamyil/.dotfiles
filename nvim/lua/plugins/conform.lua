@@ -30,6 +30,7 @@ return { -- Autoformat
         css = true,
         sass = true,
         scss = true,
+        svelte = true,
       }
       local lsp_format_opt
       if disable_filetypes[vim.bo[bufnr].filetype] then

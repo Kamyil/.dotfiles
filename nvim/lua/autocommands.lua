@@ -88,8 +88,7 @@ local set_autoformat = function(pattern, bool_val)
   })
 end
 
-set_autoformat({ 'cpp' }, true)
-set_autoformat({ 'fish' }, false)
-set_autoformat({ 'lua' }, false)
-set_autoformat({ 'perl' }, false)
-set_autoformat({ 'yaml' }, false)
+set_autoformat({ 'lua' }, true)
+set_autoformat({ 'svelte' }, false)
+set_autoformat({ 'js' }, false)
+set_autoformat({ 'ts' }, false)

@@ -27,10 +27,10 @@ config.audible_bell = "Disabled"
 -- config.font = wezterm.font("ComicMonoNF", { weight = "Regular" })
 -- config.font = wezterm.font("ComicMono Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("Maple Mono", { weight = 700 })
-config.font = wezterm.font("Berkeley Mono", { weight = 700 })
+config.font = wezterm.font("Berkeley Mono", { weight = 600 })
 -- config.font = wezterm.font("Monocraft Nerd Font", { weight = "Regular" })
-
-config.text_background_opacity = 0.7
+config.font_size = 12
+config.text_background_opacity = 1
 
 -- Alternative fonts for testing:
 --
@@ -42,8 +42,12 @@ config.text_background_opacity = 0.7
 -- config.font = wezterm.font("Hack Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("RobotoMono Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("ZedMono Nerd Font")
+--
+config.default_cursor_style = "BlinkingBar"
+config.command_palette_font_size = 14
+config.command_palette_bg_color = "#1a1b26" -- Darker Tokyo Night background
+config.force_reverse_video_cursor = true
 
-config.font_size = 13
 config.automatically_reload_config = true -- Reload the config automatically when modified
 config.enable_kitty_graphics = true -- Enable support for Kitty graphics protocol
 config.window_close_confirmation = "AlwaysPrompt" -- Since WezTerm workspaces do not have tmux-like living sessions in the background, we need to make our ass safe from exiting
@@ -68,10 +72,10 @@ config.line_height = 1.00
 config.window_decorations = "RESIZE" -- Minimal decorations (no title bar)
 
 -- Background opacity and blur
--- config.macos_window_background_blur = 20 -- Blur on macOS
+config.macos_window_background_blur = 20 -- Blur on macOS
 config.scrollback_lines = 3500 -- Increase scrollback buffer (default is 3500)
--- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" } -- Enable ligatures
-config.enable_wayland = false -- (Mac doesn’t use Wayland but avoids auto checks)
+config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" } -- Enable ligatures
+config.enable_wayland = false
 
 -- Window padding
 config.window_padding = {
@@ -125,8 +129,12 @@ config.keys = {
 }
 
 -- Font rendering tweaks for macOS
-config.freetype_load_target = "Light" -- Finer rendering control
+-- config.freetype_load_target = "Light" -- Finer rendering control
 -- config.freetype_render_target = "HorizontalLcd"
+config.freetype_load_target = "Light"
+config.freetype_render_target = "HorizontalLcd"
+-- config.front_end = "OpenGL"
+-- config.front_end = "WebGpu"
 
 -- Background customization
 config.background = {
@@ -136,7 +144,7 @@ config.background = {
 		},
 		width = "100%",
 		height = "100%",
-		opacity = 1,
+		opacity = 0.95,
 	},
 	-- 	{
 	-- 		source = {
@@ -202,7 +210,7 @@ for _, nvim_split_navigator_keys in ipairs(nvim_split_navigator.keys) do
 	table.insert(config.keys, nvim_split_navigator_keys)
 end
 
--- Center tab bar
+-- -- Center tab bar
 wezterm.on("update-status", function(gui_window, pane)
 	local tabs = gui_window:mux_window():tabs()
 	local mid_width = 0
@@ -220,11 +228,6 @@ end)
 
 local current_workspace = nil
 
-wezterm.on("workspace-changed", function(window, pane, workspace)
-	current_workspace = workspace
-	window:set_right_status("Workspace: " .. workspace)
-end)
-
 wezterm.on("update-right-status", function(window, pane)
 	if current_workspace then
 		window:set_right_status("Workspace: " .. current_workspace)
@@ -234,7 +237,7 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 	return string.format(" %d: %s ", tab.tab_index + 1, tab.tab_title)
 end)
 
-local ssh_domains = {}
+-- local ssh_domains = {}
 
 -- for host, config in pairs(wezterm.enumerate_ssh_hosts()) do
 -- 	table.insert(ssh_domains, {
@@ -257,44 +260,44 @@ local ssh_domains = {}
 -- 	})
 -- end
 
--- wezterm.on("pick_or_create_session", function(window, pane)
--- 	local mux = wezterm.mux
--- 	local session_names = {}
---
--- 	-- Get the names of all existing sessions
--- 	for _, window in ipairs(mux.all_windows()) do
--- 		table.insert(session_names, window:get_workspace())
--- 	end
---
--- 	-- Prompt the user with a fuzzy search input
--- 	window:perform_action(
--- 		wezterm.action.PromptInputLine({
--- 			description = "Select or create a session:",
--- 			action = wezterm.action_callback(function(input)
--- 				if input and input ~= "" then
--- 					-- Check if the session already exists
--- 					local session_exists = false
--- 					for _, name in ipairs(session_names) do
--- 						if name == input then
--- 							session_exists = true
--- 							break
--- 						end
--- 					end
---
--- 					if session_exists then
--- 						-- Attach to the existing session
--- 						mux.set_active_workspace(input)
--- 					else
--- 						-- Create a new session
--- 						mux.set_active_workspace(input)
--- 						mux.spawn_window({ workspace = input })
--- 					end
--- 				end
--- 			end),
--- 		}),
--- 		pane
--- 	)
--- end)
+wezterm.on("pick_or_create_session", function(window, pane)
+	local mux = wezterm.mux
+	local session_names = {}
+
+	-- Get the names of all existing sessions
+	for _, window in ipairs(mux.all_windows()) do
+		table.insert(session_names, window:get_workspace())
+	end
+
+	-- Prompt the user with a fuzzy search input
+	window:perform_action(
+		wezterm.action.PromptInputLine({
+			description = "Select or create a session:",
+			action = wezterm.action_callback(function(input)
+				if input and input ~= "" then
+					-- Check if the session already exists
+					local session_exists = false
+					for _, name in ipairs(session_names) do
+						if name == input then
+							session_exists = true
+							break
+						end
+					end
+
+					if session_exists then
+						-- Attach to the existing session
+						mux.set_active_workspace(input)
+					else
+						-- Create a new session
+						mux.set_active_workspace(input)
+						mux.spawn_window({ workspace = input })
+					end
+				end
+			end),
+		}),
+		pane
+	)
+end)
 
 -- wezterm.on("toggle_second_brain", )
 
@@ -302,48 +305,51 @@ local ssh_domains = {}
 --
 -- local last_workspace = nil -- Track the last active workspace
 
-wezterm.on("toggle_second_brain", function(window, pane)
-	local mux = wezterm.mux
-	local current_workspace = mux.get_active_workspace()
-
-	if current_workspace == "second-brain" then
-		-- Switch back to the last workspace
-		if last_workspace then
-			print("Switching back to:", last_workspace)
-			mux.set_active_workspace(last_workspace)
-		end
-	else
-		-- Save the current workspace
-		last_workspace = current_workspace
-
-		-- Check if the 'second-brain' workspace exists
-		local existing_workspaces = mux.get_workspace_names()
-		local second_brain_exists = false
-		for _, name in ipairs(existing_workspaces) do
-			if name == "second-brain" then
-				second_brain_exists = true
-				break
-			end
-		end
-
-		-- Create 'second-brain' if it doesn't exist
-		if not second_brain_exists then
-			print("Creating new workspace: second-brain in ~/second-brain")
-			mux.spawn_window({
-				workspace = "second-brain",
-				cwd = wezterm.home_dir .. "/second-brain && nvim .",
-			})
-		end
-
-		-- Switch to the 'second-brain' workspace
-		print("Switching to: second-brain")
-		mux.set_active_workspace("second-brain")
-	end
-end)
+-- wezterm.on("toggle_second_brain", function(window, pane)
+-- 	local mux = wezterm.mux
+-- 	local current_workspace = mux.get_active_workspace()
+--
+-- 	if current_workspace == "second-brain" then
+-- 		-- Switch back to the last workspace
+-- 		if last_workspace then
+-- 			print("Switching back to:", last_workspace)
+-- 			mux.set_active_workspace(last_workspace)
+-- 		end
+-- 	else
+-- 		-- Save the current workspace
+-- 		last_workspace = current_workspace
+--
+-- 		-- Check if the 'second-brain' workspace exists
+-- 		local existing_workspaces = mux.get_workspace_names()
+-- 		local second_brain_exists = false
+-- 		for _, name in ipairs(existing_workspaces) do
+-- 			if name == "second-brain" then
+-- 				second_brain_exists = true
+-- 				break
+-- 			end
+-- 		end
+--
+-- 		-- Create 'second-brain' if it doesn't exist
+-- 		if not second_brain_exists then
+-- 			print("Creating new workspace: second-brain in ~/second-brain")
+-- 			mux.spawn_window({
+-- 				workspace = "second-brain",
+-- 				cwd = wezterm.home_dir .. "/second-brain && nvim .",
+-- 			})
+-- 		end
+--
+-- 		-- Switch to the 'second-brain' workspace
+-- 		print("Switching to: second-brain")
+-- 		mux.set_active_workspace("second-brain")
+-- 	end
+-- end)
 --
 wezterm.on("window-config-reloaded", function(window, pane)
 	toast(window, "Configuration reloaded!")
 end)
 
+-- TODO: Make it working
+-- local statusbar = require("./plugins/townk/statusbar/init")
+-- statusbar.apply_to_config(config)
 -- Return the configuration
 return config
