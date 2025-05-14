@@ -8,8 +8,8 @@ local my_own_tmux = {
 		-- { key = "t", mods = "CTRL", action = wezterm.action({ SpawnTab = "CurrentPaneDomain" }) },
 
 		-- Close the tab
-		{ key = "w", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = false } }) },
-		{ key = "x", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = false } }) },
+		-- { key = "w", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = true } }) },
+		{ key = "x", mods = "CTRL", action = wezterm.action({ CloseCurrentPane = { confirm = true } }) },
 		{
 			mods = "CTRL",
 			key = "z",

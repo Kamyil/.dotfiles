@@ -29,7 +29,7 @@ config.audible_bell = "Disabled"
 -- config.font = wezterm.font("Maple Mono", { weight = 700 })
 config.font = wezterm.font("Berkeley Mono", { weight = 600 })
 -- config.font = wezterm.font("Monocraft Nerd Font", { weight = "Regular" })
-config.font_size = 12
+config.font_size = 11
 config.text_background_opacity = 1
 
 -- Alternative fonts for testing:
@@ -144,10 +144,10 @@ config.background = {
 		},
 		width = "100%",
 		height = "100%",
-		opacity = 0.95,
+		opacity = 0.99,
 	},
-	-- 	{
-	-- 		source = {
+	-- {
+	-- 	source = {
 	-- File options for static images:
 	-- File = "/Users/kamil/Desktop/Wallpapers/Catppuccin/isekai.jpg",
 	-- File = "/Users/kamil/Desktop/Wallpapers/Catppuccin/misty-boat.jpg",
@@ -163,6 +163,7 @@ config.background = {
 	-- File = "/Users/kamil/Desktop/Wallpapers/everforest/zelda-forest.gif",
 	-- File = "/Users/kamil/Desktop/Wallpapers/Kanagawa/black-and-red.jpg",
 	-- File = "/Users/kamil/Desktop/Wallpapers/Kanagawa/moon-lights-4k-art.jpg",
+	-- File = "/Users/kamil/Desktop/Wallpapers/Texture/black-cozy.png",
 
 	-- File options for GIFs:
 	-- File = "/Users/kamil/Desktop/Wallpapers/gif/witcher.gif",
@@ -184,8 +185,8 @@ config.background = {
 	-- 	vertical_align = "Middle",
 	-- 	repeat_y_size = "100%",
 	-- 	hsb = {
-	-- 		brightness = 0.029, -- Adjust brightness
-	-- 		saturation = 0.90, -- Full saturation
+	-- 		brightness = 1.000, -- Adjust brightness
+	-- 		saturation = 1.00, -- Full saturation
 	-- 	},
 	-- },
 	-- Darken layer to make text more contrast
