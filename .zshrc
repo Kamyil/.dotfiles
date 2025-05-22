@@ -1,5 +1,6 @@
 eval "$(starship init zsh)"
 DISABLE_AUTO_UPDATE=true
+export MANPAGER="nvim -c 'Man!' -"
 
 export DISABLE_AUTO_TITLE=true
 
