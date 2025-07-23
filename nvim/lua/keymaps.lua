@@ -126,7 +126,7 @@ helpers.on_lazy_plugin_loaded('snacks', function(Snacks)
   map('K', function()
     vim.lsp.buf.hover({
       -- choose whatever border you like: "single", "double", "rounded", "solid", "shadow"
-      -- border = 'double',
+      border = 'single',
     })
   end)
   -- map(  "<leader>ss", function() Snacks.picker.lsp_symbols() end, "LSP Symbols"  )

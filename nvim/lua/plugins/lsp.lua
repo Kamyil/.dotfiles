@@ -117,7 +117,7 @@ return {
       -- in your lsp setup / init.lua
 
       -- choose whatever border you like: "single", "double", "rounded", "solid", "shadow"
-      local border_style = 'rounded'
+      local border_style = 'single'
 
       -- override hover handler
       vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = border_style })

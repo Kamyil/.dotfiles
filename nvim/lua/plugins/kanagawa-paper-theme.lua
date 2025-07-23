@@ -46,9 +46,14 @@ return {
       canvas = { brightness = 0, saturation = 0 },
     },
     -- override highlight groups
-    overrides = function(colors)
-      return {}
-    end,
+    -- overrides = function()
+    --   local colors = require('kanagawa.colors').setup()
+    --   local palette_colors = colors.palette
+    --   local theme_colors = colors.theme
+    --   return {
+    --     ['@tag.svelte'] = { fg = '#2D4F67', bold = true },
+    --   }
+    -- end,
 
     -- uses lazy.nvim, if installed, to automatically enable needed plugins
     auto_plugins = true,
@@ -73,8 +78,19 @@ return {
       },
     },
   },
-  init = function()
-    -- vim.cmd.colorscheme('kanagawa-dragon')
+  config = function(_, opts)
+    -- make sure true color is on
+    vim.opt.termguicolors = true
+    vim.opt.background = 'dark'
+
+    -- 1) setup + colorscheme
+    require('kanagawa-paper').setup(opts)
     vim.cmd.colorscheme('kanagawa-paper-ink')
+
+    -- 2) schedule your two TS overrides for the next event loop
+    vim.schedule(function()
+      vim.api.nvim_set_hl(0, '@tag.svelte', { fg = '#8EA4A2', bold = false })
+      vim.api.nvim_set_hl(0, '@tag.attribute.svelte', { fg = '#B98D7B', bold = false })
+    end)
   end,
 }
