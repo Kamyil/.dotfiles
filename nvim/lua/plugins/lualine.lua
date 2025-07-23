@@ -8,7 +8,7 @@ return {
 
     return {
       icons_enabled = true,
-      theme = 'everforest',
+      theme = 'kanagawa',
       component_separators = { left = '|', right = '|' },
       section_separators = { left = '|', right = '|' },
       disabled_filetypes = {
@@ -17,7 +17,7 @@ return {
       },
       ignore_focus = {},
       -- always_divide_middle = true,
-      always_show_tabline = true,
+      always_show_tabline = false,
       globalstatus = false,
 
       refresh = {

@@ -1,5 +1,5 @@
 return {
-  'windwp/nvim-ts-autotag',
+  'PriceHiller/nvim-ts-autotag',
   event = 'BufReadPre BufNewFile',
   enabled = true,
   setup = {

@@ -96,10 +96,20 @@ sketchybar --add item chevron left \
 
 sketchybar --add item tmux.attached left \
 		       --set tmux.attached \
-			     icon.drawing=off  \
+			     icon.drawing=on  \
 			     script="$PLUGIN_DIR/tmux.attached.sh"				\
 		       --add event tmux_session_update \
 		       --subscribe tmux.attached tmux_session_update
+
+# add a RAM monitor
+sketchybar --add item memory right \
+           --set memory            \
+               script="$PLUGIN_DIR/memory.sh" \
+               update_freq=5     \
+               icon=           \
+               icon.padding_right=5 \
+               label.padding_left=5  \
+               label.padding_right=5
 
 ##### Adding Right Items #####
 # In the same way as the left items we can add items to the right side.

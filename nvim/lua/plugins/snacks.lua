@@ -47,6 +47,11 @@ return {
   'folke/snacks.nvim',
   ---@type snacks.Config
   opts = {
+    notifier = {
+      -- your notifier configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
     bigfile = {
       notify = true,
       -- your bigfile configuration comes here
@@ -60,7 +65,7 @@ return {
       -- your explorer configuration comes here
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
-      disable = true,
+      disable = false,
       replace_netrw = false, -- Replace netrw with the snacks explorer
       ui_select = true,
       diagnostics_open = true,
@@ -130,6 +135,9 @@ return {
         frecency = true,
       },
       filter = customFilter,
+      layout = {
+        border = 'single',
+      },
     },
 
     lazygit = {

@@ -1,5 +1,6 @@
 -- Contains all vim options settings
 --
+--
 
 -- Needed for very own specific settings that are not related to vim globals
 local M = {}
@@ -32,7 +33,7 @@ vim.o.fileencoding = 'utf-8'
 vim.o.fileencodings = 'utf-8'
 
 -- set global statusline across all splits
-vim.opt.laststatus = 3
+vim.opt.laststatus = 0
 
 -- Don't do swaps of a file, but rather save the state for undotree in order to be able to access file state from ages ago
 vim.opt.swapfile = false
@@ -135,7 +136,7 @@ vim.opt.smartindent = true -- make indenting smarter again
 vim.cmd([[let &t_Cs = "\e[4:3m"]])
 vim.cmd([[let &t_Ce = "\e[4:0m"]])
 
--- Enable spell check
+-- Toggle spell check
 vim.opt.spell = false
 vim.opt.spelllang = { 'en_us', 'pl_PL' }
 

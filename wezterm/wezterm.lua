@@ -8,6 +8,7 @@ local act = wezterm.action
 local function toast(window, message)
 	window:toast_notification("wezterm", message .. " - " .. os.date("%I:%M:%S %p"), nil, 1000)
 end
+
 local my_own_tmux = require("./my_own_tmux")
 -- local utils = require("./utils")
 local nvim_split_navigator = require("./nvim_split_navigator")
@@ -29,7 +30,7 @@ config.audible_bell = "Disabled"
 -- config.font = wezterm.font("Maple Mono", { weight = 700 })
 config.font = wezterm.font("Berkeley Mono", { weight = 600 })
 -- config.font = wezterm.font("Monocraft Nerd Font", { weight = "Regular" })
-config.font_size = 11
+config.font_size = 13
 config.text_background_opacity = 1
 
 -- Alternative fonts for testing:

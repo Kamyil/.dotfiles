@@ -1,3 +1,4 @@
+vim.cmd.colorscheme('kanagawa-paper-ink')
 -- Ideally this file should not even exists, but in practice
 -- I need some place to polish the experience
 --

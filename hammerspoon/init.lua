@@ -7,9 +7,9 @@ local window_management = require("./lua/window_management")
 -- hs.hotkey.bind({ "cmd" }, "1", function()
 -- end)
 
-local hs_prefix_key = { "cmd", "ctrl" }
+local hs_prefix_key = { "cmd", "shift" }
 
-hs.window.setShadows(true)
+-- hs.window.setShadows(true)
 
 local function hideOtherWindowsBesideActiveOne()
 	hs.eventtap.keyStroke({ "cmd", "alt" }, "h")
@@ -26,10 +26,30 @@ end
 -- 	hs.application.launchOrFocus("Brave Browser")
 -- end)
 
+-- hs.hotkey.bind({ "cmd" }, "Space", function()
+-- 	-- local cmd = [[
+-- 	--    open -n -a WezTerm --args \
+-- 	--      --config-file ~/.config/wezterm/launchtty.lua
+-- 	--  ]]
+-- 	local cmd = [[
+-- 		ghostty -e ~/.config/launchtty.lua
+-- 	]]
+-- 	local ok, _, code = hs.execute(cmd)
+-- 	if not ok then
+-- 		hs.alert.show("Failed to launch WezTerm: " .. code)
+-- 	end
+-- end)
+
+hs.hotkey.bind(hs_prefix_key, "b", function()
+	hs.caffeinate.lockScreen()
+end)
+
 hs.hotkey.bind({ "cmd" }, "1", function()
 	-- hs.application.hide("Ghostty")
-	hideOtherWindowsBesideActiveOne()
-	hs.application.launchOrFocus("Zen Browser")
+	-- hideOtherWindowsBesideActiveOne()
+
+	hs.application.launchOrFocus("Vivaldi")
+	-- hs.application.launchOrFocus("Zen Browser")
 
 	-- INFO: Toggle it when needing to do an Resource Override [unfortunetly it's unstable on Zen (Firefox) :c ]
 	-- hs.application.launchOrFocus("Brave Browser")
@@ -61,13 +81,16 @@ hs.hotkey.bind({ "cmd" }, "4", function()
 end)
 
 hs.hotkey.bind({ "cmd" }, "5", function()
-	hs.application.launchOrFocus("Messages")
+	hs.application.launchOrFocus("Messenger")
 end)
 
 -- TODO: Fill 6 with something useful
 -- TODO: Fill 7 with something useful
--- TODO: Fill 8 with something useful
--- TODO: Fill 6 with something useful
+--
+hs.hotkey.bind({ "cmd" }, "8", function()
+	hs.application.launchOrFocus("DBeaver")
+end)
+
 hs.hotkey.bind({ "cmd" }, "9", function()
 	hs.application.launchOrFocus("KeePassX")
 	-- hideOtherWindowsBesideActiveOne()
