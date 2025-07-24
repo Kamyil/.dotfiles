@@ -1,51 +1,91 @@
---[[
---
--- This file is not required for your own configuration,
--- but helps people determine if their system is setup correctly.
---
---]]
+-- Comprehensive health check for the entire Neovim configuration
+local M = {}
 
-local check_version = function()
-  if not vim.version.cmp then
-    vim.health.error(string.format("Neovim out of date: '%s'. Upgrade to latest stable or nightly", tostring(vim.version())))
-    return
-  end
+function M.check_all()
+  print('═══════════════════════════════════')
+  print('      NEOVIM CONFIGURATION HEALTH   ')
+  print('═══════════════════════════════════')
+  print('')
 
-  if vim.version.cmp(vim.version(), { 0, 9, 4 }) >= 0 then
-    vim.health.ok(string.format("Neovim version is: '%s'", tostring(vim.version())))
+  -- Check Mason tools
+  print('🔧 MASON TOOLS:')
+  local mason_verify = require('config.mason-verify')
+  mason_verify.verify_tools()
+  print('')
+
+  -- Check LSP status
+  print('󰒋 LSP STATUS:')
+  local bufnr = vim.api.nvim_get_current_buf()
+  local clients = vim.lsp.get_clients({ bufnr = bufnr })
+  if #clients > 0 then
+    for _, client in ipairs(clients) do
+      print('  ✓ ' .. client.name .. ' (ID: ' .. client.id .. ')')
+    end
   else
-    vim.health.error(string.format("Neovim out of date: '%s'. Upgrade to latest stable or nightly", tostring(vim.version())))
+    print('  ⚠ No LSP clients attached to current buffer')
   end
-end
+  print('')
 
-local check_external_reqs = function()
-  -- Basic utils: `git`, `make`, `unzip`
-  for _, exe in ipairs({ 'git', 'make', 'unzip', 'rg' }) do
-    local is_executable = vim.fn.executable(exe) == 1
-    if is_executable then
-      vim.health.ok(string.format("Found executable: '%s'", exe))
+  -- Check formatters
+  print('󰉿 FORMATTERS:')
+  local ok, conform = pcall(require, 'conform')
+  if ok then
+    local formatters = conform.list_formatters_to_run(0)
+    if #formatters > 0 then
+      for _, formatter in ipairs(formatters) do
+        print('  ✓ ' .. formatter.name)
+      end
     else
-      vim.health.warn(string.format("Could not find executable: '%s'", exe))
+      print('  ⚠ No formatters available for ' .. vim.bo.filetype)
+    end
+  else
+    print('  ✗ Conform.nvim not loaded')
+  end
+  print('')
+
+  -- Check linters
+  print('󰁨 LINTERS:')
+  local ok, lint = pcall(require, 'lint')
+  if ok then
+    local linters = lint.linters_by_ft[vim.bo.filetype] or {}
+    if #linters > 0 then
+      for _, linter in ipairs(linters) do
+        print('  ✓ ' .. linter)
+      end
+    else
+      print('  ⚠ No linters configured for ' .. vim.bo.filetype)
+    end
+  else
+    print('  ✗ nvim-lint not loaded')
+  end
+  print('')
+
+  -- Check key plugins
+  print('📦 KEY PLUGINS:')
+  local plugins_to_check = {
+    { name = 'mason', module = 'mason' },
+    { name = 'conform', module = 'conform' },
+    { name = 'lint', module = 'lint' },
+    { name = 'trouble', module = 'trouble' },
+    { name = 'dap', module = 'dap' },
+    { name = 'treesitter', module = 'nvim-treesitter' },
+  }
+
+  for _, plugin in ipairs(plugins_to_check) do
+    local ok, _ = pcall(require, plugin.module)
+    if ok then
+      print('  ✓ ' .. plugin.name)
+    else
+      print('  ✗ ' .. plugin.name .. ' (not loaded)')
     end
   end
+  print('')
 
-  return true
+  print('Run :checkhealth for detailed Neovim health information')
+  print('Run :MasonVerify for detailed Mason tool verification')
 end
 
-return {
-  check = function()
-    vim.health.start('kickstart.nvim')
+-- Create user command
+vim.api.nvim_create_user_command('HealthCheck', M.check_all, { desc = 'Run comprehensive configuration health check' })
 
-    vim.health.info([[NOTE: Not every warning is a 'must-fix' in `:checkhealth`
-
-    Fix only warnings for plugins and languages you intend to use.
-    Mason will give warnings for languages that are not installed.
-    You do not need to install, unless you want to use those languages!]])
-
-    local uv = vim.uv or vim.loop
-    vim.health.info('System Information: ' .. vim.inspect(uv.os_uname()))
-
-    check_version()
-    check_external_reqs()
-  end,
-}
+return M

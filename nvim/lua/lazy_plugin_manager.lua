@@ -14,9 +14,15 @@ end
 vim.opt.runtimepath:prepend(lazypath)
 
 -- NOTE: Setup lazy nvim which is the package manager for your plugins
-
 require('lazy').setup('plugins', {
+  install = {
+    colorscheme = { 'default' },
+  },
+  ui = {
+    border = 'rounded',
+  },
   change_detection = {
+    enabled = true,
     -- this option finally disables the annoying blocking notification
     -- https://github.com/folke/lazy.nvim/issues/32#issuecomment-1443733721
     notify = false,

@@ -1,150 +1,68 @@
--- Contains all vim options settings
---
---
-
--- Needed for very own specific settings that are not related to vim globals
-local M = {}
-
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
-
--- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = true
-
--- [[ Setting options ]]
--- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
---
--- 4 space indents by default (overriden per project later)
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
--- I don't like line wrapping
-vim.opt.wrap = false
-
--- Set encoding to UTF-8
-vim.o.encoding = 'utf-8'
-vim.o.fileencoding = 'utf-8'
-vim.o.fileencodings = 'utf-8'
-
--- set global statusline across all splits
-vim.opt.laststatus = 0
-
--- Don't do swaps of a file, but rather save the state for undotree in order to be able to access file state from ages ago
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir'
-vim.opt.undofile = true -- enable persistent undo
-vim.opt.updatetime = 100 -- faster completion (4000ms default)
-
-vim.opt.incsearch = true
-
-vim.opt.termguicolors = true
-
--- Make line numbers default
-vim.opt.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
-vim.opt.relativenumber = true
-
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
-
--- Don't show the mode, since it's already in the status line
-vim.opt.showmode = false
-
--- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-end)
-
--- Enable break indent
-vim.opt.breakindent = true
-
--- Save undo history
-vim.opt.undofile = true
-
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-
--- Keep signcolumn on by default
-vim.opt.signcolumn = 'yes'
-
--- Decrease update time
-vim.opt.updatetime = 50
-
--- Decrease mapped sequence wait time
--- Displays which-key popup sooner
-vim.opt.timeoutlen = 200
-
--- Configure how new splits should be opened
-vim.opt.splitright = true
-vim.opt.splitbelow = true
-
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
-vim.opt.list = false
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-
-vim.opt.fillchars = { eob = ' ' } -- change the character at the end of buffer
-
--- Preview substitutions live, as you type!
-vim.opt.inccommand = 'split'
-
--- Show which line your cursor is on
-vim.opt.cursorline = true
-
--- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 8
-vim.opt.ruler = false -- Don't show the ruler
-vim.opt.sidescrolloff = 8 -- Makes sure there are always eight lines of context
-
--- Enable settings per project
-vim.g.editorconfig = true
-
--- Enable icons (`nvim-tree/nvim-web-devicons` plugin in this case)
-vim.g.icons_enabled = true
-
--- Disable default LSP inline diagnostic, in favor of `lsp-lines.nvim`
-vim.diagnostic.config({
-  virtual_text = false, -- Ensure virtual text is disabled since lsp_lines handles it
-  virtual_lines = { only_current_line = false },
-  signs = true,
-  underline = true,
-  update_in_insert = false,
-  severity_sort = true,
-})
+vim.g.mapleader = ' ' -- change leader to a space
+vim.g.maplocalleader = ' ' -- change localleader to a space
 
 vim.g.loaded_netrw = 1 -- disable netrw
 vim.g.loaded_netrwPlugin = 1 --  disable netrw
+
+vim.opt.incsearch = true -- make search act like search in modern browsers
+vim.opt.backup = false -- creates a backup file
+vim.opt.clipboard = 'unnamedplus' -- allows neovim to access the system clipboard
+vim.opt.cmdheight = 1 -- more space in the neovim command line for displaying messages
+vim.opt.completeopt = { 'menu', 'menuone', 'noselect' } -- mostly just for cmp
 vim.opt.conceallevel = 0 -- so that `` is visible in markdown files
+vim.opt.fileencoding = 'utf-8' -- the encoding written to a file
+vim.opt.hlsearch = true -- highlight all matches on previous search pattern
 vim.opt.ignorecase = true -- ignore case in search patterns
+vim.opt.mouse = 'a' -- allow the mouse to be used in neovim
+vim.opt.pumheight = 10 -- pop up menu height
+vim.opt.showmode = false -- we don't need to see things like -- INSERT -- anymore
+vim.opt.showtabline = 0 -- always show tabs
 vim.opt.smartcase = true -- smart case
 vim.opt.smartindent = true -- make indenting smarter again
+vim.opt.splitbelow = true -- force all horizontal splits to go below current window
+vim.opt.splitright = true -- force all vertical splits to go to the right of current window
+vim.opt.swapfile = false -- creates a swapfile
+vim.opt.termguicolors = true -- set term gui colors (most terminals support this)
+vim.opt.timeoutlen = 1000 -- time to wait for a mapped sequence to complete (in milliseconds)
+vim.opt.undofile = true -- enable persistent undo
+vim.opt.updatetime = 100 -- faster completion (4000ms default)
+vim.opt.writebackup = false -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
+vim.opt.expandtab = true -- convert tabs to spaces
+vim.opt.shiftwidth = 2 -- the number of spaces inserted for each indentation
+vim.opt.cursorline = false -- highlight the current line
+vim.opt.number = true -- set numbered lines
+vim.opt.breakindent = true -- wrap lines with indent
+vim.opt.relativenumber = true -- set relative numbered lines
+vim.opt.numberwidth = 4 -- set number column width to 2 {default 4}
+vim.opt.signcolumn = 'yes:1' --  show the sign column, otherwise it would shift the text each time
+vim.opt.wrap = false -- display lines as one long line
+-- vim.opt.scrolloff = 8                                   -- Makes sure there are always eight lines of context
+-- vim.opt.sidescrolloff = 8                               -- Makes sure there are always eight lines of context
+vim.opt.showcmd = false -- Don't show the command in the last line
+vim.opt.ruler = true -- Don't show the ruler
+vim.opt.guifont = 'monospace:h17' -- the font used in graphical neovim applications
+vim.opt.title = true -- set the title of window to the value of the titlestring
+vim.opt.confirm = true -- confirm to save changes before exiting modified buffer
+vim.opt.fillchars = { eob = ' ' } -- change the character at the end of buffer
+-- vim.opt.winborder = "rounded" -- solid
+vim.opt.winborder = 'single' -- https://neovim.io/doc/user/options.html#'winborder'
 
--- Undercurl errors and warnings like in VSCode
-vim.cmd([[let &t_Cs = "\e[4:3m"]])
-vim.cmd([[let &t_Ce = "\e[4:0m"]])
+-- vim.opt.guicursor = ""                          -- set the cursor to be a vertical bar
 
--- Toggle spell check
-vim.opt.spell = false
-vim.opt.spelllang = { 'en_us', 'pl_PL' }
+-- vim.opt.cursorlineopt = "number"              -- set the cursorline
+-- vim.opt.tabstop = 2                           -- insert 2 spaces for a tab
+-- vim.opt.laststatus = 0 -- Always display the status line
 
-vim.opt.winborder = 'single'
-vim.g.autoformat = false
-
--- Colorscheme is unfortunetly set in lua/plugins/catppuccin.lua, because barbar wasn't applying catppuccin styles
--- when setting colorscheme was placed here :(
---
---
-return M
+vim.filetype.add({
+  extension = {
+    env = 'dotenv',
+  },
+  filename = {
+    ['.env'] = 'dotenv',
+    ['env'] = 'dotenv',
+  },
+  pattern = {
+    ['[jt]sconfig.*.json'] = 'jsonc',
+    ['%.env%.[%w_.-]+'] = 'dotenv',
+  },
+})
