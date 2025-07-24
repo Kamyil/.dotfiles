@@ -9,12 +9,18 @@
 
 -- Load and configure Vim options
 require('options')
+-- Load LSP
+require('lsp')
+local smh = 2
+
 -- Load keymaps/mappings
 require('keymaps')
 -- Load autocommands
 require('autocommands')
 -- Load lazy.nvim package manager (and before it - install if it's not installed)
 require('lazy_plugin_manager')
+-- Load colorscheme
+require('colorscheme')
 
 -- then if some plugins won't be installed, Lazy will automatically install it
 -- if all are installed, then simply finish nvim startup

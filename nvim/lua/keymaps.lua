@@ -578,6 +578,17 @@ vim.keymap.set('n', '<leader>sr.', '<cmd>lua require("spectre").open_file_search
   desc = '[S]earch and [R]eplace [.] here',
 })
 
+-- paste over currently selected text without yanking it
+vim.keymap.set('v', 'p', '"_dp')
+vim.keymap.set('v', 'P', '"_dP')
+
+-- Select all
+vim.keymap.set('n', '<C-a>', 'ggVG', opts)
+
+-- write file in current directory
+-- :w %:h/<new-file-name>
+vim.keymap.set('n', '<C-n>', ':w %:h/', opts)
+
 -- # TOOLS # --
 vim.keymap.set('n', '<leader>tcp', '<cmd>CccPick<CR>', {
   desc = '[T]ool: [C]olor[P]icker',

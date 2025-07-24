@@ -85,7 +85,6 @@ return {
 
     -- 1) setup + colorscheme
     require('kanagawa-paper').setup(opts)
-    vim.cmd.colorscheme('kanagawa-paper-ink')
 
     -- 2) schedule your two TS overrides for the next event loop
     vim.schedule(function()
