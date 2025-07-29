@@ -3,7 +3,7 @@ local options = require('options')
 -- For Sidebar file-tree explorer
 return {
   'nvim-neo-tree/neo-tree.nvim',
-  enabled = true,
+  enabled = false,
   -- branch = 'v3.x',
   dependencies = {
     'nvim-lua/plenary.nvim',

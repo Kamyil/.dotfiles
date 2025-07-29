@@ -54,9 +54,9 @@ map('<C-s>', save_file, 'Save file')
 map('<leader>dd', '<cmd>Trouble diagnostics toggle<cr>', 'Toggle LSP diagnostics (via trouble)')
 map('<leader>dq', '<cmd>Trouble qflist toggle<cr>', 'Move diagnostics to quickfix list')
 
-map('<leader>e', function()
-  vim.cmd([[ Neotree reveal_force_cwd toggle ]])
-end, 'Open File Explorer')
+-- map('<leader>e', function()
+--   vim.cmd([[ Neotree reveal_force_cwd toggle ]])
+-- end, 'Open File Explorer')
 
 helpers.on_lazy_plugin_loaded('snacks', function(Snacks)
   map('<leader>ff', function()
