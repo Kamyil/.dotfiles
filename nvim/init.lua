@@ -1,5 +1,5 @@
--- THIS CONFIG REQUIRES NVIM v0.12.0 to work, since we need Neovim's Native package manager
--- (we're not using Lazy.nvim anymore for plugins, although I'm still not sure if it's a good thing. We'll see)
+-- REQUIRES NVIM v0.12.0 to work, since we need Neovim's Native package manager
+-- (we're not using Lazy.nvim anymore for plugins, although I'm still not sure if it's a good thing. We'll see how that will pan out in future)
 
 -- OPTIONS -- (boring but important stuff)
 vim.o.number = true
@@ -20,6 +20,7 @@ vim.g.have_nerd_font = true -- Enables Nerd Font support for icons
 vim.o.encoding = 'utf-8' -- Sets the internal encoding
 vim.o.fileencoding = 'utf-8' -- Sets the encoding for the current file
 vim.o.fileencodings = 'utf-8' -- Sets the list of encodings to try when reading a file
+vim.o.cursorline = false -- Don't highlight the line under the cursor
 vim.opt.laststatus = 0 -- 0: Never, 1: Only if there are at least two windows, 2: Always, 3: Global statusline
 vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir' -- Directory to store undo history
 vim.opt.undofile = true -- Enable persistent undo
@@ -125,6 +126,7 @@ vim.pack.add({
 	{ src = 'https://github.com/folke/todo-comments.nvim' },            -- Highlight comments like TODO, FIXME, BUG, INFO etc.
 	{ src = "https://github.com/mluders/comfy-line-numbers.nvim" },     -- More comfortable vertical motions (without needing to reach so far away from current buttons)
 	{ src = 'https://github.com/brenoprata10/nvim-highlight-colors' },  -- Highlight color codes
+
 
 	-- Git
 	{ src = 'https://github.com/kdheepak/lazygit.nvim' },     -- Lazygit inside Neovim
@@ -289,6 +291,30 @@ keymap("n", "<backspace>", '"_dh', { noremap = true })
 keymap("v", "<backspace>", '"_d', { noremap = true })
 
 
+-- 🇵🇱 Polish character mappings for Insert Mode
+-- replace it with your own language
+keymap('i', '<M-a>', 'ą')
+keymap('i', '<M-c>', 'ć')
+keymap('i', '<M-e>', 'ę')
+keymap('i', '<M-l>', 'ł')
+keymap('i', '<M-n>', 'ń')
+keymap('i', '<M-o>', 'ó')
+keymap('i', '<M-s>', 'ś')
+keymap('i', '<M-x>', 'ź')
+keymap('i', '<M-z>', 'ż')
+
+-- Uppercase versions
+keymap('i', '<M-A>', 'Ą')
+keymap('i', '<M-C>', 'Ć')
+keymap('i', '<M-E>', 'Ę')
+keymap('i', '<M-L>', 'Ł')
+keymap('i', '<M-N>', 'Ń')
+keymap('i', '<M-O>', 'Ó')
+keymap('i', '<M-S>', 'Ś')
+keymap('i', '<M-X>', 'Ź')
+keymap('i', '<M-Z>', 'Ż')
+
+
 -- Select all with Ctrl+A
 keymap("n", "<C-a>", "ggVG")
 
@@ -444,9 +470,6 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 	end,
 })
 
-
-
-
 -- Set the commentstring for Smarty templates
 local smarty_augroup = vim.api.nvim_create_augroup('SmartyComment', { clear = true })
 vim.api.nvim_create_autocmd('FileType', {
@@ -490,7 +513,7 @@ require('comfy-line-numbers').setup({
 	up_key = 'k',
 
 	-- Line numbers will be completely hidden for the following file/buffer types
-	hidden_file_types = { 'help', 'TelescopePrompt', 'oil', 'markdown', 'markdown.mdx', 'undotree' },
+	hidden_file_types = { 'help', 'TelescopePrompt', 'undotree' },
 	hidden_buffer_types = { 'terminal', 'blink', 'cmp' }
 })
 require('todo-comments').setup()
@@ -696,7 +719,7 @@ vim.api.nvim_create_user_command('MasonInstallEnsured', function()
 		'sqlls',                           -- For SQL
 		'rust_analyzer',                   -- For Rust
 		'prettier',                        -- For formatting JS, TS, HTML, CSS, Svelte, etc.
-		'emmet_ls',                        -- For HTML, CSS, JS, TS, Svelte, etc.
+		'emmet_ls',                        -- For expanding HTML, CSS, JS, TS, Svelte, etc.
 		'json-lsp',                        -- For JSON
 		'dockerls',                        -- For Docker
 		'docker_compose_language_service', -- For Docker Compose
