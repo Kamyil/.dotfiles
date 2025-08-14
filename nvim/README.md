@@ -8,6 +8,7 @@ Where the more I was working each day... the less fancy my setup were becoming. 
 - all of my 2 years experience of using Neovim in both work professionally and home with side projects&notes
 - all of the plugins that were **ACTUALLY** useful and it would be hard for me to be as productive without them
 - all of the settings and keymaps I've found useful
+- and some knowledge about what worked for me and what didn't, so I have a setup that I can actually settle on (I know, sounds scary)
 
 **Warning:** This is a hell of a personal config and it might not work for you as well, as it is working for me. Treat it more as an insipiration, rather than ready-to-use full-fledged universal setup (for that, just use distro like `LazyVim` or `NvChad` or `AstroNvim`)
 
