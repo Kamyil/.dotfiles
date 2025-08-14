@@ -14,7 +14,7 @@ vim.opt.expandtab = false -- Use tabs instead of spaces
 vim.o.swapfile = false -- it's annoying when saving, and opening project back again, so turning that off
 vim.g.mapleader = ' ' -- Map leader to Space key
 vim.g.maplocalleader = ' ' -- Sets the local leader key to <space>
-vim.o.winborder = 'rounded'
+vim.opt.winborder = 'rounded'
 vim.o.clipboard = 'unnamedplus' -- For Windows it's gonna be different
 vim.g.have_nerd_font = true -- Enables Nerd Font support for icons
 vim.o.encoding = 'utf-8' -- Sets the internal encoding
@@ -22,7 +22,7 @@ vim.o.fileencoding = 'utf-8' -- Sets the encoding for the current file
 vim.o.fileencodings = 'utf-8' -- Sets the list of encodings to try when reading a file
 vim.o.cursorline = false -- Don't highlight the line under the cursor
 vim.opt.laststatus = 0 -- 0: Never, 1: Only if there are at least two windows, 2: Always, 3: Global statusline
-vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir' -- Directory to store undo history
+vim.opt.undodir = vim.fn.stdpath('data') .. '/undodir' -- Directory to store undo history
 vim.opt.undofile = true -- Enable persistent undo
 vim.opt.updatetime = 100 -- Time in milliseconds to wait before triggering the swap/undo file write (default 4000)
 vim.opt.incsearch = true -- Show search matches as you type
@@ -46,9 +46,6 @@ vim.opt.conceallevel = 0 -- so that `` is visible in markdown files
 vim.opt.ignorecase = true -- ignore case in search patterns (again, for redundancy)
 vim.opt.smartcase = true -- smart case (again, for redundancy)
 vim.opt.smartindent = true -- make indenting smarter again
--- -- Undercurl errors and warnings like in VSCode
-vim.cmd([[let &t_Cs = "\e[4:3m"]])
-vim.cmd([[let &t_Ce = "\e[4:0m"]])
 
 -- Toggle spell check
 vim.opt.spell = false                    -- Disable spell checking by default
@@ -86,51 +83,63 @@ vim.diagnostic.config({
 -- Get the plugins and install them
 vim.pack.add({
 	-- DEPENDENCIES --
-	{ src = 'https://github.com/nvim-lua/plenary.nvim' },        -- Dependency of most plugins below
+	{ src = 'https://github.com/nvim-lua/plenary.nvim' },     -- Dependency of most plugins below
 	{ src = 'https://github.com/rafamadriz/friendly-snippets' }, -- Dependency of blink.cmp
-
+	{ src = "https://github.com/SmiteshP/nvim-navic" },       -- Dependency of barbecue plugin (breadcrumbs)
 
 	-- LSP
-	{ src = 'https://github.com/mason-org/mason.nvim' },              -- LSPs & Formatters installer
-	{ src = "https://github.com/neovim/nvim-lspconfig" },             -- Baked-in, ready-to-use LSP configs to not configure them manually
+	{ src = 'https://github.com/mason-org/mason.nvim' },           -- LSPs & Formatters installer
+	{ src = "https://github.com/neovim/nvim-lspconfig" },          -- Baked-in, ready-to-use LSP configs to not configure them manually
 	{ src = 'https://github.com/williamboman/mason-lspconfig.nvim' }, -- Configs
 	{ src = 'https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim' },
 
+	{ src = 'https://github.com/folke/snacks.nvim' },  -- Collection of quality of life plugins that are useful for most people
+
+	{ src = 'https://github.com/utilyre/barbecue.nvim' }, -- Showing breadcrumbs at the top of the screen
 
 	-- Misc --
 	{ src = 'https://github.com/nvim-tree/nvim-web-devicons' }, -- Icons
-	{ src = 'https://github.com/chentoast/marks.nvim' },        -- Show marks next to line number if there is one (and make them last when quitting Neovim)
-	{ src = 'https://github.com/folke/which-key.nvim' },        -- Shows available shortcuts when hitting <leader> or some motion
-	{ src = 'https://github.com/windwp/nvim-autopairs' },       -- Autopair brackets, strings etc.
+	{ src = 'https://github.com/chentoast/marks.nvim' },     -- Show marks next to line number if there is one (and make them last when quitting Neovim)
+	{ src = 'https://github.com/folke/which-key.nvim' },     -- Shows available shortcuts when hitting <leader> or some motion
+	{ src = 'https://github.com/windwp/nvim-autopairs' },    -- Autopair brackets, strings etc.
 	{
 		src = 'https://github.com/Saghen/blink.cmp',
 		version = '1.*'
-	},                                                                  -- Better Autocompletion
+	}, -- Better Autocompletion
+
+	-- AI
 	{ src = "https://github.com/zbirenbaum/copilot.lua" },
-	{ src = "https://github.com/giuxtaposition/blink-cmp-copilot" },    -- Copilot for Blink.cmp autocompletion
+	{ src = "https://github.com/giuxtaposition/blink-cmp-copilot" }, -- Copilot for Blink.cmp autocompletion
+	{ src = 'https://github.com/supermaven-inc/supermaven-nvim' }, -- Better AI suggestions
+
+
 
 	{ src = 'https://github.com/lukas-reineke/indent-blankline.nvim' }, -- Add indentation guides even on blank lines
-	{ src = "https://github.com/farmergreg/vim-lastplace" },            --  Automatically jump to the last cursor position
-	{ src = "https://github.com/tpope/vim-sleuth" },                    -- Detect tabstop and shiftwidth automatically
+	{ src = "https://github.com/farmergreg/vim-lastplace" },         --  Automatically jump to the last cursor position
+	{ src = "https://github.com/tpope/vim-sleuth" },                 -- Detect tabstop and shiftwidth automatically
 
-	{ src = 'https://github.com/sho-87/kanagawa-paper.nvim' },          -- Colorscheme / theme --
+	{ src = 'https://github.com/sho-87/kanagawa-paper.nvim' },       -- Colorscheme / theme --
+	{ src = 'https://github.com/catppuccin/nvim' },                  -- Alternative colorscheme
 
-	{ src = 'https://github.com/b0o/incline.nvim' },                    -- For showing current file and extra data about it
+	{ src = 'https://github.com/b0o/incline.nvim' },                 -- For showing current file and extra data about it
 
-	{ src = 'https://github.com/stevearc/oil.nvim' },                   -- File managment like Vim buffer (hit <leader>+e)
-	{ src = 'https://github.com/ibhagwan/fzf-lua' },                    -- Fastest file/grep picker I've found so far
-	{ src = 'https://github.com/echasnovski/mini.surround' },           -- Allows to surround selected text with brackets, quotes, tags etc.
-	{ src = 'https://github.com/nvim-treesitter/nvim-treesitter' },     -- Tresitter (for coloring syntax and doing AST-based operations)
-	{ src = 'https://github.com/alexghergh/nvim-tmux-navigation' },     -- Better navigation with TMUX (can move between nvim and tmux splits with same motions)
-	{ src = 'https://github.com/folke/lazydev.nvim' },                  -- Better neovim config editing, without any non-valid warnings
-	{ src = 'https://github.com/folke/todo-comments.nvim' },            -- Highlight comments like TODO, FIXME, BUG, INFO etc.
-	{ src = "https://github.com/mluders/comfy-line-numbers.nvim" },     -- More comfortable vertical motions (without needing to reach so far away from current buttons)
-	{ src = 'https://github.com/brenoprata10/nvim-highlight-colors' },  -- Highlight color codes
+	{ src = 'https://github.com/stevearc/oil.nvim' },                -- File managment like Vim buffer (hit <leader>+e)
+	{ src = 'https://github.com/ibhagwan/fzf-lua' },                 -- Other very fast picker for other things than files
+	{ src = 'https://github.com/echasnovski/mini.surround' },        -- Allows to surround selected text with brackets, quotes, tags etc.
+	{ src = 'https://github.com/nvim-treesitter/nvim-treesitter' },  -- Tresitter (for coloring syntax and doing AST-based operations)
+	{ src = 'https://github.com/alexghergh/nvim-tmux-navigation' },  -- Better navigation with TMUX (can move between nvim and tmux splits with same motions)
+	{ src = 'https://github.com/folke/lazydev.nvim' },               -- Better neovim config editing, without any non-valid warnings
+	{ src = 'https://github.com/folke/todo-comments.nvim' },         -- Highlight comments like TODO, FIXME, BUG, INFO etc.
+	{ src = "https://github.com/mluders/comfy-line-numbers.nvim" },  -- More comfortable vertical motions (without needing to reach so far away from current buttons)
+	{ src = 'https://github.com/brenoprata10/nvim-highlight-colors' }, -- Highlight color codes
+
+	{ src = 'https://github.com/dmtrKovalenko/fff.nvim' },
 
 
 	-- Git
-	{ src = 'https://github.com/kdheepak/lazygit.nvim' },     -- Lazygit inside Neovim
+	-- snacks.lazygit
 	{ src = 'https://github.com/akinsho/git-conflict.nvim' }, -- Coloring Git Conflict inline
+	{ src = 'https://github.com/FabijanZulj/blame.nvim' }, -- Show git blame info in the gutter
 
 	-- Harpoon
 	{ -- For better switching between files. Add files to the jumplist and switch between them with Alt+1,2,3,4,5. Also edit jumplist like a vim buffer
@@ -142,9 +151,14 @@ vim.pack.add({
 	-- Markdown notetaking
 	{ src = 'https://github.com/epwalsh/obsidian.nvim' },
 	{ src = 'https://github.com/bullets-vim/bullets.vim' },
-	{ src = 'https://github.com/OXY2DEV/markview.nvim' }
-})
+	{ src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim' },
+	-- { src = 'https://github.com/OXY2DEV/markview.nvim' }
 
+	{ src = 'https://github.com/ThePrimeagen/refactoring.nvim' } -- Refactoring
+
+})
+-- vim.pack.update(vim.pack.get()) -- Update plugins if there are any updates available. Uncomment this line to update plugins on startup
+--
 -- -- Setup native LSP handler
 -- vim.api.nvim_create_autocmd('LspAttach', {
 -- 	callback = function(ev)
@@ -177,6 +191,35 @@ local keymap = vim.keymap.set
 require('fzf-lua').setup({
 	-- Load the 'ivy' profile first
 	'telescope',
+	oldfiles = {
+		-- In Telescope, when I used <leader>fr, it would load old buffers.
+		-- fzf lua does the same, but by default buffers visited in the current
+		-- session are not included. I use <leader>fr all the time to switch
+		-- back to buffers I was just in. If you missed this from Telescope,
+		-- give it a try.
+		include_current_session = true,
+	},
+	previewers = {
+		builtin = {
+			-- fzf-lua is very fast, but it really struggled to preview a couple files
+			-- in a repo. Those files were very big JavaScript files (1MB, minified, all on a single line).
+			-- It turns out it was Treesitter having trouble parsing the files.
+			-- With this change, the previewer will not add syntax highlighting to files larger than 100KB
+			-- (Yes, I know you shouldn't have 100KB minified files in source control.)
+			syntax_limit_b = 1024 * 100, -- 100KB
+		},
+	},
+	grep = {
+		-- One thing I missed from Telescope was the ability to live_grep and the
+		-- run a filter on the filenames.
+		-- Ex: Find all occurrences of "enable" but only in the "plugins" directory.
+		-- With this change, I can sort of get the same behaviour in live_grep.
+		-- ex: > enable --*/plugins/*
+		-- I still find this a bit cumbersome. There's probably a better way of doing this.
+		rg_glob = true,      -- enable glob parsing
+		glob_flag = "--iglob", -- case insensitive globs
+		glob_separator = "%s%-%-", -- query separator pattern (lua): ' --'
+	},
 	-- Provide a table of your overrides
 	-- {
 	-- 	keymap = {
@@ -193,8 +236,16 @@ require('fzf-lua').setup({
 
 
 local fzf_lua = require('fzf-lua')
-keymap('n', '<leader>ff', fzf_lua.files)
-keymap('n', '<leader>fw', fzf_lua.live_grep_native)
+require('fff').setup({
+	width = 0.95, -- Window width as fraction of screen
+	height = 0.95, -- Window height as fraction of screen
+	max_threads = 8, -- Maximum threads for fuzzy search
+})
+local fff = require("fff")
+
+keymap('n', '<leader>ff', fff.find_in_git_root, { desc = '[F]ind [F]iles' })
+-- keymap('n', '<leader>fF', fff.find_files, { desc = '[F]ind (ALL) [F]iles' })
+keymap('n', '<leader>fw', fzf_lua.live_grep, { desc = '[F]ind [W]ords' })
 -- keymap('n', '<leader>fh', ':Pick help<CR>')
 keymap('n', '<leader>e', ':Oil<CR>', { desc = 'File [E]xplorer' })
 -- LSP
@@ -202,7 +253,34 @@ keymap('n', '<leader>la', vim.lsp.buf.code_action, { desc = '' })
 keymap('n', '<leader>lf', vim.lsp.buf.format)
 keymap('n', '<leader>lr', vim.lsp.buf.rename)
 keymap('n', 'K', vim.lsp.buf.hover)
-keymap('n', '<leader>g', ':LazyGit<CR>')
+-- Diagnostics "hover" on Shift+d (shows float for diagnostics under the cursor or whole line as a fallback)
+-- WARNING: This overrides the default 'D' keymap, so you won't be able to delete a line with 'D' anymore
+keymap('n', 'D', function()
+	local cur = vim.api.nvim_win_get_cursor(0)
+	local line = cur[1] - 1
+	local col = cur[2]
+	local has_at_cursor = false
+	for _, d in ipairs(vim.diagnostic.get(0, { lnum = line })) do
+		if d.col and d.end_col and d.col <= col and col <= d.end_col then
+			has_at_cursor = true
+			break
+		end
+	end
+	vim.diagnostic.open_float(nil, {
+		scope = has_at_cursor and 'cursor' or 'line',
+		focusable = false,
+		border = 'single',
+		source = 'if_many',
+		close_events = { 'CursorMoved', 'InsertEnter', 'BufLeave', 'WinScrolled' },
+	})
+end, { desc = 'Diagnostics: hover (cursor/line)' })
+keymap('n', 'gr', vim.lsp.buf.references)
+-- keymap('n', 'gi', vim.lsp.buf.implementation)
+keymap('n', 'gd', vim.lsp.buf.implementation, { desc = 'Go to [D]efinition' })
+
+keymap('n', '<leader>gg', function() require('snacks').lazygit() end, { desc = '[G]it [G]it (run lazygit client)' })
+keymap('n', '<leader>gb', '<cmd>Blame<CR>', { desc = '[G]it [B]lame' })
+
 
 require('git-conflict')
 keymap('n', '<leader>gb', '<cmd>BlameToggle window<CR>', { desc = '[G]it [Blame]' })
@@ -212,24 +290,6 @@ keymap('n', '<leader>gcb', '<cmd>GitConflictChooseBoth<CR>', { desc = '[G]it [Co
 keymap('n', '<leader>gcn', '<cmd>GitConflictChooseOurs<CR>', { desc = '[G]it [Conflict] Choose [N]one' })
 keymap('n', '<leader>gc[', '<cmd>GitConflictChooseOurs<CR>', { desc = '[G]it [Conflict] Previous' })
 keymap('n', '<leader>gc]', '<cmd>GitConflictChooseOurs<CR>', { desc = '[G]it [Conflict] Next' })
-
-
--- LSPs
--- vim.lsp.enable({
--- 	'lua_ls',
--- 	'svelte',
--- 	'tailwindcss',
--- 	'javascript',
--- 	'ts_ls',
--- 	'dockerls',
--- 	'docker_compose_language_service',
--- 	'emmylua_ls', --  Luadocs for typesafety and autocompletion
--- 	'emmet_ls', -- HTML quick actions & snippets
--- 	'html',     -- HTML
--- 	'jsonls',   -- JSON
--- 	'just',     -- Justfile
--- 	'intelephense' -- PHP
--- }o
 
 local nvim_tmux_nav = require('nvim-tmux-navigation')
 nvim_tmux_nav.setup({
@@ -244,9 +304,23 @@ nvim_tmux_nav.setup({
 	}
 })
 
-keymap('n', '<leader>o', ':update<CR> :source<CR>') -- source file inline (most useful for editing neovim config file
+-- keymap('n', '<leader>o', ':update<CR> :source<CR>') -- source file inline (most useful for editing neovim config file
 keymap('n', '<leader>w', ':write<CR>')
 keymap('n', '<leader>q', ':quit<CR>')
+
+require('refactoring').setup({
+	show_success_message = false, -- shows a message with information about the refactor on success
+})
+keymap({ "n", "x" }, "<leader>rr", function() require('refactoring').select_refactor() end)
+
+
+
+function _G.show_documentation()
+	local doc = vim.lsp.buf.hover()
+	if doc and doc.contents then
+		vim.lsp.util.preview_markdown(doc.contents, doc.range or doc.position)
+	end
+end
 
 -- Harpoon setup (quick file switching between files that I currently work on)
 local harpoon = require('harpoon')
@@ -257,15 +331,11 @@ harpoon:setup()
 keymap('n', '<A-a>', function() harpoon:list():add() end)                         -- add file to harpoon jumplist
 keymap('n', '<A-e>', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end) -- open jumplist with currently added items
 
-keymap('n', '<A-1>', function() harpoon:list():select(1) end)                     -- navigate to file 1 in jumplist
-keymap('n', '<A-2>', function() harpoon:list():select(2) end)                     -- navigate to file 2 in jumplist
-keymap('n', '<A-3>', function() harpoon:list():select(3) end)                     -- navigate to file 3 in jumplist
-keymap('n', '<A-4>', function() harpoon:list():select(4) end)                     -- navigate to file 4 in jumplist
-keymap('n', '<A-5>', function() harpoon:list():select(5) end)                     -- navigate to file 5 in jumplist
-keymap('n', '<A-6>', function() harpoon:list():select(6) end)                     -- navigate to file 6 in jumplist
-keymap('n', '<A-7>', function() harpoon:list():select(7) end)                     -- navigate to file 7 in jumplist
-keymap('n', '<A-8>', function() harpoon:list():select(8) end)                     -- navigate to file 8 in jumplist
-keymap('n', '<A-9>', function() harpoon:list():select(9) end)                     -- navigate to file 9 in jumplist
+for i = 1, 9 do
+	keymap('n', '<A-' .. i .. '>', function()
+		harpoon:list():select(i)
+	end, { desc = 'Harpoon to file ' .. i })
+end
 --
 -- better indenting with selected text
 keymap('v', '<', '<gv')
@@ -286,10 +356,9 @@ keymap('n', '<leader>-', '<cmd>split<CR>', { desc = 'Split horizontally' })
 keymap('v', 'J', ":m '>+1<CR>gv=gv")
 keymap('v', 'K', ":m '<-2<CR>gv=gv")
 
--- Make backspace work as black hole cut
-keymap("n", "<backspace>", '"_dh', { noremap = true })
-keymap("v", "<backspace>", '"_d', { noremap = true })
 
+
+-- Move lines up and down in normal modellll
 
 -- 🇵🇱 Polish character mappings for Insert Mode
 -- replace it with your own language
@@ -302,9 +371,7 @@ keymap('i', '<M-o>', 'ó')
 keymap('i', '<M-s>', 'ś')
 keymap('i', '<M-x>', 'ź')
 keymap('i', '<M-z>', 'ż')
-
--- Uppercase versions
-keymap('i', '<M-A>', 'Ą')
+keymap('i', '<M-A>', 'Ą') -- Uppercase versions
 keymap('i', '<M-C>', 'Ć')
 keymap('i', '<M-E>', 'Ę')
 keymap('i', '<M-L>', 'Ł')
@@ -318,6 +385,98 @@ keymap('i', '<M-Z>', 'Ż')
 -- Select all with Ctrl+A
 keymap("n", "<C-a>", "ggVG")
 
+
+local transparent_background = true
+require('catppuccin').setup({
+	transparent_background = false,
+	term_colors = true,
+
+	auto_integrations = true,
+	-- '#1E1E28'
+	color_overrides = {},
+	highlight_overrides = {
+		all = function(cp)
+			return {
+				-- For base configs
+				NormalFloat = { fg = cp.text, bg = transparent_background and cp.none or cp.mantle },
+				FloatBorder = {
+					fg = transparent_background and cp.blue or cp.mantle,
+					bg = transparent_background and cp.none or cp.mantle,
+				},
+				CursorLineNr = { fg = cp.green },
+
+				-- For native lsp configs
+				DiagnosticVirtualTextError = { bg = cp.none },
+				DiagnosticVirtualTextWarn = { bg = cp.none },
+				DiagnosticVirtualTextInfo = { bg = cp.none },
+				DiagnosticVirtualTextHint = { bg = cp.none },
+				LspInfoBorder = { link = "FloatBorder" },
+
+				-- For mason.nvim
+				MasonNormal = { link = "NormalFloat" },
+
+				-- For indent-blankline
+				IblIndent = { fg = cp.surface0 },
+				IblScope = { fg = cp.surface2, style = { "bold" } },
+
+				-- For nvim-cmp and wilder.nvim
+				Pmenu = { fg = cp.overlay2, bg = transparent_background and cp.none or cp.base },
+				PmenuBorder = { fg = cp.surface1, bg = transparent_background and cp.none or cp.base },
+				PmenuSel = { bg = cp.green, fg = cp.base },
+				CmpItemAbbr = { fg = cp.overlay2 },
+				CmpItemAbbrMatch = { fg = cp.blue, style = { "bold" } },
+				CmpDoc = { link = "NormalFloat" },
+				CmpDocBorder = {
+					fg = transparent_background and cp.surface1 or cp.mantle,
+					bg = transparent_background and cp.none or cp.mantle,
+				},
+
+				-- For fidget
+				FidgetTask = { bg = cp.none, fg = cp.surface2 },
+				FidgetTitle = { fg = cp.blue, style = { "bold" } },
+
+				-- For nvim-notify
+				NotifyBackground = { bg = cp.base },
+
+				-- For nvim-tree
+				NvimTreeRootFolder = { fg = cp.pink },
+				NvimTreeIndentMarker = { fg = cp.surface2 },
+
+				-- For trouble.nvim
+				TroubleNormal = { bg = transparent_background and cp.none or cp.base },
+				TroubleNormalNC = { bg = transparent_background and cp.none or cp.base },
+
+				-- For telescope.nvim
+				TelescopeMatching = { fg = cp.lavender },
+				TelescopeResultsDiffAdd = { fg = cp.green },
+				TelescopeResultsDiffChange = { fg = cp.yellow },
+				TelescopeResultsDiffDelete = { fg = cp.red },
+
+				-- For glance.nvim
+				GlanceWinBarFilename = { fg = cp.subtext1, style = { "bold" } },
+				GlanceWinBarFilepath = { fg = cp.subtext0, style = { "italic" } },
+				GlanceWinBarTitle = { fg = cp.teal, style = { "bold" } },
+				GlanceListCount = { fg = cp.lavender },
+				GlanceListFilepath = { link = "Comment" },
+				GlanceListFilename = { fg = cp.blue },
+				GlanceListMatch = { fg = cp.lavender, style = { "bold" } },
+				GlanceFoldIcon = { fg = cp.green },
+
+				-- For nvim-treehopper
+				TSNodeKey = {
+					fg = cp.peach,
+					bg = transparent_background and cp.none or cp.base,
+					style = { "bold", "underline" },
+				},
+
+				-- For treesitter
+				-- ["@keyword.return"] = { fg = cp.pink, style = clear },
+				-- ["@error.c"] = { fg = cp.none, style = clear },
+				-- ["@error.cpp"] = { fg = cp.none, style = clear },
+			}
+		end,
+	},
+})
 -- Setup plugins, add some config to them
 require('kanagawa-paper').setup({
 	-- enable undercurls for underlined text
@@ -332,10 +491,10 @@ require('kanagawa-paper').setup({
 	-- dim inactive windows. Disabled when transparent
 	dim_inactive = false,
 	-- set colors for terminal buffers
-	terminal_colors = true,
+	terminal_colors = false,
 	-- cache highlights and colors for faster startup.
 	-- see Cache section for more details.
-	cache = true,
+	cache = false,
 
 	styles = {
 		-- style for comments
@@ -352,8 +511,8 @@ require('kanagawa-paper').setup({
 
 	-- adjust overall color balance for each theme [-1, 1]
 	color_offset = {
-		ink = { brightness = 0, saturation = 0 },
-		canvas = { brightness = 0, saturation = 0 },
+		ink = { brightness = -1, saturation = -1 },
+		canvas = { brightness = -0.5, saturation = -0.5 }, -- if you use light mode sometimes
 	},
 
 	auto_plugins = true,
@@ -371,11 +530,11 @@ require('marks').setup()
 require('nvim-autopairs').setup()
 
 require("copilot").setup({
-	suggestion = { enabled = false },
-	panel = { enabled = false },
+	suggestion = { enabled = true },
+	panel = { enabled = true },
 })
 require('blink.cmp').setup({ -- setup autocompletion
-	preset = 'enter',
+	-- preset = 'enter',
 	fuzzy = {
 		implementation = 'prefer_rust',
 		prebuilt_binaries = {
@@ -434,6 +593,7 @@ require('blink.cmp').setup({ -- setup autocompletion
 			copilot = {
 				name = "copilot",
 				module = "blink-cmp-copilot",
+				enabled = true,
 				score_offset = 100,
 				async = true,
 			},
@@ -444,7 +604,9 @@ require('blink.cmp').setup({ -- setup autocompletion
 	},
 })
 
+-- Set colorscheme
 vim.cmd('colorscheme kanagawa-paper-ink')
+-- vim.cmd('colorscheme catppuccin-mocha')
 vim.cmd(':hi statusline guibg=NONE')
 
 -- Autocommands
@@ -499,16 +661,6 @@ vim.api.nvim_create_autocmd('BufReadPre', {
 })
 
 require('comfy-line-numbers').setup({
-	-- labels = {
-	-- 	'1', '2', '3', '4', '5', '11', '12', '13', '14', '15', '21', '22', '23',
-	-- 	'24', '25', '31', '32', '33', '34', '35', '41', '42', '43', '44', '45',
-	-- 	'51', '52', '53', '54', '55', '111', '112', '113', '114', '115', '121',
-	-- 	'122', '123', '124', '125', '131', '132', '133', '134', '135', '141',
-	-- 	'142', '143', '144', '145', '151', '152', '153', '154', '155', '211',
-	-- 	'212', '213', '214', '215', '221', '222', '223', '224', '225', '231',
-	-- 	'232', '233', '234', '235', '241', '242', '243', '244', '245', '251',
-	-- 	'252', '253', '254', '255',
-	-- },
 	down_key = 'j',
 	up_key = 'k',
 
@@ -520,11 +672,10 @@ require('todo-comments').setup()
 require('nvim-highlight-colors').setup({})
 require('which-key').setup({ preset = 'helix' })
 require('obsidian').setup({
-	dir = vim.env.HOME .. '/second-brain', -- specify the vault location. no need to call 'vim.fn.expand' here
-	use_advanced_uri = true,
-	finder = 'telescope.nvim',
-
-	templates = {
+	dir                   = vim.env.HOME .. '/second-brain', -- specify the vault location. no need to call 'vim.fn.expand' here
+	use_advanced_uri      = true,
+	finder                = 'telescope.nvim',
+	templates             = {
 		subdir = 'templates',
 		date_format = '%Y-%m-%d-%a',
 		time_format = '%H:%M',
@@ -541,14 +692,15 @@ require('obsidian').setup({
 		end
 		return out
 	end,
-}
-)
+	ui                    = {
+		enable = false,
+	}
+})
 require('incline').setup({
 	window = {
 		placement = {
 			vertical = 'bottom',
 			horizontal = 'center',
-
 		},
 		padding = 0,
 		margin = { vertical = 0, horizontal = 0 },
@@ -679,9 +831,9 @@ local servers = {
 					enable = true,
 					globals = { 'love', 'vim' },
 					-- enable some extra strictness
-					unusedLocal = 'Warning',   -- warn on unused locals
+					unusedLocal = 'Warning', -- warn on unused locals
 					undefinedGlobal = 'Error', -- error on globals that don't exist
-					undefinedField = 'Error',  -- warn on fields not listed in @field
+					undefinedField = 'Error', -- warn on fields not listed in @field
 				},
 				completion = {
 					callSnippet = 'Replace',
@@ -709,23 +861,23 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 -- Install on startup if there are any LSPs missing
 vim.api.nvim_create_user_command('MasonInstallEnsured', function()
 	vim.list_extend(ensure_installed, {
-		'stylua',                          -- Used to format Lua code
-		'lua_ls',                          -- For Lua
-		'intelephense',                    -- For PHP (maybe not best, but at least it doesn't requires payment
-		'svelte-language-server',          -- For Svelte
-		'tailwindcss-language-server',     -- For Tailwind
-		'vtsls',                           -- For TypeScript (better than ts-server)
-		'write-good',                      -- Don't know what it is really. Testing it...
-		'sqlls',                           -- For SQL
-		'rust_analyzer',                   -- For Rust
-		'prettier',                        -- For formatting JS, TS, HTML, CSS, Svelte, etc.
-		'emmet_ls',                        -- For expanding HTML, CSS, JS, TS, Svelte, etc.
-		'json-lsp',                        -- For JSON
-		'dockerls',                        -- For Docker
+		'stylua',                    -- Used to format Lua code
+		'lua_ls',                    -- For Lua
+		'intelephense',              -- For PHP (maybe not best, but at least it doesn't requires payment
+		'svelte-language-server',    -- For Svelte
+		'tailwindcss-language-server', -- For Tailwind
+		'vtsls',                     -- For TypeScript (better than ts-server)
+		'write-good',                -- Don't know what it is really. Testing it...
+		'sqlls',                     -- For SQL
+		'rust_analyzer',             -- For Rust
+		'prettier',                  -- For formatting JS, TS, HTML, CSS, Svelte, etc.
+		'emmet_ls',                  -- For expanding HTML, CSS, JS, TS, Svelte, etc.
+		'json-lsp',                  -- For JSON
+		'dockerls',                  -- For Docker
 		'docker_compose_language_service', -- For Docker Compose
-		'justls',                          -- For Justfile
-		'yaml-language-server',            -- For YAML
-		'markdownlint',                    -- For Markdown
+		'justls',                    -- For Justfile
+		'yaml-language-server',      -- For YAML
+		'markdownlint',              -- For Markdown
 	})
 	vim.cmd('MasonInstall ' .. table.concat(ensure_installed, ' '))
 end, {})
@@ -756,3 +908,16 @@ require('mason-lspconfig').setup({
 		end,
 	},
 })
+
+require("render-markdown").setup({})
+require('blame').setup({})
+
+require("barbecue").setup({
+	attach_navic = true,
+	context_follow_icon_color = true,
+})
+-- require('barbecue').toggle(true)
+
+-- -- Undercurl errors and warnings like in VSCode
+vim.cmd([[let &t_Cs = "\e[4:3m"]])
+vim.cmd([[let &t_Ce = "\e[4:0m"]])
