@@ -2,14 +2,18 @@
 
 _(requires Neovim 0.12 (nightly as I'm writing this file in 14th August 2025)_
 
+# Some photos with examples
 ---
+
 <img width="3010" height="1878" alt="image" src="https://github.com/user-attachments/assets/5094099d-b523-4ba9-acac-d3abc939f85c" />
 <img width="2848" height="1488" alt="image" src="https://github.com/user-attachments/assets/6a1e3e0e-2be4-4d58-80dc-e9006a95ccae" />
 <img width="2200" height="1396" alt="image" src="https://github.com/user-attachments/assets/cfd35f81-1b34-4248-8c3f-6c7492948862" />
 <img width="2524" height="1412" alt="image" src="https://github.com/user-attachments/assets/fa1ea8f6-ffb7-425b-9ccb-d2f9cf3e5b8b" />
+
 ---
 
-**Long story short**: I've came a veeeery very long journey of continously making my setup, beautiful, fancy and stunning. 
+# Long story short:
+I've came a veeeery very long journey of continously making my setup, beautiful, fancy and stunning. 
 Where the more I was working each day... the less fancy my setup were becoming. And ultimately, since the launch of Neovim 0.12 Nightly with finally it's own package manager, it was a nice chance to make the decision to rewrite a config once again and make (kinda) minimalistic config setup that will gather:
 - all of my 2 years experience of using Neovim in both work professionally and home with side projects&notes
 - all of the plugins that were **ACTUALLY** useful and it would be hard for me to be as productive without them
