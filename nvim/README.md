@@ -1,62 +1,21 @@
-![Showcase](./kamyil_nvim.png "Showcase")
+# My Neovim Config (made in 2025, prepared for 2026 and more)
+
+_(requires Neovim 0.12 (nightly as I'm writing this file in 14th August 2025)_
+<img width="3010" height="1878" alt="image" src="https://github.com/user-attachments/assets/5094099d-b523-4ba9-acac-d3abc939f85c" />
+
+**Long story short**: I've came a veeeery very long journey of continously making my setup, beautiful, fancy and stunning. 
+Where the more I was working each day... the less fancy my setup were becoming. And ultimately, since the launch of Neovim 0.12 Nightly with finally it's own package manager, it was a nice chance to make the decision to rewrite a config once again and make (kinda) minimalistic config setup that will gather:
+- all of my 2 years experience of using Neovim in both work professionally and home with side projects&notes
+- all of the plugins that were **ACTUALLY** useful and it would be hard for me to be as productive without them
+- all of the settings and keymaps I've found useful
+
+**Warning:** This is a hell of a personal config and it might not work for you as well, as it is working for me. Treat it more as an insipiration, rather than ready-to-use full-fledged universal setup (for that, just use distro like `LazyVim` or `NvChad` or `AstroNvim`)
 
 
-# Intro
-My personal rewrite of my previously battle-tested extended config based on Astronvim
-But this time, it's rewritten from scratch with help of [nvim_kickstart](https://github.com/nvim-lua/kickstart.nvim) project
-which allows you to write your own config from scratch but with little hinting comments making this process way way faster
+There are couple of things you might consider controversial
 
-This config is ready to be cloned and ready to go 
+# Native package manager `vim.pack` instead of `Lazy`
+This config requires Neovim 0.12 (nightly) to work, because it uses native package manager called `vim.pack`. `Lazy` is absolutely awesome and it's one of the best package managers I've experienced and kudos to folke for it, but I do believe that ulimately people will be switching to native one, so I might just prepare for it already _(I'm writing this in 14th of August 2025)_
 
----
-
-
-# Update (6th May 2025)
-
-**TL:DR;** Config changed A LOT, but for a good reasons. I just need to clean it up a little bit, after testing plugins and how they will work out in practice. Some of them work great, but some of them
-I didn't really found them useful. Setup is still fast, because they're lazy loaded, but expect cleaning commits in near future
-
-This config went through looooots and loooooots of changes, since I'm experimenting all the time with new plugins and ways to make work 
-more pleasing, more enjoyable (and in result - more productive)
-If you're looking at this README after a long while, you will notice even the looks change a lot
-My setup currently is definitely way more minimal. I've found less-vibrant colors and less-fancy backgrounds to be more focus-friendly and non-distracting.
-And my go-to is Kanagawa theme
-
-I've also changed the way I'm switching between files. I've replaced barbar with harpoon, since barbar was opening a tab for every single buffer I've opened
-which required manual tab clearing too often for me. In Harpoon I can go to buffers for temporary quick edits, but if I want some file to be easly accessable via keypress (cuz f.e. I'm working on it intensively), 
-then I add it to Harpoon List via Alt+A. You can edit the Harpoon List via Alt+E shortcut and there you can easly assign each file to each Alt+1/2/3/4/5 slot shortcut
-
-I've also replaced Telescope with Snacks.picker (together with other Snacks plugins), because I found it faster and more reliable in bigger projects
-+makes whole experience more consistent, since those plugins are working within Snacks ecosystem
-
-I've also get rid of tmux in favor of Wezterm and I'm focusing mostly to integrate them well (since Wezterm has full CLI API and it also allows to have config in Lua) 
-But this config will also work great with Tmux, since I don't plan (nor want to) remove TMUX integration, so you can feel safe about it
-
-Generally config as for now is definitely way less fancy, but I still recommend you to give it a try :) I'm daily-driving it at both work and personal projects, so I proritize
-stability, speed and work, distract-free environment and it's serving me very very well. You may found something useful here for your config as well
-
----
-
-
-# Built with... 
-This config is built with these things in mind:
-- it has to be **reliable! (no.1)** (it has to be working for 100% since I'm using it in work as well. So no crashes or bugs allowed)
-- it has to be **blazingly fast** (startup time need to be as low as possible [current ~80ms on M1 Pro] and each action needs to be instant - lags and slows are not allowed) 
-- it has to be **reduced to absolute necessity** - each addition has to have meaningful purpose.
-
-# Features
-- It's fast (~80ms startup time on M1 Pro)
-- It obviously has syntax-highlighting with treeparser and Mason for installing LSPs
-- It uses snacks.picker for running Search through multiple things like files, words, colorschemes etc. Just check `<Space>F`
-- It's using `harpoon`, for managing tabs. Use Alt+A to add file to harpoon list, Alt+E to edit them, and use Alt+1/2/3/4/5... to switch between files
-  Just use Alt+1/2/3/4... to move betwen them and Space+C to close the current one
-  It's also configured to contain git status numbers of the file, but it can be disabled in the config
-- It's using `neo-tree.nvim` since it's the easiest and most pratical filetree currently
-- It's using `lazy.nvim` for installing and lazly loading plugins (which also allows to very easly add plugins, by adding a file to `plugins/` folder)
-- It has `LazyGit` integrated by hitting `<Space>gg`(git-git) for most practical git usage
-- It has `obsidian.nvim` integrated for notes (and also has <Space>ss for creating local per-opened-project scratchpad) 
-
-# Extending it
-Since it's based on [nvim_kickstart](https://github.com/nvim-lua/kickstart.nvim) project, you will find a lot of similarities here
-(like keymaps or other references to original kickstart like `original_kickstart_init_lua_for_ref.lua`) 
-it is easy to configure and extend
+# One config file approach
+I love the fact that the configuration is just a Lua file so I can abstract things to whatever amount of files I need or want and import them. Lazy package manager even uses it nicely to auto-scan `plugins/` directory to detect if you've added something new and it will install them automatically. But I've found one file to be a lot easier to edit quickly, since you can directly source it with `:source` (or `:so` in short) command, making the changes apply immidietally, without needing to restart Neovim. It makes editing your setup waaay way easier and faster and also forces you to be intentional about plugins you use. Ofc. with lazy package manager you could have 90+ plugins and still start and fully load Neovim in ~12ms, but I like to keep only those things I'm actually using ;) This way I don't have trash in my config
