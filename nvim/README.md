@@ -27,7 +27,7 @@ Where the more I was working each day... the less fancy my setup were becoming. 
 - It's all defined within only one `init.lua` file
 - It uses Kanagawa-Paper theme, since I've found this theme, to be the only one that's subtle and don't make eyes tired after multiple hours of work
   -  (blends nicely together with Kanagawa Dragon theme inside Ghostty. In this setup you will also find Snack's lazygit configured to use this theme)
-- It uses Harpoon plugin for file managment, since I've found it to work exactly as I work. I do open some files temporarly and work mostly on max 5 (mostly 3) of them, so I want to quickly add them to the jumplist and navigate between them using Alt+<number>
+- It uses Harpoon plugin for file managment, since it matches my exact workflow. I do open some files temporarly for quick edit, but I work mostly on max 5 (mostly 3) of them for a longer sessions, so I want to quickly add them to the jumplist and navigate between them using Alt+<number>
   - (Alt+A to add a file to jumplist, Alt+E check or modify the jumplist)
   - uses also incline.nvim (file name at the bottom) harpoon addition to see which which harpoon index given file has
 - It uses `fff.nvim` for file picking, since it's the fastest and most accurate
