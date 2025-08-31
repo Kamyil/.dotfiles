@@ -7,11 +7,13 @@ local wezterm = require("wezterm")
 --   Ctrl+o: Switch between workspaces (fuzzy finder)
 --   Ctrl+Shift+R: Rename current workspace
 --   Ctrl+i: Show workspace info
+--   Ctrl+f: Tmux-sessionizer (pick git repo directory and create workspace)
+--   Ctrl+Shift+F: Pick any directory and create workspace
 
 local my_own_tmux = {
 	-- Counter for auto-naming workspaces
 	workspace_counter = 0,
-	
+
 	-- Utility function to generate a good workspace name
 	generate_workspace_name = function(pane)
 		local cwd = pane:get_current_working_dir()
@@ -22,9 +24,9 @@ local my_own_tmux = {
 				return dir_name
 			end
 		end
-		
-		my_own_tmux.workspace_counter = my_own_tmux.workspace_counter + 1
-		return "workspace-" .. my_own_tmux.workspace_counter
+
+		-- my_own_tmux.workspace_counter = my_own_tmux.workspace_counter + 1
+		return "workspace-" .. math.random()
 	end,
 	-- Keybindings
 	keys = {
@@ -66,27 +68,27 @@ local my_own_tmux = {
 
 		-- Split vertically
 		{ key = "\\", mods = "CTRL", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
-		{ key = "/", mods = "CTRL", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
+		{ key = "/",  mods = "CTRL", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
 		-- Split horizontally
-		{ key = "-", mods = "CTRL", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
-		{ key = "=", mods = "CTRL", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
+		{ key = "-",  mods = "CTRL", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
+		{ key = "=",  mods = "CTRL", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
 
 		-- Switch to tabs (a.k.a. tmux windows)
-		{ key = "1", mods = "CTRL", action = wezterm.action({ ActivateTab = 0 }) },
-		{ key = "2", mods = "CTRL", action = wezterm.action({ ActivateTab = 1 }) },
-		{ key = "3", mods = "CTRL", action = wezterm.action({ ActivateTab = 2 }) },
-		{ key = "4", mods = "CTRL", action = wezterm.action({ ActivateTab = 3 }) },
-		{ key = "5", mods = "CTRL", action = wezterm.action({ ActivateTab = 4 }) },
-		{ key = "6", mods = "CTRL", action = wezterm.action({ ActivateTab = 5 }) },
-		{ key = "7", mods = "CTRL", action = wezterm.action({ ActivateTab = 6 }) },
-		{ key = "8", mods = "CTRL", action = wezterm.action({ ActivateTab = 7 }) },
-		{ key = "9", mods = "CTRL", action = wezterm.action({ ActivateTab = 8 }) },
+		{ key = "1",  mods = "CTRL", action = wezterm.action({ ActivateTab = 0 }) },
+		{ key = "2",  mods = "CTRL", action = wezterm.action({ ActivateTab = 1 }) },
+		{ key = "3",  mods = "CTRL", action = wezterm.action({ ActivateTab = 2 }) },
+		{ key = "4",  mods = "CTRL", action = wezterm.action({ ActivateTab = 3 }) },
+		{ key = "5",  mods = "CTRL", action = wezterm.action({ ActivateTab = 4 }) },
+		{ key = "6",  mods = "CTRL", action = wezterm.action({ ActivateTab = 5 }) },
+		{ key = "7",  mods = "CTRL", action = wezterm.action({ ActivateTab = 6 }) },
+		{ key = "8",  mods = "CTRL", action = wezterm.action({ ActivateTab = 7 }) },
+		{ key = "9",  mods = "CTRL", action = wezterm.action({ ActivateTab = 8 }) },
 
 		-- Move between panes
-		{ key = "h", mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Left" }) },
-		{ key = "j", mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Down" }) },
-		{ key = "k", mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Up" }) },
-		{ key = "l", mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Right" }) },
+		{ key = "h",  mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Left" }) },
+		{ key = "j",  mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Down" }) },
+		{ key = "k",  mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Up" }) },
+		{ key = "l",  mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Right" }) },
 
 		-- Session Switching with FZF like in tmux-sessionx
 		{
@@ -108,7 +110,7 @@ local my_own_tmux = {
 				}),
 				action = wezterm.action_callback(function(window, pane, line)
 					local workspace_name
-					
+
 					if line and line ~= "" then
 						-- User provided a name
 						workspace_name = line
@@ -116,7 +118,7 @@ local my_own_tmux = {
 						-- Auto-generate name using utility function
 						workspace_name = my_own_tmux.generate_workspace_name(pane)
 					end
-					
+
 					window:perform_action(
 						wezterm.action.SwitchToWorkspace({
 							name = workspace_name,
@@ -132,7 +134,7 @@ local my_own_tmux = {
 			mods = "CTRL|SHIFT",
 			action = wezterm.action_callback(function(window, pane)
 				local workspace_name = my_own_tmux.generate_workspace_name(pane)
-				
+
 				window:perform_action(
 					wezterm.action.SwitchToWorkspace({
 						name = workspace_name,
@@ -162,7 +164,7 @@ local my_own_tmux = {
 					if line and line ~= "" then
 						local current_workspace = window:active_workspace()
 						local mux = wezterm.mux
-						
+
 						-- Get the current workspace
 						local workspace = mux.get_workspace(current_workspace)
 						if workspace then
@@ -190,11 +192,119 @@ local my_own_tmux = {
 				local workspace_name = window:active_workspace()
 				local cwd = pane:get_current_working_dir()
 				local path = cwd and cwd.file_path or "unknown"
-				
-				window:toast_notification("WezTerm", 
-					string.format("Workspace: %s\nDirectory: %s", workspace_name, path), 
+
+				window:toast_notification("WezTerm",
+					string.format("Workspace: %s\nDirectory: %s", workspace_name, path),
 					nil, 3000)
 			end),
+		},
+		-- Tmux-sessionizer: Pick directory and create workspace
+		{
+			key = "f",
+			mods = "CTRL",
+			action = wezterm.action.SpawnCommandInNewTab({
+				args = {
+					"bash", "-c",
+					[[
+						# Find git repositories in common locations
+						echo "Searching for git repositories..."
+						dirs=$(find ~ ~/.config ~/Documents ~/Projects ~/dev ~/Code \
+							-maxdepth 3 -type d -name ".git" \
+							-exec dirname "{}" \; 2>/dev/null | sort -u)
+						
+						if [ -z "$dirs" ]; then
+							echo "No git repositories found in searched directories"
+							echo "Searched: ~, ~/.config, ~/Documents, ~/Projects, ~/dev, ~/Code"
+							read -p "Press Enter to close..."
+							exit 1
+						fi
+						
+						echo "Found repositories, opening selector..."
+						
+						# Use fzf to select directory
+						selected=$(echo "$dirs" | /opt/homebrew/bin/fzf \
+							--prompt='Select git repo: ' \
+							--height=40% \
+							--reverse \
+							--preview='ls -la {}' \
+							--preview-window=right:50%:wrap)
+						
+						if [ -n "$selected" ]; then
+							# Create more descriptive workspace name using parent/project pattern
+							parent_dir=$(basename "$(dirname "$selected")")
+							project_dir=$(basename "$selected")
+							workspace_name="${parent_dir}/${project_dir}"
+							echo "Creating workspace: $workspace_name"
+							echo "Directory: $selected"
+							
+							# Create new workspace with the selected directory
+							/opt/homebrew/bin/wezterm cli spawn --new-window --workspace "$workspace_name" --cwd "$selected"
+							
+							echo "Created workspace: $workspace_name"
+							sleep 1
+						else
+							echo "No directory selected"
+							sleep 1
+						fi
+					]]
+				},
+			}),
+		},
+		-- Alternative sessionizer: Pick any directory (custom paths)
+		{
+			key = "m",
+			mods = "CTRL",
+			action = wezterm.action.SpawnCommandInNewTab({
+				args = {
+					"bash", "-c",
+					[[
+						echo "Searching for directories in custom paths..."
+						
+						# Find directories in specific paths (customize these)
+						dirs=$(find ~/.config ~/Work/Projects \
+							-maxdepth 2 -type d \
+							! -path "*/.*" \
+							! -path "*/node_modules" \
+							! -path "*/target" \
+							! -path "*/.git" \
+							2>/dev/null | sort)
+						
+						if [ -z "$dirs" ]; then
+							echo "No directories found in: ~/.config, ~/Work/Projects"
+							read -p "Press Enter to close..."
+							exit 1
+						fi
+						
+						echo "Found directories, opening selector..."
+						
+						# Use fzf to select directory
+						selected=$(echo "$dirs" | /opt/homebrew/bin/fzf \
+							--prompt='Select directory: ' \
+							--height=40% \
+							--reverse \
+							--preview='ls -la {}' \
+							--preview-window=right:50%:wrap)
+						
+						if [ -n "$selected" ]; then
+							# Create more descriptive workspace name using parent/project pattern
+							parent_dir=$(basename "$(dirname "$selected")")
+							project_dir=$(basename "$selected")
+							workspace_name="${parent_dir}/${project_dir}"
+							echo "Creating workspace: $workspace_name"
+							echo "Directory: $selected"
+							
+							# Create new workspace with the selected directory
+							/opt/homebrew/bin/wezterm cli spawn --new-window --workspace "$workspace_name" --cwd "$selected"
+							
+							echo "Created workspace: $workspace_name"
+							sleep 1
+						else
+							echo "No directory selected"
+							sleep 1
+						fi
+					]]
+				},
+			}),
 		},
 		-- { key = "d", mods = "CTRL", action = wezterm.action.ShowDebugOverlay },
 	},
@@ -244,7 +354,7 @@ local my_own_tmux = {
 	-- Auto-name workspaces based on directory when switching
 	wezterm.on("update-status", function(window, pane)
 		local workspace_name = window:active_workspace()
-		
+
 		-- Check if workspace has a generic name that should be auto-renamed
 		if workspace_name and workspace_name:match("^default$") then
 			local cwd = pane:get_current_working_dir()
