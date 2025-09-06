@@ -393,10 +393,6 @@ symbol = ""
 format = '[ $symbol( $version) ]($style)'
 detect_files = ["go.mod"]
 
-[php]
-symbol = ""
-format = '[[ $symbol( $version) ]]($style)'
-
 [java]
 symbol = " "
 format = '[[ $symbol( $version) ]]($style)'
