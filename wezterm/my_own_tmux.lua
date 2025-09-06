@@ -1,5 +1,111 @@
 local wezterm = require("wezterm")
 
+-- Inline projectifier functionality
+local function discover_projects()
+	local projects = {}
+	local projects_dir = wezterm.home_dir .. "/.dotfiles/wezterm/projects"
+
+	-- Load projects directly using dofile (avoid wezterm.read_dir)
+	local project_files = {
+		"simple_project.lua",
+		"dotfiles.lua",
+		"fullstack_example.lua",
+		"complex_layout.lua"
+	}
+
+	for _, filename in ipairs(project_files) do
+		local project_file = projects_dir .. "/" .. filename
+		local success, config = pcall(dofile, project_file)
+		if success and config and config.name then
+			config.filename = filename:gsub("%.lua$", "")
+			config.display_name = config.name or config.filename
+			config.root_dir = config.root_dir or wezterm.home_dir
+			table.insert(projects, config)
+		end
+	end
+
+	return projects
+end
+
+-- Build workspace from project configuration
+local function build_workspace(window, pane, project_config)
+	local workspace_name = project_config.name
+	local root_dir = project_config.root_dir:gsub("^~/", wezterm.home_dir .. "/")
+
+	-- Debug info
+	window:toast_notification("WezTerm", "Building workspace: " .. workspace_name, nil, 2000)
+	if project_config.tabs then
+		window:toast_notification("WezTerm", "Found " .. #project_config.tabs .. " tabs to create", nil, 2000)
+	else
+		window:toast_notification("WezTerm", "ERROR: No tabs found in project config!", nil, 3000)
+		return
+	end
+
+	-- Switch to workspace and configure first tab properly
+	local first_tab_config = project_config.tabs[1]
+	local first_command = { "zsh" }
+	
+	if first_tab_config and first_tab_config.panes and #first_tab_config.panes > 0 then
+		local first_pane = first_tab_config.panes[1]
+		if first_pane.command then
+			first_command = { "zsh", "-c", first_pane.command .. "; exec zsh" }
+		end
+	end
+
+	-- Switch to workspace with the first tab's command
+	window:perform_action(
+		wezterm.action.SwitchToWorkspace({
+			name = workspace_name,
+			spawn = {
+				args = first_command,
+				cwd = root_dir,
+			},
+		}),
+		pane
+	)
+
+	-- Set title for first tab immediately with debug
+	if first_tab_config then
+		local current_tab = window:active_tab()
+		if current_tab then
+			current_tab:set_title(first_tab_config.name or "Tab 1")
+			window:toast_notification("WezTerm", "Set first tab title: " .. (first_tab_config.name or "Tab 1"), nil, 1500)
+		end
+	end
+
+	-- Create remaining tabs in the NEW workspace  
+	for i = 2, #project_config.tabs do
+		local tab_config = project_config.tabs[i]
+		local command_to_run = { "zsh" }
+		
+		if tab_config.panes and #tab_config.panes > 0 then
+			local first_pane = tab_config.panes[1]
+			if first_pane.command then
+				command_to_run = { "zsh", "-c", first_pane.command .. "; exec zsh" }
+			end
+		end
+
+		window:perform_action(
+			wezterm.action.SpawnCommandInNewTab({
+				args = command_to_run,
+				cwd = root_dir,
+			}),
+			pane
+		)
+		
+		-- Set tab title immediately with debug
+		local current_tab = window:active_tab()
+		if current_tab and tab_config.name then
+			current_tab:set_title(tab_config.name)
+			window:toast_notification("WezTerm", "Set tab " .. i .. " title: " .. tab_config.name, nil, 1500)
+		end
+	end
+
+	-- Switch back to first tab
+	window:perform_action(wezterm.action.ActivateTab(0), pane)
+	window:toast_notification("WezTerm", "Projectifier completed!", nil, 2000)
+end
+
 -- Enhanced tmux-like functionality for WezTerm
 -- Workspace Management:
 --   Ctrl+p: Create new workspace (prompts for name, auto-names if empty)
@@ -8,7 +114,8 @@ local wezterm = require("wezterm")
 --   Ctrl+Shift+R: Rename current workspace
 --   Ctrl+i: Show workspace info
 --   Ctrl+f: Tmux-sessionizer (pick git repo directory and create workspace)
---   Ctrl+Shift+F: Pick any directory and create workspace
+--   Ctrl+m: Custom directory sessionizer
+--   Ctrl+t: Projectifier (select project and build workspace layout)
 
 local my_own_tmux = {
 	-- Counter for auto-naming workspaces
@@ -306,76 +413,152 @@ local my_own_tmux = {
 				},
 			}),
 		},
+		-- Projectifier: Pick project and build workspace layout
+		{
+			key = "t",
+			mods = "CTRL",
+			action = wezterm.action_callback(function(window, pane)
+				window:toast_notification("WezTerm", "Step 1: Loading projects...", nil, 2000)
+
+				local projects = discover_projects()
+				window:toast_notification("WezTerm", "Step 2: Found " .. #projects .. " projects", nil, 2000)
+
+				if #projects == 0 then
+					window:toast_notification("WezTerm", "No projects found!", nil, 3000)
+					return
+				end
+
+				-- Build choices
+				local choices = {}
+				for _, project in ipairs(projects) do
+					table.insert(choices, {
+						id = project.filename,
+						label = project.display_name,
+					})
+				end
+
+				window:toast_notification("WezTerm", "Step 3: Built " .. #choices .. " choices", nil, 2000)
+
+				-- Debug: Check first project structure
+				if projects[1] then
+					local debug_info = "First project: " .. projects[1].display_name
+					if projects[1].tabs then
+						debug_info = debug_info .. " | Tabs: " .. #projects[1].tabs
+					else
+						debug_info = debug_info .. " | No tabs found!"
+					end
+					window:toast_notification("WezTerm", debug_info, nil, 3000)
+				end
+
+				-- Try to show InputSelector
+				window:perform_action(
+					wezterm.action.InputSelector({
+						title = "Select Project",
+						choices = choices,
+						fuzzy = true,
+						action = wezterm.action_callback(function(child_window, child_pane, id, label)
+							if not id then
+								child_window:toast_notification("WezTerm", "Canceled", nil, 1000)
+								return
+							end
+
+							child_window:toast_notification("WezTerm", "Selected: " .. label, nil, 1000)
+
+							-- Find the selected project
+							for _, project in ipairs(projects) do
+								if project.filename == id then
+									child_window:toast_notification("WezTerm",
+										"Building project: " .. project.display_name, nil, 2000)
+
+									-- Build full workspace with tabs and panes
+									build_workspace(child_window, child_pane, project)
+									return
+								end
+							end
+
+							child_window:toast_notification("WezTerm", "Project not found: " .. id, nil, 2000)
+						end),
+					}),
+					pane
+				)
+			end),
+		},
 		-- { key = "d", mods = "CTRL", action = wezterm.action.ShowDebugOverlay },
 	},
+}
 
-	-- 1-Based Indexing
-	--
-	-- This function returns the suggested title for a tab.
-
-	wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-		-- It prefers the title that was set via `tab:set_title()`
-		-- or `wezterm cli set-tab-title`, but falls back to the
-		-- title of the active pane in that tab.
-		local tab_title = function(tab_info)
-			return string.format(" %d: %s ", tab.tab_index + 1, tab.active_pane.title)
+-- Event handlers (must be outside the module table to be registered globally)
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+	-- RESPECT EXPLICIT TAB TITLES: Use tab.tab_title if it was explicitly set
+	local base_title
+	if tab.tab_title and tab.tab_title ~= "" then
+		-- Use explicitly set title (from our projectifier!)
+		base_title = tab.tab_title
+	else
+		-- Fall back to pane title only if no explicit title was set
+		base_title = tab.active_pane.title
+	end
+	
+	-- Check for zoom status
+	local zoom_icon = ""
+	for _, pane in ipairs(tab.panes) do
+		if pane.is_zoomed then
+			zoom_icon = " 🔍"
+			break
 		end
+	end
+	
+	local title = string.format(" %d: %s%s ", tab.tab_index + 1, base_title, zoom_icon)
 
-		local title = tab_title(tab)
-		if tab.is_active then
-			return {
-				{ Background = { Color = "#E6C384" } },
-				{ Foreground = { Color = "#000" } },
-				{ Text = " " .. title .. " " },
-			}
-			-- else
-			-- 	return {
-			-- 		{ Background = { Color = "#201F27" } },
-			-- 		{ Foreground = { Color = "#2A2937" } },
-			-- 		{ Text = " " .. title .. " " },
-			-- 	}
-		end
-	end),
-	--
-	wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
-		local zoomed = ""
-		if tab.active_pane.is_zoomed then
-			zoomed = "[Z] "
-		end
+	if tab.is_active then
+		return {
+			{ Background = { Color = "#E6C384" } },
+			{ Foreground = { Color = "#000" } },
+			{ Text = title },
+		}
+	else
+		return title
+	end
+end)
 
-		local index = ""
-		if #tabs > 1 then
-			index = string.format("[%d/%d] ", tab.tab_index + 1, #tabs)
-		end
+wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
+	local zoomed = ""
+	if tab.active_pane.is_zoomed then
+		zoomed = "[Z] "
+	end
 
-		return zoomed .. index .. tab.active_pane.title
-	end),
+	local index = ""
+	if #tabs > 1 then
+		index = string.format("[%d/%d] ", tab.tab_index + 1, #tabs)
+	end
 
-	-- Auto-name workspaces based on directory when switching
-	wezterm.on("update-status", function(window, pane)
-		local workspace_name = window:active_workspace()
+	return zoomed .. index .. tab.active_pane.title
+end)
 
-		-- Check if workspace has a generic name that should be auto-renamed
-		if workspace_name and workspace_name:match("^default$") then
-			local cwd = pane:get_current_working_dir()
-			if cwd then
-				local path = cwd.file_path or ""
-				local dir_name = path:match("([^/]+)/?$")
-				if dir_name and dir_name ~= "" and dir_name ~= workspace_name then
-					-- Only rename if the directory name is meaningful
-					window:perform_action(
-						wezterm.action.SwitchToWorkspace({
-							name = dir_name,
-						}),
-						pane
-					)
-				end
+-- Auto-name workspaces based on directory when switching
+wezterm.on("update-status", function(window, pane)
+	local workspace_name = window:active_workspace()
+
+	-- Check if workspace has a generic name that should be auto-renamed
+	if workspace_name and workspace_name:match("^default$") then
+		local cwd = pane:get_current_working_dir()
+		if cwd then
+			local path = cwd.file_path or ""
+			local dir_name = path:match("([^/]+)/?$")
+			if dir_name and dir_name ~= "" and dir_name ~= workspace_name then
+				-- Only rename if the directory name is meaningful
+				window:perform_action(
+					wezterm.action.SwitchToWorkspace({
+						name = dir_name,
+					}),
+					pane
+				)
 			end
 		end
-	end),
+	end
+end)
 
-	-- Mux Server for Persistent Sessions
-	default_prog = { "/usr/bin/env", "wezterm-mux-server" },
-}
+-- Add mux server configuration to the module
+my_own_tmux.default_prog = { "/usr/bin/env", "wezterm-mux-server" }
 
 return my_own_tmux

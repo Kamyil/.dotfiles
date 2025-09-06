@@ -4,41 +4,55 @@
 -- OPTIONS -- (boring but important stuff)
 vim.o.number = true
 vim.o.relativenumber = true
-vim.o.signcolumn = 'yes' -- will use 3 columns to make line numbers have a little bit more margin
-vim.o.termguicolors = true -- Enable nice colors
-vim.o.wrap = false -- Disable line wrap
-vim.o.tabstop = 4 -- set Tabs as default (where Tab = 4 Spaces here)
-vim.opt.softtabstop = 4 -- Number of spaces that a <Tab> counts for while performing editing operations
-vim.opt.shiftwidth = 4 -- Number of spaces to use for each step of (auto)indent
-vim.opt.expandtab = false -- Use tabs instead of spaces
-vim.o.swapfile = false -- it's annoying when saving, and opening project back again, so turning that off
-vim.g.mapleader = ' ' -- Map leader to Space key
-vim.g.maplocalleader = ' ' -- Sets the local leader key to <space>
+vim.o.signcolumn =
+'yes'                                                  -- will use 3 columns to make line numbers have a little bit more margin
+vim.o.termguicolors = true                             -- Enable nice colors
+vim.o.wrap = false                                     -- Disable line wrap
+vim.o.tabstop = 4                                      -- set Tabs as default (where Tab = 4 Spaces here)
+vim.opt.softtabstop = 4                                -- Number of spaces that a <Tab> counts for while performing editing operations
+vim.opt.shiftwidth = 4                                 -- Number of spaces to use for each step of (auto)indent
+vim.opt.expandtab = false                              -- Use tabs instead of spaces
+vim.o.swapfile = false                                 -- it's annoying when saving, and opening project back again, so turning that off
+vim.g.mapleader = ' '                                  -- Map leader to Space key
+vim.g.maplocalleader = ' '                             -- Sets the local leader key to <space>
 vim.opt.winborder = 'rounded'
-vim.o.clipboard = 'unnamedplus' -- For Windows it's gonna be different
-vim.g.have_nerd_font = true -- Enables Nerd Font support for icons
-vim.o.encoding = 'utf-8' -- Sets the internal encoding
-vim.o.fileencoding = 'utf-8' -- Sets the encoding for the current file
-vim.o.fileencodings = 'utf-8' -- Sets the list of encodings to try when reading a file
-vim.o.cursorline = false -- Don't highlight the line under the cursor
-vim.opt.laststatus = 0 -- 0: Never, 1: Only if there are at least two windows, 2: Always, 3: Global statusline
+vim.o.clipboard = 'unnamedplus'                        -- For Windows it's gonna be different
+vim.g.have_nerd_font = true                            -- Enables Nerd Font support for icons
+vim.o.encoding = 'utf-8'                               -- Sets the internal encoding
+vim.o.fileencoding = 'utf-8'                           -- Sets the encoding for the current file
+vim.o.fileencodings = 'utf-8'                          -- Sets the list of encodings to try when reading a file
+vim.o.cursorline = false                               -- Don't highlight the line under the cursor
+vim.opt.laststatus = 0                                 -- 0: Never, 1: Only if there are at least two windows, 2: Always, 3: Global statusline
 vim.opt.undodir = vim.fn.stdpath('data') .. '/undodir' -- Directory to store undo history
-vim.opt.undofile = true -- Enable persistent undo
-vim.opt.updatetime = 100 -- Time in milliseconds to wait before triggering the swap/undo file write (default 4000)
-vim.opt.incsearch = true -- Show search matches as you type
-vim.opt.mouse = 'a' -- Enable mouse support in all modes
-vim.opt.breakindent = true -- Enable break indent (preserves indentation in wrapped lines)
-vim.opt.timeoutlen = 200 -- Time in ms to wait for a mapped sequence to complete
+vim.opt.undofile = true                                -- Enable persistent undo
+vim.opt.updatetime = 100                               -- Time in milliseconds to wait before triggering the swap/undo file write (default 4000)
+vim.opt.incsearch = true                               -- Show search matches as you type
+vim.opt.mouse = 'a'                                    -- Enable mouse support in all modes
+vim.opt.breakindent = true                             -- Enable break indent (preserves indentation in wrapped lines)
+vim.opt.timeoutlen = 200                               -- Time in ms to wait for a mapped sequence to complete
 -- Enable settings per project
-vim.g.editorconfig = true -- Enable EditorConfig support
+vim.g.editorconfig = true                              -- Enable EditorConfig support
+
+-- Enhanced indentation detection settings
+vim.opt.autoindent = true -- Copy indent from current line when starting a new line
+vim.opt.smartindent = true -- Do smart autoindenting when starting a new line
+vim.opt.cindent = true -- Use C-style indenting
+vim.opt.preserveindent = true -- Preserve the structure of existing lines when editing
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 8 -- Keep 8 lines visible above/below the cursor
 vim.opt.ruler = false -- Don't show the ruler (line/column info)
 vim.opt.sidescrolloff = 8 -- Keep 8 columns visible to the left/right of the cursor
 -- Enable icons (`nvim-tree/nvim-web-devicons` plugin in this case)
 vim.g.icons_enabled = true -- Enable icons in plugins
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' } -- Characters to use for displaying whitespace
-vim.opt.list = true -- Do not show whitespace characters by default
+vim.opt.listchars = {
+	tab = '→ ', -- Show tabs as arrows
+	trail = '·', -- Show trailing spaces
+	nbsp = '␣', -- Show non-breaking spaces
+	lead = '·', -- Show leading spaces (when expandtab is on)
+	extends = '❯', -- Show when line continues beyond screen
+	precedes = '❮', -- Show when line starts before screen
+}
+vim.opt.list = true -- Show whitespace characters
 vim.opt.fillchars = { eob = ' ' } -- Change the character at the end of buffer (empty lines)
 vim.g.loaded_netrw = 1 -- disable netrw (default file explorer)
 vim.g.loaded_netrwPlugin = 1 --  disable netrw plugin
@@ -53,6 +67,7 @@ vim.opt.spelllang = { 'en_us', 'pl_PL' } -- Set spell check languages
 
 vim.opt.winborder = 'single'             -- Set window border style to single line
 vim.g.autoformat = false                 -- Disable autoformatting by default
+
 
 -- Enable default LSP inline diagnostic
 vim.diagnostic.config({
@@ -79,13 +94,13 @@ vim.diagnostic.config({
 })
 --
 
-
 -- Get the plugins and install them
 vim.pack.add({
 	-- DEPENDENCIES --
 	{ src = 'https://github.com/nvim-lua/plenary.nvim' },     -- Dependency of most plugins below
 	{ src = 'https://github.com/rafamadriz/friendly-snippets' }, -- Dependency of blink.cmp
 	{ src = "https://github.com/SmiteshP/nvim-navic" },       -- Dependency of barbecue plugin (breadcrumbs)
+
 
 	-- LSP
 	{ src = 'https://github.com/mason-org/mason.nvim' },           -- LSPs & Formatters installer
@@ -107,19 +122,21 @@ vim.pack.add({
 		version = '1.*'
 	}, -- Better Autocompletion
 
+	-------------------------------------------------------------------------------------------------------------
 	-- AI
-	{ src = "https://github.com/zbirenbaum/copilot.lua" },
-	{ src = "https://github.com/giuxtaposition/blink-cmp-copilot" }, -- Copilot for Blink.cmp autocompletion
 	{ src = 'https://github.com/supermaven-inc/supermaven-nvim' }, -- Better AI suggestions
+	-------------------------------------------------------------------------------------------------------------
 
 
-
+	-------------------------------------------------------------------------------------------------------------
+	-- Themes / Colorschemes
 	{ src = 'https://github.com/lukas-reineke/indent-blankline.nvim' }, -- Add indentation guides even on blank lines
 	{ src = "https://github.com/farmergreg/vim-lastplace" },         --  Automatically jump to the last cursor position
 	{ src = "https://github.com/tpope/vim-sleuth" },                 -- Detect tabstop and shiftwidth automatically
 
 	{ src = 'https://github.com/sho-87/kanagawa-paper.nvim' },       -- Colorscheme / theme --
 	{ src = 'https://github.com/catppuccin/nvim' },                  -- Alternative colorscheme
+	{ src = 'https://github.com/vague2k/vague.nvim' },               -- Alternative colorscheme
 
 	{ src = 'https://github.com/b0o/incline.nvim' },                 -- For showing current file and extra data about it
 
@@ -132,6 +149,7 @@ vim.pack.add({
 	{ src = 'https://github.com/folke/todo-comments.nvim' },         -- Highlight comments like TODO, FIXME, BUG, INFO etc.
 	{ src = "https://github.com/mluders/comfy-line-numbers.nvim" },  -- More comfortable vertical motions (without needing to reach so far away from current buttons)
 	{ src = 'https://github.com/brenoprata10/nvim-highlight-colors' }, -- Highlight color codes
+	-------------------------------------------------------------------------------------------------------------
 
 	{ src = 'https://github.com/dmtrKovalenko/fff.nvim' },
 
@@ -251,11 +269,10 @@ keymap('n', '<leader>e', ':Oil<CR>', { desc = 'File [E]xplorer' })
 -- LSP
 keymap('n', '<leader>la', vim.lsp.buf.code_action, { desc = '' })
 keymap('n', '<leader>lf', vim.lsp.buf.format)
-keymap('n', '<leader>lr', vim.lsp.buf.rename)
+keymap('n', '<leader>lr', vim.lsp.buf.rename, { desc = '[L]SP [R]ename' })
 keymap('n', 'K', vim.lsp.buf.hover)
--- Diagnostics "hover" on Shift+d (shows float for diagnostics under the cursor or whole line as a fallback)
--- WARNING: This overrides the default 'D' keymap, so you won't be able to delete a line with 'D' anymore
-keymap('n', 'D', function()
+-- Diagnostics hover is now on <leader>D instead of 'D' to preserve the default 'D' keymap
+keymap('n', '<leader>D', function()
 	local cur = vim.api.nvim_win_get_cursor(0)
 	local line = cur[1] - 1
 	local col = cur[2]
@@ -274,11 +291,36 @@ keymap('n', 'D', function()
 		close_events = { 'CursorMoved', 'InsertEnter', 'BufLeave', 'WinScrolled' },
 	})
 end, { desc = 'Diagnostics: hover (cursor/line)' })
-keymap('n', 'gr', vim.lsp.buf.references)
 -- keymap('n', 'gi', vim.lsp.buf.implementation)
-keymap('n', 'gd', vim.lsp.buf.implementation, { desc = 'Go to [D]efinition' })
+keymap('n', 'gd', function() require('snacks').picker.lsp_definitions() end, { desc = 'Go to [D]efinition' })
+keymap('n', 'grr', function() require('snacks').picker.lsp_references() end, { desc = '[G]o to [R]eferences' })
+keymap('n', '<leader>ld', function() require('snacks').picker.lsp_definitions() end, { desc = '[L]SP [D]efinitions' })
+keymap('n', '<leader>lD', function() require('snacks').picker.lsp_references() end, { desc = '[L]SP References' })
 
 keymap('n', '<leader>gg', function() require('snacks').lazygit() end, { desc = '[G]it [G]it (run lazygit client)' })
+
+-- Setup snacks.picker for LSP functionality
+require('snacks').setup({
+	picker = {
+		enabled = true,
+		-- Configure picker layout and appearance
+		layout = {
+			preset = "telescope", -- Use telescope-like layout
+			backdrop = { transparent = false },
+		},
+		-- Configure sources
+		sources = {
+			lsp_definitions = {
+				title = "LSP Definitions",
+				format = "file",
+			},
+			lsp_references = {
+				title = "LSP References",
+				format = "file",
+			},
+		},
+	},
+})
 keymap('n', '<leader>gb', '<cmd>Blame<CR>', { desc = '[G]it [B]lame' })
 
 
@@ -517,22 +559,42 @@ require('kanagawa-paper').setup({
 
 	auto_plugins = true,
 })
--- Kanagawa theme override: Override Svelte tag colors, to make them distinct
+-- FIXME: Kanagawa theme override: Override Svelte tag colors, to make them distinct
 vim.schedule(function()
 	vim.api.nvim_set_hl(0, '@tag.svelte', { fg = '#8EA4A2', bold = false })
 	vim.api.nvim_set_hl(0, '@tag.attribute.svelte', { fg = '#B98D7B', bold = false })
 end)
-require('oil').setup() -- Setup file manager (that allows editing files like normal Vim buffer)
+require('oil').setup({
+	view_options = {
+		-- Show files and directories that start with "."
+		show_hidden = true,
+		-- This function defines what will never be shown, even when `show_hidden` is set
+		is_always_hidden = function(name, bufnr)
+			return false
+		end,
+		-- Sort file names with numbers in a more intuitive order for humans.
+		-- Can be "fast", true, or false. "fast" will turn it off for large directories.
+		natural_order = "fast",
+		-- Sort file and directory names case insensitive
+		case_insensitive = false,
+		sort = {
+			-- sort order can be "asc" or "desc"
+			-- see :help oil-columns to see which columns are sortable
+			{ "type", "asc" },
+			{ "name", "asc" },
+		},
+		-- Customize the highlight group for the file name
+		highlight_filename = function(entry, is_hidden, is_link_target, is_link_orphan)
+			return nil
+		end,
+	},
+}) -- Setup file manager (that allows editing files like normal Vim buffer)
 -- require('mini.pick').setup()
 --
 require('mini.surround').setup()
 require('marks').setup()
 require('nvim-autopairs').setup()
 
-require("copilot").setup({
-	suggestion = { enabled = true },
-	panel = { enabled = true },
-})
 require('blink.cmp').setup({ -- setup autocompletion
 	-- preset = 'enter',
 	fuzzy = {
@@ -588,25 +650,45 @@ require('blink.cmp').setup({ -- setup autocompletion
 	},
 	signature = { enabled = true },
 	sources = {
-		default = { "lsp", "path", "snippets", "buffer", "copilot" },
-		providers = {
-			copilot = {
-				name = "copilot",
-				module = "blink-cmp-copilot",
-				enabled = true,
-				score_offset = 100,
-				async = true,
-			},
-		},
+		default = { "lsp", "path", "snippets", "buffer" },
 		per_filetype = {
 			codecompanion = { "codecompanion" },
 		},
 	},
 })
 
+require("vague").setup({
+	-- optional configuration here
+})
+
+-- Zenbones setup
+-- require("zenbones").setup()
+
+-- Melange setup (no specific setup required, it's ready to use)
+
+-- Everforest setup
+-- vim.g.everforest_background = 'medium' -- 'hard', 'medium', 'soft'
+-- vim.g.everforest_better_performance = 1
+-- vim.g.everforest_transparent_background = 1
+--
+-- -- Edge setup
+-- vim.g.edge_style = 'default' -- 'default', 'aura', 'neon'
+-- vim.g.edge_better_performance = 1
+-- vim.g.edge_transparent_background = 1
+--
+-- -- Nord setup
+-- require('nord').setup({
+-- 	transparent = true,
+-- 	terminal_colors = true,
+-- 	diff = { mode = 'bg' },
+-- 	borders = true,
+-- 	errors = { mode = 'bg' },
+-- })
+--
 -- Set colorscheme
-vim.cmd('colorscheme kanagawa-paper-ink')
+-- vim.cmd('colorscheme kanagawa-paper-ink')
 -- vim.cmd('colorscheme catppuccin-mocha')
+vim.cmd('colorscheme kanagawa-paper-ink')
 vim.cmd(':hi statusline guibg=NONE')
 
 -- Autocommands
@@ -643,6 +725,32 @@ vim.api.nvim_create_autocmd('FileType', {
 	end,
 })
 
+-- Enhanced indentation detection
+local indent_augroup = vim.api.nvim_create_augroup('IndentDetection', { clear = true })
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
+	desc = 'Detect and apply indentation settings',
+	group = indent_augroup,
+	pattern = '*',
+	callback = function()
+		-- Let vim-sleuth handle detection first
+		vim.schedule(function()
+			-- Force refresh indentation display
+			if vim.bo.expandtab then
+				-- Using spaces
+				vim.opt_local.listchars:append({ tab = '→ ', lead = '·', trail = '·' })
+			else
+				-- Using tabs
+				vim.opt_local.listchars:append({ tab = '→ ', trail = '·' })
+			end
+
+			-- Ensure proper tab display
+			vim.opt_local.tabstop = vim.bo.tabstop
+			vim.opt_local.shiftwidth = vim.bo.shiftwidth
+			vim.opt_local.softtabstop = vim.bo.softtabstop
+		end)
+	end,
+})
+
 
 -- Disable Tree-sitter for buffers larger than MAX_FILESIZE in order to not lag the Neovim
 vim.api.nvim_create_autocmd('BufReadPre', {
@@ -671,6 +779,36 @@ require('comfy-line-numbers').setup({
 require('todo-comments').setup()
 require('nvim-highlight-colors').setup({})
 require('which-key').setup({ preset = 'helix' })
+
+-- Configure indent-blankline for better indentation visualization
+require('ibl').setup({
+	indent = {
+		char = '│',
+		tab_char = '│',
+	},
+	scope = {
+		enabled = true,
+		show_start = true,
+		show_end = false,
+		injected_languages = false,
+		highlight = { "Function", "Label" },
+		priority = 500,
+	},
+	exclude = {
+		filetypes = {
+			"help",
+			"alpha",
+			"dashboard",
+			"neo-tree",
+			"Trouble",
+			"lazy",
+			"mason",
+			"notify",
+			"toggleterm",
+			"lazyterm",
+		},
+	},
+})
 require('obsidian').setup({
 	dir                   = vim.env.HOME .. '/second-brain', -- specify the vault location. no need to call 'vim.fn.expand' here
 	use_advanced_uri      = true,
@@ -917,6 +1055,7 @@ require("barbecue").setup({
 	context_follow_icon_color = true,
 })
 -- require('barbecue').toggle(true)
+--
 
 -- -- Undercurl errors and warnings like in VSCode
 vim.cmd([[let &t_Cs = "\e[4:3m"]])
