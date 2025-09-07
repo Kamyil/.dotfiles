@@ -412,6 +412,7 @@ programs.starship = {
 							} // lib.optionalAttrs (builtins.match ".*linux.*" system != null) {
 								xdg.configFile."hypr".source     = dotfiles + "/config/hypr";
 								xdg.configFile."waybar".source   = dotfiles + "/config/waybar";
+								xdg.configFile."wofi".source     = dotfiles + "/config/wofi";
 								
 							# macOS-specific configs  
 							} // lib.optionalAttrs (builtins.match ".*darwin.*" system != null) {
