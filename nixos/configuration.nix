@@ -62,6 +62,9 @@ users.users.kamil = {
 
   boot.initrd.kernelModules = ["virtio_gpu"];
   services.xserver.videoDrivers = [ "virtio" ];
+  
+  # Set default resolution for virtio display
+  boot.kernelParams = [ "video=Virtual-1:1920x1200" ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
