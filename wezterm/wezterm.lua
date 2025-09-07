@@ -113,9 +113,9 @@ config.tab_max_width = 128
 config.bold_brightens_ansi_colors = false
 
 -- Environment variables
--- config.set_environment_variables = {
--- 	TERM = "xterm-256color", -- Set TERM environment variable
--- }
+config.set_environment_variables = {
+	TERM = "xterm-256color", -- Set TERM environment variable
+}
 
 -- Mouse bindings
 config.mouse_bindings = {
