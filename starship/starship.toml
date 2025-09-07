@@ -2,11 +2,11 @@
 format = """$directory$git_branch$character"""
 
 [directory]
-style = "bold red"
+style = "bold #ff0000"
 format = "[$path]($style) "
 
 [git_branch]
-style = "bold blue"
+style = "bold #0000ff"
 format = "on [$symbol$branch]($style) "
 
 [character]
