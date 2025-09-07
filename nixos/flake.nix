@@ -1,9 +1,11 @@
 {
 	inputs = {
-		nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-		nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-		home-manager.url = "github:nix-community/home-manager/release-24.11";
+		nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+		nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+		home-manager.url = "github:nix-community/home-manager";
 		home-manager.inputs.nixpkgs.follows = "nixpkgs";
+		nix-darwin.url = "github:nix-darwin/nix-darwin";
+		nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
 # bring your dotfiles in as a flake input (read-only, pure)
 		dotfiles.url = "path:..";
@@ -20,7 +22,7 @@
 
 	};
 
-	outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, berkeley-font, neovim-nightly-overlay, dotfiles, rust-overlay, ... }:
+	outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, berkeley-font, neovim-nightly-overlay, dotfiles, rust-overlay, ... }:
 		let
 		# Define supported systems
 		systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
@@ -36,7 +38,7 @@
 		};
 		
 		pkgs = mkPkgs system;
-		pkgsUnstable = import nixpkgs-unstable {
+		pkgsStable = import nixpkgs-stable {
 			inherit system;
 			config.allowUnfree = true;
 		};
@@ -80,8 +82,8 @@
 									 })
 							]) ++
 								[
-# + the ones from `unstable` branch
-								pkgsUnstable.opencode
+# + the ones from `unstable` branch  
+								pkgs.opencode  # Now using unstable nixpkgs as main
 									neovim-nightly-overlay.packages.${system}.default
 								];
 
@@ -141,7 +143,7 @@
 									share = true;
 								};
 								
-								initExtra = ''
+							initContent = ''
 									# Disable auto update and title
 									DISABLE_AUTO_UPDATE=true
 									export DISABLE_AUTO_TITLE=true
@@ -457,7 +459,234 @@ programs.home-manager.enable = true;
 # ];
 }
 ];	
-};
+		};
+
+		# Darwin configuration for macOS
+		darwinConfigurations."MacBook-Pro-Kamil" = 
+		let
+			darwinSystem = "aarch64-darwin"; # or "x86_64-darwin" for Intel Macs
+			darwinPkgs = import nixpkgs {
+				system = darwinSystem;
+				overlays = [rust-overlay.overlays.default];
+				config.allowUnfree = true;
+			};
+			darwinPkgsStable = import nixpkgs-stable {
+				system = darwinSystem;
+				config.allowUnfree = true;
+			};
+		in
+		nix-darwin.lib.darwinSystem {
+			system = darwinSystem;
+			specialArgs = { 
+				inherit lib;
+				pkgs = darwinPkgs;
+				pkgsStable = darwinPkgsStable;
+			};
+			modules = [
+				# nix-darwin system configuration
+				({ config, pkgs, ... }: {
+					# List packages installed in system profile
+					environment.systemPackages = with pkgs; [
+						vim
+						git
+						curl
+						wget
+					];
+
+					# Nix configuration (nix-daemon is enabled by default when nix.enable = true)
+					nix.package = pkgs.nix;
+
+					# Enable flakes
+					nix.settings.experimental-features = "nix-command flakes";
+
+					# Create /etc/zshrc that loads the nix-darwin environment
+					programs.zsh.enable = true;
+
+					# Set Git commit hash for darwin-version
+					system.configurationRevision = self.rev or self.dirtyRev or null;
+
+					# Used for backwards compatibility
+					system.stateVersion = 5;
+
+					# The platform the configuration will be used on
+					nixpkgs.hostPlatform = "aarch64-darwin";
+
+					# Set primary user (required for system defaults and homebrew)
+					system.primaryUser = "kamil";
+
+					# Configure users
+					users.users.kamil = {
+						name = "kamil";
+						home = "/Users/kamil";
+					};
+
+					# macOS system defaults
+					system.defaults = {
+						dock = {
+							autohide = true;
+							show-recents = false;
+							tilesize = 48;
+						};
+						finder = {
+							AppleShowAllExtensions = true;
+							ShowPathbar = true;
+							ShowStatusBar = true;
+						};
+						NSGlobalDomain = {
+							AppleShowAllExtensions = true;
+							KeyRepeat = 2;
+							InitialKeyRepeat = 15;
+							ApplePressAndHoldEnabled = false;
+						};
+					};
+
+					# Homebrew integration  
+					homebrew = {
+						enable = true;
+						onActivation.cleanup = "zap";
+						casks = [
+							"firefox"
+							"visual-studio-code" 
+							"rectangle"
+						];
+					};
+				})
+
+				# Home Manager for Darwin
+				home-manager.darwinModules.home-manager
+				{
+					home-manager.useGlobalPkgs = true;
+					home-manager.useUserPackages = true;
+					home-manager.backupFileExtension = "backup";
+
+					home-manager.users.kamil = { pkgs, config, ... }: {
+						home.username = "kamil";
+						home.homeDirectory = lib.mkForce "/Users/kamil";
+						home.stateVersion = "24.11";
+
+						# Reuse packages from your NixOS config but adapted for macOS
+						home.packages = with pkgs; [
+							wezterm firefox
+							fzf bat delta lazygit lazydocker docker
+							gcc 
+						];
+
+						# Reuse your zsh configuration with minor adaptations
+						programs.zsh = {
+							enable = true;
+							autosuggestion.enable = true;
+							syntaxHighlighting.enable = true;
+							enableCompletion = true;
+							
+							# Same shell aliases as NixOS
+							shellAliases = {
+								n = "nvim .";
+								lg = "lazygit";
+								ldk = "lazydocker";
+								ls = "lsd";
+								cat = "bat";
+								grep = "grep --color=auto";
+								reset_zsh = "source ~/.zshrc";
+								clear_nvim_cache = "rm -rf ~/.local/share/nvim";
+							};
+							
+							# Same history configuration
+							history = {
+								size = 999;
+								save = 1000;
+								path = "$HOME/.zhistory";
+								ignoreDups = true;
+								ignoreSpace = true;
+								expireDuplicatesFirst = true;
+								share = true;
+							};
+							
+							initContent = ''
+								# macOS-specific paths
+								export PATH="/opt/homebrew/bin:$PATH"
+								export PNPM_HOME="/Users/kamil/Library/pnpm"
+								export PATH="$PNPM_HOME:$PATH"
+								
+								# Editor configuration
+								export EDITOR='nvim'
+								export XDG_CONFIG_HOME="$HOME/.config"
+								export BAT_THEME="gruvbox-dark"
+								
+								# Homebrew
+								export HOMEBREW_NO_AUTO_UPDATE=1
+								
+								# Basic functions
+								weather() {
+									curl "wttr.in/$1?lang=pl"
+								}
+								
+								# Enable colors and prompt substitution
+								autoload -U colors && colors
+								setopt PROMPT_SUBST
+							'';
+						};
+
+						# Same starship config
+						programs.starship = {
+							enable = true;
+							enableZshIntegration = true;
+							settings = {
+								format = "$directory$git_branch$character";
+								directory = {
+									style = "#7B958E";
+									format = "[$path]($style) ";
+								};
+								git_branch = {
+									style = "#958294";
+									format = "on [$symbol$branch]($style) ";
+								};
+								character = {
+									success_symbol = "[➜](#7B9A5B)";
+									error_symbol = "[➜](#A95B58)";
+								};
+							};
+						};
+
+						# Same git config
+						programs.git = {
+							enable = true;
+							userName = "Kamil Ksen";
+							userEmail = "mccom_kks@mccom.pl";
+							extraConfig = {
+								core.editor = "nvim";
+								init.defaultBranch = "main";
+							};
+						};
+
+						# Map your dotfiles for macOS
+						xdg.configFile."nvim".source = dotfiles + "/nvim";
+						xdg.configFile."wezterm".source = dotfiles + "/wezterm";
+						xdg.configFile."lazygit".source = dotfiles + "/config/lazygit";
+						
+						# macOS-specific configs
+						home.file.".hammerspoon".source = dotfiles + "/hammerspoon";
+
+						# Nice defaults
+						xdg.enable = false;
+						programs.home-manager.enable = true;
+					};
+				}
+			];
+		};
+
+		# Add required outputs for nix-darwin compatibility
+		packages.aarch64-darwin.default = self.darwinConfigurations."MacBook-Pro-Kamil".system;
+		packages.x86_64-darwin.default = self.darwinConfigurations."MacBook-Pro-Kamil".system;
+		
+		apps.aarch64-darwin.default = {
+			type = "app";
+			program = "${self.darwinConfigurations."MacBook-Pro-Kamil".system}/sw/bin/darwin-rebuild";
+		};
+		
+		apps.x86_64-darwin.default = {
+			type = "app";
+			program = "${self.darwinConfigurations."MacBook-Pro-Kamil".system}/sw/bin/darwin-rebuild";
+		};
 };
 }
 

@@ -26,3 +26,4 @@
 - Test changes on non-production systems first
 - Maintain backward compatibility for existing tool configurations
 - **Focus on NixOS configs**: Rely entirely on nixos/ folder and files referenced there - ignore legacy configs like i3/
+- **NEVER run sudo commands** - Always let the user run them and provide output when requested
