@@ -18,8 +18,8 @@ else
   export EDITOR='nvim'
 fi
 
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # Set config directory for macOS
 export XDG_CONFIG_HOME="$HOME/.config"
 
@@ -308,9 +308,10 @@ alias gsp="git stash pop"
 # disable Brew auto updates
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-source /Users/kamil/.config/broot/launcher/bash/br
+# Only source if files exist (cross-platform compatibility)
+[ -f "$HOME/.config/broot/launcher/bash/br" ] && source "$HOME/.config/broot/launcher/bash/br"
 # turn fzf git on
-source /Users/kamil/.dotfiles/config/scripts/fzf-git.sh
+[ -f "$HOME/.dotfiles/config/scripts/fzf-git.sh" ] && source "$HOME/.dotfiles/config/scripts/fzf-git.sh"
 export BAT_THEME="Kanagawa"
 
 
@@ -340,8 +341,12 @@ setopt PROMPT_SUBST
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# pnpm
-export PNPM_HOME="/Users/kamil/Library/pnpm"
+# pnpm (cross-platform)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export PNPM_HOME="/Users/kamil/Library/pnpm"
+else
+  export PNPM_HOME="$HOME/.local/share/pnpm"
+fi
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
