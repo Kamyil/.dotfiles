@@ -98,6 +98,21 @@
 programs.starship = {
 	enable = true;
 	enableZshIntegration = true;
+	settings = {
+		format = "$directory$git_branch$character";
+		directory = {
+			style = "#7B958E";  # muted teal-green
+			format = "[$path]($style) ";
+		};
+		git_branch = {
+			style = "#958294";  # muted purple-grey
+			format = "on [$symbol$branch]($style) ";
+		};
+		character = {
+			success_symbol = "[➜](#7B9A5B)";  # muted green with similar saturation
+			error_symbol = "[➜](#A95B58)";    # muted red-brown
+		};
+	};
 };
 
 							programs.git = {
@@ -114,7 +129,6 @@ programs.starship = {
 # ~/.config/*
 	      	  xdg.configFile."nvim".source     = dotfiles + "/nvim";
 	      	  xdg.configFile."wezterm".source  = dotfiles + "/wezterm";
-xdg.configFile."starship.toml".source = dotfiles + "/starship/starship.toml";
 xdg.configFile."hyprland".source     = dotfiles + "/config/hypr";
 # (you also have mac-only stuff like yabai/skhd/sketchybar—gate those below)
 
