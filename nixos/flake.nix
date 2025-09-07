@@ -47,6 +47,7 @@
 					{
 						home-manager.useGlobalPkgs = true;
 						home-manager.useUserPackages = true;
+						home-manager.backupFileExtension = "backup";
 
 # --- your user ---
 						home-manager.users.kamil = { pkgs, config, ... }: {
@@ -129,7 +130,7 @@ programs.starship = {
 # ~/.config/*
 	      	  xdg.configFile."nvim".source     = dotfiles + "/nvim";
 	      	  xdg.configFile."wezterm".source  = dotfiles + "/wezterm";
-xdg.configFile."hyprland".source     = dotfiles + "/config/hypr";
+xdg.configFile."hypr".source     = dotfiles + "/config/hypr";
 # (you also have mac-only stuff like yabai/skhd/sketchybar—gate those below)
 
 home.file."second-brain/.keep".text = ""; 
