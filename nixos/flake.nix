@@ -198,7 +198,7 @@
 									export HOMEBREW_NO_AUTO_UPDATE=1
 									
 									# Bat theme
-									export BAT_THEME="Kanagawa"
+									export BAT_THEME="gruvbox-dark"
 									
 									# Vi mode and key bindings
 									bindkey -v
