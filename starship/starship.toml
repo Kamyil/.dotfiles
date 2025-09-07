@@ -183,9 +183,9 @@
 # [perl]
 # symbol = " "
 #
-[php]
-symbol = " "
-style = "bold #957FB8"
+# [php]
+# symbol = " "
+# style = "bold #957FB8"
 #
 # [pijul_channel]
 # symbol = " "
@@ -227,7 +227,7 @@ $git_branch
 
 right_format = """$all"""
 
-palette = "kanagawa"
+# palette = "kanagawa"
 
 [palettes.kanagawa]
 color_fg0 = '#fbf1c7'
@@ -240,9 +240,9 @@ color_orange = '#d65d0e'
 color_purple = '#b16286'
 color_red = '#cc241d'
 color_yellow = '#d79921'
-# Add missing colors that your config uses
-sapphire = "#7fb4ca"
-lavender = "#938aa9"
+# Add missing colors that your config uses - using brighter kanagawa colors
+sapphire = "#7fb4ca"  # bright blue from kanagawa
+lavender = "#d27e99"  # bright pink/magenta from kanagawa  
 black = "#16161d"
 
 [palettes.catppuccin_mocha]
@@ -334,7 +334,7 @@ RedHatEnterprise = "󱄛"
 #format = '[ $user ]($style)'
 
 [directory]
-style = "sapphire"
+style = "blue"
 format = "[ $path ]($style)"
 #truncation_length = 4
 #truncation_symbol = "…/"
@@ -372,10 +372,10 @@ when = 'git rev-parse --is-inside-work-tree 2> /dev/null'
 format = "at $output"
 
 [git_branch]
-symbol = "[](black) "
+symbol = " "
 # format =  ' [$symbol$branch(:$remote_branch)]($style)[]'
-style = "fg:lavender bg:black"
-format =  '  on [$symbol$branch]($style)[](black)'
+style = "green"
+format = "  on [$symbol$branch]($style)"
 
 [git_status]
 format = ' [($all_status$ahead_behind )]($style)'

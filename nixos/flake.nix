@@ -86,6 +86,8 @@
 								autosuggestion.enable = true;
 								syntaxHighlighting.enable = true;
 								initExtra = ''
+									export FORCE_COLOR=1
+									export NO_COLOR=
 									source ~/.zshrc
 									'';
 							};
