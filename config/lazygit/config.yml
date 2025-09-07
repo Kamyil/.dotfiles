@@ -5,35 +5,36 @@ git:
     # pager: difft
     # externalDiffCommand: difft --color=always
     # externalDiffCommand: difft --color=always --display=inline --syntax-highlight=on
-    
-theme:
-  activeBorderColor:
-    - "#7fb4ca"
-    - bold
-  inactiveBorderColor:
-    - '#54546d'
-  optionsTextColor:
-    - '#938aa9'
-  selectedLineBgColor:
-    - '#223249'
-  selectedRangeBgColor:
-    - '#2d4f67'
-  cherryPickedCommitBgColor:
-    - '#49443c'
-  cherryPickedCommitFgColor:
-    - '#c0a36e'
-  unstagedChangesColor:
-    - '#e46876'
-  defaultFgColor:
-    - '#c8c093'
-  searchingActiveBorderColor:
-    - '#957fb8'
-  stagedChangesColor:
-    - '#76946a'
-  markedBaseCommitFgColor:
-    - '#7e9cd8'
-  markedBaseCommitBgColor:
-    - '#49443c'
+
+gui:
+  theme:
+    activeBorderColor:
+      - '#7fb4ca'
+      - bold
+    inactiveBorderColor:
+      - '#54546d'
+    optionsTextColor:
+      - '#938aa9'
+    selectedLineBgColor:
+      - '#223249'
+    selectedRangeBgColor:
+      - '#2d4f67'
+    cherryPickedCommitBgColor:
+      - '#49443c'
+    cherryPickedCommitFgColor:
+      - '#c0a36e'
+    unstagedChangesColor:
+      - '#e46876'
+    defaultFgColor:
+      - '#c8c093'
+    searchingActiveBorderColor:
+      - '#957fb8'
+    stagedChangesColor:
+      - '#76946a'
+    markedBaseCommitFgColor:
+      - '#7e9cd8'
+    markedBaseCommitBgColor:
+      - '#49443c'
 
 authorColors:
   '*': '#7aa89f'
