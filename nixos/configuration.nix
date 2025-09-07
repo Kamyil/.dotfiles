@@ -129,7 +129,6 @@ users.users.kamil = {
    btop
    fzf
    lsd
-   lazygit
 
    # Terminals
    ghostty
