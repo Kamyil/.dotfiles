@@ -137,6 +137,9 @@ users.users.kamil = {
    kitty
 
 
+   # Database tools
+   dbeaver-bin
+
    # Others
    hyprpaper hypridle hyprlock
    waybar wofi wl-clipboard grim slurp
