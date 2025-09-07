@@ -131,6 +131,7 @@ programs.starship = {
 	      	  xdg.configFile."nvim".source     = dotfiles + "/nvim";
 	      	  xdg.configFile."wezterm".source  = dotfiles + "/wezterm";
 xdg.configFile."hypr".source     = dotfiles + "/config/hypr";
+xdg.configFile."waybar".source   = dotfiles + "/config/waybar";
 # (you also have mac-only stuff like yabai/skhd/sketchybar—gate those below)
 
 home.file."second-brain/.keep".text = ""; 
