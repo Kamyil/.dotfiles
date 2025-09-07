@@ -140,6 +140,9 @@ users.users.kamil = {
    # Database tools
    dbeaver-bin
 
+   # Game development
+   love
+
    # Others
    hyprpaper hypridle hyprlock
    waybar wofi wl-clipboard grim slurp
