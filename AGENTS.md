@@ -1,0 +1,26 @@
+# Dotfiles Agent Guidelines
+
+## Build/Test Commands
+- **No build system** - This is a configuration repository
+- **Test configs**: Restart applications or source files (e.g., `source ~/.zshrc`)
+- **NixOS**: `sudo nixos-rebuild switch` to apply changes
+- **Manual testing**: Check individual configs by loading them in respective applications
+
+## Code Style Guidelines
+- **Lua (WezTerm/Hammerspoon)**: Use `local` variables, snake_case, tabs for indentation
+- **Shell scripts**: Use `#!/usr/bin/env bash`, proper quoting, shellcheck compliance
+- **Config files**: Follow existing indentation patterns (2 spaces for YAML/TOML, 4 for others)
+- **Git**: Use delta pager configured in .gitconfig
+- **Stylua**: 2 spaces, 160 column width, single quotes preferred (see nvim/.stylua.toml)
+
+## Architecture Patterns
+- **Modular approach**: Separate configs per tool in respective directories
+- **NixOS integration**: Flake-based with home-manager for user configs
+- **Symlink structure**: Config files linked via NixOS home-manager or manual setup
+- **Cross-platform**: Some configs are macOS-specific (yabai, skhd, sketchybar)
+- **Environment files**: Use .env files for sensitive data (see config/scripts/.env)
+
+## Important Notes
+- Never commit secrets or API keys to .env files
+- Test changes on non-production systems first
+- Maintain backward compatibility for existing tool configurations
