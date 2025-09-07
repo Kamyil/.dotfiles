@@ -184,8 +184,8 @@
 # symbol = " "
 #
 [php]
-symbol = " "
-color = "#957FB8"
+symbol = " "
+style = "bold #957FB8"
 #
 # [pijul_channel]
 # symbol = " "
@@ -240,6 +240,10 @@ color_orange = '#d65d0e'
 color_purple = '#b16286'
 color_red = '#cc241d'
 color_yellow = '#d79921'
+# Add missing colors that your config uses
+sapphire = "#7fb4ca"
+lavender = "#938aa9"
+black = "#16161d"
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"

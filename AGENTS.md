@@ -3,7 +3,7 @@
 ## Build/Test Commands
 - **No build system** - This is a configuration repository
 - **Test configs**: Restart applications or source files (e.g., `source ~/.zshrc`)
-- **NixOS**: `sudo nixos-rebuild switch` to apply changes
+- **NixOS**: Suggest changes but let user run `sudo nixos-rebuild switch` manually
 - **Manual testing**: Check individual configs by loading them in respective applications
 
 ## Code Style Guidelines
