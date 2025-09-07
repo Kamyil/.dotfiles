@@ -19,6 +19,7 @@
 - **Symlink structure**: Config files linked via NixOS home-manager or manual setup
 - **Cross-platform**: Some configs are macOS-specific (yabai, skhd, sketchybar)
 - **Environment files**: Use .env files for sensitive data (see config/scripts/.env)
+- **Home Manager preference**: NEVER create symlinks manually - always use NixOS home-manager configuration
 
 ## Important Notes
 - Never commit secrets or API keys to .env files

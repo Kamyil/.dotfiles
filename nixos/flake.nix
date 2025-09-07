@@ -93,10 +93,10 @@
 
 
 
-# programs.starship = {
-# 	enable = true;
-# 	enableZshIntegration = true;
-# };
+programs.starship = {
+	enable = true;
+	enableZshIntegration = true;
+};
 
 							programs.git = {
 								enable = true;
@@ -112,7 +112,7 @@
 # ~/.config/*
 	      	  xdg.configFile."nvim".source     = dotfiles + "/nvim";
 	      	  xdg.configFile."wezterm".source  = dotfiles + "/wezterm";
-# xdg.configFile."starship.toml".source = dotfiles + "/starship/starship.toml";
+xdg.configFile."starship.toml".source = dotfiles + "/starship/starship.toml";
 xdg.configFile."hyprland".source     = dotfiles + "/config/hypr";
 # (you also have mac-only stuff like yabai/skhd/sketchybar—gate those below)
 

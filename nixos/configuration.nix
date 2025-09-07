@@ -108,9 +108,9 @@ users.users.kamil = {
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
+   # List packages installed in system profile. To search, run:
+   # $ nix search wget
+   environment.systemPackages = with pkgs; [
    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
    wget
    curl
@@ -121,7 +121,15 @@ users.users.kamil = {
 
    vivaldi
 
-   # rg delta bat btop
+   # Shell tools
+   starship
+   ripgrep
+   delta
+   bat
+   btop
+   fzf
+   lsd
+   lazygit
 
    # Terminals
    ghostty
