@@ -3,8 +3,8 @@
     "berkeley-font": {
       "flake": false,
       "locked": {
-        "lastModified": 1757159030,
-        "narHash": "sha256-K1+ovy2s6lLDlRPZoMdHHOnJyeuxA7I6m00+P22a9qg=",
+        "lastModified": 1757236972,
+        "narHash": "sha256-/jPMCSULUVJBoJhfJ0u4w8aAVFA4WJ6op745wUlPI84=",
         "path": "/home/kamil/.local/share/fonts",
         "type": "path"
       },
@@ -17,7 +17,7 @@
       "flake": false,
       "locked": {
         "lastModified": 0,
-        "narHash": "sha256-V53tjRrpyhRLKDc4E3Kr5AJcKURXAumnMwAk/IKuz2c=",
+        "narHash": "sha256-obPTTTRF0XeD6IAA2pMWv+p6ylYhzVw5i2sEW9C/mvU=",
         "path": "..",
         "type": "path"
       },
@@ -199,11 +199,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1757117124,
-        "narHash": "sha256-ZUnJehqxYrhfvIdLrFC3l/w8pX4ObEIWZYqL1UpgvRE=",
+        "lastModified": 1757230098,
+        "narHash": "sha256-MSw+IU56NbE+U0vSxn/Gwg6eIvl4IJqiy20QOg9SAL4=",
         "owner": "nix-community",
         "repo": "neovim-nightly-overlay",
-        "rev": "b447e494cafb7adaf396714a285245e4d1536a6a",
+        "rev": "db6e74196727c16d825a2a6f076b1817b7dc668d",
         "type": "github"
       },
       "original": {
@@ -215,11 +215,11 @@
     "neovim-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1757081548,
-        "narHash": "sha256-24Jg5pMGTofEJ6Pz6OBDAMH6hc9gbMqgZhhVe+uZF3M=",
+        "lastModified": 1757200352,
+        "narHash": "sha256-qtWORsM/mj6NtWziW8PE+VYNQnLj4VTtV6ZUaVSjMio=",
         "owner": "neovim",
         "repo": "neovim",
-        "rev": "069be911064d0e64f1efc13348dbb878afaf347f",
+        "rev": "21f2c2b19c40882dc6985f87a2e3527c60e3cfaa",
         "type": "github"
       },
       "original": {

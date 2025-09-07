@@ -403,10 +403,10 @@ programs.starship = {
 
 # --- map your dotfiles repo into place ---
 # ~/.config/*
-	      	  xdg.configFile."nvim".source     = dotfiles + "/nvim";
-	      	  xdg.configFile."wezterm".source  = dotfiles + "/wezterm";
-	      	  xdg.configFile."lazygit".source  = dotfiles + "/config/lazygit";
-	      	  xdg.configFile."lazydocker".source  = dotfiles + "/config/lazydocker";
+							xdg.configFile."nvim".source     = dotfiles + "/nvim";
+							xdg.configFile."wezterm".source  = dotfiles + "/wezterm";
+							xdg.configFile."lazygit".source  = dotfiles + "/config/lazygit";
+							xdg.configFile."lazydocker".source  = dotfiles + "/config/lazydocker";
 
 							# Linux-specific configs
 							} // lib.optionalAttrs (builtins.match ".*linux.*" system != null) {
