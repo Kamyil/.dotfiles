@@ -405,7 +405,7 @@ programs.starship = {
 # ~/.config/*
 	      	  xdg.configFile."nvim".source     = dotfiles + "/nvim";
 	      	  xdg.configFile."wezterm".source  = dotfiles + "/wezterm";
-	      	  xdg.configFile."lazygit/config.yml".source  = dotfiles + "/config/lazygit/config.yml";
+	      	  xdg.configFile."lazygit".source  = dotfiles + "/config/lazygit";
 
 							# Linux-specific configs
 							} // lib.optionalAttrs (builtins.match ".*linux.*" system != null) {
