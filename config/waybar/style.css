@@ -9,7 +9,7 @@
 
 window#waybar {
     background: rgba(0, 0, 0, 0.0);
-    color: #D3CAA;
+    color: #D3CAAA;
 }
 
 #workspaces {
@@ -19,13 +19,13 @@ window#waybar {
 #workspaces button {
     padding: 0 8px;
     background: transparent;
-    color: #D3CAA;
+    color: #D3CAAA;
     border-radius: 0;
 }
 
 #workspaces button.active {
     background: rgba(211, 202, 170, 0.2);
-    color: #D3CAA;
+    color: #D3CAAA;
 }
 
 #workspaces button:hover {
@@ -34,17 +34,17 @@ window#waybar {
 
 #window {
     margin: 0 8px;
-    color: #D3CAA;
+    color: #D3CAAA;
 }
 
 #clock {
     margin: 0 8px;
-    color: #D3CAA;
+    color: #D3CAAA;
 }
 
 #battery {
     margin: 0 8px;
-    color: #D3CAA;
+    color: #D3CAAA;
 }
 
 #battery.warning {
