@@ -8,7 +8,7 @@
 		nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
 # bring your dotfiles in as a flake input (read-only, pure)
-		dotfiles.url = "path:..";
+		dotfiles.url = "path:/home/kamil/.dotfiles";
 		dotfiles.flake = false;
 
 		neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay"; 
@@ -503,7 +503,11 @@ programs.home-manager.enable = true;
 					nix.settings.experimental-features = "nix-command flakes";
 
 					# Create /etc/zshrc that loads the nix-darwin environment
-					programs.zsh.enable = true;
+					programs.zsh = {
+						enable = true;
+						enableCompletion = true;
+						enableBashCompletion = true;
+					};
 
 					# Set Git commit hash for darwin-version
 					system.configurationRevision = self.rev or self.dirtyRev or null;
@@ -517,11 +521,30 @@ programs.home-manager.enable = true;
 					# Set primary user (required for system defaults and homebrew)
 					system.primaryUser = "kamil";
 
-					# Configure users
+					# Configure users and set shell
 					users.users.kamil = {
 						name = "kamil";
 						home = "/Users/kamil";
+						shell = pkgs.zsh;
 					};
+
+					# Ensure nix-darwin manages shells
+					environment.shells = with pkgs; [ zsh ];
+
+					# Add nix paths to zsh
+					environment.variables = {
+						EDITOR = "nvim";
+						SHELL = "${pkgs.zsh}/bin/zsh";
+					};
+
+					# Ensure nix environment is loaded in all shells
+					environment.interactiveShellInit = ''
+						# Nix
+						if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+							. '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+						fi
+						# End Nix
+					'';
 
 					# macOS system defaults
 					system.defaults = {
@@ -705,6 +728,11 @@ programs.home-manager.enable = true;
 							};
 							
 							initContent = ''
+								# Source nix-darwin environment first
+								if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+									. '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+								fi
+								
 								# macOS-specific paths
 								export PATH="/opt/homebrew/bin:$PATH"
 								export PNPM_HOME="/Users/kamil/Library/pnpm"
@@ -908,8 +936,8 @@ programs.home-manager.enable = true;
 						# macOS-specific configs
 						home.file.".hammerspoon".source = dotfiles + "/hammerspoon";
 
-						# Nice defaults
-						xdg.enable = false;
+						# Enable XDG for proper config management
+						xdg.enable = true;
 						programs.home-manager.enable = true;
 					};
 				}
