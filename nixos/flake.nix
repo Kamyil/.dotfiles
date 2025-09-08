@@ -83,7 +83,6 @@
 							]) ++
 								[
 # + the ones from `unstable` branch  
-								pkgs.opencode  # Now using unstable nixpkgs as main
 									neovim-nightly-overlay.packages.${system}.default
 								];
 
