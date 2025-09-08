@@ -148,6 +148,9 @@ users.users.kamil = {
    # Others
    hyprpaper hypridle hyprlock
    waybar wofi wl-clipboard grim slurp
+
+# AI
+   opencode
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
