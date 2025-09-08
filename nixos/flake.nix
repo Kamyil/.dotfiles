@@ -497,6 +497,7 @@ programs.home-manager.enable = true;
 						git
 						curl
 						wget
+						opencode
 					];
 
 					# Nix configuration (nix-daemon is enabled by default when nix.enable = true)

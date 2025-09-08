@@ -16,14 +16,15 @@
     "dotfiles": {
       "flake": false,
       "locked": {
-        "path": "..",
+        "lastModified": 1757319376,
+        "narHash": "sha256-HM5vaUcatZQ4vCG+DzXH5yhv2ZzILAvY8M1hhu40aI8=",
+        "path": "/Users/kamil/.dotfiles",
         "type": "path"
       },
       "original": {
-        "path": "..",
+        "path": "/Users/kamil/.dotfiles",
         "type": "path"
-      },
-      "parent": []
+      }
     },
     "flake-compat": {
       "flake": false,
