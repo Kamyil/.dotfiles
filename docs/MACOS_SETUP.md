@@ -48,6 +48,48 @@ sudo darwin-rebuild switch --flake ~/.dotfiles/nixos
 
 ## Troubleshooting
 
-- If commands disappear after reboot, the bootstrap wasn't successful
-- Make sure to restart terminal after initial installation
-- Check that `/etc/zshrc` sources nix environment properly
+### If you have Nix store but `darwin-rebuild` not found
+
+This usually means nix-darwin was partially installed or broken. Run diagnostics first:
+
+```bash
+# Download and run diagnostic script
+curl -L https://raw.githubusercontent.com/Kamyil/.dotfiles/main/scripts/diagnose-nix.sh | bash
+```
+
+Then run the repair script:
+
+```bash
+# Download and run repair script  
+curl -L https://raw.githubusercontent.com/Kamyil/.dotfiles/main/scripts/repair-nix-darwin.sh | bash
+```
+
+### Manual repair steps
+
+1. **Source Nix environment**:
+```bash
+source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+```
+
+2. **Check nix command works**:
+```bash
+nix --version
+```
+
+3. **Bootstrap nix-darwin if missing**:
+```bash
+cd ~/.dotfiles
+nix run nix-darwin -- switch --flake "./nixos#MacBook-Pro-Kamil"
+```
+
+4. **Restart terminal** and verify:
+```bash
+which darwin-rebuild
+```
+
+### Common Issues
+
+- **Commands disappear after reboot**: nix-darwin bootstrap wasn't successful
+- **`nix` command not found**: Need to source environment or restart terminal  
+- **Permission denied**: Use `sudo` with `darwin-rebuild`
+- **Flake not found**: Make sure you're in the correct directory or use full path
