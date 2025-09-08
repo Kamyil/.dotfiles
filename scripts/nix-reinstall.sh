@@ -17,17 +17,14 @@ main() {
 }
 
 confirm_installation() {
-    echo -n "Continue with reinstallation? (y/N): "
-    read -r response
-    case "$response" in
-        [yY][eE][sS]|[yY]) 
-            echo "Proceeding with installation..."
-            ;;
-        *)
-            echo "Installation cancelled"
-            exit 1
-            ;;
-    esac
+    echo "Continue with reinstallation? (y/N): "
+    read response
+    if [ "$response" = "y" ] || [ "$response" = "Y" ] || [ "$response" = "yes" ] || [ "$response" = "YES" ]; then
+        echo "Proceeding with installation..."
+    else
+        echo "Installation cancelled"
+        exit 1
+    fi
 }
 
 cleanup_nix() {
