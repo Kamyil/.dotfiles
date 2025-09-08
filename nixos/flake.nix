@@ -123,6 +123,9 @@
 									private_gitignore = "nvim .git/info/exclude";
 									git_log = "serie";
 									
+									# Nix rebuild alias
+									nrs = "sudo nixos-rebuild switch --flake ~/.dotfiles/nixos";
+									
 									# Git aliases
 									gpom = "git pull origin master";
 									gpod = "git pull origin development";
@@ -545,9 +548,16 @@ programs.home-manager.enable = true;
 						enable = true;
 						onActivation.cleanup = "zap";
 						casks = [
-							"firefox"
-							"visual-studio-code" 
-							"rectangle"
+							# Keep these that aren't available in nixpkgs or ARM macOS
+							"vivaldi"
+							"libreoffice" 
+							"love"
+							"stats"
+							"macs-fan-control"
+							"utm" 
+							"podman-desktop"
+							"qmk-toolbox"
+							"ytmdesktop-youtube-music"
 						];
 					};
 				})
@@ -565,10 +575,78 @@ programs.home-manager.enable = true;
 						home.stateVersion = "24.11";
 
 						# Reuse packages from your NixOS config but adapted for macOS
-						home.packages = with pkgs; [
-							wezterm firefox
+						home.packages = (with pkgs; [
+							# Browsers and core apps
+							wezterm firefox qutebrowser
+							
+							# Development tools
+							vscode
+							
+							# Terminal tools
 							fzf bat delta lazygit lazydocker docker
-							gcc 
+							ripgrep btop lsd yazi tmux
+							
+							# Shell and CLI utilities  
+							starship zsh gh curl wget tree fd
+							eza difftastic just jq yq
+							
+							# Development tools
+							gcc go nodejs yarn pnpm deno
+							lua luarocks python3 php
+							
+							# Text processing and search
+							gnugrep gnused coreutils
+							
+							# System monitoring and management
+							htop fastfetch pfetch neofetch
+							
+							# File and archive tools
+							unzip p7zip trash-cli
+							
+							# Network and system tools
+							nmap wireshark-cli socat
+							
+							# Office/Documents moved to homebrew for ARM macOS
+							
+							# Development/Programming
+							kitty # Terminal emulator
+							
+							# Container tools (CLI versions, GUI via homebrew)
+							podman podman-compose
+							
+							# Media and graphics
+							ffmpeg imagemagick
+							
+							# Database and data tools
+							sqlite postgresql
+							
+							# Text editors and viewers
+							helix
+							
+							# Version control extras
+							git-extras tig
+							
+							# Virtualization and containers
+							qemu lima colima
+							
+							# System utilities
+							stow cowsay figlet fortune lolcat
+							
+							# Programming language tools
+							zig stylua lua-language-server
+							
+							# Terminal multiplexers and sessions
+							zellij
+							
+							# File synchronization and transfer
+							rsync openssh sshfs-fuse
+							
+							# Other useful tools
+							tldr # Simplified man pages
+							watchexec # File watching
+						]) ++ [
+							# Add neovim from the overlay
+							neovim-nightly-overlay.packages.${darwinSystem}.default
 						];
 
 						# Reuse your zsh configuration with minor adaptations
@@ -581,13 +659,38 @@ programs.home-manager.enable = true;
 							# Same shell aliases as NixOS
 							shellAliases = {
 								n = "nvim .";
+								y = "yazi .";
+								b = "browser";
+								c = "config";
+								hf = "his";
+								x = "exit";
+								q = "exit";
 								lg = "lazygit";
 								ldk = "lazydocker";
 								ls = "lsd";
-								cat = "bat";
+								finder = "open";
 								grep = "grep --color=auto";
 								reset_zsh = "source ~/.zshrc";
 								clear_nvim_cache = "rm -rf ~/.local/share/nvim";
+								cat = "bat";
+								jira = "~/bin/jira";
+								serpl = "~/bin/serpl";
+								json = "fx";
+								doom = "~/.config/emacs/bin/doom";
+								chsh = "~/.local/scripts/tmux-cht/tmux-cht.sh";
+								private_gitignore = "nvim .git/info/exclude";
+								git_log = "serie";
+								
+								# Nix rebuild alias
+								nrs = "sudo darwin-rebuild switch --flake ~/.dotfiles/nixos";
+								
+								# Git aliases
+								gpom = "git pull origin master";
+								gpod = "git pull origin development";
+								gc = "git checkout";
+								gcb = "git checkout -b";
+								gags = "git add . && git stash";
+								gsp = "git stash pop";
 							};
 							
 							# Same history configuration
@@ -615,14 +718,153 @@ programs.home-manager.enable = true;
 								# Homebrew
 								export HOMEBREW_NO_AUTO_UPDATE=1
 								
-								# Basic functions
+								# FZF configuration
+								export FZF_DEFAULT_OPTS=" \
+								--multi \
+								--height=50% \
+								--margin=5%,2%,2%,5% \
+								--layout=reverse-list \
+								--border=double \
+								--info=inline \
+								--prompt='$>' \
+								--pointer='→' \
+								--marker='♡' \
+								--color=bg:-1,bg:-1,spinner:#f5e0dc,hl:#7AA89F \
+								--color=fg:-1,bg:-1,header:#DCD7BA,info:#7AA89F,pointer:#f5e0dc \
+								--color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#7AA89F,hl+:#7AA89F \
+								--header='CTRL-c or ESC to quit' \
+								--preview 'bat --style=numbers --color=always --line-range :500 {}' \
+								--height 70% --layout reverse --border top"
+								export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
+								
+								# Vi mode and key bindings
+								bindkey -v
+								export KEYTIMEOUT=1
+								export VI_MODE_SET_CURSOR=true
+								bindkey '^[[A' history-search-backward
+								bindkey '^[[B' history-search-forward
+								
+								# FZF completion helper
+								_fzf_comprun() {
+									local command=$1
+									shift
+									case "$command" in
+										cd)           fzf "$@" --preview 'tree -C {} | head -200' ;;
+										*)            fzf "$@" ;;
+									esac
+								}
+								
+								# Weather function
 								weather() {
 									curl "wttr.in/$1?lang=pl"
 								}
 								
+								# Directory search and navigation
+								sd() {
+									local dirs=()
+									if [ -f "$HOME/.zsh_company_dirs" ]; then
+										source "$HOME/.zsh_company_dirs"
+										dirs+=("''${COMPANY_DIRS[@]}")
+									fi
+									if [ -f "$HOME/.zsh_personal_dirs" ]; then
+										source "$HOME/.zsh_personal_dirs"
+										dirs+=("''${PERSONAL_DIRS[@]}")
+									fi
+									cd "$(printf '%s\n' "''${dirs[@]}" | fzf)"
+								}
+								
+								# SSH fuzzy search
+								sshf() {
+									local ssh_hosts=$(grep "^Host " ~/.ssh/config | awk '{print $2}')
+									local selected_host=$(printf '%s\n' "''${ssh_hosts[@]}" | fzf)
+									if [[ -n $selected_host ]]; then
+										ssh "$selected_host"
+									fi
+								}
+								
+								# Search directory and open nvim
+								sdn() {
+									sd && nvim .
+								}
+								
+								# Config search
+								config() {
+									source "$HOME/.zsh_config_aliases"
+									local config_keys=("''${(k)CONFIG_ALIASES[@]}")
+									local selected_key=$(printf '%s\n' "''${config_keys[@]}" | fzf)
+									if [[ -n $selected_key ]]; then
+										eval "''${CONFIG_ALIASES[$selected_key]}"
+									fi
+								}
+								
+								# Database search
+								db() {
+									source "$HOME/.zsh_db_configs"
+									local config_keys=("''${(k)DB_CONFIGS[@]}")
+									local selected_key=$(printf '%s\n' "''${config_keys[@]}" | fzf)
+									if [[ -n $selected_key ]]; then
+										eval "''${DB_CONFIGS[$selected_key]}"
+									fi
+								}
+								
+								# Work sites browser
+								work_sites() {
+									source "$HOME/.zsh_company_websites"
+									local company_website_keys=("''${(k)COMPANY_WEBSITES[@]}")
+									local selected_key=$(printf '%s\n' "''${company_website_keys[@]}" | fzf)
+									if [[ -n $selected_key ]]; then
+										open "''${COMPANY_WEBSITES[$selected_key]}"
+									fi
+								}
+								
+								# Git branch switcher
+								switch_branch() {
+									git fetch -a
+									local selected_branch=$(git branch --list | fzf)
+									if [[ -n $selected_branch ]]; then
+										git checkout "$selected_branch"
+									fi
+								}
+								
+								# History fuzzy search
+								hisf() {
+									local commands_history_entries=$(history | sed 's/.[ ]*.[0-9]*.[ ]*//' | uniq)
+									local selected_command_from_history=$(printf '%s\n' "''${commands_history_entries[@]}" | fzf)
+									if [[ -n $selected_command_from_history ]]; then
+										eval "$selected_command_from_history"
+									fi
+								}
+								
+								# Process killer
+								killf() {
+									ps aux | fzf --preview="" --prompt="Select process to kill: " | awk '{print $2}' | xargs -r kill -9
+								}
+								
+								# Second brain shortcut
+								sb() {
+									cd ~/second-brain/ && nvim .
+								}
+								
+								# macOS clipboard copy
+								macos_copy_to_clipboard() {
+									pbcopy < $1
+								}
+								
+								# macOS key repeat settings
+								macos_set_proper_key_repeat() {
+									defaults write -g KeyRepeat -int 1 && defaults write -g InitialKeyRepeat -int 10
+								}
+								
+								# Source external files if they exist
+								[ -f "$HOME/.config/broot/launcher/bash/br" ] && source "$HOME/.config/broot/launcher/bash/br"
+								[ -f "$HOME/.dotfiles/config/scripts/fzf-git.sh" ] && source "$HOME/.dotfiles/config/scripts/fzf-git.sh"
+								
 								# Enable colors and prompt substitution
 								autoload -U colors && colors
 								setopt PROMPT_SUBST
+								
+								# Set up fzf key bindings and fuzzy completion
+								eval "$(fzf --zsh)"
 							'';
 						};
 
