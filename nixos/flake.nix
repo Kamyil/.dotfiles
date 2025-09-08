@@ -8,7 +8,7 @@
 		nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
 # bring your dotfiles in as a flake input (read-only, pure)
-		dotfiles.url = "path:/home/kamil/.dotfiles";
+		dotfiles.url = "path:/Users/kamil/.dotfiles";
 		dotfiles.flake = false;
 
 		neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay"; 
@@ -147,6 +147,8 @@
 								};
 								
 							initContent = ''
+									export PATH="/run/current-system/sw/bin:$HOME/.nix-profile/bin:$PATH"
+
 									# Disable auto update and title
 									DISABLE_AUTO_UPDATE=true
 									export DISABLE_AUTO_TITLE=true
@@ -488,6 +490,8 @@ programs.home-manager.enable = true;
 			modules = [
 				# nix-darwin system configuration
 				({ config, pkgs, ... }: {
+				# Let Determinate handle the module resolution
+				 nix.enable = false;
 					# List packages installed in system profile
 					environment.systemPackages = with pkgs; [
 						vim
@@ -497,10 +501,10 @@ programs.home-manager.enable = true;
 					];
 
 					# Nix configuration (nix-daemon is enabled by default when nix.enable = true)
-					nix.package = pkgs.nix;
+			  		# nix.package = pkgs.nix;
 
 					# Enable flakes
-					nix.settings.experimental-features = "nix-command flakes";
+					# nix.settings.experimental-features = "nix-command flakes";
 
 					# Create /etc/zshrc that loads the nix-darwin environment
 					programs.zsh = {
