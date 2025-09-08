@@ -5,26 +5,22 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [ # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   programs.hyprland.enable = true; # ships Hyprland + Xwayland
 
-
-  
-  
-  users.groups.kamil = {};
+  users.groups.kamil = { };
   programs.zsh.enable = true;
-users.users.kamil = {
-  shell = pkgs.zsh;
-  isNormalUser = true;
-  group = "kamil";          # Add this line
-  description = "kamil";
-  extraGroups = [ "networkmanager" "wheel" ];
-  packages = with pkgs; [];
-};
+  users.users.kamil = {
+    shell = pkgs.zsh;
+    isNormalUser = true;
+    group = "kamil"; # Add this line
+    description = "kamil";
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = with pkgs; [ ];
+  };
 
   services.xserver.enable = false;
   services.xserver.displayManager.gdm.enable = false;
@@ -33,11 +29,10 @@ users.users.kamil = {
 
   services.greetd.enable = true;
   services.greetd.settings = {
-   default_session = {
-     command = "${pkgs.greetd.tuigreet}/bin/tuigreet --cmd Hyprland";
-   };
+    default_session = {
+      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --cmd Hyprland";
+    };
   };
-
 
   # SPICE guest agent for clipboard sharing betwen host and vm
   services.spice-vdagentd.enable = true;
@@ -60,9 +55,9 @@ users.users.kamil = {
   # Enable OpenGL GPU acceleration
   hardware.graphics.enable = true;
 
-  boot.initrd.kernelModules = ["virtio_gpu"];
+  boot.initrd.kernelModules = [ "virtio_gpu" ];
   services.xserver.videoDrivers = [ "virtio" ];
-  
+
   # Set default resolution for virtio display
   boot.kernelParams = [ "video=Virtual-1:1920x1200" ];
 
@@ -104,53 +99,56 @@ users.users.kamil = {
     variant = "";
   };
 
-	
-
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-   # List packages installed in system profile. To search, run:
-   # $ nix search wget
-   environment.systemPackages = with pkgs; [
-   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-   wget
-   curl
-   git
-   pkg-config
-   openssl
-   gnumake
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [
+    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    wget
+    curl
+    git
+    pkg-config
+    openssl
+    gnumake
 
-   vivaldi
+    vivaldi
 
-   # Shell tools
-   starship
-   ripgrep
-   delta
-   bat
-   btop
-   fzf
-   lsd
+    # Shell tools
+    starship
+    ripgrep
+    delta
+    bat
+    btop
+    fzf
+    lsd
 
-   # Terminals
-   ghostty
-   wezterm
-   kitty
+    # Terminals
+    ghostty
+    wezterm
+    kitty
 
+    # Database tools
+    dbeaver-bin
 
-   # Database tools
-   dbeaver-bin
+    # Game development
+    love
 
-   # Game development
-   love
+    # Others
+    hyprpaper
+    hypridle
+    hyprlock
+    waybar
+    wofi
+    wl-clipboard
+    grim
+    slurp
 
-   # Others
-   hyprpaper hypridle hyprlock
-   waybar wofi wl-clipboard grim slurp
-
-# AI
-   opencode
+    # AI
+    opencode
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
