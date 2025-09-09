@@ -467,6 +467,8 @@
 			modules = [
 				# nix-darwin system configuration
 				({ config, pkgs, ... }: {
+# INFO: Use Nix Determinate
+                                 nix.enable = false;
 					# List packages installed in system profile
 					environment.systemPackages = with pkgs; [
 						vim
