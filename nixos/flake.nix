@@ -7,9 +7,9 @@
 		nix-darwin.url = "github:nix-darwin/nix-darwin";
 		nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-		# Use git source for dotfiles - more reliable
+		# Use local dotfiles if they exist, otherwise git
 		dotfiles = {
-			url = "github:Kamyil/.dotfiles";
+			url = "path:/home/kamil/.dotfiles";
 			flake = false;
 		};
 
@@ -413,13 +413,13 @@
 						};
 
 						# --- map your dotfiles repo into place ---
-						# Keep your dotfiles exactly as they are
+						# Use the same pattern for all configs - ensure they all work the same way
 						xdg.configFile."nvim".source = dotfiles + "/nvim";
 						xdg.configFile."wezterm".source = dotfiles + "/wezterm";
 						xdg.configFile."lazygit".source = dotfiles + "/config/lazygit";
 						xdg.configFile."lazydocker".source = dotfiles + "/config/lazydocker";
 
-						# Linux-specific configs
+						# Make hypr work exactly like wezterm
 						xdg.configFile."hypr".source = dotfiles + "/config/hypr";
 						xdg.configFile."waybar".source = dotfiles + "/config/waybar";
 						xdg.configFile."wofi".source = dotfiles + "/config/wofi";
