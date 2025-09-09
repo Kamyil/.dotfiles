@@ -3,10 +3,13 @@
 # Items configuration - loads all items like items/init.lua
 ITEM_DIR="$CONFIG_DIR/items"
 
+# Load icons first
+source "$CONFIG_DIR/icons.sh"
+
 # Left side items
-source "$ITEM_DIR/apple.sh"
+# source "$ITEM_DIR/apple.sh"  # Removed Apple logo
 source "$ITEM_DIR/spaces.sh"
-source "$ITEM_DIR/front_app.sh"
+# source "$ITEM_DIR/front_app.sh"  # Removed - redundant with workspace apps
 
 # Right side items
 source "$ITEM_DIR/calendar.sh"

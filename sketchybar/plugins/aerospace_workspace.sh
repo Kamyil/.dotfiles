@@ -175,6 +175,7 @@ get_app_icon() {
         "Slack") echo ":slack:" ;;
         "Spark Desktop") echo ":spark:" ;;
         "Spotify") echo ":spotify:" ;;
+        "YouTube Music") echo ":music:" ;;
         "Spotlight") echo ":spotlight:" ;;
         "Sublime Text") echo ":sublime_text:" ;;
         "Tana") echo ":tana:" ;;
@@ -236,7 +237,7 @@ if [ "$SENDER" = "aerospace_workspace_change" ]; then
         icon_strip=" "
         if [ -n "$apps" ]; then
             while IFS= read -r app; do
-                if [ -n "$app" ]; then
+                if [ -n "$app" ] && [ "$app" != "Finder" ] && [ "$app" != "访达" ]; then
                     icon=$(get_app_icon "$app")
                     icon_strip="$icon_strip$icon"
                 fi
