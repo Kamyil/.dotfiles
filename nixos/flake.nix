@@ -407,11 +407,16 @@
 
               # --- live, out-of-store symlinks into ~/.dotfiles (Linux) ---
               home.file = {
-                ".config/nvim".source        = link "nvim";
-                ".config/wezterm".source     = link "wezterm";
-                ".config/lazygit".source     = link "config/lazygit";
-                ".config/lazydocker".source  = link "config/lazydocker";
-                ".config/lsd".source         = link "config/lsd";
+                ".config/nvim"       = lib.mkForce { source = link "nvim"; };
+                ".config/wezterm"    = lib.mkForce { source = link "wezterm"; };
+                ".config/lazygit"    = lib.mkForce { source = link "config/lazygit"; };
+                ".config/lazydocker" = lib.mkForce { source = link "config/lazydocker"; };
+                ".config/lsd"        = lib.mkForce { source = link "config/lsd"; };
+
+# live links for your Linux WM bits too
+                ".config/hypr"       = lib.mkForce { source = link "config/hypr"; };
+                ".config/waybar"     = lib.mkForce { source = link "config/waybar"; };
+                ".config/wofi"       = lib.mkForce { source = link "config/wofi"; };
               };
 
               # Linux-specific configs (kept pinned)
@@ -923,15 +928,14 @@
 
               # Live, out-of-store symlinks into ~/.dotfiles (macOS)
               home.file = {
-                ".config/nvim".source        = link "nvim";
-                ".config/wezterm".source     = link "wezterm";
-                ".config/lazygit".source     = link "config/lazygit";
-                ".config/lazydocker".source  = link "config/lazydocker";
-                ".config/lsd".source         = link "config/lsd";
-                ".config/sketchybar".source  = link "sketchybar";
-                ".config/aerospace".source   = link "aerospace";
-                # Hammerspoon uses ~/.hammerspoon (non-XDG):
-                ".hammerspoon".source        = link "hammerspoon";
+                ".config/nvim"       = lib.mkForce { source = link "nvim"; };
+                ".config/wezterm"    = lib.mkForce { source = link "wezterm"; };
+                ".config/lazygit"    = lib.mkForce { source = link "config/lazygit"; };
+                ".config/lazydocker" = lib.mkForce { source = link "config/lazydocker"; };
+                ".config/lsd"        = lib.mkForce { source = link "config/lsd"; };
+                ".config/sketchybar" = lib.mkForce { source = link "sketchybar"; };
+                ".config/aerospace"  = lib.mkForce { source = link "aerospace"; };
+                ".hammerspoon"       = lib.mkForce { source = link "hammerspoon"; };
               };
 
               # Enable XDG for proper config management
