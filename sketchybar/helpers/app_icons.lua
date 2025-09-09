@@ -240,7 +240,7 @@ return {
 	["QQ音乐"] = ":qqmusic:",
 	["QQMusic"] = ":qqmusic:",
 	["Quantumult X"] = ":quantumult_x:",
-	["qutebrowser"] = ":qute_browser:",
+
 	["Raindrop.io"] = ":raindrop_io:",
 	["Reeder"] = ":reeder5:",
 	["Reminders"] = ":reminders:",

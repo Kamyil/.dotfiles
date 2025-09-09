@@ -462,9 +462,7 @@ function __icon_map() {
    "Quantumult X")
         icon_result=":quantumult_x:"
         ;;
-   "qutebrowser")
-        icon_result=":qute_browser:"
-        ;;
+
    "Raindrop.io")
         icon_result=":raindrop_io:"
         ;;
