@@ -92,8 +92,8 @@ config.window_padding = {
 
 -- Color scheme
 config.color_scheme_dirs = { "~/.config/wezterm/colors" }
-config.color_scheme = "kanagawa-muted"
--- config.color_scheme = "kanagawa-paper-ink"
+-- config.color_scheme = "kanagawa-muted"
+config.color_scheme = "kanagawa-paper-ink"
 -- config.color_scheme = "Kanagawa (Gogh)"
 -- config.color_scheme = "Everforest Dark Hard"
 -- config.color_scheme = "posterpole"
@@ -145,7 +145,7 @@ config.background = {
 		},
 		width = "100%",
 		height = "100%",
-		opacity = 0.98, -- Full opacity for better performance
+		opacity = 0.90, -- Full opacity for better performance
 	},
 }
 
