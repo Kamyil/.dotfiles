@@ -113,7 +113,7 @@
     gnumake
 
     # Display manager
-    greetd.tuigreet
+    tuigreet
 
     vivaldi
 
