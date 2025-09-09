@@ -157,7 +157,7 @@ in
 
     # AI
     bun
-    (pkgs.buildFHSUserEnv {
+    (pkgs.buildFHSEnv {
       name = "opencode";
       targetPkgs = pkgs: with pkgs; [
         bun
