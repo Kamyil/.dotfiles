@@ -7,22 +7,24 @@
 		nix-darwin.url = "github:nix-darwin/nix-darwin";
 		nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-# bring your dotfiles in as a flake input (read-only, pure)
-		dotfiles.url = "path:/home/kamil/.dotfiles";
+		# OS-aware dotfiles path
+		# Relative path - goes up one directory from nixos/ to .dotfiles/ and works on both systems (Mac and Linux)
+		dotfiles.url = "path:..";
+
 		dotfiles.flake = false;
 
 		neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay"; 
 		rust-overlay.url = "github:oxalica/rust-overlay";
 
 # Add private fonts
-		berkeley-font = {
-			url = "path:///home/kamil/.local/share/fonts";
-			flake = false;
-		};
+		# berkeley-font = {
+		# 	url = "path:///home/kamil/.local/share/fonts";
+		# 	flake = false;
+		# };
 
 	};
 
-	outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, berkeley-font, neovim-nightly-overlay, dotfiles, rust-overlay, ... }:
+	outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, ... }:
 		let
 		# Define supported systems
 		systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
@@ -431,13 +433,13 @@ programs.starship = {
 home.file."second-brain/.keep".text = ""; 
 
 # files in $HOME root (start with a dot)
-home.file.".local/share/fonts/BerkeleyMono-Regular.otf".source = berkeley-font + "/BerkeleyMono-Regular.otf";
-home.file.".local/share/fonts/BerkeleyMono-Bold.otf".source = berkeley-font + "/BerkeleyMono-Bold.otf";
-home.file.".local/share/fonts/BerkeleyMono-Oblique.otf".source = berkeley-font + "/BerkeleyMono-Oblique.otf";
-home.file.".local/share/fonts/BerkeleyMono-Bold-Oblique.otf".source = berkeley-font + "/BerkeleyMono-Bold-Oblique.otf";
+# home.file.".local/share/fonts/BerkeleyMono-Regular.otf".source = berkeley-font + "/BerkeleyMono-Regular.otf";
+# home.file.".local/share/fonts/BerkeleyMono-Bold.otf".source = berkeley-font + "/BerkeleyMono-Bold.otf";
+# home.file.".local/share/fonts/BerkeleyMono-Oblique.otf".source = berkeley-font + "/BerkeleyMono-Oblique.otf";
+# home.file.".local/share/fonts/BerkeleyMono-Bold-Oblique.otf".source = berkeley-font + "/BerkeleyMono-Bold-Oblique.otf";
 
 fonts.fontconfig.enable = true;
-fonts.fontconfig.defaultFonts.monospace = [ "Berkeley Mono" ];
+# fonts.fontconfig.defaultFonts.monospace = [ "Berkeley Mono" ];
 
 # alacritty examples (you have both toml & yml in repo)
 # home.file.".alacritty.toml".source = dotfiles + "/.alacritty.toml";
@@ -490,6 +492,7 @@ programs.home-manager.enable = true;
 			modules = [
 				# nix-darwin system configuration
 				({ config, pkgs, ... }: {
+					nix.enable = false;
 					# List packages installed in system profile
 					environment.systemPackages = with pkgs; [
 						vim

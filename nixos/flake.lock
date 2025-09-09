@@ -3,18 +3,14 @@
     "dotfiles": {
       "flake": false,
       "locked": {
-        "lastModified": 1757439987,
-        "narHash": "sha256-5z4o3WRFshfN5wQm+YXoBoOw8BgxwND7GUF2Kd+0s6U=",
-        "owner": "Kamyil",
-        "repo": ".dotfiles",
-        "rev": "8eadddb809ea5d7f1917be78a35539ac594b45d0",
-        "type": "github"
+        "path": "..",
+        "type": "path"
       },
       "original": {
-        "owner": "Kamyil",
-        "repo": ".dotfiles",
-        "type": "github"
-      }
+        "path": "..",
+        "type": "path"
+      },
+      "parent": []
     },
     "flake-compat": {
       "flake": false,
