@@ -12,11 +12,10 @@ export WHITE=0xFFD3C6AA
 # export ACCENT_COLOR=0xffffffff
 
 # -- Purple Scheme --
-# export BAR_COLOR=0xff140c42
-# export BAR_COLOR=0x12181825
+export BAR_COLOR=0xff140c42
 export WHITE=0xFFD3C6AA
-export BLACK=0xAARRGGBB
-export ITEM_BG_COLOR=1xff2b1c84
+export BLACK=0xff000000
+export ITEM_BG_COLOR=0xff2b1c84
 export ACCENT_COLOR=0xffeb46f9
 
 # -- Red Scheme ---
