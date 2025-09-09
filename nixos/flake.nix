@@ -414,7 +414,6 @@
                casks = [
                  # Keep these that aren't available in nixpkgs or ARM macOS
                  "vivaldi"
-                 "libreoffice"
                  "love"
                  "stats"
                  "macs-fan-control"
@@ -423,12 +422,10 @@
                  "qmk-toolbox"
                  "ytmdesktop-youtube-music"
                ];
-              taps = [
-                "gromgit/fuse"
-              ];
-              brews = [
-                "sshfs-mac"
-              ];
+               taps = [
+               ];
+               brews = [
+               ];
             };
           })
 
