@@ -363,18 +363,24 @@
             # Homebrew integration  
             homebrew = {
               enable = true;
-              onActivation.cleanup = "zap";
-              casks = [
-                # Keep these that aren't available in nixpkgs or ARM macOS
-                "vivaldi"
-                "libreoffice"
-                "love"
-                "stats"
-                "macs-fan-control"
-                "utm"
-                "podman-desktop"
-                "qmk-toolbox"
-                "ytmdesktop-youtube-music"
+              onActivation.cleanup = "uninstall";
+               casks = [
+                 # Keep these that aren't available in nixpkgs or ARM macOS
+                 "vivaldi"
+                 "libreoffice"
+                 "love"
+                 "stats"
+                 "macs-fan-control"
+                 "utm"
+                 "podman-desktop"
+                 "qmk-toolbox"
+                 "ytmdesktop-youtube-music"
+               ];
+              taps = [
+                "gromgit/fuse"
+              ];
+              brews = [
+                "sshfs-mac"
               ];
             };
           })
