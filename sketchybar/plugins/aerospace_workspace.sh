@@ -158,7 +158,7 @@ get_app_icon() {
         "QQ") echo ":qq:" ;;
         "QQ音乐"|"QQMusic") echo ":qqmusic:" ;;
         "Quantumult X") echo ":quantumult_x:" ;;
-        "qutebrowser") echo ":qute_browser:" ;;
+
         "Raindrop.io") echo ":raindrop_io:" ;;
         "Reeder") echo ":reeder5:" ;;
         "Reminders"|"提醒事项"|"Rappels") echo ":reminders:" ;;
