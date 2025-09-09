@@ -4,7 +4,7 @@
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
     home-manager.url = "github:nix-community/home-manager/release-24.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    nix-darwin.url = "github:nix-darwin/nix-darwin";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-24.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     # bring your dotfiles in as a flake input (read-only, pure)
@@ -312,8 +312,7 @@
             # The platform the configuration will be used on
             nixpkgs.hostPlatform = "aarch64-darwin";
 
-            # Set primary user (required for system defaults and homebrew)
-            system.primaryUser = "kamil";
+
 
             # Configure users and set shell
             users.users.kamil = {
@@ -387,6 +386,7 @@
               onActivation.cleanup = "uninstall";
                casks = [
                  # Keep these that aren't available in nixpkgs or ARM macOS
+                 "firefox"
                  "vivaldi"
                  "love"
                  "stats"
@@ -427,8 +427,7 @@
               home.packages = (with pkgs; [
                 # Browsers and core apps
                 wezterm
-                firefox
-                qutebrowser
+                # firefox - moved to homebrew due to aarch64-darwin issues
 
                 # Development tools
                 vscode
