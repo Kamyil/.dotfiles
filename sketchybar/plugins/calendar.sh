@@ -1,4 +1,7 @@
 #!/bin/bash
 
-# sketchybar --set $NAME label="$(date -R +'%A %D %B %I:%M %p' )"
-sketchybar --set "$NAME" label="$(LC_TIME=pl_PL.UTF-8 date +'%A, %d %B %Y, %H:%M:%S')"
+# The $NAME variable is passed from sketchybar and holds the name of
+# the item invoking this script:
+# https://felixkratz.github.io/SketchyBar/config/events#events-and-scripting
+
+sketchybar --set $NAME label="$(date '+%d/%m %H:%M')"

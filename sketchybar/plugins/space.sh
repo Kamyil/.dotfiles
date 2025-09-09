@@ -1,75 +1,45 @@
 #!/bin/bash
 
-source "$CONFIG_DIR/colors.sh"
-
 update() {
-  # Get the currently focused workspace
-  FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused)
-  
-  # Reset all workspaces to inactive state first
-  for workspace in $(aerospace list-workspaces --all); do
-    sketchybar --set space.$workspace \
-      icon.highlight=false \
-      label.highlight=false \
-      background.border_color=$ITEM_BG_COLOR
-  done
-  
-  # Highlight the focused workspace
-  if [ -n "$FOCUSED_WORKSPACE" ]; then
-    sketchybar --set space.$FOCUSED_WORKSPACE \
-      icon.highlight=true \
-      label.highlight=true \
-      background.border_color=$ACCENT_COLOR
-  fi
-  
-  # Update app icons for all workspaces
-  for workspace in $(aerospace list-workspaces --all); do
-    apps=$(aerospace list-windows --workspace $workspace | awk -F'|' '{gsub(/^ *| *$/, "", $2); print $2}')
-    
-    icon_strip=" "
-    if [ "${apps}" != "" ]; then
-      while read -r app; do
-        if [ -n "$app" ]; then
-          icon_strip+=" $($CONFIG_DIR/plugins/icon_map.sh "$app")"
-        fi
-      done <<< "${apps}"
-    else
-      icon_strip=" —"
+  if [ "$SENDER" = "aerospace_workspace_change" ]; then
+    source "$CONFIG_DIR/colors.sh"
+    COLOR=$BACKGROUND_2
+    if [ "$SELECTED" = "true" ]; then
+      COLOR=$GREY
     fi
     
-    sketchybar --set space.$workspace label="$icon_strip"
-  done
+    sketchybar --set space.$(aerospace list-workspaces --focused) icon.highlight=true \
+                      label.highlight=true \
+                      background.border_color=$GREY
+  fi
+}
+
+set_space_label() {
+  sketchybar --set $NAME icon="$@"
 }
 
 mouse_clicked() {
   if [ "$BUTTON" = "right" ]; then
-    # Right click - could add workspace management here
-    echo ""
+    echo ''
   else
     if [ "$MODIFIER" = "shift" ]; then
-      # Shift+click - rename workspace
-      WORKSPACE_ID=${NAME#*.}
-      SPACE_LABEL="$(osascript -e "return (text returned of (display dialog \"Give a name to workspace $WORKSPACE_ID:\" default answer \"\" with icon note buttons {\"Cancel\", \"Continue\"} default button \"Continue\"))")"
+      SPACE_LABEL="$(osascript -e "return (text returned of (display dialog \"Give a name to space $NAME:\" default answer \"\" with icon note buttons {\"Cancel\", \"Continue\"} default button \"Continue\"))")"
       if [ $? -eq 0 ]; then
         if [ "$SPACE_LABEL" = "" ]; then
-          sketchybar --set $NAME icon="$WORKSPACE_ID"
+          set_space_label "${NAME:6}"
         else
-          sketchybar --set $NAME icon="$WORKSPACE_ID ($SPACE_LABEL)"
+          set_space_label "${NAME:6} ($SPACE_LABEL)"
         fi
       fi
     else
-      # Regular click - switch to workspace
-      WORKSPACE_ID=${NAME#*.}
-      aerospace workspace $WORKSPACE_ID
+      aerospace workspace ${NAME#*.}
     fi
   fi
 }
 
 case "$SENDER" in
-  "mouse.clicked") 
-    mouse_clicked
-    ;;
-  *) 
-    update
-    ;;
+  "mouse.clicked") mouse_clicked
+  ;;
+  *) update
+  ;;
 esac
