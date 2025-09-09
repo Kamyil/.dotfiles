@@ -222,27 +222,26 @@
                 };
 
                 # --- map your dotfiles repo into place ---
-                # ~/.config/*
-                xdg.configFile."nvim".source = dotfiles + "/nvim";
-                xdg.configFile."wezterm".source = dotfiles + "/wezterm";
-                xdg.configFile."lazygit".source = dotfiles + "/config/lazygit";
-                xdg.configFile."lazydocker".source = dotfiles
-                  + "/config/lazydocker";
+                # Direct symlinks for live config reloading
+                home.file.".config/wezterm".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/wezterm";
+                home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/nvim";
+                home.file.".config/lazygit".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/config/lazygit";
+                home.file.".config/lazydocker".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/config/lazydocker";
+                home.file.".config/tmux".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/config/tmux";
 
-                # Linux-specific configs
+                # Linux-specific configs with live reloading
               }
               // lib.optionalAttrs (builtins.match ".*linux.*" system != null) {
-                xdg.configFile."hypr".source = dotfiles + "/config/hypr";
-                xdg.configFile."waybar".source = dotfiles + "/config/waybar";
-                xdg.configFile."wofi".source = dotfiles + "/config/wofi";
+                home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/config/hypr";
+                home.file.".config/waybar".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/config/waybar";
+                home.file.".config/wofi".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/config/wofi";
 
-                # macOS-specific configs  
+                # macOS-specific configs (legacy section - these should be moved to main Darwin config)
               } // lib.optionalAttrs
               (builtins.match ".*darwin.*" system != null) {
-                xdg.configFile."yabai".source = dotfiles + "/yabai";
-                xdg.configFile."skhd".source = dotfiles + "/skhd";
-                xdg.configFile."sketchybar".source = dotfiles + "/sketchybar";
-                xdg.configFile."hammerspoon".source = dotfiles + "/hammerspoon";
+                home.file.".config/yabai".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/yabai";
+                home.file.".config/skhd".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/skhd";
+                home.file.".config/sketchybar".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/sketchybar";
 
                 home.file."second-brain/.keep".text = "";
 
@@ -417,6 +416,22 @@
               };
             };
 
+            launchd.user.agents.raycast = {
+              serviceConfig = {
+                ProgramArguments = [ "/Applications/Raycast.app/Contents/MacOS/Raycast" ];
+                RunAtLoad = true;
+                ProcessType = "Interactive";
+              };
+            };
+
+            launchd.user.agents.eqmac = {
+              serviceConfig = {
+                ProgramArguments = [ "/Applications/eqMac.app/Contents/MacOS/eqMac" ];
+                RunAtLoad = true;
+                ProcessType = "Interactive";
+              };
+            };
+
             # Homebrew integration  
             homebrew = {
               enable = true;
@@ -433,6 +448,9 @@
                  "ytmdesktop-youtube-music"
                  "nikitabobko/tap/aerospace"
                  "font-sketchybar-app-font"
+                 # Productivity and system utilities
+                 "raycast"
+                 "eqmac"
                ];
                taps = [
                  "FelixKratz/formulae"
@@ -689,14 +707,19 @@
                 };
               };
 
-              # Map your dotfiles for macOS
-              xdg.configFile."nvim".source = dotfiles + "/nvim";
-              xdg.configFile."wezterm".source = dotfiles + "/wezterm";
-              xdg.configFile."lazygit".source = dotfiles + "/config/lazygit";
-              xdg.configFile."aerospace".source = dotfiles + "/config/aerospace";
+               # Map your dotfiles for macOS
+               # Direct symlinks for live config reloading
+               home.file.".config/wezterm".source = config.lib.file.mkOutOfStoreSymlink "/Users/kamil/.dotfiles/wezterm";
+               home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/Users/kamil/.dotfiles/nvim";
+               home.file.".config/lazygit".source = config.lib.file.mkOutOfStoreSymlink "/Users/kamil/.dotfiles/config/lazygit";
+               home.file.".config/lazydocker".source = config.lib.file.mkOutOfStoreSymlink "/Users/kamil/.dotfiles/config/lazydocker";
+                home.file.".config/tmux".source = config.lib.file.mkOutOfStoreSymlink "/Users/kamil/.dotfiles/config/tmux";
+                home.file.".config/aerospace".source = config.lib.file.mkOutOfStoreSymlink "/Users/kamil/.dotfiles/config/aerospace";
+                home.file.".config/lsd".source = config.lib.file.mkOutOfStoreSymlink "/Users/kamil/.dotfiles/config/lsd";
 
-              # macOS-specific configs
-              home.file.".hammerspoon".source = dotfiles + "/hammerspoon";
+               # macOS-specific configs with live reloading
+               home.file.".hammerspoon".source = config.lib.file.mkOutOfStoreSymlink "/Users/kamil/.dotfiles/hammerspoon";
+               home.file.".config/sketchybar".source = config.lib.file.mkOutOfStoreSymlink "/Users/kamil/.dotfiles/sketchybar";
 
               # Enable XDG for proper config management
               xdg.enable = true;

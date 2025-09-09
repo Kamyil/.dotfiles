@@ -77,7 +77,7 @@ config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
 
 -- Disable blur for performance - major CPU/GPU saver on macOS
--- config.macos_window_background_blur = 20
+config.macos_window_background_blur = 20
 config.scrollback_lines = 2000 -- Reduce from 3500 to save memory
 -- Disable ligatures for better performance
 -- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
@@ -93,7 +93,7 @@ config.window_padding = {
 
 -- Color scheme
 config.color_scheme_dirs = { "~/.config/wezterm/colors" }
-config.color_scheme = "kanagawa"
+config.color_scheme = "kanagawa-muted"
 -- config.color_scheme = "kanagawa-paper-ink"
 -- config.color_scheme = "Kanagawa (Gogh)"
 -- config.color_scheme = "Everforest Dark Hard"
@@ -141,11 +141,12 @@ config.freetype_render_target = "Normal" -- Simplified rendering
 config.background = {
 	{
 		source = {
-			Color = "#181616",
+			-- Color = "#1F1F28",
+			Color = "#141416",
 		},
 		width = "100%",
 		height = "100%",
-		opacity = 0.97, -- Full opacity for better performance
+		opacity = 0.99, -- Full opacity for better performance
 	},
 }
 

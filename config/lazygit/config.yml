@@ -9,32 +9,32 @@ git:
 gui:
   theme:
     activeBorderColor:
-      - '#7fb4ca'
+      - '#8ea49e'  # kanagawa-paper-ink cyan
       - bold
     inactiveBorderColor:
-      - '#54546d'
+      - '#393836'  # kanagawa-paper-ink dark gray
     optionsTextColor:
-      - '#938aa9'
+      - '#a292a3'  # kanagawa-paper-ink magenta
     selectedLineBgColor:
-      - '#223249'
+      - '#363646'  # kanagawa-paper-ink selection bg
     selectedRangeBgColor:
-      - '#2d4f67'
+      - '#363646'  # kanagawa-paper-ink selection bg
     cherryPickedCommitBgColor:
-      - '#49443c'
+      - '#435965'  # kanagawa-paper-ink blue
     cherryPickedCommitFgColor:
-      - '#c0a36e'
+      - '#c4b28a'  # kanagawa-paper-ink yellow
     unstagedChangesColor:
-      - '#e46876'
+      - '#c4746e'  # kanagawa-paper-ink red
     defaultFgColor:
-      - '#c8c093'
+      - '#DCD7BA'  # kanagawa-paper-ink foreground
     searchingActiveBorderColor:
-      - '#957fb8'
+      - '#b4a7b5'  # kanagawa-paper-ink bright magenta
     stagedChangesColor:
-      - '#76946a'
+      - '#699469'  # kanagawa-paper-ink green
     markedBaseCommitFgColor:
-      - '#7e9cd8'
+      - '#698a9b'  # kanagawa-paper-ink bright blue
     markedBaseCommitBgColor:
-      - '#49443c'
+      - '#435965'  # kanagawa-paper-ink blue
 
 authorColors:
-  '*': '#7aa89f'
+  '*': '#8ea49e'  # kanagawa-paper-ink cyan

@@ -1,13 +1,13 @@
 gui:
   theme:
     activeBorderColor:
-      - '#7fb4ca'
+      - '#8ea49e'  # kanagawa-paper-ink cyan
       - bold
     inactiveBorderColor:
-      - '#54546d'
+      - '#393836'  # kanagawa-paper-ink dark gray
     optionsTextColor:
-      - '#938aa9'
+      - '#a292a3'  # kanagawa-paper-ink magenta
     selectedLineBgColor:
-      - '#223249'
+      - '#363646'  # kanagawa-paper-ink selection bg
     defaultFgColor:
-      - '#c8c093'
+      - '#DCD7BA'  # kanagawa-paper-ink foreground

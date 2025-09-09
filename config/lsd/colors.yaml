@@ -1,0 +1,36 @@
+# Kanagawa Paper Ink color theme for lsd - matching WezTerm and Neovim
+user: "#c4b28a"         # kanagawa paper ink yellow/gold
+group: "#aca9a4"        # muted gray from brights
+permission:
+  read: "#699469"       # kanagawa green
+  write: "#c4b28a"      # kanagawa yellow
+  exec: "#c4746e"       # kanagawa red
+  exec-sticky: "#a292a3" # kanagawa magenta
+  no-access: "#393836"  # dark gray
+date:
+  hour-old: "#72a072"   # bright green for recent
+  day-old: "#96ada7"    # cyan for day old  
+  older: "#9e9b93"      # muted gray for older
+size:
+  none: "#393836"       # dark
+  small: "#c4b28a"      # yellow
+  medium: "#96ada7"     # cyan
+  large: "#c4746e"      # red for large files
+inode:
+  valid: "#435965"      # blue
+  invalid: "#393836"    # dark gray
+links:
+  valid: "#8ea49e"      # kanagawa cyan
+  invalid: "#c4746e"    # red
+tree-edge: "#8992a7"    # split color
+git-status:
+  default: "#9e9b93"    # muted
+  unmodified: "#9e9b93" # muted
+  ignored: "#393836"    # dark
+  new-in-index: "#699469"     # green
+  new-in-workdir: "#699469"   # green
+  typechange: "#c4b28a"       # yellow
+  deleted: "#c4746e"          # red
+  renamed: "#96ada7"          # cyan
+  modified: "#c4b28a"         # yellow
+  conflicted: "#c4746e"       # red
