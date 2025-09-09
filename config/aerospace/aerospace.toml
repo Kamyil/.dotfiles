@@ -9,11 +9,16 @@ enable-normalization-opposite-orientation-for-nested-containers = true
 accordion-padding = 90
 
 
-
 # Run Sketchybar together with AeroSpace
 # sketchbar has a built-in detection of already running process,
 # so it won't be run twice on AeroSpace restart
-after-startup-command = ['exec-and-forget sketchybar']
+after-startup-command = [
+    # JankyBorders has a built-in detection of already running process,
+    # so it won't be run twice on AeroSpace restart
+    # 'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0',
+    'exec-and-forget sketchybar',
+    'exec-and-forget borders active_color=0xff666565 inactive_color=0xff555353 width=1.0'
+]
 
 # Notify Sketchybar about workspace change
 exec-on-workspace-change = ['/bin/bash', '-c',
@@ -32,14 +37,19 @@ exec-on-workspace-change = ['/bin/bash', '-c',
 [mode.main.binding]
 # alt-shift-t = 'exec-and-forget open -n /System/Applications/Alacritty.app'
 
-ctrl-alt-j = 'focus left'
-ctrl-alt-k = 'focus down'
-ctrl-alt-l = 'focus up'
-ctrl-alt-semicolon = 'focus right'
+cmd-h = 'focus left'
+cmd-j = 'focus down'
+cmd-k = 'focus up'
+cmd-l = 'focus right'
+
+cmd-alt-h = 'resize width +50'
+cmd-alt-j = 'resize height -50'
+cmd-alt-k = 'resize height +50'
+cmd-alt-l = 'resize width -50'
 
 
-# alt-h = 'split horizontal'
-# alt-v = 'split vertical'
+# alt-h = 'join-with horizontal'
+# alt-v = 'join-with vertical'
 
 
 # alt-f = 'fullscreen'
@@ -64,48 +74,69 @@ cmd-6 = 'workspace 6'
 cmd-7 = 'workspace 7'
 cmd-8 = 'workspace 8'
 cmd-9 = 'workspace 9'
-# cmd-0 = 'workspace 10'
+cmd-0 = 'workspace 10'
 
-cmd-alt-shift-1 = 'move-node-to-workspace 1'
-cmd-alt-shift-2 = 'move-node-to-workspace 2'
-cmd-alt-shift-3 = 'move-node-to-workspace 3'
-cmd-alt-shift-4 = 'move-node-to-workspace 4'
-cmd-alt-shift-5 = 'move-node-to-workspace 5'
-cmd-alt-shift-6 = 'move-node-to-workspace 6'
-cmd-alt-shift-7 = 'move-node-to-workspace 7'
-cmd-alt-shift-8 = 'move-node-to-workspace 8'
-cmd-alt-shift-9 = 'move-node-to-workspace 9'
-# cmd-alt-shift-0 = 'move-node-to-workspace 10'
+ctrl-shift-1 = 'move-node-to-workspace 1'
+ctrl-shift-2 = 'move-node-to-workspace 2'
+ctrl-shift-3 = 'move-node-to-workspace 3'
+ctrl-shift-4 = 'move-node-to-workspace 4'
+ctrl-shift-5 = 'move-node-to-workspace 5'
+ctrl-shift-6 = 'move-node-to-workspace 6'
+ctrl-shift-7 = 'move-node-to-workspace 7'
+ctrl-shift-8 = 'move-node-to-workspace 8'
+ctrl-shift-9 = 'move-node-to-workspace 9'
+ctrl-shift-0 = 'move-node-to-workspace 10'
 
 cmd-shift-comma = 'move-workspace-to-monitor --wrap-around prev'
 cmd-shift-period = 'move-workspace-to-monitor --wrap-around next'
 
-alt-shift-c = 'reload-config'
-alt-shift-f= 'layout floating tiling' # 'floating toggle' in i3
-alt-shift-r = 'mode resize'
-alt-shift-h = 'move left'
-alt-shift-j = 'move down'
-alt-shift-k = 'move up'
-alt-shift-l= 'move right'
+cmd-alt-r = 'reload-config'
+cmd-shift-f= 'layout floating tiling' # 'floating toggle' in i3
 
-[mode.resize.binding]
-h = 'resize width -50'
-j = 'resize height +50'
-k = 'resize height -50'
-l = 'resize width +50'
-enter = 'mode main'
-esc = 'mode main'
+cmd-shift-h = 'move left'
+cmd-shift-j = 'move down'
+cmd-shift-k = 'move up'
+cmd-shift-l= 'move right'
+
+# [mode.resize.binding]
+# h = 'resize width -50'
+# j = 'resize height +50'
+# k = 'resize height -50'
+# l = 'resize width +50'
+# enter = 'mode main'
+# esc = 'mode main'
 
 [gaps]
-inner.horizontal = 0
-inner.vertical =   0
+inner.horizontal = 15
+inner.vertical =   15
 
-outer.left =       0
-outer.right =      0
 
-outer.top =        0
-outer.bottom =     0
+# INFO: For Mac display alone
 
+# outer.left =       20
+# outer.right =      20
+# outer.top =        20
+# outer.bottom =     10
+
+# INFO: For work
+
+# outer.left =       20
+# outer.right =      20
+# outer.top =        40
+# outer.bottom =     10
+
+# INFO: For 4k display
+
+outer.left =       140
+outer.right =      140
+outer.top =        80
+outer.bottom =     80
+
+
+
+#
+#
+#
 # automations
 # Browser
 [[on-window-detected]]
@@ -114,15 +145,19 @@ run = 'move-node-to-workspace 1'
 [[on-window-detected]]
 if.app-id = 'org.mozilla.com.zen.browser' # Zen Browser
 run = 'move-node-to-workspace 1'
-[[on-window-detected]]
-# Run Picture-In-Picture in floating window rather than occupying existing space (since it doesn't make sense otherwise)
-if.window-title-regex-substring = 'Picture-in-Picture'
-run = 'layout floating'
-
+# [[on-window-detected]]
+# # Run Picture-In-Picture in floating window rather than occupying existing space (since it doesn't make sense otherwise)
+# # if.window-title-regex-substring = 'Picture-in-Picture'
+# # run = 'layout floating'
+# # Skitty notes
+# if.window-title-regex-substring = 'kitty'
+# run = 'layout floating'
+#
 # IDE / Code editor
-[[on-window-detected]]
-if.app-id = 'net.kovidgoyal.kitty'
-run = 'move-node-to-workspace 2'
+# [[on-window-detected]]
+# if.app-id = 'net.kovidgoyal.kitty'
+# # run = 'move-node-to-workspace 2'
+# run = 'layout floating'
 
 # Company messaging app
 [[on-window-detected]]
@@ -158,3 +193,9 @@ run = 'move-node-to-workspace 6'
 [[on-window-detected]]
 if.app-id = 'org.keepassxc.keepassxc'
 run = 'move-node-to-workspace 9'
+
+# Finder - floating by default
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'layout floating'
+
