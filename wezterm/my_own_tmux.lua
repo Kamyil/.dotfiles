@@ -180,6 +180,10 @@ local my_own_tmux = {
 		{ key = "-",  mods = "CTRL", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
 		{ key = "=",  mods = "CTRL", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
 
+		-- Rotate panes (swap positions and/or toggle between horizontal/vertical layouts)
+		{ key = "w", mods = "CTRL", action = wezterm.action.RotatePanes("Clockwise") },
+		{ key = "W", mods = "CTRL|SHIFT", action = wezterm.action.RotatePanes("CounterClockwise") },
+
 		-- Switch to tabs (a.k.a. tmux windows)
 		{ key = "1",  mods = "CTRL", action = wezterm.action({ ActivateTab = 0 }) },
 		{ key = "2",  mods = "CTRL", action = wezterm.action({ ActivateTab = 1 }) },
