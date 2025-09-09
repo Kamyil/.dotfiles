@@ -492,6 +492,8 @@
                 cargo
                 rustc
                 rust-analyzer
+                libgit2
+                pkg-config
 
                 # Nix formatters
                 nixpkgs-fmt
