@@ -23,8 +23,6 @@
   };
 
   services.xserver.enable = false;
-  services.displayManager.gdm.enable = false;
-  services.displayManager.gdm.wayland = false;
 
   services.greetd.enable = true;
   services.greetd.settings = {
