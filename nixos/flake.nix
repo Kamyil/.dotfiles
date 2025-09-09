@@ -575,6 +575,7 @@ programs.home-manager.enable = true;
 					homebrew = {
 						enable = true;
 						onActivation.cleanup = "zap";
+    					taps = [ "nikitabobko/tap" ];
 						casks = [
 							# Keep these that aren't available in nixpkgs or ARM macOS
 							"vivaldi"
@@ -586,7 +587,7 @@ programs.home-manager.enable = true;
 							"podman-desktop"
 							"qmk-toolbox"
 							"ytmdesktop-youtube-music"
-							"aerospace"  # FIX: Added aerospace to homebrew casks
+							"aerospace"
 						];
 					};
 				})
