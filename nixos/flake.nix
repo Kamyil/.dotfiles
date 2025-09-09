@@ -13,6 +13,7 @@
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     rust-overlay.url = "github:oxalica/rust-overlay";
+    stylix.url = "github:nix-community/stylix";
 
     # Add private fonts
     berkeley-font = {
@@ -23,7 +24,7 @@
   };
 
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin
-    , berkeley-font, neovim-nightly-overlay, dotfiles, rust-overlay, ... }:
+    , berkeley-font, neovim-nightly-overlay, dotfiles, rust-overlay, stylix, ... }:
     let
       # Define supported systems
       systems =
@@ -54,6 +55,7 @@
         specialArgs = { inherit pkgs; };
         modules = [
           ./configuration.nix
+          stylix.nixosModules.stylix
 
           # enable HM as a NixOS module
           home-manager.nixosModules.home-manager
@@ -61,6 +63,28 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
+
+            # Stylix configuration for NixOS
+            stylix = {
+              enable = true;
+              image = dotfiles + "/wallpapers/kanagawa_bowl.jpg";
+              polarity = "dark";
+              base16Scheme = "${pkgs.base16-schemes}/share/themes/kanagawa.yaml";
+              
+              fonts = {
+                monospace = {
+                  name = "Berkeley Mono";
+                };
+                sansSerif = {
+                  package = pkgs.inter;
+                  name = "Inter";
+                };
+                serif = {
+                  package = pkgs.libertinus;
+                  name = "Libertinus Serif";
+                };
+              };
+            };
 
             # --- your user ---
             home-manager.users.kamil = { pkgs, config, ... }:
@@ -282,6 +306,7 @@
           pkgsStable = darwinPkgsStable;
         };
         modules = [
+          stylix.darwinModules.stylix
           # nix-darwin system configuration
           ({ config, pkgs, ... }: {
             # Let Determinate handle the module resolution
@@ -316,6 +341,28 @@
 
             # The platform the configuration will be used on
             nixpkgs.hostPlatform = "aarch64-darwin";
+
+            # Stylix configuration
+            stylix = {
+              enable = true;
+              image = dotfiles + "/wallpapers/kanagawa_bowl.jpg";
+              polarity = "dark";
+              base16Scheme = "${pkgs.base16-schemes}/share/themes/kanagawa.yaml";
+              
+              fonts = {
+                monospace = {
+                  name = "Berkeley Mono";
+                };
+                sansSerif = {
+                  package = pkgs.inter;
+                  name = "Inter";
+                };
+                serif = {
+                  package = pkgs.libertinus;
+                  name = "Libertinus Serif";
+                };
+              };
+            };
 
             # Set primary user (required for system defaults and homebrew)
             system.primaryUser = "kamil";
