@@ -1,4 +1,5 @@
-eval "$(starship init zsh)"
+# Starship is now managed by Nix Home Manager
+# eval "$(starship init zsh)"
 DISABLE_AUTO_UPDATE=true
 export MANPAGER="nvim -c 'Man!' -"
 
