@@ -1,29 +1,19 @@
 {
   "nodes": {
-    "berkeley-font": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1757236972,
-        "narHash": "sha256-/jPMCSULUVJBoJhfJ0u4w8aAVFA4WJ6op745wUlPI84=",
-        "path": "/home/kamil/.local/share/fonts",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/kamil/.local/share/fonts",
-        "type": "path"
-      }
-    },
     "dotfiles": {
       "flake": false,
       "locked": {
-        "lastModified": 1757319376,
-        "narHash": "sha256-HM5vaUcatZQ4vCG+DzXH5yhv2ZzILAvY8M1hhu40aI8=",
-        "path": "/Users/kamil/.dotfiles",
-        "type": "path"
+        "lastModified": 1757439987,
+        "narHash": "sha256-5z4o3WRFshfN5wQm+YXoBoOw8BgxwND7GUF2Kd+0s6U=",
+        "owner": "Kamyil",
+        "repo": ".dotfiles",
+        "rev": "8eadddb809ea5d7f1917be78a35539ac594b45d0",
+        "type": "github"
       },
       "original": {
-        "path": "/Users/kamil/.dotfiles",
-        "type": "path"
+        "owner": "Kamyil",
+        "repo": ".dotfiles",
+        "type": "github"
       }
     },
     "flake-compat": {
@@ -174,16 +164,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1747688870,
-        "narHash": "sha256-ypL9WAZfmJr5V70jEVzqGjjQzF0uCkz+AFQF7n9NmNc=",
+        "lastModified": 1757385184,
+        "narHash": "sha256-LCxtQn9ajvOgGRbQIRUJgfP7clMGGvV1SDW1HcSb0zk=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "d5f1f641b289553927b3801580598d200a501863",
+        "rev": "26993d87fd0d3b14f7667b74ad82235f120d986e",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
-        "ref": "release-24.11",
         "repo": "home-manager",
         "type": "github"
       }
@@ -235,16 +224,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1743127615,
-        "narHash": "sha256-+sMGqywrSr50BGMLMeY789mSrzjkoxZiu61eWjYS/8o=",
+        "lastModified": 1757430124,
+        "narHash": "sha256-MhDltfXesGH8VkGv3hmJ1QEKl1ChTIj9wmGAFfWj/Wk=",
         "owner": "nix-darwin",
         "repo": "nix-darwin",
-        "rev": "fc843893cecc1838a59713ee3e50e9e7edc6207c",
+        "rev": "830b3f0b50045cf0bcfd4dab65fad05bf882e196",
         "type": "github"
       },
       "original": {
         "owner": "nix-darwin",
-        "ref": "nix-darwin-24.11",
         "repo": "nix-darwin",
         "type": "github"
       }
@@ -283,16 +271,16 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1751274312,
-        "narHash": "sha256-/bVBlRpECLVzjV19t5KMdMFWSwKLtb5RyXdjz3LJT+g=",
-        "owner": "nixos",
+        "lastModified": 1757034884,
+        "narHash": "sha256-PgLSZDBEWUHpfTRfFyklmiiLBE1i1aGCtz4eRA3POao=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "50ab793786d9de88ee30ec4e4c24fb4236fc2674",
+        "rev": "ca77296380960cd497a765102eeb1356eb80fed0",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
-        "ref": "nixos-24.11",
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -315,7 +303,6 @@
     },
     "root": {
       "inputs": {
-        "berkeley-font": "berkeley-font",
         "dotfiles": "dotfiles",
         "home-manager": "home-manager",
         "neovim-nightly-overlay": "neovim-nightly-overlay",

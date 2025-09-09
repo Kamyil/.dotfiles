@@ -1,19 +1,8 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# and in the NixOS manual (accessible by running 'nixos-help').
 
 { config, pkgs, ... }:
-
-let
-  # Install opencode via npm for better cross-platform compatibility
-  opencode = pkgs.writeShellScriptBin "opencode" ''
-    if ! command -v bunx &> /dev/null; then
-      echo "Error: bun is required for opencode. Please install bun first."
-      exit 1
-    fi
-    exec bunx opencode-ai@latest "$@"
-  '';
-in
 
 {
   imports = [ # Include the results of the hardware scan.
@@ -35,10 +24,14 @@ in
 
   services.xserver.enable = false;
 
-  services.greetd.enable = true;
-  services.greetd.settings = {
-    default_session = {
-      command = "Hyprland";
+  # FIX: Improved greetd configuration
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+        user = "greeter";
+      };
     };
   };
 
@@ -71,6 +64,8 @@ in
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 10;
+  boot.loader.timeout = 5;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "nixos"; # Define your hostname.
@@ -155,19 +150,12 @@ in
     grim
     slurp
 
-    # AI
+    # AI - FIX: Replace the problematic buildFHSUserEnv with just bun
     bun
-    (pkgs.buildFHSEnv {
-      name = "opencode";
-      targetPkgs = pkgs: with pkgs; [
-        bun
-        nodejs
-        glibc
-      ];
-      runScript = pkgs.writeShellScript "opencode-runner" ''
-        exec ${pkgs.bun}/bin/bunx opencode-ai@latest "$@"
-      '';
-    })
+    nodejs
+    
+    # FIX: Add greetd.tuigreet to system packages
+    greetd.tuigreet
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -191,7 +179,7 @@ in
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # on your system were taken. It's perfectly fine and recommended to leave
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
