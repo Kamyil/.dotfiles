@@ -405,19 +405,25 @@
                 };
               };
 
-              # --- live, out-of-store symlinks into ~/.dotfiles (Linux) ---
-              home.file = {
-                ".config/nvim"       = lib.mkForce { source = link "nvim"; };
-                ".config/wezterm"    = lib.mkForce { source = link "wezterm"; };
-                ".config/lazygit"    = lib.mkForce { source = link "config/lazygit"; };
-                ".config/lazydocker" = lib.mkForce { source = link "config/lazydocker"; };
-                ".config/lsd"        = lib.mkForce { source = link "config/lsd"; };
-
-# live links for your Linux WM bits too
-                ".config/hypr"       = lib.mkForce { source = link "config/hypr"; };
-                ".config/waybar"     = lib.mkForce { source = link "config/waybar"; };
-                ".config/wofi"       = lib.mkForce { source = link "config/wofi"; };
-              };
+              # Direct symlinks using activation scripts (Linux)
+              home.activation.directSymlinks = config.lib.dag.entryAfter ["writeBoundary"] ''
+                # Remove any existing nix-managed symlinks
+                rm -f ~/.config/nvim ~/.config/wezterm ~/.config/lazygit ~/.config/lazydocker ~/.config/lsd ~/.config/btop ~/.config/bat ~/.config/hypr ~/.config/waybar ~/.config/wofi
+                
+                # Create direct symlinks
+                ln -sf /home/kamil/.dotfiles/nvim ~/.config/nvim
+                ln -sf /home/kamil/.dotfiles/wezterm ~/.config/wezterm
+                ln -sf /home/kamil/.dotfiles/config/lazygit ~/.config/lazygit
+                ln -sf /home/kamil/.dotfiles/config/lazydocker ~/.config/lazydocker
+                ln -sf /home/kamil/.dotfiles/config/lsd ~/.config/lsd
+                ln -sf /home/kamil/.dotfiles/config/btop ~/.config/btop
+                ln -sf /home/kamil/.dotfiles/bat ~/.config/bat
+                ln -sf /home/kamil/.dotfiles/config/hypr ~/.config/hypr
+                ln -sf /home/kamil/.dotfiles/config/waybar ~/.config/waybar
+                ln -sf /home/kamil/.dotfiles/config/wofi ~/.config/wofi
+                
+                echo "Created direct symlinks to dotfiles"
+              '';
 
               # Linux-specific configs (kept pinned)
               } // lib.optionalAttrs (builtins.match ".*linux.*" system != null) {
@@ -923,17 +929,27 @@
                 };
               };
 
-              # Live, out-of-store symlinks into ~/.dotfiles (macOS)
-              home.file = {
-                ".config/nvim"       = lib.mkForce { source = link "nvim"; };
-                ".config/wezterm"    = lib.mkForce { source = link "wezterm"; };
-                ".config/lazygit"    = lib.mkForce { source = link "config/lazygit"; };
-                ".config/lazydocker" = lib.mkForce { source = link "config/lazydocker"; };
-                ".config/lsd"        = lib.mkForce { source = link "config/lsd"; };
-                ".config/sketchybar" = lib.mkForce { source = link "sketchybar"; };
-                ".config/aerospace"  = lib.mkForce { source = link "aerospace"; };
-                ".hammerspoon"       = lib.mkForce { source = link "hammerspoon"; };
-              };
+              # Direct symlinks using activation scripts
+              home.activation.directSymlinks = config.lib.dag.entryAfter ["writeBoundary"] ''
+                # Remove any existing nix-managed symlinks
+                rm -f ~/.config/nvim ~/.config/wezterm ~/.config/lazygit ~/.config/lazydocker ~/.config/lsd ~/.config/btop ~/.config/bat ~/.config/sketchybar ~/.config/aerospace ~/.config/yabai ~/.config/skhd ~/.hammerspoon
+                
+                # Create direct symlinks
+                ln -sf /Users/kamil/.dotfiles/nvim ~/.config/nvim
+                ln -sf /Users/kamil/.dotfiles/wezterm ~/.config/wezterm
+                ln -sf /Users/kamil/.dotfiles/config/lazygit ~/.config/lazygit
+                ln -sf /Users/kamil/.dotfiles/config/lazydocker ~/.config/lazydocker
+                ln -sf /Users/kamil/.dotfiles/config/lsd ~/.config/lsd
+                ln -sf /Users/kamil/.dotfiles/config/btop ~/.config/btop
+                ln -sf /Users/kamil/.dotfiles/bat ~/.config/bat
+                ln -sf /Users/kamil/.dotfiles/sketchybar ~/.config/sketchybar
+                ln -sf /Users/kamil/.dotfiles/config/aerospace ~/.config/aerospace
+                ln -sf /Users/kamil/.dotfiles/yabai ~/.config/yabai
+                ln -sf /Users/kamil/.dotfiles/skhd ~/.config/skhd
+                ln -sf /Users/kamil/.dotfiles/hammerspoon ~/.hammerspoon
+                
+                echo "Created direct symlinks to dotfiles"
+              '';
 
               # Enable XDG for proper config management
               xdg.enable = true;
