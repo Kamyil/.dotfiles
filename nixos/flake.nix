@@ -407,6 +407,16 @@
               };
             };
 
+            # Launch agents for macOS services
+            launchd.user.agents.aerospace = {
+              serviceConfig = {
+                ProgramArguments = [ "/opt/homebrew/bin/aerospace" ];
+                KeepAlive = true;
+                RunAtLoad = true;
+                ProcessType = "Interactive";
+              };
+            };
+
             # Homebrew integration  
             homebrew = {
               enable = true;
@@ -421,11 +431,16 @@
                  "podman-desktop"
                  "qmk-toolbox"
                  "ytmdesktop-youtube-music"
+                 "nikitabobko/tap/aerospace"
+                 "font-sketchybar-app-font"
                ];
                taps = [
+                 "FelixKratz/formulae"
                ];
-               brews = [
-               ];
+                brews = [
+                  "sketchybar"
+                  "borders"
+                ];
             };
           })
 
@@ -678,6 +693,7 @@
               xdg.configFile."nvim".source = dotfiles + "/nvim";
               xdg.configFile."wezterm".source = dotfiles + "/wezterm";
               xdg.configFile."lazygit".source = dotfiles + "/config/lazygit";
+              xdg.configFile."aerospace".source = dotfiles + "/config/aerospace";
 
               # macOS-specific configs
               home.file.".hammerspoon".source = dotfiles + "/hammerspoon";

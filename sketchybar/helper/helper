@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Simple helper script
+echo "Helper process started"
