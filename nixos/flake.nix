@@ -79,9 +79,6 @@
                 # Disable swaylock if it's being auto-enabled
                 programs.swaylock.enable = lib.mkForce false;
 
-                # if mako comes in, disable it since it crashes
-                home.disabledModules = ["services.mako"];
-
                 # packages you want at user scope
                 home.packages = (with pkgs; [
                   wezterm
