@@ -421,9 +421,6 @@
 
               # Linux-specific configs (kept pinned)
               } // lib.optionalAttrs (builtins.match ".*linux.*" system != null) {
-                xdg.configFile."hypr".source     = dotfiles + "/config/hypr";
-                xdg.configFile."waybar".source   = dotfiles + "/config/waybar";
-                xdg.configFile."wofi".source     = dotfiles + "/config/wofi";
 
               home.file."second-brain/.keep".text = "";
 
