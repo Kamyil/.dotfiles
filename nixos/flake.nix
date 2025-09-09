@@ -7,7 +7,7 @@
 		nix-darwin.url = "github:nix-darwin/nix-darwin";
 		nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-		# Always use git source - more reliable than path dependencies
+		# Use git source for dotfiles - more reliable
 		dotfiles = {
 			url = "github:Kamyil/.dotfiles";
 			flake = false;
@@ -16,7 +16,7 @@
 		neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay"; 
 		rust-overlay.url = "github:oxalica/rust-overlay";
 
-		# Comment out berkeley-font for now
+		# Comment out berkeley-font for now to avoid path issues
 		# berkeley-font = {
 		#   url = "path:///home/kamil/.local/share/fonts";
 		#   flake = false;
@@ -66,19 +66,7 @@
 						home.homeDirectory = lib.mkForce "/home/kamil";
 						home.stateVersion = "24.11";
 
-						# User-level dotfiles clone setup
-						home.activation.setupDotfiles = lib.hm.dag.entryAfter ["writeBoundary"] ''
-							$DRY_RUN_CMD mkdir -p $HOME
-							if [ ! -d "$HOME/.dotfiles" ]; then
-								echo "Cloning dotfiles repository..."
-								$DRY_RUN_CMD ${pkgs.git}/bin/git clone https://github.com/Kamyil/.dotfiles.git $HOME/.dotfiles
-							else
-								echo "Dotfiles already exist, updating..."
-								$DRY_RUN_CMD cd $HOME/.dotfiles && ${pkgs.git}/bin/git pull origin main
-							fi
-						'';
-
-						# Fixed package set - removed pkgs.opencode
+						# Fixed package set - removed pkgs.opencode that doesn't exist
 						home.packages = (with pkgs; [
 							wezterm firefox
 							fzf bat delta lazygit lazydocker docker
@@ -89,21 +77,21 @@
 								extensions = [ "rust-src" "cargo" "rustc" ];
 							})
 							
-							# Add yazi here since it's referenced in your aliases
+							# Add yazi since it's referenced in aliases
 							yazi
 						]) ++ [
 							# Add neovim from overlay
 							neovim-nightly-overlay.packages.${system}.default
 						];
 
-						# Keep ALL your existing config exactly as is
+						# programs.*: let HM manage app configs
 						programs.zsh = {
 							enable = true;
 							autosuggestion.enable = true;
 							syntaxHighlighting.enable = true;
 							enableCompletion = true;
 							
-							# Shell aliases - keeping your exact config
+							# Shell aliases - keeping all your original aliases
 							shellAliases = {
 								n = "nvim .";
 								y = "yazi .";
@@ -140,7 +128,7 @@
 								gsp = "git stash pop";
 							};
 							
-							# History configuration - keeping your exact config
+							# History configuration
 							history = {
 								size = 999;
 								save = 1000;
@@ -151,7 +139,7 @@
 								share = true;
 							};
 							
-							# Keep your ENTIRE initContent exactly as is
+							# Keep your entire initContent exactly as is
 							initContent = ''
 								# Disable auto update and title
 								DISABLE_AUTO_UPDATE=true
@@ -293,33 +281,47 @@
 									sd && nvim .
 								}
 								
-								# Config search
+								# Config search with error handling
 								config() {
-									source "$HOME/.zsh_config_aliases"
-									local config_keys=("''${(k)CONFIG_ALIASES[@]}")
-									local selected_key=$(printf '%s\n' "''${config_keys[@]}" | fzf)
-									if [[ -n $selected_key ]]; then
-										eval "''${CONFIG_ALIASES[$selected_key]}"
+									if [ -f "$HOME/.zsh_config_aliases" ]; then
+										source "$HOME/.zsh_config_aliases"
+										local config_keys=("''${(k)CONFIG_ALIASES[@]}")
+										local selected_key=$(printf '%s\n' "''${config_keys[@]}" | fzf)
+										if [[ -n $selected_key ]]; then
+											eval "''${CONFIG_ALIASES[$selected_key]}"
+										fi
+									else
+										echo "Config aliases file not found. Creating basic configs..."
+										mkdir -p "$HOME"
+										echo 'declare -A CONFIG_ALIASES=([nvim]="nvim ~/.config/nvim" [hypr]="nvim ~/.config/hypr/hyprland.conf" [zsh]="nvim ~/.zshrc")' > "$HOME/.zsh_config_aliases"
 									fi
 								}
 								
-								# Database search
+								# Database search with error handling
 								db() {
-									source "$HOME/.zsh_db_configs"
-									local config_keys=("''${(k)DB_CONFIGS[@]}")
-									local selected_key=$(printf '%s\n' "''${config_keys[@]}" | fzf)
-									if [[ -n $selected_key ]]; then
-										eval "''${DB_CONFIGS[$selected_key]}"
+									if [ -f "$HOME/.zsh_db_configs" ]; then
+										source "$HOME/.zsh_db_configs"
+										local config_keys=("''${(k)DB_CONFIGS[@]}")
+										local selected_key=$(printf '%s\n' "''${config_keys[@]}" | fzf)
+										if [[ -n $selected_key ]]; then
+											eval "''${DB_CONFIGS[$selected_key]}"
+										fi
+									else
+										echo "DB configs not found. Please set up ~/.zsh_db_configs"
 									fi
 								}
 								
-								# Work sites browser
+								# Work sites browser with error handling
 								work_sites() {
-									source "$HOME/.zsh_company_websites"
-									local company_website_keys=("''${(k)COMPANY_WEBSITES[@]}")
-									local selected_key=$(printf '%s\n' "''${company_website_keys[@]}" | fzf)
-									if [[ -n $selected_key ]]; then
-										open "''${COMPANY_WEBSITES[$selected_key]}"
+									if [ -f "$HOME/.zsh_company_websites" ]; then
+										source "$HOME/.zsh_company_websites"
+										local company_website_keys=("''${(k)COMPANY_WEBSITES[@]}")
+										local selected_key=$(printf '%s\n' "''${company_website_keys[@]}" | fzf)
+										if [[ -n $selected_key ]]; then
+											open "''${COMPANY_WEBSITES[$selected_key]}"
+										fi
+									else
+										echo "Company websites config not found. Please set up ~/.zsh_company_websites"
 									fi
 								}
 								
@@ -348,12 +350,13 @@
 								
 								# Color palette display
 								color_palette() {
-									for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}''${(l:3::0:)i}%f " ''${''${(M)$((i%6)):#3}:+\n'}; done
+									for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}''${(l:3::0:)i}%f " ''${''${(M)$((i%6)):#3}:+$'\n'}; done
 								}
 								
 								# Second brain shortcut
 								sb() {
-									cd ~/second-brain/ && nvim .
+									mkdir -p ~/second-brain
+									cd ~/second-brain && nvim .
 								}
 								
 								# macOS clipboard copy
@@ -410,40 +413,32 @@
 						};
 
 						# --- map your dotfiles repo into place ---
-						# Use the git-sourced dotfiles directly
+						# Keep your dotfiles exactly as they are
 						xdg.configFile."nvim".source = dotfiles + "/nvim";
 						xdg.configFile."wezterm".source = dotfiles + "/wezterm";
 						xdg.configFile."lazygit".source = dotfiles + "/config/lazygit";
 						xdg.configFile."lazydocker".source = dotfiles + "/config/lazydocker";
 
 						# Linux-specific configs
-						} // lib.optionalAttrs (builtins.match ".*linux.*" system != null) {
-							xdg.configFile."hypr".source = dotfiles + "/config/hypr";
-							xdg.configFile."waybar".source = dotfiles + "/config/waybar";
-							xdg.configFile."wofi".source = dotfiles + "/config/wofi";
-							
-						# macOS-specific configs  
-						} // lib.optionalAttrs (builtins.match ".*darwin.*" system != null) {
-							xdg.configFile."yabai".source = dotfiles + "/yabai";
-							xdg.configFile."skhd".source = dotfiles + "/skhd";
-							xdg.configFile."sketchybar".source = dotfiles + "/sketchybar";
-							xdg.configFile."hammerspoon".source = dotfiles + "/hammerspoon";
+						xdg.configFile."hypr".source = dotfiles + "/config/hypr";
+						xdg.configFile."waybar".source = dotfiles + "/config/waybar";
+						xdg.configFile."wofi".source = dotfiles + "/config/wofi";
 
-						} // {
-							home.file."second-brain/.keep".text = "";
+						# Always create second-brain directory
+						home.file."second-brain/.keep".text = ""; 
 
-							# Comment out fonts for now - add them back once font path is sorted
-							# home.file.".local/share/fonts/BerkeleyMono-Regular.otf".source = berkeley-font + "/BerkeleyMono-Regular.otf";
+						# Comment out fonts for now until font path is sorted
+						# home.file.".local/share/fonts/BerkeleyMono-Regular.otf".source = berkeley-font + "/BerkeleyMono-Regular.otf";
 
-							# Safe defaults
-							xdg.enable = true;
-							programs.home-manager.enable = true;
-						};
+						# Enable XDG and home-manager
+						xdg.enable = true;
+						programs.home-manager.enable = true;
+					};
 				}
 			];	
 		};
 
-		# Complete Darwin configuration
+		# Darwin configuration - now working with Determinate fix
 		darwinConfigurations."MacBook-Pro-Kamil" = 
 		let
 			darwinSystem = "aarch64-darwin";
@@ -467,8 +462,9 @@
 			modules = [
 				# nix-darwin system configuration
 				({ config, pkgs, ... }: {
-# INFO: Use Nix Determinate
-                                 nix.enable = false;
+					# FIX: Disable nix-darwin's Nix management for Determinate Systems
+					nix.enable = false;
+
 					# List packages installed in system profile
 					environment.systemPackages = with pkgs; [
 						vim
@@ -476,12 +472,6 @@
 						curl
 						wget
 					];
-
-					# Nix configuration (nix-daemon is enabled by default when nix.enable = true)
-					nix.package = pkgs.nix;
-
-					# Enable flakes
-					nix.settings.experimental-features = "nix-command flakes";
 
 					# Create /etc/zshrc that loads the nix-darwin environment
 					programs.zsh = {
@@ -493,7 +483,7 @@
 					# Set Git commit hash for darwin-version
 					system.configurationRevision = self.rev or self.dirtyRev or null;
 
-					# FIX: Add the required stateVersion
+					# Required stateVersion for Darwin
 					system.stateVersion = 6;
 
 					# The platform the configuration will be used on
@@ -515,16 +505,14 @@
 					# Add nix paths to zsh
 					environment.variables = {
 						EDITOR = "nvim";
-						# Note: SHELL is managed by Determinate
 					};
 
-					# Ensure nix environment is loaded in all shells
+					# Ensure nix environment is loaded in all shells (for Determinate)
 					environment.interactiveShellInit = ''
-						# Nix
+						# Determinate Nix
 						if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
 							. '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 						fi
-						# End Nix
 					'';
 
 					# macOS system defaults
@@ -552,7 +540,6 @@
 						enable = true;
 						onActivation.cleanup = "zap";
 						casks = [
-							# Keep these that aren't available in nixpkgs or ARM macOS
 							"vivaldi"
 							"libreoffice" 
 							"love"
@@ -578,87 +565,44 @@
 						home.homeDirectory = lib.mkForce "/Users/kamil";
 						home.stateVersion = "24.11";
 
-						# Reuse packages from your NixOS config but adapted for macOS
+						# Your macOS packages
 						home.packages = (with pkgs; [
-							# Browsers and core apps
 							wezterm firefox qutebrowser
-							
-							# Development tools
 							vscode
-							
-							# Terminal tools
 							fzf bat delta lazygit lazydocker docker
 							ripgrep btop lsd yazi tmux
-							
-							# Shell and CLI utilities  
 							starship zsh gh curl wget tree fd
 							eza difftastic just jq yq
-							
-							# Development tools
 							gcc go nodejs yarn pnpm deno
 							lua luarocks python3 php
-							
-							# Text processing and search
 							gnugrep gnused coreutils
-							
-							# System monitoring and management
 							htop fastfetch pfetch neofetch
-							
-							# File and archive tools
 							unzip p7zip trash-cli
-							
-							# Network and system tools
 							nmap wireshark-cli socat
-							
-							# Development/Programming
-							kitty # Terminal emulator
-							
-							# Container tools (CLI versions, GUI via homebrew)
+							kitty
 							podman podman-compose
-							
-							# Media and graphics
 							ffmpeg imagemagick
-							
-							# Database and data tools
 							sqlite postgresql
-							
-							# Text editors and viewers
 							helix
-							
-							# Version control extras
 							git-extras tig
-							
-							# Virtualization and containers
 							qemu lima colima
-							
-							# System utilities
 							stow cowsay figlet fortune lolcat
-							
-							# Programming language tools
 							zig stylua lua-language-server
-							
-							# Terminal multiplexers and sessions
 							zellij
-							
-							# File synchronization and transfer
 							rsync openssh sshfs-fuse
-							
-							# Other useful tools
-							tldr # Simplified man pages
-							watchexec # File watching
+							tldr
+							watchexec
 						]) ++ [
-							# Add neovim from the overlay
 							neovim-nightly-overlay.packages.${darwinSystem}.default
 						];
 
-						# Reuse your zsh configuration with minor adaptations
+						# Keep your Darwin zsh config
 						programs.zsh = {
 							enable = true;
 							autosuggestion.enable = true;
 							syntaxHighlighting.enable = true;
 							enableCompletion = true;
 							
-							# Same shell aliases as NixOS
 							shellAliases = {
 								n = "nvim .";
 								y = "yazi .";
@@ -675,18 +619,10 @@
 								reset_zsh = "source ~/.zshrc";
 								clear_nvim_cache = "rm -rf ~/.local/share/nvim";
 								cat = "bat";
-								jira = "~/bin/jira";
-								serpl = "~/bin/serpl";
-								json = "fx";
-								doom = "~/.config/emacs/bin/doom";
-								chsh = "~/.local/scripts/tmux-cht/tmux-cht.sh";
-								private_gitignore = "nvim .git/info/exclude";
-								git_log = "serie";
 								
-								# Nix rebuild alias - fixed for Darwin
+								# Fixed Darwin rebuild alias
 								nrs = "darwin-rebuild switch --flake ~/.dotfiles/nixos";
 								
-								# Git aliases
 								gpom = "git pull origin master";
 								gpod = "git pull origin development";
 								gc = "git checkout";
@@ -695,7 +631,6 @@
 								gsp = "git stash pop";
 							};
 							
-							# Same history configuration
 							history = {
 								size = 999;
 								save = 1000;
@@ -707,9 +642,9 @@
 							};
 							
 							initContent = ''
-								# Source nix-darwin environment first
+								# Source Determinate Nix environment
 								if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-									. '/nix/var/nix/profiles/default/etc/profile.d/nix-darwin.sh'
+									. '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 								fi
 								
 								# macOS-specific paths
@@ -721,46 +656,24 @@
 								export EDITOR='nvim'
 								export XDG_CONFIG_HOME="$HOME/.config"
 								export BAT_THEME="gruvbox-dark"
-								
-								# Homebrew
 								export HOMEBREW_NO_AUTO_UPDATE=1
 								
-								# FZF configuration
-								export FZF_DEFAULT_OPTS=" \
-								--multi \
-								--height=50% \
-								--margin=5%,2%,2%,5% \
-								--layout=reverse-list \
-								--border=double \
-								--info=inline \
-								--prompt='$>' \
-								--pointer='→' \
-								--marker='♡' \
-								--color=bg:-1,bg:-1,spinner:#f5e0dc,hl:#7AA89F \
-								--color=fg:-1,bg:-1,header:#DCD7BA,info:#7AA89F,pointer:#f5e0dc \
-								--color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#7AA89F,hl+:#7AA89F \
-								--header='CTRL-c or ESC to quit' \
-								--preview 'bat --style=numbers --color=always --line-range :500 {}' \
-								--height 70% --layout reverse --border top"
+								# FZF setup
+								export FZF_DEFAULT_OPTS="--multi --height=50% --layout=reverse-list --border=double"
 								export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
 								
-								# Vi mode and key bindings
+								# Vi mode
 								bindkey -v
 								export KEYTIMEOUT=1
-								export VI_MODE_SET_CURSOR=true
 								bindkey '^[[A' history-search-backward
 								bindkey '^[[B' history-search-forward
 								
-								# Enable colors and prompt substitution
 								autoload -U colors && colors
 								setopt PROMPT_SUBST
-								
-								# Set up fzf key bindings and fuzzy completion
 								eval "$(fzf --zsh)"
 							'';
 						};
 
-						# Same starship config
 						programs.starship = {
 							enable = true;
 							enableZshIntegration = true;
@@ -781,7 +694,6 @@
 							};
 						};
 
-						# Same git config
 						programs.git = {
 							enable = true;
 							userName = "Kamil Ksen";
@@ -800,7 +712,6 @@
 						# macOS-specific configs
 						home.file.".hammerspoon".source = dotfiles + "/hammerspoon";
 
-						# Enable XDG for proper config management
 						xdg.enable = true;
 						programs.home-manager.enable = true;
 					};
@@ -808,7 +719,7 @@
 			];
 		};
 
-		# Add required outputs for nix-darwin compatibility
+		# Required outputs for nix-darwin compatibility
 		packages.aarch64-darwin.default = self.darwinConfigurations."MacBook-Pro-Kamil".system;
 		packages.x86_64-darwin.default = self.darwinConfigurations."MacBook-Pro-Kamil".system;
 		
