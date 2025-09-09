@@ -13,7 +13,6 @@
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     rust-overlay.url = "github:oxalica/rust-overlay";
-    stylix.url = "github:nix-community/stylix";
 
     # Add private fonts
     berkeley-font = {
@@ -24,7 +23,7 @@
   };
 
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin
-    , berkeley-font, neovim-nightly-overlay, dotfiles, rust-overlay, stylix, ... }:
+    , berkeley-font, neovim-nightly-overlay, dotfiles, rust-overlay, ... }:
     let
       # Define supported systems
       systems =
@@ -55,8 +54,7 @@
         specialArgs = { inherit pkgs; };
         modules = [
           ./configuration.nix
-          stylix.nixosModules.stylix
-
+          
           # enable HM as a NixOS module
           home-manager.nixosModules.home-manager
           {
@@ -64,34 +62,14 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
 
-            # Stylix configuration for NixOS
-            stylix = {
-              enable = true;
-              image = dotfiles + "/wallpapers/kanagawa_bowl.jpg";
-              polarity = "dark";
-              base16Scheme = "${pkgs.base16-schemes}/share/themes/kanagawa.yaml";
-              
-              fonts = {
-                monospace = {
-                  name = "Berkeley Mono";
-                };
-                sansSerif = {
-                  package = pkgs.inter;
-                  name = "Inter";
-                };
-                serif = {
-                  package = pkgs.libertinus;
-                  name = "Libertinus Serif";
-                };
-              };
-            };
-
-            # --- your user ---
-            home-manager.users.kamil = { pkgs, config, ... }:
+            home-manager.users.kamil = { pkgs, config, lib, ... }:
               {
                 home.username = "kamil";
                 home.homeDirectory = lib.mkForce "/home/kamil";
                 home.stateVersion = "24.11";
+                
+                # Disable swaylock if it's being auto-enabled
+                programs.swaylock.enable = lib.mkForce false;
 
                 # if mako comes in, disable it since it crashes
                 # home.disabledModules = ["services.mako.nix"];
@@ -109,11 +87,6 @@
 
                   # C, Rust, Zig
                   gcc
-                  cargo
-                  rustc
-                  rust-analyzer
-                  rustfmt
-                  clippy
                   (pkgs.rust-bin.nightly.latest.default.override {
                     extensions =
                       [ "rust-src" "cargo" "rustc" "rustfmt" "clippy" ];
@@ -230,42 +203,10 @@
                 home.file.".config/tmux".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/config/tmux";
 
                 # Linux-specific configs with live reloading
-              }
-              // lib.optionalAttrs (builtins.match ".*linux.*" system != null) {
+                # Linux-specific configs with live reloading
                 home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/config/hypr";
                 home.file.".config/waybar".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/config/waybar";
                 home.file.".config/wofi".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/config/wofi";
-
-                # macOS-specific configs (legacy section - these should be moved to main Darwin config)
-              } // lib.optionalAttrs
-              (builtins.match ".*darwin.*" system != null) {
-                home.file.".config/yabai".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/yabai";
-                home.file.".config/skhd".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/skhd";
-                home.file.".config/sketchybar".source = config.lib.file.mkOutOfStoreSymlink "/home/kamil/.dotfiles/sketchybar";
-
-                home.file."second-brain/.keep".text = "";
-
-                # files in $HOME root (start with a dot)
-                home.file.".local/share/fonts/BerkeleyMono-Regular.otf".source =
-                  berkeley-font + "/BerkeleyMono-Regular.otf";
-                home.file.".local/share/fonts/BerkeleyMono-Bold.otf".source =
-                  berkeley-font + "/BerkeleyMono-Bold.otf";
-                home.file.".local/share/fonts/BerkeleyMono-Oblique.otf".source =
-                  berkeley-font + "/BerkeleyMono-Oblique.otf";
-                home.file.".local/share/fonts/BerkeleyMono-Bold-Oblique.otf".source =
-                  berkeley-font + "/BerkeleyMono-Bold-Oblique.otf";
-
-                fonts.fontconfig.enable = true;
-                fonts.fontconfig.defaultFonts.monospace = [ "Berkeley Mono" ];
-
-                # alacritty examples (you have both toml & yml in repo)
-                # home.file.".alacritty.toml".source = dotfiles + "/.alacritty.toml";
-                # or choose one and ignore the other
-
-                # optional: run your old bootstrap once on activation (idempotent)
-                # home.activation.bootstrap = lib.hm.dag.entryAfter ["writeBoundary"] ''
-                #   # e.g., migrate/clean legacy symlinks if needed
-                # '';
 
                 # Nice defaults
                 xdg.enable = false;
@@ -305,7 +246,6 @@
           pkgsStable = darwinPkgsStable;
         };
         modules = [
-          stylix.darwinModules.stylix
           # nix-darwin system configuration
           ({ config, pkgs, ... }: {
             # Let Determinate handle the module resolution
@@ -340,28 +280,6 @@
 
             # The platform the configuration will be used on
             nixpkgs.hostPlatform = "aarch64-darwin";
-
-            # Stylix configuration
-            stylix = {
-              enable = true;
-              image = dotfiles + "/wallpapers/kanagawa_bowl.jpg";
-              polarity = "dark";
-              base16Scheme = "${pkgs.base16-schemes}/share/themes/kanagawa.yaml";
-              
-              fonts = {
-                monospace = {
-                  name = "Berkeley Mono";
-                };
-                sansSerif = {
-                  package = pkgs.inter;
-                  name = "Inter";
-                };
-                serif = {
-                  package = pkgs.libertinus;
-                  name = "Libertinus Serif";
-                };
-              };
-            };
 
             # Set primary user (required for system defaults and homebrew)
             system.primaryUser = "kamil";
