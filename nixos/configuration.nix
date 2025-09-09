@@ -112,6 +112,9 @@
     openssl
     gnumake
 
+    # Display manager
+    greetd.tuigreet
+
     vivaldi
 
     # Shell tools
