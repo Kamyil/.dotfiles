@@ -1,14 +1,14 @@
-# Minimal test config
+# Kanagawa Paper Ink theme for starship
 format = """$directory$git_branch$character"""
 
 [directory]
-style = "bold #ff0000"
+style = "bold #c4b28a"  # kanagawa yellow/gold
 format = "[$path]($style) "
 
 [git_branch]
-style = "bold #0000ff"
+style = "bold #8ea49e"  # kanagawa cyan
 format = "on [$symbol$branch]($style) "
 
 [character]
-success_symbol = "[➜](bold green)"
-error_symbol = "[➜](bold red)"
+success_symbol = "[➜](bold #699469)"  # kanagawa green
+error_symbol = "[➜](bold #c4746e)"    # kanagawa red

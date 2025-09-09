@@ -1,0 +1,4 @@
+# LSD Configuration - Muted colors to match terminal theme
+color:
+  when: auto
+  theme: custom

@@ -44,7 +44,7 @@ local function build_workspace(window, pane, project_config)
 	-- Switch to workspace and configure first tab properly
 	local first_tab_config = project_config.tabs[1]
 	local first_command = { "zsh" }
-	
+
 	if first_tab_config and first_tab_config.panes and #first_tab_config.panes > 0 then
 		local first_pane = first_tab_config.panes[1]
 		if first_pane.command then
@@ -73,11 +73,11 @@ local function build_workspace(window, pane, project_config)
 		end
 	end
 
-	-- Create remaining tabs in the NEW workspace  
+	-- Create remaining tabs in the NEW workspace
 	for i = 2, #project_config.tabs do
 		local tab_config = project_config.tabs[i]
 		local command_to_run = { "zsh" }
-		
+
 		if tab_config.panes and #tab_config.panes > 0 then
 			local first_pane = tab_config.panes[1]
 			if first_pane.command then
@@ -92,7 +92,7 @@ local function build_workspace(window, pane, project_config)
 			}),
 			pane
 		)
-		
+
 		-- Set tab title immediately with debug
 		local current_tab = window:active_tab()
 		if current_tab and tab_config.name then
@@ -498,7 +498,7 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 		-- Fall back to pane title only if no explicit title was set
 		base_title = tab.active_pane.title
 	end
-	
+
 	-- Check for zoom status
 	local zoom_icon = ""
 	for _, pane in ipairs(tab.panes) do
@@ -507,12 +507,12 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 			break
 		end
 	end
-	
+
 	local title = string.format(" %d: %s%s ", tab.tab_index + 1, base_title, zoom_icon)
 
 	if tab.is_active then
 		return {
-			{ Background = { Color = "#E6C384" } },
+			{ Background = { Color = "#C4746E" } },
 			{ Foreground = { Color = "#000" } },
 			{ Text = title },
 		}
