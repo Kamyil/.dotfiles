@@ -22,10 +22,6 @@ exec-on-workspace-change = [
     '/Users/kamil/.dotfiles/sketchybar/plugins/aerospace_trigger.sh'
 ]
 
-exec-on-window-detected = [
-    '/Users/kamil/.dotfiles/sketchybar/plugins/aerospace_trigger.sh'
-]
-
 # Start AeroSpace at login
 start-at-login = true
 
