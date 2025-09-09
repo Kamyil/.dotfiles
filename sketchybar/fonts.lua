@@ -1,8 +1,8 @@
 return {
 	font = {
-		text = "SF Pro",
-		numbers = "SF Pro",
-		size = 15.0,
+		text = "Berkeley Mono",
+		numbers = "Berkeley Mono",
+		size = 13.0,
 		style_map = {
 			["Regular"] = "Regular",
 			["Semibold"] = "Semibold",
