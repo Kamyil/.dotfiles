@@ -27,7 +27,7 @@
   services.greetd.enable = true;
   services.greetd.settings = {
     default_session = {
-      command = "${pkgs.tuigreet}/bin/tuigreet --cmd Hyprland";
+      command = "Hyprland";
     };
   };
 
@@ -111,9 +111,6 @@
     pkg-config
     openssl
     gnumake
-
-    # Display manager
-    tuigreet
 
     vivaldi
 
