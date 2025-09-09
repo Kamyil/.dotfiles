@@ -28,10 +28,9 @@ config.audible_bell = "Disabled"
 -- config.font = wezterm.font("ComicMonoNF", { weight = "Regular" })
 -- config.font = wezterm.font("ComicMono Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("Maple Mono", { weight = 700 })
-config.font = wezterm.font("Berkeley Mono", { weight = 520 })
+config.font = wezterm.font("Berkeley Mono", { weight = 510 })
 -- config.font = wezterm.font("Monocraft Nerd Font", { weight = "Regular" })
 config.font_size = 14
-config.text_background_opacity = 1
 
 
 -- Alternative fonts for testing:
@@ -48,7 +47,7 @@ config.text_background_opacity = 1
 -- Cursor settings - Disable blinking for CPU savings
 config.default_cursor_style = "SteadyBar"
 config.command_palette_font_size = 14
--- config.command_palette_bg_color = "#1a1b26" -- Darker Tokyo Night background
+config.command_palette_bg_color = "#1a1b26" -- Darker Tokyo Night background
 config.force_reverse_video_cursor = true
 
 -- Performance settings - High FPS for snappy experience
@@ -146,7 +145,7 @@ config.background = {
 		},
 		width = "100%",
 		height = "100%",
-		opacity = 0.99, -- Full opacity for better performance
+		opacity = 0.98, -- Full opacity for better performance
 	},
 }
 
