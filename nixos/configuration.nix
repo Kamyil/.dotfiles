@@ -25,7 +25,6 @@
   services.xserver.enable = false;
   services.displayManager.gdm.enable = false;
   services.displayManager.gdm.wayland = false;
-  services.desktopManager.gnome.enable = false; # just GDM
 
   services.greetd.enable = true;
   services.greetd.settings = {
