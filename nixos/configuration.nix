@@ -23,14 +23,14 @@
   };
 
   services.xserver.enable = false;
-  services.xserver.displayManager.gdm.enable = false;
-  services.xserver.displayManager.gdm.wayland = false;
-  services.xserver.desktopManager.gnome.enable = false; # just GDM
+  services.displayManager.gdm.enable = false;
+  services.displayManager.gdm.wayland = false;
+  services.desktopManager.gnome.enable = false; # just GDM
 
   services.greetd.enable = true;
   services.greetd.settings = {
     default_session = {
-      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --cmd Hyprland";
+      command = "${pkgs.tuigreet}/bin/tuigreet --cmd Hyprland";
     };
   };
 

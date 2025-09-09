@@ -51,9 +51,14 @@
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit pkgs; };
         modules = [
           ./configuration.nix
+          
+          # Configure nixpkgs with overlays
+          ({ config, pkgs, ... }: {
+            nixpkgs.overlays = [ rust-overlay.overlays.default ];
+            nixpkgs.config.allowUnfree = true;
+          })
           
           # enable HM as a NixOS module
           home-manager.nixosModules.home-manager
