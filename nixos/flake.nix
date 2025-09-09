@@ -32,11 +32,31 @@
       # Auto-detect current system or fall back to aarch64-linux
       system = builtins.currentSystem or "aarch64-linux";
 
+      # Custom overlay for opencode
+      opencodeOverlay = final: prev: {
+        opencode = final.writeShellScriptBin "opencode" ''
+          if ! command -v bun &> /dev/null; then
+            echo "Error: bun is required for opencode. Please install bun first."
+            exit 1
+          fi
+
+          # Ensure bun is properly configured
+          export BUN_INSTALL="$HOME/.bun"
+          export PATH="$BUN_INSTALL/bin:$PATH"
+          
+          # Use --bun flag to ensure bun runtime instead of node for better compatibility
+          exec ${final.bun}/bin/bunx --bun opencode-ai@latest "$@"
+        '';
+      };
+
       # Helper function to create packages for a given system
       mkPkgs = system:
         import nixpkgs {
           inherit system;
-          overlays = [ rust-overlay.overlays.default ];
+          overlays = [ 
+            rust-overlay.overlays.default 
+            opencodeOverlay 
+          ];
           config.allowUnfree = true;
         };
 
@@ -57,7 +77,10 @@
           
           # Configure nixpkgs with overlays
           ({ config, pkgs, ... }: {
-            nixpkgs.overlays = [ rust-overlay.overlays.default ];
+            nixpkgs.overlays = [ 
+              rust-overlay.overlays.default 
+              opencodeOverlay 
+            ];
             nixpkgs.config.allowUnfree = true;
           })
           
@@ -236,7 +259,10 @@
         darwinSystem = "aarch64-darwin"; # or "x86_64-darwin" for Intel Macs
         darwinPkgs = import nixpkgs {
           system = darwinSystem;
-          overlays = [ rust-overlay.overlays.default ];
+          overlays = [ 
+            rust-overlay.overlays.default 
+            opencodeOverlay 
+          ];
           config.allowUnfree = true;
         };
         darwinPkgsStable = import nixpkgs-stable {

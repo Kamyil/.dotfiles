@@ -4,6 +4,17 @@
 
 { config, pkgs, ... }:
 
+let
+  # Install opencode via npm for better cross-platform compatibility
+  opencode = pkgs.writeShellScriptBin "opencode" ''
+    if ! command -v bunx &> /dev/null; then
+      echo "Error: bun is required for opencode. Please install bun first."
+      exit 1
+    fi
+    exec bunx opencode-ai@latest "$@"
+  '';
+in
+
 {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -145,7 +156,18 @@
     slurp
 
     # AI
-    opencode
+    bun
+    (pkgs.buildFHSUserEnv {
+      name = "opencode";
+      targetPkgs = pkgs: with pkgs; [
+        bun
+        nodejs
+        glibc
+      ];
+      runScript = pkgs.writeShellScript "opencode-runner" ''
+        exec ${pkgs.bun}/bin/bunx opencode-ai@latest "$@"
+      '';
+    })
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
