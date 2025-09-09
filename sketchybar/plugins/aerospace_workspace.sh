@@ -3,15 +3,11 @@
 source "$CONFIG_DIR/colors.sh"
 
 if [ "$SENDER" = "aerospace_workspace_change" ]; then
-    echo "$(date): Processing workspace change event - FOCUSED: '$AEROSPACE_FOCUSED_WORKSPACE', PREV: '$AEROSPACE_PREV_WORKSPACE'" >> /tmp/aerospace_debug.log
+    echo "$(date): Processing workspace change event" >> /tmp/aerospace_debug.log
     
-    # Get current focused workspace if not provided
-    if [ -z "$AEROSPACE_FOCUSED_WORKSPACE" ]; then
-        FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused 2>/dev/null | head -1 | xargs)
-        echo "$(date): Got current focused workspace: '$FOCUSED_WORKSPACE'" >> /tmp/aerospace_debug.log
-    else
-        FOCUSED_WORKSPACE="$AEROSPACE_FOCUSED_WORKSPACE"
-    fi
+    # Get current focused workspace
+    FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused 2>/dev/null | head -1 | xargs)
+    echo "$(date): Current focused workspace: '$FOCUSED_WORKSPACE'" >> /tmp/aerospace_debug.log
     
     if [ -n "$FOCUSED_WORKSPACE" ]; then
         echo "$(date): Updating workspace highlights for focused workspace: $FOCUSED_WORKSPACE" >> /tmp/aerospace_debug.log
@@ -25,42 +21,30 @@ if [ "$SENDER" = "aerospace_workspace_change" ]; then
         done
         
         # Set current workspace highlight
-        echo "$(date): Setting highlight for workspace: $FOCUSED_WORKSPACE" >> /tmp/aerospace_debug.log
         sketchybar --set space.$FOCUSED_WORKSPACE \
             icon.highlight=true \
             label.highlight=true \
             background.border_color=$GREY 2>/dev/null
         
-        # Update app icons for all workspaces or just the changed ones
-        workspaces_to_update=()
-        if [ -n "$AEROSPACE_PREV_WORKSPACE" ] && [ "$AEROSPACE_PREV_WORKSPACE" != "$FOCUSED_WORKSPACE" ]; then
-            workspaces_to_update=("$AEROSPACE_PREV_WORKSPACE" "$FOCUSED_WORKSPACE")
+        # Update app icons for the focused workspace
+        echo "$(date): Updating app icons for workspace: $FOCUSED_WORKSPACE" >> /tmp/aerospace_debug.log
+        
+        apps=$(aerospace list-windows --workspace "$FOCUSED_WORKSPACE" --format "%{app-name}" 2>/dev/null)
+        
+        icon_strip=" "
+        if [ -n "$apps" ]; then
+            while IFS= read -r app; do
+                if [ -n "$app" ]; then
+                    icon="$($CONFIG_DIR/plugins/icon_map.sh "$app" 2>/dev/null)"
+                    icon_strip="$icon_strip$icon"
+                fi
+            done <<< "$apps"
         else
-            # If we don't have prev info, update just the focused workspace
-            workspaces_to_update=("$FOCUSED_WORKSPACE")
+            icon_strip=" —"
         fi
         
-        for workspace in "${workspaces_to_update[@]}"; do
-            echo "$(date): Updating app icons for workspace: $workspace" >> /tmp/aerospace_debug.log
-            
-            # Get app list for this workspace
-            apps=$(aerospace list-windows --workspace "$workspace" --format "%{app-name}" 2>/dev/null)
-            
-            icon_strip=" "
-            if [ -n "$apps" ]; then
-                while IFS= read -r app; do
-                    if [ -n "$app" ]; then
-                        icon="$($CONFIG_DIR/plugins/icon_map.sh "$app" 2>/dev/null)"
-                        icon_strip="$icon_strip$icon"
-                    fi
-                done <<< "$apps"
-            else
-                icon_strip=" —"
-            fi
-            
-            echo "$(date): Setting workspace $workspace label to: '$icon_strip'" >> /tmp/aerospace_debug.log
-            sketchybar --set space.$workspace label="$icon_strip" 2>/dev/null
-        done
+        echo "$(date): Setting workspace $FOCUSED_WORKSPACE label to: '$icon_strip'" >> /tmp/aerospace_debug.log
+        sketchybar --set space.$FOCUSED_WORKSPACE label="$icon_strip" 2>/dev/null
     else
         echo "$(date): ERROR - Could not determine focused workspace" >> /tmp/aerospace_debug.log
     fi

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Aerospace workspace change trigger script
-echo "$(date): Aerospace trigger called - FOCUSED: $AEROSPACE_FOCUSED_WORKSPACE, PREV: $AEROSPACE_PREV_WORKSPACE" >> /tmp/aerospace_debug.log
+echo "$(date): Aerospace trigger called" >> /tmp/aerospace_debug.log
 
 # Find sketchybar binary path
 SKETCHYBAR_BIN=""
@@ -16,7 +16,5 @@ else
     exit 1
 fi
 
-echo "$(date): Using sketchybar binary: $SKETCHYBAR_BIN" >> /tmp/aerospace_debug.log
-
-# Just trigger the event - let the workspace script handle getting workspace info
+echo "$(date): Triggering sketchybar workspace update" >> /tmp/aerospace_debug.log
 $SKETCHYBAR_BIN --trigger aerospace_workspace_change
