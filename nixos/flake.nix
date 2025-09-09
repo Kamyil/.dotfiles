@@ -68,11 +68,13 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
 
-            home-manager.users.kamil = { pkgs, config, lib, ... }:
-              {
+            home-manager.users.kamil = { pkgs, config, lib, ... }: {
                 home.username = "kamil";
-                home.homeDirectory = lib.mkForce "/home/kamil";
+                home.homeDirectory = "/home/kamil";
                 home.stateVersion = "24.11";
+                
+                # Disable broken mako module completely
+                disabledModules = [ "services/mako.nix" ];
                 
                 # Disable swaylock if it's being auto-enabled
                 programs.swaylock.enable = lib.mkForce false;
