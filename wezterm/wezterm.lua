@@ -95,13 +95,7 @@ config.window_padding = {
 }
 
 -- Color scheme
-config.color_scheme_dirs = { "~/.config/wezterm/colors" }
--- config.color_scheme = "kanagawa-muted"
 config.color_scheme = "kanagawa-paper-ink"
--- config.color_scheme = "Kanagawa (Gogh)"
--- config.color_scheme = "Everforest Dark Hard"
--- config.color_scheme = "posterpole"
--- config.color_scheme = "Everforest Dark (Medium)"
 
 config.enable_tab_bar = true
 config.tab_bar_at_bottom = true
