@@ -174,32 +174,32 @@ local my_own_tmux = {
 		},
 
 		-- Split vertically
-		{ key = "\\", mods = "CTRL", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
-		{ key = "/",  mods = "CTRL", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
+		{ key = "\\", mods = "CTRL",       action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
+		{ key = "/",  mods = "CTRL",       action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
 		-- Split horizontally
-		{ key = "-",  mods = "CTRL", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
-		{ key = "=",  mods = "CTRL", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
+		{ key = "-",  mods = "CTRL",       action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
+		{ key = "=",  mods = "CTRL",       action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
 
 		-- Rotate panes (swap positions and/or toggle between horizontal/vertical layouts)
-		{ key = "w", mods = "CTRL", action = wezterm.action.RotatePanes("Clockwise") },
-		{ key = "W", mods = "CTRL|SHIFT", action = wezterm.action.RotatePanes("CounterClockwise") },
+		{ key = "w",  mods = "CTRL",       action = wezterm.action.RotatePanes("Clockwise") },
+		{ key = "W",  mods = "CTRL|SHIFT", action = wezterm.action.RotatePanes("CounterClockwise") },
 
 		-- Switch to tabs (a.k.a. tmux windows)
-		{ key = "1",  mods = "CTRL", action = wezterm.action({ ActivateTab = 0 }) },
-		{ key = "2",  mods = "CTRL", action = wezterm.action({ ActivateTab = 1 }) },
-		{ key = "3",  mods = "CTRL", action = wezterm.action({ ActivateTab = 2 }) },
-		{ key = "4",  mods = "CTRL", action = wezterm.action({ ActivateTab = 3 }) },
-		{ key = "5",  mods = "CTRL", action = wezterm.action({ ActivateTab = 4 }) },
-		{ key = "6",  mods = "CTRL", action = wezterm.action({ ActivateTab = 5 }) },
-		{ key = "7",  mods = "CTRL", action = wezterm.action({ ActivateTab = 6 }) },
-		{ key = "8",  mods = "CTRL", action = wezterm.action({ ActivateTab = 7 }) },
-		{ key = "9",  mods = "CTRL", action = wezterm.action({ ActivateTab = 8 }) },
+		{ key = "1",  mods = "CTRL",       action = wezterm.action({ ActivateTab = 0 }) },
+		{ key = "2",  mods = "CTRL",       action = wezterm.action({ ActivateTab = 1 }) },
+		{ key = "3",  mods = "CTRL",       action = wezterm.action({ ActivateTab = 2 }) },
+		{ key = "4",  mods = "CTRL",       action = wezterm.action({ ActivateTab = 3 }) },
+		{ key = "5",  mods = "CTRL",       action = wezterm.action({ ActivateTab = 4 }) },
+		{ key = "6",  mods = "CTRL",       action = wezterm.action({ ActivateTab = 5 }) },
+		{ key = "7",  mods = "CTRL",       action = wezterm.action({ ActivateTab = 6 }) },
+		{ key = "8",  mods = "CTRL",       action = wezterm.action({ ActivateTab = 7 }) },
+		{ key = "9",  mods = "CTRL",       action = wezterm.action({ ActivateTab = 8 }) },
 
 		-- Move between panes
-		{ key = "h",  mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Left" }) },
-		{ key = "j",  mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Down" }) },
-		{ key = "k",  mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Up" }) },
-		{ key = "l",  mods = "CTRL", action = wezterm.action({ ActivatePaneDirection = "Right" }) },
+		{ key = "h",  mods = "CTRL",       action = wezterm.action({ ActivatePaneDirection = "Left" }) },
+		{ key = "j",  mods = "CTRL",       action = wezterm.action({ ActivatePaneDirection = "Down" }) },
+		{ key = "k",  mods = "CTRL",       action = wezterm.action({ ActivatePaneDirection = "Up" }) },
+		{ key = "l",  mods = "CTRL",       action = wezterm.action({ ActivatePaneDirection = "Right" }) },
 
 		-- Session Switching with FZF like in tmux-sessionx
 		{
@@ -521,7 +521,11 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 			{ Text = title },
 		}
 	else
-		return title
+		return {
+			{ Background = { Color = "#141416" } },
+			{ Foreground = { Color = "#8992A7" } },
+			{ Text = title },
+		}
 	end
 end)
 

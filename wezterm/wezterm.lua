@@ -32,6 +32,16 @@ config.font = wezterm.font("Berkeley Mono", { weight = 510 })
 -- config.font = wezterm.font("Monocraft Nerd Font", { weight = "Regular" })
 config.font_size = 14
 
+-- config.freetype_load_flags = "FORCE_AUTOHINT"
+config.freetype_load_target = "HorizontalLcd"
+config.prefer_egl = false -- Improve font rendering
+-- Adjust font width for different environments:
+-- On work monitor:
+-- config.cell_width = 1.05
+-- On Mac itself:
+config.cell_width = 1.00
+config.line_height = 1.10
+
 
 -- Alternative fonts for testing:
 --
@@ -45,10 +55,12 @@ config.font_size = 14
 -- config.font = wezterm.font("ZedMono Nerd Font")
 --
 -- Cursor settings - Disable blinking for CPU savings
-config.default_cursor_style = "SteadyBar"
-config.command_palette_font_size = 14
+config.default_cursor_style = "SteadyBlock"
+config.command_palette_font_size = 12
+config.command_palette_font = wezterm.font 'Berkeley Mono'
 config.command_palette_bg_color = "#1a1b26" -- Darker Tokyo Night background
 config.force_reverse_video_cursor = true
+config.cursor_thickness = 3;
 
 -- Performance settings - High FPS for snappy experience
 config.automatically_reload_config = true
@@ -57,18 +69,10 @@ config.window_close_confirmation = "AlwaysPrompt"
 config.custom_block_glyphs = false  -- Disable custom glyphs for performance
 config.animation_fps = 120          -- Restore high FPS for snappy feel
 config.max_fps = 120                -- Match animation fps
-config.prefer_egl = true
 
 
 -- Adjust font cell dimensions
 config.adjust_window_size_when_changing_font_size = false
-
--- Adjust font width for different environments:
--- On work monitor:
--- config.cell_width = 1.05
--- On Mac itself:
--- config.cell_width = 1.00
--- config.line_height = 1.00
 -- To disable ligatures, use:
 -- config.harfbuzz_features = { "liga=0" }
 
@@ -76,7 +80,7 @@ config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
 
 -- Disable blur for performance - major CPU/GPU saver on macOS
-config.macos_window_background_blur = 20
+config.macos_window_background_blur = 10
 config.scrollback_lines = 2000 -- Reduce from 3500 to save memory
 -- Disable ligatures for better performance
 -- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
@@ -84,10 +88,10 @@ config.enable_wayland = false
 
 -- Window padding
 config.window_padding = {
-	left = "20",
-	right = "20",
-	top = "20",
-	bottom = "20",
+	left = "30",
+	right = "30",
+	top = "30",
+	bottom = "30",
 }
 
 -- Color scheme
@@ -99,16 +103,11 @@ config.color_scheme = "kanagawa-paper-ink"
 -- config.color_scheme = "posterpole"
 -- config.color_scheme = "Everforest Dark (Medium)"
 
-config.inactive_pane_hsb = {
-	saturation = 0.8,
-	brightness = 0.8,
-}
-
 config.enable_tab_bar = true
 config.tab_bar_at_bottom = true
 config.use_fancy_tab_bar = false
 config.switch_to_last_active_tab_when_closing_tab = true
-config.tab_max_width = 128
+config.tab_max_width = 256
 config.bold_brightens_ansi_colors = false
 
 -- Environment variables
@@ -117,11 +116,12 @@ config.set_environment_variables = {
 }
 
 -- Mouse bindings
+config.disable_default_mouse_bindings = true
 config.mouse_bindings = {
 	{
-		event = { Up = { streak = 1, button = "Left" } },
-		mods = "CTRL",
-		action = wezterm.action.OpenLinkAtMouseCursor,
+		event = { Up = { streak = 1, button = 'Left' } },
+		mods = 'ALT',
+		action = act.OpenLinkAtMouseCursor,
 	},
 }
 
@@ -130,6 +130,7 @@ config.keys = {
 	-- { key = "C", mods = "CMD", action = wezterm.action.CopyTo("Clipboard") },
 	-- { key = "V", mods = "CMD", action = wezterm.action.PasteFrom("Clipboard") },
 	-- { key = "Insert", mods = "SHIFT", action = wezterm.action.PasteFrom("Clipboard") },
+	{ key = "P", mods = "CMD|SHIFT", action = wezterm.action.ActivateCommandPalette },
 }
 
 -- Font rendering - Optimized for performance
@@ -145,7 +146,7 @@ config.background = {
 		},
 		width = "100%",
 		height = "100%",
-		opacity = 0.90, -- Full opacity for better performance
+		opacity = 0.97, -- Full opacity for better performance
 	},
 }
 
@@ -159,35 +160,6 @@ for _, nvim_split_navigator_keys in ipairs(nvim_split_navigator.keys) do
 	table.insert(config.keys, nvim_split_navigator_keys)
 end
 
--- Optimized status update - reduced frequency for better performance
--- wezterm.on("update-status", function(gui_window, pane)
--- 	-- Cache tab info to avoid recalculation every update
--- 	local tabs = gui_window:mux_window():tabs()
--- 	local mid_width = 0
--- 	for idx, tab in ipairs(tabs) do
--- 		local title = tab:get_title()
--- 		mid_width = mid_width + math.floor(math.log(idx, 10)) + 1
--- 		mid_width = mid_width + 2 + #title + 1
--- 	end
--- 	local tab_width = gui_window:active_tab():get_size().cols
--- 	local max_left = tab_width / 2 - mid_width / 2
---
--- 	gui_window:set_left_status(wezterm.pad_left(" ", max_left))
--- end)
-
--- Simplified right status for performance
-local current_workspace = nil
-
--- wezterm.on("update-right-status", function(window, pane)
--- 	if current_workspace then
--- 		window:set_right_status("Workspace: " .. current_workspace)
--- 	end
--- end)
-
--- Minimal tab formatting
--- wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
--- 	return string.format(" %d: %s ", tab.tab_index + 1, tab.tab_title)
--- end)
 
 -- Session picker functionality
 wezterm.on("pick_or_create_session", function(window, pane)
