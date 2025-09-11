@@ -80,7 +80,7 @@ config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
 
 -- Disable blur for performance - major CPU/GPU saver on macOS
-config.macos_window_background_blur = 10
+config.macos_window_background_blur = 20
 config.scrollback_lines = 2000 -- Reduce from 3500 to save memory
 -- Disable ligatures for better performance
 -- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
