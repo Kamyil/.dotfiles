@@ -125,6 +125,7 @@ in
             "aerospace"
             "raycast"
             "font-sketchybar-app-font"
+            "eqmac"
           ];
         };
       })

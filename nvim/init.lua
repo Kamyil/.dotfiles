@@ -908,10 +908,14 @@ require('incline').setup({
 
 		local function get_file_name()
 			local label = {}
-			table.insert(label, { (filetype_icon or '') .. ' ', guifg = filetype_color, guibg = 'none' })
-			table.insert(label, { vim.bo[props.buf].modified and ' ' or '', guifg = '#d19a66' })
+			local full_path = vim.api.nvim_buf_get_name(props.buf)
+			local relative_path = vim.fn.fnamemodify(full_path, ':~:.')
+
+			-- If it's just the filename, show it as is, otherwise show the full relative path
+			local display_path = relative_path == filename and filename or relative_path
+
 			table.insert(label,
-				{ filename, gui = vim.bo[props.buf].modified and 'bold,italic' or 'bold', guifg = '#C4B38A' })
+				{ display_path, gui = vim.bo[props.buf].modified and 'bold,italic' or 'bold', guifg = '#C4B38A' })
 
 			if not props.focused then
 				label['group'] = 'BufferInactive'
@@ -1051,11 +1055,33 @@ require("render-markdown").setup({})
 require('blame').setup({})
 
 require("barbecue").setup({
-	attach_navic = true,
-	context_follow_icon_color = true,
+	attach_navic = false, -- disable navic integration since we only want file path
+	show_navic = false, -- don't show LSP context symbols
+	show_dirname = true, -- show directory path
+	show_basename = true, -- show file name
+	context_follow_icon_color = false,
+	kinds = false,     -- disable all kind icons/symbols
+	modifiers = {
+		dirname = ":~:.", -- show relative path from home and current directory
+		basename = "", -- no modifiers for basename
+	},
+	symbols = {
+		modified = "", -- no modified indicator
+		ellipsis = "…", -- keep ellipsis for long paths
+		separator = "/", -- use forward slash as separator
+	},
+	theme = {
+		normal = { fg = "#C4B38A" },
+		dirname = { fg = "#737aa2" },
+		basename = { fg = "#C4B38A", bold = true },
+	},
+	custom_section = function()
+		return "" -- empty custom section
+	end,
+	lead_custom_section = function()
+		return "" -- empty leading section
+	end,
 })
--- require('barbecue').toggle(true)
---
 
 -- -- Undercurl errors and warnings like in VSCode
 vim.cmd([[let &t_Cs = "\e[4:3m"]])
