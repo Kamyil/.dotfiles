@@ -265,7 +265,7 @@ keymap('n', '<leader>ff', fff.find_in_git_root, { desc = '[F]ind [F]iles' })
 -- keymap('n', '<leader>fF', fff.find_files, { desc = '[F]ind (ALL) [F]iles' })
 keymap('n', '<leader>fw', fzf_lua.live_grep, { desc = '[F]ind [W]ords' })
 -- keymap('n', '<leader>fh', ':Pick help<CR>')
-keymap('n', '<leader>e', ':Oil<CR>', { desc = 'File [E]xplorer' })
+keymap('n', '<leader>e', ':Oil --float<CR>', { desc = 'File [E]xplorer' })
 -- LSP
 keymap('n', '<leader>la', vim.lsp.buf.code_action, { desc = '' })
 keymap('n', '<leader>lf', vim.lsp.buf.format)
@@ -565,6 +565,28 @@ vim.schedule(function()
 	vim.api.nvim_set_hl(0, '@tag.attribute.svelte', { fg = '#B98D7B', bold = false })
 end)
 require('oil').setup({
+	keymaps = {
+		["q"] = "actions.close",
+		["<C-c>"] = "actions.close",
+		["<leader>e"] = "actions.close",
+	},
+	float = {
+		-- Padding around the floating window
+		padding = 8,
+		max_width = 0,
+		max_height = 0,
+		border = "rounded",
+		win_options = {
+			winblend = 1,
+		},
+		-- preview_split: Split direction: "auto", "left", "right", "above", "below".
+		preview_split = "right",
+		-- This is the config that will be passed to nvim_open_win.
+		-- Change values here to customize the layout
+		override = function(conf)
+			return conf
+		end,
+	},
 	view_options = {
 		-- Show files and directories that start with "."
 		show_hidden = true,
