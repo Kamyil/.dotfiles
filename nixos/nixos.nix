@@ -49,6 +49,9 @@ in
             (pkgs.rust-bin.nightly.latest.default.override {
               extensions = [ "rust-src" "cargo" "rustc" ];
             })
+            
+            # Network tools
+            impala # TUI for managing WiFi
           ]) ++ [
             # packages from unstable branch
             pkgs.opencode  # Now using unstable nixpkgs as main

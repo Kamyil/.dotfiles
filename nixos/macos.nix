@@ -214,6 +214,8 @@ in
             # Other useful tools
             tldr # Simplified man pages
             watchexec # File watching
+
+            nerd-fonts.geist-mono # Cool programming font (good alternative to BerkeleyMono and JetBrains Mono)
           ]) ++ [
             # Add neovim from the overlay
             neovim-nightly-overlay.packages.${darwinSystem}.default
