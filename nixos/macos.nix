@@ -106,10 +106,11 @@ in
         # Homebrew integration
         homebrew = {
           enable = true;
-          onActivation.cleanup = "zap";
+          onActivation.cleanup = "uninstall";
           taps = [ "nikitabobko/tap" "FelixKratz/formulae" ];
           brews = [
             "sketchybar"
+            "codex"
           ];
           casks = [
             # Keep these that aren't available in nixpkgs or ARM macOS
@@ -126,6 +127,7 @@ in
             "raycast"
             "font-sketchybar-app-font"
             "eqmac"
+            "ghostty"
           ];
         };
       })
@@ -179,7 +181,7 @@ in
             nmap wireshark-cli socat
 
             # Development/Programming
-            kitty # Terminal emulator
+            # kitty removed - using WezTerm instead
 
             # Container tools (CLI versions, GUI via homebrew)
             podman podman-compose
