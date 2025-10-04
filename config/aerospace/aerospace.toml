@@ -66,13 +66,15 @@ on-focus-changed = ['move-mouse window-lazy-center']
 # 10 = '^EPSON'
 
 [gaps]
-inner.horizontal = 20
-inner.vertical = 20
+inner.horizontal = 10
+inner.vertical = 10
 
-outer.top = [{ monitor."main" = 40 }, 40]
-outer.left = 15
-outer.bottom = 15
-outer.right = 15
+# Per-monitor configuration for outer gaps
+outer.top = [{ monitor."LG HDR 4K" = 80 }, { monitor."Built-in Retina Display" = 40 }, 40]
+outer.left = [{ monitor."LG HDR 4K" = 60 }, { monitor."Built-in Retina Display" = 15 }, 15]
+outer.bottom = [{ monitor."LG HDR 4K" = 20 }, { monitor."Built-in Retina Display" = 5 }, 5]
+outer.right = [{ monitor."LG HDR 4K" = 60 }, { monitor."Built-in Retina Display" = 15 }, 15]
+
 
 # See https://nikitabobko.github.io/AeroSpace/guide#exec-env-vars
 [exec] # Again, you don't need to copy all config sections to your config.
@@ -153,7 +155,7 @@ ctrl-shift-0 = ['move-node-to-workspace 10', 'workspace 10']
 alt-tab = 'workspace-back-and-forth'
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
 cmd-shift-comma = 'move-workspace-to-monitor --wrap-around left'
-cmd-shift-period = 'move-workspace-to-monitor --wrap-around right'
+cmd-period = 'move-workspace-to-monitor --wrap-around right'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
 alt-shift-semicolon = 'mode service'
@@ -217,6 +219,11 @@ run = ['move-node-to-workspace 9']
 
 [[on-window-detected]]
 if.app-id = 'com.apple.weather'
+run = ['layout floating']
+
+
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
 run = ['layout floating']
 
 [[on-window-detected]]
