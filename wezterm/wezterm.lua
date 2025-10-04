@@ -22,14 +22,22 @@ config.audible_bell = "Disabled"
 -- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
 
 -- Font settings
+config.font = wezterm.font("Berkeley Mono", { weight = 510 })
 -- config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Regular" })
 -- config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Bold" })
 -- config.font = wezterm.font("ComicShannsMono Nerd Font Propo", { weight = "Bold" })
 -- config.font = wezterm.font("ComicMonoNF", { weight = "Regular" })
 -- config.font = wezterm.font("ComicMono Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("Maple Mono", { weight = 700 })
-config.font = wezterm.font("Berkeley Mono", { weight = 510 })
 -- config.font = wezterm.font("Monocraft Nerd Font", { weight = "Regular" })
+-- config.font = wezterm.font("SF Mono", { weight = "Regular" })
+-- config.font = wezterm.font("BlexMono Nerd Font", { weight = "Medium" })
+-- config.font = wezterm.font("CommitMono Nerd Font", { weight = "Bold" })
+-- config.font = wezterm.font("FiraCode Nerd Font", { weight = "Bold" })
+-- config.font = wezterm.font("GeistMono Nerd Font", { weight = 510 })
+-- config.font = wezterm.font("Hack Nerd Font", { weight = "Regular" })
+-- config.font = wezterm.font("RobotoMono Nerd Font", { weight = "Regular" })
+-- config.font = wezterm.font("ZedMono Nerd Font")
 config.font_size = 14
 
 -- config.freetype_load_flags = "FORCE_AUTOHINT"
@@ -43,16 +51,6 @@ config.cell_width = 1.00
 config.line_height = 1.10
 
 
--- Alternative fonts for testing:
---
--- config.font = wezterm.font("SF Mono", { weight = "Regular" })
--- config.font = wezterm.font("BlexMono Nerd Font", { weight = "Medium" })
--- config.font = wezterm.font("CommitMono Nerd Font", { weight = "Bold" })
--- config.font = wezterm.font("FiraCode Nerd Font", { weight = "Bold" })
--- config.font = wezterm.font("GeistMono Nerd Font", { weight = "Bold" })
--- config.font = wezterm.font("Hack Nerd Font", { weight = "Regular" })
--- config.font = wezterm.font("RobotoMono Nerd Font", { weight = "Regular" })
--- config.font = wezterm.font("ZedMono Nerd Font")
 --
 -- Cursor settings - Disable blinking for CPU savings
 config.default_cursor_style = "SteadyBlock"
@@ -107,16 +105,6 @@ config.bold_brightens_ansi_colors = false
 -- Environment variables
 config.set_environment_variables = {
 	TERM = "xterm-256color", -- Set TERM environment variable
-}
-
--- Mouse bindings
-config.disable_default_mouse_bindings = true
-config.mouse_bindings = {
-	{
-		event = { Up = { streak = 1, button = 'Left' } },
-		mods = 'ALT',
-		action = act.OpenLinkAtMouseCursor,
-	},
 }
 
 -- Key bindings
