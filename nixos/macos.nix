@@ -165,7 +165,7 @@ in
             eza difftastic just jq yq
 
             # Development tools
-            gcc go nodejs yarn pnpm deno fnm
+            gcc go nodejs yarn pnpm deno fnm wrangler
             lua luarocks python3 php
 
             # Text processing and search

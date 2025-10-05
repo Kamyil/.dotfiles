@@ -68,7 +68,6 @@ vim.opt.spelllang = { 'en_us', 'pl_PL' } -- Set spell check languages
 vim.opt.winborder = 'single'             -- Set window border style to single line
 vim.g.autoformat = false                 -- Disable autoformatting by default
 
-
 -- Enable default LSP inline diagnostic
 vim.diagnostic.config({
 	-- virtual_text = false,                       -- Ensure virtual text is disabled since lsp_lines handles it
@@ -92,7 +91,6 @@ vim.diagnostic.config({
 		},
 	}
 })
---
 
 -- Get the plugins and install them
 vim.pack.add({
@@ -125,6 +123,8 @@ vim.pack.add({
 	-------------------------------------------------------------------------------------------------------------
 	-- AI
 	{ src = 'https://github.com/supermaven-inc/supermaven-nvim' }, -- Better AI suggestions
+	{ src = 'https://github.com/zbirenbaum/copilot.lua' }, -- GitHub Copilot (bundles copilot-language-server)
+	{ src = 'https://github.com/folke/sidekick.nvim' }, -- AI sidekick with Copilot NES and CLI integration
 	-------------------------------------------------------------------------------------------------------------
 
 
@@ -1024,26 +1024,26 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 -- Install on startup if there are any LSPs missing
 vim.api.nvim_create_user_command('MasonInstallEnsured', function()
-	vim.list_extend(ensure_installed, {
-		'stylua',                    -- Used to format Lua code
-		'lua_ls',                    -- For Lua
-		'intelephense',              -- For PHP (maybe not best, but at least it doesn't requires payment
-		'svelte-language-server',    -- For Svelte
-		'tailwindcss-language-server', -- For Tailwind
-		'vtsls',                     -- For TypeScript (better than ts-server)
-		'write-good',                -- Don't know what it is really. Testing it...
-		'sqlls',                     -- For SQL
-		'rust_analyzer',             -- For Rust
-		'prettier',                  -- For formatting JS, TS, HTML, CSS, Svelte, etc.
-		'emmet_ls',                  -- For expanding HTML, CSS, JS, TS, Svelte, etc.
-		'json-lsp',                  -- For JSON
-		'dockerls',                  -- For Docker
-		'docker_compose_language_service', -- For Docker Compose
-		'justls',                    -- For Justfile
-		'yaml-language-server',      -- For YAML
-		'markdownlint',              -- For Markdown
-	})
-	vim.cmd('MasonInstall ' .. table.concat(ensure_installed, ' '))
+	local mason_packages = {
+		'stylua',
+		'intelephense',
+		'svelte-language-server',
+		'tailwindcss-language-server',
+		'vtsls',
+		'write-good',
+		'sqlls',
+		'prettier',
+		'emmet-ls',
+		'json-lsp',
+		'dockerfile-language-server',
+		'docker-compose-language-service',
+		'yaml-language-server',
+		'markdownlint',
+	}
+	for _, server in ipairs(ensure_installed) do
+		table.insert(mason_packages, server)
+	end
+	vim.cmd('MasonInstall ' .. table.concat(mason_packages, ' '))
 end, {})
 
 -- Ensure the servers and tools above are installed
@@ -1075,6 +1075,25 @@ require('mason-lspconfig').setup({
 
 require("render-markdown").setup({})
 require('blame').setup({})
+
+require('copilot').setup({
+	panel = { enabled = false },
+	suggestion = { enabled = false },
+	copilot_node_command = vim.fn.expand('$HOME') .. '/.local/share/fnm/node-versions/v22.17.1/installation/bin/node',
+})
+
+require("sidekick").setup({
+	nes = {
+		enabled = true,
+	},
+})
+
+keymap({ 'n', 'i' }, '<tab>', function()
+	if require('sidekick').nes_jump_or_apply() then
+		return
+	end
+	return '<tab>'
+end, { expr = true, desc = 'Goto/Apply Next Edit Suggestion' })
 
 require("barbecue").setup({
 	attach_navic = false, -- disable navic integration since we only want file path
@@ -1108,3 +1127,7 @@ require("barbecue").setup({
 -- -- Undercurl errors and warnings like in VSCode
 vim.cmd([[let &t_Cs = "\e[4:3m"]])
 vim.cmd([[let &t_Ce = "\e[4:0m"]])
+
+
+
+
