@@ -53,12 +53,13 @@ config.line_height = 1.10
 
 --
 -- Cursor settings - Disable blinking for CPU savings
-config.default_cursor_style = "SteadyBlock"
 config.command_palette_font_size = 12
-config.command_palette_font = wezterm.font 'Berkeley Mono'
+-- config.command_palette_font = wezterm.font 'Berkeley Mono'
 config.command_palette_bg_color = "#1a1b26" -- Darker Tokyo Night background
 config.force_reverse_video_cursor = true
-config.cursor_thickness = 3;
+config.cursor_thickness = 3
+config.cursor_blink_ease_in = "Constant"
+config.cursor_blink_ease_out = "Constant"
 
 -- Performance settings - High FPS for snappy experience
 config.automatically_reload_config = true
@@ -78,7 +79,7 @@ config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
 
 -- Disable blur for performance - major CPU/GPU saver on macOS
-config.macos_window_background_blur = 20
+config.macos_window_background_blur = 40
 config.scrollback_lines = 2000 -- Reduce from 3500 to save memory
 -- Disable ligatures for better performance
 -- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
@@ -128,7 +129,7 @@ config.background = {
 		},
 		width = "100%",
 		height = "100%",
-		opacity = 0.97, -- Full opacity for better performance
+		opacity = 0.70, -- Full opacity for better performance
 	},
 }
 

@@ -62,7 +62,7 @@ fi
 
 echo "Bootstrapping nix-darwin..."
 cd "$HOME/.dotfiles"
-nix run nix-darwin -- switch --flake "./nixos#MacBook-Pro-Kamil"
+nix run nix-darwin -- switch --flake "./nix#MacBook-Pro-Kamil"
 
 echo ""
 echo "Installation complete!"

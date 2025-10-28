@@ -114,6 +114,7 @@ in
           ];
           casks = [
             # Keep these that aren't available in nixpkgs or ARM macOS
+            "firefox"
             "vivaldi"
             "libreoffice"
             "love"
@@ -128,6 +129,7 @@ in
             "font-sketchybar-app-font"
             "eqmac"
             "ghostty"
+            "postman"
           ];
         };
       })
@@ -151,9 +153,6 @@ in
 
           # macOS-specific packages
           home.packages = (with pkgs; [
-            # Browsers and core apps
-            qutebrowser
-
             # Development tools
             vscode
 

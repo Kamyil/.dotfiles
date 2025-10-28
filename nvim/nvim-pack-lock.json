@@ -1,0 +1,50 @@
+{
+  "plugins": {
+    "barbecue.nvim": [],
+    "blame.nvim": [],
+    "blink.cmp": {
+      "version": "'1.*'"
+    },
+    "bullets.vim": [],
+    "comfy-line-numbers.nvim": [],
+    "copilot.lua": [],
+    "fff.nvim": [],
+    "friendly-snippets": [],
+    "fzf-lua": [],
+    "git-conflict.nvim": [],
+    "harpoon": {
+      "version": "'harpoon2'"
+    },
+    "harpoon-files.nvim": [],
+    "incline.nvim": [],
+    "indent-blankline.nvim": [],
+    "kanagawa-paper.nvim": [],
+    "lazydev.nvim": [],
+    "marks.nvim": [],
+    "mason-lspconfig.nvim": [],
+    "mason-tool-installer.nvim": [],
+    "mason.nvim": [],
+    "mini.surround": [],
+    "nvim": [],
+    "nvim-autopairs": [],
+    "nvim-highlight-colors": [],
+    "nvim-lspconfig": [],
+    "nvim-navic": [],
+    "nvim-tmux-navigation": [],
+    "nvim-treesitter": [],
+    "nvim-web-devicons": [],
+    "obsidian.nvim": [],
+    "oil.nvim": [],
+    "plenary.nvim": [],
+    "refactoring.nvim": [],
+    "render-markdown.nvim": [],
+    "sidekick.nvim": [],
+    "snacks.nvim": [],
+    "supermaven-nvim": [],
+    "todo-comments.nvim": [],
+    "vague.nvim": [],
+    "vim-lastplace": [],
+    "vim-sleuth": [],
+    "which-key.nvim": []
+  }
+}

@@ -48,12 +48,12 @@ echo "🚀 Attempting to rebuild darwin configuration..."
 # Method 1: Try existing darwin-rebuild if it exists somewhere
 if command -v darwin-rebuild &> /dev/null; then
     echo "📋 Found existing darwin-rebuild, attempting switch..."
-    sudo darwin-rebuild switch --flake "./nixos#MacBook-Pro-Kamil"
+    sudo darwin-rebuild switch --flake "./nix#MacBook-Pro-Kamil"
     
 # Method 2: Bootstrap from scratch if darwin-rebuild missing
 else
     echo "🔄 darwin-rebuild missing, bootstrapping from scratch..."
-    nix run nix-darwin -- switch --flake "./nixos#MacBook-Pro-Kamil"
+    nix run nix-darwin -- switch --flake "./nix#MacBook-Pro-Kamil"
 fi
 
 echo ""
@@ -61,6 +61,6 @@ echo "✅ Repair attempt complete!"
 echo ""
 echo "🔄 Please restart your terminal and test:"
 echo "   which darwin-rebuild"
-echo "   sudo darwin-rebuild switch --flake ~/.dotfiles/nixos"
+echo "   sudo darwin-rebuild switch --flake ~/.dotfiles/nix"
 echo ""
 echo "If issues persist, check /etc/zshrc contains nix configuration"

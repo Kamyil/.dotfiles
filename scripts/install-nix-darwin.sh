@@ -48,7 +48,7 @@ cd "$DOTFILES_DIR"
 
 # Build and activate the darwin configuration
 echo "🚀 Building darwin configuration..."
-nix run nix-darwin -- switch --flake "./nixos#MacBook-Pro-Kamil"
+nix run nix-darwin -- switch --flake "./nix#MacBook-Pro-Kamil"
 
 echo "✅ nix-darwin installation complete!"
 echo ""
@@ -56,4 +56,4 @@ echo "🔄 Please restart your terminal or run:"
 echo "   source ~/.zshrc"
 echo ""
 echo "🔧 Future updates can be done with:"
-echo "   sudo darwin-rebuild switch --flake ~/.dotfiles/nixos"
+echo "   sudo darwin-rebuild switch --flake ~/.dotfiles/nix"

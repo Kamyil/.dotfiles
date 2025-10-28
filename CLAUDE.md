@@ -34,6 +34,6 @@
 - Never commit secrets or API keys to .env files
 - Test changes on non-production systems first
 - Maintain backward compatibility for existing tool configurations
-- **Focus on NixOS configs**: Rely entirely on nixos/ folder and files referenced there - ignore legacy configs like i3/
+- **Focus on Nix configs**: Rely entirely on nix/ folder and files referenced there - ignore legacy configs like i3/
 - **Homebrew integration**: Only suggest adding/removing packages from nix-darwin homebrew configuration
 - **User safety**: Always prioritize user system stability and control

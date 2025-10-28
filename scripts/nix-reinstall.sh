@@ -92,7 +92,7 @@ setup_darwin() {
     
     # Bootstrap
     cd "$HOME/.dotfiles"
-    nix run nix-darwin -- switch --flake "./nixos#MacBook-Pro-Kamil"
+    nix run nix-darwin -- switch --flake "./nix#MacBook-Pro-Kamil"
     
     echo "nix-darwin setup completed"
 }
