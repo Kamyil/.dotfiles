@@ -230,33 +230,34 @@ if [ "$SENDER" = "aerospace_workspace_change" ]; then
     echo "$FOCUSED_WORKSPACE" > "$LAST_WORKSPACE_FILE"
     
     if [ -n "$FOCUSED_WORKSPACE" ]; then
-        # Get app list for focused workspace first (avoid doing this if workspace unchanged)
-        apps=$(aerospace list-windows --workspace "$FOCUSED_WORKSPACE" --format "%{app-name}" 2>/dev/null)
-        
-        # Build icon strip using inline function (no external shell calls)
-        icon_strip=" "
-        if [ -n "$apps" ]; then
-            while IFS= read -r app; do
-                if [ -n "$app" ] && [ "$app" != "Finder" ] && [ "$app" != "访达" ]; then
-                    icon=$(get_app_icon "$app")
-                    icon_strip="$icon_strip$icon"
-                fi
-            done <<< "$apps"
-        else
-            icon_strip=" —"
-        fi
-        
-        # Build single sketchybar command for all highlights + icon update
+        # Build single sketchybar command for all highlights + icon updates per workspace
         SKETCHYBAR_CMD="sketchybar"
+        
         for workspace in 1 2 3 4 5 6 7 8 9 10; do
+            # Get app list for each workspace
+            apps=$(aerospace list-windows --workspace "$workspace" --format "%{app-name}" 2>/dev/null)
+            
+            # Build icon strip using inline function (no external shell calls)
+            icon_strip=" "
+            if [ -n "$apps" ]; then
+                while IFS= read -r app; do
+                    if [ -n "$app" ] && [ "$app" != "Finder" ] && [ "$app" != "访达" ]; then
+                        icon=$(get_app_icon "$app")
+                        icon_strip="$icon_strip$icon"
+                    fi
+                done <<< "$apps"
+            else
+                icon_strip=" —"
+            fi
+            
             if [ "$workspace" = "$FOCUSED_WORKSPACE" ]; then
                 SKETCHYBAR_CMD="$SKETCHYBAR_CMD --set space.$workspace icon.highlight=true label.highlight=true background.border_color=$GREY label=\"$icon_strip\""
             else
-                SKETCHYBAR_CMD="$SKETCHYBAR_CMD --set space.$workspace icon.highlight=false label.highlight=false background.border_color=$BACKGROUND_2"
+                SKETCHYBAR_CMD="$SKETCHYBAR_CMD --set space.$workspace icon.highlight=false label.highlight=false background.border_color=$BACKGROUND_2 label=\"$icon_strip\""
             fi
         done
         
-        # Execute single command for all highlights + icon update
+        # Execute single command for all highlights + icon updates
         eval "$SKETCHYBAR_CMD" 2>/dev/null
     fi
 

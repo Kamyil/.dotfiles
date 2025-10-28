@@ -313,7 +313,7 @@ in
   home.packages = with pkgs; [
     # Terminal tools
     fzf bat delta lazygit lazydocker
-    wezterm firefox
+    wezterm-nightly
   ];
 
   programs.home-manager.enable = true;

@@ -331,7 +331,21 @@ autoload -U colors && colors
 # Enable vim mode
 bindkey -v
 export KEYTIMEOUT=1
-export VI_MODE_SET_CURSOR=true
+
+function zle-keymap-select {
+	if [[ ${KEYMAP} == vicmd ]] || [[ $1 = 'block' ]]; then
+		echo -ne '\e[1 q'
+	elif [[ ${KEYMAP} == main ]] || [[ ${KEYMAP} == viins ]] || [[ $1 = 'beam' ]]; then
+		echo -ne '\e[5 q'
+	fi
+}
+zle -N zle-keymap-select
+
+function zle-line-init {
+	echo -ne '\e[5 q'
+}
+zle -N zle-line-init
+
 ## Init
 setopt PROMPT_SUBST
 

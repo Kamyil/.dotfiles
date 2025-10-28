@@ -54,7 +54,7 @@ git clone https://github.com/Kamyil/.dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 
 # Bootstrap nix-darwin
-nix run nix-darwin -- switch --flake "./nixos#MacBook-Pro-Kamil"
+nix run nix-darwin -- switch --flake "./nix#MacBook-Pro-Kamil"
 ```
 
 ### 4. Restart Terminal
@@ -64,7 +64,7 @@ nix run nix-darwin -- switch --flake "./nixos#MacBook-Pro-Kamil"
 ```bash
 which nix                    # Should show /run/current-system/sw/bin/nix
 which darwin-rebuild         # Should show /run/current-system/sw/bin/darwin-rebuild
-sudo darwin-rebuild switch --flake ~/.dotfiles/nixos
+sudo darwin-rebuild switch --flake ~/.dotfiles/nix
 ```
 
 ## Why This Happens

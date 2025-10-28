@@ -100,7 +100,7 @@ cd "$DOTFILES_DIR"
 
 # Bootstrap nix-darwin
 echo "Bootstrapping nix-darwin..."
-nix run nix-darwin -- switch --flake "./nixos#MacBook-Pro-Kamil"
+nix run nix-darwin -- switch --flake "./nix#MacBook-Pro-Kamil"
 
 echo ""
 echo "Complete reinstallation finished!"
@@ -110,4 +110,4 @@ echo ""
 echo "After restart, verify with:"
 echo "  which nix"
 echo "  which darwin-rebuild"
-echo "  sudo darwin-rebuild switch --flake ~/.dotfiles/nixos"
+echo "  sudo darwin-rebuild switch --flake ~/.dotfiles/nix"

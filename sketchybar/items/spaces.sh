@@ -35,7 +35,7 @@ for m in $(aerospace list-monitors | awk '{print $1}'); do
                --set space.$sid "${space[@]}" \
                --subscribe space.$sid mouse.clicked aerospace_workspace_change
 
-    # Fixed aerospace command syntax
+    # Fixed aerospace command syntax - only show apps if workspace is visible on this monitor
     apps=$(aerospace list-windows --workspace $sid --format "%{app-name}" 2>/dev/null)
 
     icon_strip=" "
@@ -51,10 +51,6 @@ for m in $(aerospace list-monitors | awk '{print $1}'); do
     fi
 
     sketchybar --set space.$sid label="$icon_strip"
-  done
-
-  for i in $(aerospace list-workspaces --monitor $m --empty); do
-    sketchybar --set space.$i display=0
   done
   
 done

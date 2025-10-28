@@ -8,7 +8,7 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     # OS-aware dotfiles path
-    # Relative path - goes up one directory from nixos/ to .dotfiles/ and works on both systems (Mac and Linux)
+    # Relative path - goes up one directory from nix/ to .dotfiles/ and works on both systems (Mac and Linux)
     dotfiles.url = "path:..";
 
     dotfiles.flake = false;

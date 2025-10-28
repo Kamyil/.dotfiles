@@ -30,7 +30,7 @@ cd ~/.dotfiles
 
 4. **Bootstrap nix-darwin**:
 ```bash
-nix run nix-darwin -- switch --flake "./nixos#MacBook-Pro-Kamil"
+nix run nix-darwin -- switch --flake "./nix#MacBook-Pro-Kamil"
 ```
 
 5. **Restart terminal** and verify:
@@ -43,7 +43,7 @@ which darwin-rebuild
 
 After bootstrap, use this command for updates:
 ```bash
-sudo darwin-rebuild switch --flake ~/.dotfiles/nixos
+sudo darwin-rebuild switch --flake ~/.dotfiles/nix
 ```
 
 ## Troubleshooting
@@ -79,7 +79,7 @@ nix --version
 3. **Bootstrap nix-darwin if missing**:
 ```bash
 cd ~/.dotfiles
-nix run nix-darwin -- switch --flake "./nixos#MacBook-Pro-Kamil"
+nix run nix-darwin -- switch --flake "./nix#MacBook-Pro-Kamil"
 ```
 
 4. **Restart terminal** and verify:
