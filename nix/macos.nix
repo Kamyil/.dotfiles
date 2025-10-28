@@ -129,6 +129,7 @@ in
             "font-sketchybar-app-font"
             "eqmac"
             "ghostty"
+            "wezterm"
             "postman"
           ];
         };

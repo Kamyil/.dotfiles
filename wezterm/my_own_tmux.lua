@@ -202,13 +202,13 @@ local my_own_tmux = {
 		{ key = "l",  mods = "CTRL",       action = wezterm.action({ ActivatePaneDirection = "Right" }) },
 
 		-- Session Switching with FZF like in tmux-sessionx
-		{
-			key = "o",
-			mods = "CTRL",
-			action = wezterm.action.ShowLauncherArgs({
-				flags = "FUZZY|WORKSPACES",
-			}),
-		},
+		-- {
+		-- 	key = "o",
+		-- 	mods = "CTRL",
+		-- 	action = wezterm.action.ShowLauncherArgs({
+		-- 		flags = "FUZZY|WORKSPACES",
+		-- 	}),
+		-- },
 		-- Create new workspace with optional naming
 		{
 			key = "p",

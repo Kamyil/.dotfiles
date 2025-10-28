@@ -35,6 +35,10 @@
     "nvim-web-devicons": [],
     "obsidian.nvim": [],
     "oil.nvim": [],
+    "opencode.nvim": {
+      "rev": "3d534e2",
+      "src": "https://github.com/NickvanDyke/opencode.nvim"
+    },
     "plenary.nvim": [],
     "refactoring.nvim": [],
     "render-markdown.nvim": [],

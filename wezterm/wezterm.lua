@@ -56,10 +56,11 @@ config.line_height = 1.10
 config.command_palette_font_size = 12
 -- config.command_palette_font = wezterm.font 'Berkeley Mono'
 config.command_palette_bg_color = "#1a1b26" -- Darker Tokyo Night background
-config.force_reverse_video_cursor = true
+config.force_reverse_video_cursor = false
 config.cursor_thickness = 3
 config.cursor_blink_ease_in = "Constant"
 config.cursor_blink_ease_out = "Constant"
+config.default_cursor_style = "SteadyBlock"
 
 -- Performance settings - High FPS for snappy experience
 config.automatically_reload_config = true
