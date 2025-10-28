@@ -91,6 +91,11 @@ setopt hist_verify
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd 'v' edit-command-line
+bindkey -M viins '^x^e' edit-command-line
+
 weather() {
   curl "wttr.in/$1?lang=pl"
 }
@@ -332,19 +337,22 @@ autoload -U colors && colors
 bindkey -v
 export KEYTIMEOUT=1
 
-function zle-keymap-select {
-	if [[ ${KEYMAP} == vicmd ]] || [[ $1 = 'block' ]]; then
-		echo -ne '\e[1 q'
-	elif [[ ${KEYMAP} == main ]] || [[ ${KEYMAP} == viins ]] || [[ $1 = 'beam' ]]; then
-		echo -ne '\e[5 q'
-	fi
+function custom_keymap_select() {
+	case $KEYMAP in
+		vicmd) echo -ne '\e[1 q';; # block
+		viins|main) echo -ne '\e[5 q';; # beam
+	esac
 }
-zle -N zle-keymap-select
+zle -N zle-keymap-select custom_keymap_select
 
-function zle-line-init {
-	echo -ne '\e[5 q'
+function zle-line-init() {
+	zle -K viins
+	echo -ne "\e[5 q"
 }
 zle -N zle-line-init
+
+echo -ne '\e[5 q' # Use beam shape cursor on startup.
+preexec() { echo -ne '\e[5 q' ;} # Use beam shape cursor for each new prompt.
 
 ## Init
 setopt PROMPT_SUBST
