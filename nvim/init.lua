@@ -157,8 +157,6 @@ require('lazy').setup({
 	'mluders/comfy-line-numbers.nvim',                  -- More comfortable vertical motions (without needing to reach so far away from current buttons)
 	'brenoprata10/nvim-highlight-colors',               -- Highlight color codes
 
-	'dmtrKovalenko/fff.nvim',
-
 	-- Git
 	'akinsho/git-conflict.nvim',                        -- Coloring Git Conflict inline
 	'FabijanZulj/blame.nvim',                           -- Show git blame info in the gutter
@@ -248,14 +246,8 @@ require('fzf-lua').setup({
 
 
 local fzf_lua = require('fzf-lua')
-require('fff').setup({
-	width = 0.95, -- Window width as fraction of screen
-	height = 0.95, -- Window height as fraction of screen
-	max_threads = 8, -- Maximum threads for fuzzy search
-})
-local fff = require("fff")
 
-keymap('n', '<leader>ff', fff.find_in_git_root, { desc = '[F]ind [F]iles' })
+keymap('n', '<leader>ff', fzf_lua.files, { desc = '[F]ind [F]iles' })
 -- keymap('n', '<leader>fF', fff.find_files, { desc = '[F]ind (ALL) [F]iles' })
 keymap('n', '<leader>fw', fzf_lua.live_grep, { desc = '[F]ind [W]ords' })
 -- keymap('n', '<leader>fh', ':Pick help<CR>')
@@ -286,7 +278,7 @@ keymap('n', '<leader>D', function()
 	})
 end, { desc = 'Diagnostics: hover (cursor/line)' })
 -- keymap('n', 'gi', vim.lsp.buf.implementation)
-keymap('n', 'gd', function() require('snacks').picker.lsp_definitions() end, { desc = 'Go to [D]efinition' })
+keymap('n', 'gd', fzf_lua.lsp_definitions, { desc = 'Go to [D]efinition' })
 keymap('n', 'grr', function() require('snacks').picker.lsp_references() end, { desc = '[G]o to [R]eferences' })
 keymap('n', '<leader>ld', function() require('snacks').picker.lsp_definitions() end, { desc = '[L]SP [D]efinitions' })
 keymap('n', '<leader>lD', function() require('snacks').picker.lsp_references() end, { desc = '[L]SP References' })
@@ -970,8 +962,9 @@ local servers = {
 	-- Some languages (like typescript) have entire language plugins that can be useful:
 	--    https://github.com/pmizio/typescript-tools.nvim
 	--
-	-- But for many setups, the LSP (`ts_ls`) will work just fine
-	-- ts_ls = {},
+	tsserver = {
+		cmd = { vim.fn.stdpath('data') .. '/mason/bin/typescript-language-server', '--stdio' },
+	},
 	['rust_analyzer'] = {
 		diagnostics = {
 			experimental = {
@@ -1024,7 +1017,7 @@ vim.api.nvim_create_user_command('MasonInstallEnsured', function()
 		'intelephense',
 		'svelte-language-server',
 		'tailwindcss-language-server',
-		'vtsls',
+		'node-debug2-adapter',
 		'write-good',
 		'sqlls',
 		'prettier',
@@ -1034,10 +1027,8 @@ vim.api.nvim_create_user_command('MasonInstallEnsured', function()
 		'docker-compose-language-service',
 		'yaml-language-server',
 		'markdownlint',
+		'lua-language-server',
 	}
-	for _, server in ipairs(ensure_installed) do
-		table.insert(mason_packages, server)
-	end
 	vim.cmd('MasonInstall ' .. table.concat(mason_packages, ' '))
 end, {})
 
@@ -1055,17 +1046,14 @@ require('mason-tool-installer').setup({
 	ensure_installed = ensure_installed,
 })
 
+for server_name, server in pairs(servers) do
+	server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+	vim.lsp.config(server_name, server)
+	vim.lsp.enable(server_name)
+end
+
 require('mason-lspconfig').setup({
-	handlers = {
-		function(server_name)
-			local server = servers[server_name] or {}
-			-- This handles overriding only values explicitly passed
-			-- by the server configuration above. Useful when disabling
-			-- certain features of an LSP (for example, turning off formatting for ts_ls)
-			server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-			require('lspconfig')[server_name].setup(server)
-		end,
-	},
+	ensure_installed = ensure_installed,
 })
 
 require("render-markdown").setup({})

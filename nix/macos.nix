@@ -205,7 +205,10 @@ in
             stow cowsay figlet fortune lolcat
 
             # Programming language tools
-            zig stylua lua-language-server
+            zig stylua lua-language-server rustup
+            
+            # Libraries for fff.nvim
+            openssl libssh2
 
             # Terminal multiplexers and sessions
             zellij
