@@ -38,6 +38,7 @@ vim.opt.autoindent = true -- Copy indent from current line when starting a new l
 vim.opt.smartindent = true -- Do smart autoindenting when starting a new line
 vim.opt.cindent = true -- Use C-style indenting
 vim.opt.preserveindent = true -- Preserve the structure of existing lines when editing
+vim.opt.autoread = true -- Required for opencode.nvim auto_reload
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 8 -- Keep 8 lines visible above/below the cursor
 vim.opt.ruler = false -- Don't show the ruler (line/column info)
@@ -172,7 +173,9 @@ vim.pack.add({
 	{ src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim' },
 	-- { src = 'https://github.com/OXY2DEV/markview.nvim' }
 
-	{ src = 'https://github.com/ThePrimeagen/refactoring.nvim' } -- Refactoring
+	{ src = 'https://github.com/ThePrimeagen/refactoring.nvim' }, -- Refactoring
+
+	{ src = 'https://github.com/NickvanDyke/opencode.nvim' } -- Opencode AI assistant integration
 
 })
 -- vim.pack.update(vim.pack.get()) -- Update plugins if there are any updates available. Uncomment this line to update plugins on startup
@@ -355,14 +358,15 @@ require('refactoring').setup({
 })
 keymap({ "n", "x" }, "<leader>rr", function() require('refactoring').select_refactor() end)
 
-
-
-function _G.show_documentation()
-	local doc = vim.lsp.buf.hover()
-	if doc and doc.contents then
-		vim.lsp.util.preview_markdown(doc.contents, doc.range or doc.position)
-	end
-end
+-- Opencode keymaps
+keymap({ "n", "x" }, "<leader>aa", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "[A]I [A]sk about this" })
+keymap({ "n", "x" }, "<leader>as", function() require("opencode").select() end, { desc = "[A]I [S]elect prompt" })
+keymap({ "n", "x" }, "<leader>a+", function() require("opencode").prompt("@this") end, { desc = "[A]I Add this" })
+keymap("n", "<leader>at", function() require("opencode").toggle() end, { desc = "[A]I [T]oggle embedded" })
+keymap("n", "<leader>ac", function() require("opencode").command() end, { desc = "[A]I Select [C]ommand" })
+keymap("n", "<leader>an", function() require("opencode").command("session_new") end, { desc = "[A]I [N]ew session" })
+keymap("n", "<leader>ai", function() require("opencode").command("session_interrupt") end, { desc = "[A]I [I]nterrupt session" })
+keymap("n", "<leader>aA", function() require("opencode").command("agent_cycle") end, { desc = "[A]I Cycle [A]gent" })
 
 -- Harpoon setup (quick file switching between files that I currently work on)
 local harpoon = require('harpoon')
