@@ -1,5 +1,4 @@
--- REQUIRES NVIM v0.12.0 to work, since we need Neovim's Native package manager
--- (we're not using Lazy.nvim anymore for plugins, although I'm still not sure if it's a good thing. We'll see how that will pan out in future)
+-- REQUIRES NVIM v0.10.0+ to work with lazy.nvim package manager
 
 -- OPTIONS -- (boring but important stuff)
 vim.o.number = true
@@ -93,105 +92,97 @@ vim.diagnostic.config({
 	}
 })
 
--- Get the plugins and install them
-vim.pack.add({
-	-- DEPENDENCIES --
-	{ src = 'https://github.com/nvim-lua/plenary.nvim' },     -- Dependency of most plugins below
-	{ src = 'https://github.com/rafamadriz/friendly-snippets' }, -- Dependency of blink.cmp
-	{ src = "https://github.com/SmiteshP/nvim-navic" },       -- Dependency of barbecue plugin (breadcrumbs)
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		'git',
+		'clone',
+		'--filter=blob:none',
+		'https://github.com/folke/lazy.nvim.git',
+		'--branch=stable',
+		lazypath,
+	})
+end
+vim.opt.rtp:prepend(lazypath)
 
+require('lazy').setup({
+	-- DEPENDENCIES --
+	'nvim-lua/plenary.nvim',
+	'rafamadriz/friendly-snippets',
+	'SmiteshP/nvim-navic',
 
 	-- LSP
-	{ src = 'https://github.com/mason-org/mason.nvim' },           -- LSPs & Formatters installer
-	{ src = "https://github.com/neovim/nvim-lspconfig" },          -- Baked-in, ready-to-use LSP configs to not configure them manually
-	{ src = 'https://github.com/williamboman/mason-lspconfig.nvim' }, -- Configs
-	{ src = 'https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim' },
+	'mason-org/mason.nvim',
+	'neovim/nvim-lspconfig',
+	'williamboman/mason-lspconfig.nvim',
+	'WhoIsSethDaniel/mason-tool-installer.nvim',
 
-	{ src = 'https://github.com/folke/snacks.nvim' },  -- Collection of quality of life plugins that are useful for most people
+	'folke/snacks.nvim',
 
-	{ src = 'https://github.com/utilyre/barbecue.nvim' }, -- Showing breadcrumbs at the top of the screen
+	'utilyre/barbecue.nvim',
 
 	-- Misc --
-	{ src = 'https://github.com/nvim-tree/nvim-web-devicons' }, -- Icons
-	{ src = 'https://github.com/chentoast/marks.nvim' },     -- Show marks next to line number if there is one (and make them last when quitting Neovim)
-	{ src = 'https://github.com/folke/which-key.nvim' },     -- Shows available shortcuts when hitting <leader> or some motion
-	{ src = 'https://github.com/windwp/nvim-autopairs' },    -- Autopair brackets, strings etc.
+	'nvim-tree/nvim-web-devicons',
+	'chentoast/marks.nvim',
+	'folke/which-key.nvim',
+	'windwp/nvim-autopairs',
 	{
-		src = 'https://github.com/Saghen/blink.cmp',
+		'Saghen/blink.cmp',
 		version = '1.*'
-	}, -- Better Autocompletion
+	},
 
-	-------------------------------------------------------------------------------------------------------------
 	-- AI
-	{ src = 'https://github.com/supermaven-inc/supermaven-nvim' }, -- Better AI suggestions
-	{ src = 'https://github.com/zbirenbaum/copilot.lua' }, -- GitHub Copilot (bundles copilot-language-server)
-	{ src = 'https://github.com/folke/sidekick.nvim' }, -- AI sidekick with Copilot NES and CLI integration
-	-------------------------------------------------------------------------------------------------------------
+	'supermaven-inc/supermaven-nvim',
+	'zbirenbaum/copilot.lua',
+	'folke/sidekick.nvim',
 
-
-	-------------------------------------------------------------------------------------------------------------
 	-- Themes / Colorschemes
-	{ src = 'https://github.com/lukas-reineke/indent-blankline.nvim' }, -- Add indentation guides even on blank lines
-	{ src = "https://github.com/farmergreg/vim-lastplace" },         --  Automatically jump to the last cursor position
-	{ src = "https://github.com/tpope/vim-sleuth" },                 -- Detect tabstop and shiftwidth automatically
+	'lukas-reineke/indent-blankline.nvim',
+	'farmergreg/vim-lastplace',
+	'tpope/vim-sleuth',
 
-	{ src = 'https://github.com/sho-87/kanagawa-paper.nvim' },       -- Colorscheme / theme --
-	{ src = 'https://github.com/catppuccin/nvim' },                  -- Alternative colorscheme
-	{ src = 'https://github.com/vague2k/vague.nvim' },               -- Alternative colorscheme
+	'sho-87/kanagawa-paper.nvim',
+	'catppuccin/nvim',
+	'vague2k/vague.nvim',
 
-	{ src = 'https://github.com/b0o/incline.nvim' },                 -- For showing current file and extra data about it
+	'b0o/incline.nvim',
 
-	{ src = 'https://github.com/stevearc/oil.nvim' },                -- File managment like Vim buffer (hit <leader>+e)
-	{ src = 'https://github.com/ibhagwan/fzf-lua' },                 -- Other very fast picker for other things than files
-	{ src = 'https://github.com/echasnovski/mini.surround' },        -- Allows to surround selected text with brackets, quotes, tags etc.
-	{ src = 'https://github.com/nvim-treesitter/nvim-treesitter' },  -- Tresitter (for coloring syntax and doing AST-based operations)
-	{ src = 'https://github.com/alexghergh/nvim-tmux-navigation' },  -- Better navigation with TMUX (can move between nvim and tmux splits with same motions)
-	{ src = 'https://github.com/folke/lazydev.nvim' },               -- Better neovim config editing, without any non-valid warnings
-	{ src = 'https://github.com/folke/todo-comments.nvim' },         -- Highlight comments like TODO, FIXME, BUG, INFO etc.
-	{ src = "https://github.com/mluders/comfy-line-numbers.nvim" },  -- More comfortable vertical motions (without needing to reach so far away from current buttons)
-	{ src = 'https://github.com/brenoprata10/nvim-highlight-colors' }, -- Highlight color codes
-	-------------------------------------------------------------------------------------------------------------
+	'stevearc/oil.nvim',
+	'ibhagwan/fzf-lua',
+	'echasnovski/mini.surround',
+	'nvim-treesitter/nvim-treesitter',
+	'alexghergh/nvim-tmux-navigation',
+	'folke/lazydev.nvim',
+	'folke/todo-comments.nvim',
+	'mluders/comfy-line-numbers.nvim',
+	'brenoprata10/nvim-highlight-colors',
 
-	{ src = 'https://github.com/dmtrKovalenko/fff.nvim' },
-
+	'dmtrKovalenko/fff.nvim',
 
 	-- Git
-	-- snacks.lazygit
-	{ src = 'https://github.com/akinsho/git-conflict.nvim' }, -- Coloring Git Conflict inline
-	{ src = 'https://github.com/FabijanZulj/blame.nvim' }, -- Show git blame info in the gutter
+	'akinsho/git-conflict.nvim',
+	'FabijanZulj/blame.nvim',
 
 	-- Harpoon
-	{ -- For better switching between files. Add files to the jumplist and switch between them with Alt+1,2,3,4,5. Also edit jumplist like a vim buffer
-		src = 'https://github.com/ThePrimeagen/harpoon',
-		version = 'harpoon2'
+	{
+		'ThePrimeagen/harpoon',
+		branch = 'harpoon2'
 	},
-	{ src = 'https://github.com/kiennt63/harpoon-files.nvim' }, -- ^ for showing the current harpoon indexes inside incline (that shows current file)
+	'kiennt63/harpoon-files.nvim',
 
 	-- Markdown notetaking
-	{ src = 'https://github.com/epwalsh/obsidian.nvim' },
-	{ src = 'https://github.com/bullets-vim/bullets.vim' },
-	{ src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim' },
-	-- { src = 'https://github.com/OXY2DEV/markview.nvim' }
+	'epwalsh/obsidian.nvim',
+	'bullets-vim/bullets.vim',
+	'MeanderingProgrammer/render-markdown.nvim',
 
-	{ src = 'https://github.com/ThePrimeagen/refactoring.nvim' }, -- Refactoring
+	'ThePrimeagen/refactoring.nvim',
 
-	{ src = 'https://github.com/NickvanDyke/opencode.nvim' } -- Opencode AI assistant integration
-
+	'NickvanDyke/opencode.nvim',
+}, {
+	defaults = {
+		lazy = true,
+	},
 })
--- vim.pack.update(vim.pack.get()) -- Update plugins if there are any updates available. Uncomment this line to update plugins on startup
---
--- -- Setup native LSP handler
--- vim.api.nvim_create_autocmd('LspAttach', {
--- 	callback = function(ev)
--- 		local client = vim.lsp.get_client_by_id(ev.data.client_id)
--- 		if client:supports_method('textDocument/completion') then
--- 			vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = false })
--- 		end
--- 	end,
--- })
---
--- vim.cmd('set completeopt+=noselect')
---
 
 -- Setup syntax color highlighting (+ more AST-based operations)
 require('nvim-treesitter.configs').setup({
