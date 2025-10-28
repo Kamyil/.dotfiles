@@ -107,77 +107,77 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
 	-- DEPENDENCIES --
-	'nvim-lua/plenary.nvim',
-	'rafamadriz/friendly-snippets',
-	'SmiteshP/nvim-navic',
+	'nvim-lua/plenary.nvim',                            -- Dependency of most plugins below
+	'rafamadriz/friendly-snippets',                     -- Dependency of blink.cmp
+	'SmiteshP/nvim-navic',                              -- Dependency of barbecue plugin (breadcrumbs)
 
 	-- LSP
-	'mason-org/mason.nvim',
-	'neovim/nvim-lspconfig',
-	'williamboman/mason-lspconfig.nvim',
+	'mason-org/mason.nvim',                             -- LSPs & Formatters installer
+	'neovim/nvim-lspconfig',                            -- Baked-in, ready-to-use LSP configs to not configure them manually
+	'williamboman/mason-lspconfig.nvim',                -- Configs
 	'WhoIsSethDaniel/mason-tool-installer.nvim',
 
-	'folke/snacks.nvim',
+	'folke/snacks.nvim',                                -- Collection of quality of life plugins that are useful for most people
 
-	'utilyre/barbecue.nvim',
+	'utilyre/barbecue.nvim',                            -- Showing breadcrumbs at the top of the screen
 
 	-- Misc --
-	'nvim-tree/nvim-web-devicons',
-	'chentoast/marks.nvim',
-	'folke/which-key.nvim',
-	'windwp/nvim-autopairs',
+	'nvim-tree/nvim-web-devicons',                      -- Icons
+	'chentoast/marks.nvim',                             -- Show marks next to line number if there is one (and make them last when quitting Neovim)
+	'folke/which-key.nvim',                             -- Shows available shortcuts when hitting <leader> or some motion
+	'windwp/nvim-autopairs',                            -- Autopair brackets, strings etc.
 	{
 		'Saghen/blink.cmp',
 		version = '1.*'
-	},
+	},                                                  -- Better Autocompletion
 
 	-- AI
-	'supermaven-inc/supermaven-nvim',
-	'zbirenbaum/copilot.lua',
-	'folke/sidekick.nvim',
+	'supermaven-inc/supermaven-nvim',                   -- Better AI suggestions
+	'zbirenbaum/copilot.lua',                           -- GitHub Copilot (bundles copilot-language-server)
+	'folke/sidekick.nvim',                              -- AI sidekick with Copilot NES and CLI integration
 
 	-- Themes / Colorschemes
-	'lukas-reineke/indent-blankline.nvim',
-	'farmergreg/vim-lastplace',
-	'tpope/vim-sleuth',
+	'lukas-reineke/indent-blankline.nvim',              -- Add indentation guides even on blank lines
+	'farmergreg/vim-lastplace',                         -- Automatically jump to the last cursor position
+	'tpope/vim-sleuth',                                 -- Detect tabstop and shiftwidth automatically
 
-	'sho-87/kanagawa-paper.nvim',
-	'catppuccin/nvim',
-	'vague2k/vague.nvim',
+	'sho-87/kanagawa-paper.nvim',                       -- Colorscheme / theme
+	'catppuccin/nvim',                                  -- Alternative colorscheme
+	'vague2k/vague.nvim',                               -- Alternative colorscheme
 
-	'b0o/incline.nvim',
+	'b0o/incline.nvim',                                 -- For showing current file and extra data about it
 
-	'stevearc/oil.nvim',
-	'ibhagwan/fzf-lua',
-	'echasnovski/mini.surround',
-	'nvim-treesitter/nvim-treesitter',
-	'alexghergh/nvim-tmux-navigation',
-	'folke/lazydev.nvim',
-	'folke/todo-comments.nvim',
-	'mluders/comfy-line-numbers.nvim',
-	'brenoprata10/nvim-highlight-colors',
+	'stevearc/oil.nvim',                                -- File managment like Vim buffer (hit <leader>+e)
+	'ibhagwan/fzf-lua',                                 -- Other very fast picker for other things than files
+	'echasnovski/mini.surround',                        -- Allows to surround selected text with brackets, quotes, tags etc.
+	'nvim-treesitter/nvim-treesitter',                  -- Tresitter (for coloring syntax and doing AST-based operations)
+	'alexghergh/nvim-tmux-navigation',                  -- Better navigation with TMUX (can move between nvim and tmux splits with same motions)
+	'folke/lazydev.nvim',                               -- Better neovim config editing, without any non-valid warnings
+	'folke/todo-comments.nvim',                         -- Highlight comments like TODO, FIXME, BUG, INFO etc.
+	'mluders/comfy-line-numbers.nvim',                  -- More comfortable vertical motions (without needing to reach so far away from current buttons)
+	'brenoprata10/nvim-highlight-colors',               -- Highlight color codes
 
 	'dmtrKovalenko/fff.nvim',
 
 	-- Git
-	'akinsho/git-conflict.nvim',
-	'FabijanZulj/blame.nvim',
+	'akinsho/git-conflict.nvim',                        -- Coloring Git Conflict inline
+	'FabijanZulj/blame.nvim',                           -- Show git blame info in the gutter
 
 	-- Harpoon
 	{
 		'ThePrimeagen/harpoon',
-		branch = 'harpoon2'
+		branch = 'harpoon2'                             -- For better switching between files. Add files to the jumplist and switch between them with Alt+1,2,3,4,5. Also edit jumplist like a vim buffer
 	},
-	'kiennt63/harpoon-files.nvim',
+	'kiennt63/harpoon-files.nvim',                      -- For showing the current harpoon indexes inside incline (that shows current file)
 
 	-- Markdown notetaking
 	'epwalsh/obsidian.nvim',
 	'bullets-vim/bullets.vim',
 	'MeanderingProgrammer/render-markdown.nvim',
 
-	'ThePrimeagen/refactoring.nvim',
+	'ThePrimeagen/refactoring.nvim',                    -- Refactoring
 
-	'NickvanDyke/opencode.nvim',
+	'NickvanDyke/opencode.nvim',                        -- Opencode AI assistant integration
 }, {
 	defaults = {
 		lazy = true,
