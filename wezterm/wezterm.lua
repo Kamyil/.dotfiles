@@ -38,7 +38,7 @@ config.font = wezterm.font("Berkeley Mono", { weight = 510 })
 -- config.font = wezterm.font("Hack Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("RobotoMono Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("ZedMono Nerd Font")
-config.font_size = 14
+config.font_size = 13
 
 -- config.freetype_load_flags = "FORCE_AUTOHINT"
 config.freetype_load_target = "HorizontalLcd"
@@ -48,7 +48,7 @@ config.prefer_egl = false -- Improve font rendering
 -- config.cell_width = 1.05
 -- On Mac itself:
 config.cell_width = 1.00
-config.line_height = 1.10
+config.line_height = 1.15
 
 
 --
@@ -130,7 +130,7 @@ config.background = {
 		},
 		width = "100%",
 		height = "100%",
-		opacity = 0.70, -- Full opacity for better performance
+		opacity = 0.90, -- Full opacity for better performance
 	},
 }
 
