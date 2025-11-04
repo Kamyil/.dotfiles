@@ -134,7 +134,6 @@ require('lazy').setup({
 	-- AI
 	'supermaven-inc/supermaven-nvim',                   -- Better AI suggestions
 	'zbirenbaum/copilot.lua',                           -- GitHub Copilot (bundles copilot-language-server)
-	'folke/sidekick.nvim',                              -- AI sidekick with Copilot NES and CLI integration
 
 	-- Themes / Colorschemes
 	'lukas-reineke/indent-blankline.nvim',              -- Add indentation guides even on blank lines
@@ -410,7 +409,6 @@ keymap('i', '<M-S>', 'Ś')
 keymap('i', '<M-X>', 'Ź')
 keymap('i', '<M-Z>', 'Ż')
 
-
 -- Select all with Ctrl+A
 keymap("n", "<C-a>", "ggVG")
 
@@ -604,7 +602,7 @@ require('mini.surround').setup()
 require('marks').setup()
 require('nvim-autopairs').setup()
 
-require('blink.cmp').setup({ -- setup autocompletion
+require('blink.cmp').setup({
 	-- preset = 'enter',
 	fuzzy = {
 		implementation = 'prefer_rust',
@@ -965,6 +963,12 @@ local servers = {
 	tsserver = {
 		cmd = { vim.fn.stdpath('data') .. '/mason/bin/typescript-language-server', '--stdio' },
 	},
+	svelte = {
+		cmd = { vim.fn.stdpath('data') .. '/mason/bin/svelteserver', '--stdio' },
+	},
+	intelephense = {
+		cmd = { vim.fn.stdpath('data') .. '/mason/bin/intelephense', '--stdio' },
+	},
 	['rust_analyzer'] = {
 		diagnostics = {
 			experimental = {
@@ -1001,7 +1005,7 @@ local servers = {
 }
 -- You can add other tools here that you want Mason to install
 -- for you, so that they are available from within Neovim.
-local ensure_installed = vim.tbl_keys(servers or {})
+local ensure_installed = { 'lua_ls', 'rust_analyzer', 'svelte', 'intelephense' }
 
 
 -- LSP servers and clients are able to communicate to each other what features they support.
@@ -1009,6 +1013,7 @@ local ensure_installed = vim.tbl_keys(servers or {})
 --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
 --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
 
 -- Install on startup if there are any LSPs missing
 vim.api.nvim_create_user_command('MasonInstallEnsured', function()
@@ -1017,7 +1022,7 @@ vim.api.nvim_create_user_command('MasonInstallEnsured', function()
 		'intelephense',
 		'svelte-language-server',
 		'tailwindcss-language-server',
-		'node-debug2-adapter',
+		'typescript-language-server',
 		'write-good',
 		'sqlls',
 		'prettier',
@@ -1038,22 +1043,18 @@ end, {})
 --    :Mason
 --
 --  You can press `g?` for help in this menu.
-require('mason').setup({
-	ensure_installed = ensure_installed,
-})
+require('mason').setup()
 
-require('mason-tool-installer').setup({
-	ensure_installed = ensure_installed,
-})
-
-for server_name, server in pairs(servers) do
-	server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-	vim.lsp.config(server_name, server)
-	vim.lsp.enable(server_name)
-end
-
+local lspconfig = require('lspconfig')
 require('mason-lspconfig').setup({
 	ensure_installed = ensure_installed,
+	handlers = {
+		function(server_name)
+			local server = servers[server_name] or {}
+			server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+			lspconfig[server_name].setup(server)
+		end,
+	}
 })
 
 require("render-markdown").setup({})
@@ -1061,22 +1062,13 @@ require('blame').setup({})
 
 require('copilot').setup({
 	panel = { enabled = false },
-	suggestion = { enabled = false },
-	copilot_node_command = vim.fn.expand('$HOME') .. '/.local/share/fnm/node-versions/v22.17.1/installation/bin/node',
+	suggestion = { enabled = true },
+	copilot_node_command = '/Users/kamil/.local/share/fnm/node-versions/v22.17.1/installation/bin/node',
 })
 
-require("sidekick").setup({
-	nes = {
-		enabled = true,
-	},
-})
+keymap({ 'i' }, '<M-j>', 'copilot#accept("<CR>")', { expr = true, silent = true, desc = 'Accept Copilot suggestion' })
 
-keymap({ 'n', 'i' }, '<tab>', function()
-	if require('sidekick').nes_jump_or_apply() then
-		return
-	end
-	return '<tab>'
-end, { expr = true, desc = 'Goto/Apply Next Edit Suggestion' })
+
 
 require("barbecue").setup({
 	attach_navic = false, -- disable navic integration since we only want file path
