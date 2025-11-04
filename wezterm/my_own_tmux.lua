@@ -516,7 +516,7 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 
 	if tab.is_active then
 		return {
-			{ Background = { Color = "#C4B289" } },
+			{ Background = { Color = "#82948F" } },
 			{ Foreground = { Color = "#000" } },
 			{ Text = title },
 		}
