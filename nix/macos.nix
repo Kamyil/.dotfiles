@@ -129,7 +129,6 @@ in
             "font-sketchybar-app-font"
             "eqmac"
             "ghostty"
-            "wezterm"
             "postman"
           ];
         };
@@ -224,8 +223,6 @@ in
           ]) ++ [
             # Add neovim from the overlay
             neovim-nightly-overlay.packages.${darwinSystem}.default
-            # Add opencode CLI
-            pkgs.opencode
           ];
 
           # macOS-specific zsh additions
