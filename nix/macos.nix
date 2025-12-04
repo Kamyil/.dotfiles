@@ -252,7 +252,7 @@ in
           # Direct symlinks using activation scripts (macOS)
           home.activation.directSymlinks = config.lib.dag.entryAfter ["writeBoundary"] ''
             # Remove any existing nix-managed symlinks
-            rm -f ~/.config/nvim ~/.config/wezterm ~/.config/lazygit ~/.config/lazydocker ~/.config/lsd ~/.config/btop ~/.config/bat ~/.config/sketchybar ~/.config/aerospace ~/.config/yabai ~/.config/skhd ~/.hammerspoon
+            rm -f ~/.config/nvim ~/.config/wezterm ~/.config/lazygit ~/.config/lazydocker ~/.config/lsd ~/.config/btop ~/.config/bat ~/.config/sketchybar ~/.config/aerospace ~/.config/yabai ~/.config/skhd ~/.config/ghostty ~/.config/tmux ~/.hammerspoon
             
             # Create direct symlinks
             ln -sf /Users/kamil/.dotfiles/nvim ~/.config/nvim
@@ -266,6 +266,8 @@ in
             ln -sf /Users/kamil/.dotfiles/config/aerospace ~/.config/aerospace
             ln -sf /Users/kamil/.dotfiles/yabai ~/.config/yabai
             ln -sf /Users/kamil/.dotfiles/skhd ~/.config/skhd
+            ln -sf /Users/kamil/.dotfiles/config/ghostty ~/.config/ghostty
+            ln -sf /Users/kamil/.dotfiles/config/tmux ~/.config/tmux
             ln -sf /Users/kamil/.dotfiles/hammerspoon ~/.hammerspoon
             
             echo "Created direct symlinks to dotfiles"
