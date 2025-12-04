@@ -323,9 +323,9 @@ in
   # Git configuration
   programs.git = {
     enable = true;
-    userName = "Kamil Ksen";
-    userEmail = "mccom_kks@mccom.pl";
-    extraConfig = {
+    settings = {
+      user.name = "Kamil Ksen";
+      user.email = "mccom_kks@mccom.pl";
       core.editor = "nvim";
       init.defaultBranch = "main";
     };

@@ -111,6 +111,7 @@ in
           brews = [
             "sketchybar"
             "codex"
+            "vercel-cli"
           ];
           casks = [
             # Keep these that aren't available in nixpkgs or ARM macOS
