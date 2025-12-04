@@ -140,8 +140,27 @@ in
       }
 
       # Directory search and navigation
+      # Base directories to auto-discover projects from
+      SD_BASE_DIRS=(
+        "$HOME/Work/Projects"
+        "$HOME/Personal/Projects"
+      )
+      # Max depth for subdirectory traversal (1 = immediate children only)
+      SD_DEPTH=1
+
       sd() {
         local dirs=()
+        
+        # Auto-discover directories from base paths
+        for base in "''${SD_BASE_DIRS[@]}"; do
+          if [ -d "$base" ]; then
+            while IFS= read -r dir; do
+              dirs+=("$dir")
+            done < <(find "$base" -mindepth 1 -maxdepth "$SD_DEPTH" -type d 2>/dev/null)
+          fi
+        done
+        
+        # Also include manually specified dirs if the files exist
         if [ -f "$HOME/.zsh_company_dirs" ]; then
           source "$HOME/.zsh_company_dirs"
           dirs+=("''${COMPANY_DIRS[@]}")
@@ -150,7 +169,10 @@ in
           source "$HOME/.zsh_personal_dirs"
           dirs+=("''${PERSONAL_DIRS[@]}")
         fi
-        cd "$(printf '%s\n' "''${dirs[@]}" | fzf)"
+        
+        local selected
+        selected=$(printf '%s\n' "''${dirs[@]}" | fzf)
+        [ -n "$selected" ] && cd "$selected"
       }
 
       # SSH fuzzy search
