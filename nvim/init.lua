@@ -148,7 +148,6 @@ require('lazy').setup({
 	'ramojus/mellifluous.nvim',        -- Alternative colorscheme
 	"folke/tokyonight.nvim",            -- Alternative colorscheme
 
-	'b0o/incline.nvim',                -- For showing current file and extra data about it
 	'nvim-lualine/lualine.nvim',       -- Statusline
 
 	{
@@ -184,7 +183,6 @@ require('lazy').setup({
 		'ThePrimeagen/harpoon',
 		branch = 'harpoon2',    -- For better switching between files. Add files to the jumplist and switch between them with Alt+1,2,3,4,5. Also edit jumplist like a vim buffer
 	},
-	'kiennt63/harpoon-files.nvim', -- For showing the current harpoon indexes inside incline (that shows current file)
 
 	-- Markdown notetaking
 	'epwalsh/obsidian.nvim',
@@ -622,6 +620,7 @@ require('blink.cmp').setup({
 								if color_item and color_item.abbr ~= '' then
 									icon = color_item.abbr
 								end
+								
 							end
 							return icon .. ctx.icon_gap
 						end,
@@ -837,112 +836,7 @@ require('obsidian').setup({
 		enable = false,
 	},
 })
-require('incline').setup({
-	window = {
-		placement = {
-			vertical = 'bottom',
-			horizontal = 'center',
-		},
-		padding = 0,
-		margin = { vertical = 0, horizontal = 0 },
-	},
 
-	render = function(props)
-		local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ':t')
-		if filename == '' then
-			filename = '[No Name]'
-		end
-		local filetype_icon, filetype_color = require('nvim-web-devicons').get_icon_color(filename)
-
-		local function get_git_diff()
-			local icons = { removed = ' ', changed = ' ', added = ' ' }
-			local signs = vim.b[props.buf].gitsigns_status_dict
-			local labels = {}
-			if signs == nil then
-				return labels
-			end
-			for name, icon in pairs(icons) do
-				if tonumber(signs[name]) and signs[name] > 0 then
-					table.insert(labels, { icon .. signs[name] .. ' ', group = 'Diff' .. name })
-				end
-			end
-			if #labels > 0 then
-				table.insert(labels, { '| ' })
-			end
-			return labels
-		end
-
-		local function get_diagnostic_label()
-			local icons = { error = ' ', warn = ' ', info = ' ', hint = ' ' }
-			local label = {}
-
-			for severity, icon in pairs(icons) do
-				local n = #vim.diagnostic.get(props.buf, { severity = vim.diagnostic.severity[string.upper(severity)] })
-				if n > 0 then
-					table.insert(label, { icon .. n .. ' ', group = 'DiagnosticSign' .. severity })
-				end
-			end
-			if #label > 0 then
-				table.insert(label, { '| ' })
-			end
-			return label
-		end
-
-		local function get_harpoon_items()
-			local marks = harpoon:list().items
-			local current_file_path = vim.fn.expand('%:p:.')
-			local label = {}
-
-			for id, item in ipairs(marks) do
-				if item.value == current_file_path then
-					table.insert(label, { id .. ' ', guifg = '#C4B38A', gui = 'bold' })
-				else
-					table.insert(label, { id .. ' ', guifg = '#434852' })
-				end
-			end
-
-			if #label > 0 then
-				table.insert(label, 1, { '󰛢 ', guifg = '#C4B38A' })
-				-- table.insert(label, 1, { ' ', guifg = '#C4B38A' })
-				table.insert(label, { '| ' })
-			end
-			return label
-		end
-
-		local function get_file_name()
-			local label = {}
-			local full_path = vim.api.nvim_buf_get_name(props.buf)
-			local relative_path = vim.fn.fnamemodify(full_path, ':~:.')
-
-			-- If it's just the filename, show it as is, otherwise show the full relative path
-			local display_path = relative_path == filename and filename or relative_path
-
-			table.insert(label,
-				{ display_path, gui = vim.bo[props.buf].modified and 'bold,italic' or 'bold', guifg = '#C4B38A' })
-
-			if not props.focused then
-				label['group'] = 'BufferInactive'
-			end
-
-			return label
-		end
-
-		return {
-			{ ' ', guifg = '#201F27', guibg = '#201F27' },
-			{
-				{ get_harpoon_items() },
-				{ ' ',                   guifg = '#201F27', guibg = '#201F27' },
-				{ get_file_name() },
-				{ ' ',                   guifg = '#201F27', guibg = '#201F27' },
-				{ get_diagnostic_label() },
-				{ ' ',                   guifg = '#201F27', guibg = '#201F27' },
-				{ get_git_diff() },
-				guibg = '#201F27',
-			},
-			{ ' ', guifg = '#201F27', guibg = '#201F27' },
-		}
-	end,
-})
 
 local servers = {
 	-- clangd = {},
@@ -1091,12 +985,99 @@ require('barbecue').setup({
 })
 
 -- Lualine setup
+local function filetype_with_icon()
+	local icon, icon_color = require('nvim-web-devicons').get_icon_color_by_filetype(vim.bo.filetype)
+	local filetype = vim.bo.filetype ~= '' and vim.bo.filetype or 'no ft'
+	if icon then
+		return icon .. ' ' .. filetype
+	end
+	return filetype
+end
+
+local function diagnostics_with_icons()
+	local error_count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+	local warn_count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+	local info_count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
+	local hint_count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
+
+	local parts = {}
+	if error_count > 0 then
+		table.insert(parts, { ' ' .. error_count, 'DiagnosticError' })
+	end
+	if warn_count > 0 then
+		table.insert(parts, { ' ' .. warn_count, 'DiagnosticWarn' })
+	end
+	if info_count > 0 then
+		table.insert(parts, { ' ' .. info_count, 'DiagnosticInfo' })
+	end
+	if hint_count > 0 then
+		table.insert(parts, { ' ' .. hint_count, 'DiagnosticHint' })
+	end
+
+	if #parts == 0 then
+		return ''
+	end
+
+	local result = ''
+	for i, part in ipairs(parts) do
+		if i > 1 then
+			result = result .. '  '
+		end
+		result = result .. '%#' .. part[2] .. '#' .. part[1] .. '%#Normal#'
+	end
+	return result
+end
+
+local function harpoon_display()
+	local marks = harpoon:list().items
+	local current_file_path = vim.fn.expand('%:p:.')
+	local label = {}
+
+	for id, item in ipairs(marks) do
+		if item.value == current_file_path then
+			table.insert(label, '%#HarpoonActive#' .. id .. '%#Normal#')
+		else
+			table.insert(label, '%#HarpoonInactive#' .. id .. '%#Normal#')
+		end
+	end
+
+	if #label > 0 then
+		return '󰛢 ' .. table.concat(label, ' ')
+	end
+	return ''
+end
+
+local function git_diff_display()
+	local icons = { removed = ' ', changed = ' ', added = ' ' }
+	local signs = vim.b.gitsigns_status_dict
+	local labels = {}
+
+	if signs == nil then
+		return ''
+	end
+
+	for name, icon in pairs(icons) do
+		if tonumber(signs[name]) and signs[name] > 0 then
+			table.insert(labels, '%#Diff' .. name .. '#' .. icon .. signs[name] .. '%#Normal#')
+		end
+	end
+
+	if #labels > 0 then
+		return table.concat(labels, ' ')
+	end
+	return ''
+end
+
 require('lualine').setup({
 	options = {
 		theme = 'iceberg_dark',
 		component_separators = { left = '', right = '' },
 		section_separators = { left = '', right = '' },
 		globalstatus = true,
+		icons_enabled = true,
+		disabled_filetypes = {
+			statusline = { 'fyler' },
+		},
 	},
 	sections = {
 		lualine_a = {
@@ -1104,20 +1085,15 @@ require('lualine').setup({
 		},
 		lualine_b = {
 			{ 'branch', icon = '' },
-			{
-				'diff',
-				symbols = { added = ' ', modified = ' ', removed = ' ' },
-			},
+			{ harpoon_display, color = {} },
 		},
 		lualine_c = {
-			{
-				'diagnostics',
-				sources = { 'nvim_diagnostic' },
-				symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' },
-			},
+			{ 'filename', path = 1, symbols = { modified = '', readonly = '', unnamed = '[No Name]' } },
+			{ diagnostics_with_icons, color = {} },
+			{ git_diff_display, color = {} },
 		},
 		lualine_x = {
-			{ 'filetype', icon_only = true },
+			{ filetype_with_icon, colored = false },
 			{ 'encoding', fmt = function(str) return str ~= 'utf-8' and str or '' end },
 			{ 'fileformat', symbols = { unix = '', dos = '', mac = '' } },
 		},
