@@ -12,6 +12,7 @@ vim.opt.softtabstop = 4                                -- Number of spaces that 
 vim.opt.shiftwidth = 4                                 -- Number of spaces to use for each step of (auto)indent
 vim.opt.expandtab = false                              -- Use tabs instead of spaces
 vim.o.swapfile = false                                 -- it's annoying when saving, and opening project back again, so turning that off
+vim.o.showmode = false                                 -- Don't show mode in command line (lualine shows it)
 vim.g.mapleader = ' '                                  -- Map leader to Space key
 vim.g.maplocalleader = ' '                             -- Sets the local leader key to <space>
 vim.opt.winborder = 'rounded'
@@ -21,7 +22,7 @@ vim.o.encoding = 'utf-8'                               -- Sets the internal enco
 vim.o.fileencoding = 'utf-8'                           -- Sets the encoding for the current file
 vim.o.fileencodings = 'utf-8'                          -- Sets the list of encodings to try when reading a file
 vim.o.cursorline = false                               -- Don't highlight the line under the cursor
-vim.opt.laststatus = 0                                 -- 0: Never, 1: Only if there are at least two windows, 2: Always, 3: Global statusline
+vim.opt.laststatus = 3                                 -- 0: Never, 1: Only if there are at least two windows, 2: Always, 3: Global statusline
 vim.opt.undodir = vim.fn.stdpath('data') .. '/undodir' -- Directory to store undo history
 vim.opt.undofile = true                                -- Enable persistent undo
 vim.opt.updatetime = 100                               -- Time in milliseconds to wait before triggering the swap/undo file write (default 4000)
@@ -77,7 +78,7 @@ vim.diagnostic.config({
 	underline = true,
 	virtual_text = {
 		spacing = 2,
-		prefix = "●",
+		prefix = '●',
 	},
 	virtual_lines = false,
 	update_in_insert = true,
@@ -89,7 +90,7 @@ vim.diagnostic.config({
 			[vim.diagnostic.severity.HINT] = '',
 			[vim.diagnostic.severity.INFO] = '',
 		},
-	}
+	},
 })
 
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
@@ -107,74 +108,92 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
 	-- DEPENDENCIES --
-	'nvim-lua/plenary.nvim',                            -- Dependency of most plugins below
-	'rafamadriz/friendly-snippets',                     -- Dependency of blink.cmp
-	'SmiteshP/nvim-navic',                              -- Dependency of barbecue plugin (breadcrumbs)
+	'nvim-lua/plenary.nvim',     -- Dependency of most plugins below
+	'rafamadriz/friendly-snippets', -- Dependency of blink.cmp
+	'SmiteshP/nvim-navic',       -- Dependency of barbecue plugin (breadcrumbs)
 
 	-- LSP
-	'mason-org/mason.nvim',                             -- LSPs & Formatters installer
-	'neovim/nvim-lspconfig',                            -- Baked-in, ready-to-use LSP configs to not configure them manually
-	'williamboman/mason-lspconfig.nvim',                -- Configs
+	'mason-org/mason.nvim',           -- LSPs & Formatters installer
+	'neovim/nvim-lspconfig',          -- Baked-in, ready-to-use LSP configs to not configure them manually
+	'williamboman/mason-lspconfig.nvim', -- Configs
 	'WhoIsSethDaniel/mason-tool-installer.nvim',
 
-	'folke/snacks.nvim',                                -- Collection of quality of life plugins that are useful for most people
+	'folke/snacks.nvim',  -- Collection of quality of life plugins that are useful for most people
 
-	'utilyre/barbecue.nvim',                            -- Showing breadcrumbs at the top of the screen
+	'utilyre/barbecue.nvim', -- Showing breadcrumbs at the top of the screen
 
 	-- Misc --
-	'nvim-tree/nvim-web-devicons',                      -- Icons
-	'chentoast/marks.nvim',                             -- Show marks next to line number if there is one (and make them last when quitting Neovim)
-	'folke/which-key.nvim',                             -- Shows available shortcuts when hitting <leader> or some motion
-	'windwp/nvim-autopairs',                            -- Autopair brackets, strings etc.
+	'nvim-tree/nvim-web-devicons', -- Icons
+	'chentoast/marks.nvim',     -- Show marks next to line number if there is one (and make them last when quitting Neovim)
+	'folke/which-key.nvim',     -- Shows available shortcuts when hitting <leader> or some motion
+	'windwp/nvim-autopairs',    -- Autopair brackets, strings etc.
 	{
 		'Saghen/blink.cmp',
-		version = '1.*'
-	},                                                  -- Better Autocompletion
+		version = '1.*',
+	}, -- Better Autocompletion
 
 	-- AI
-	'supermaven-inc/supermaven-nvim',                   -- Better AI suggestions
-	'zbirenbaum/copilot.lua',                           -- GitHub Copilot (bundles copilot-language-server)
+	'supermaven-inc/supermaven-nvim', -- Better AI suggestions
+	'zbirenbaum/copilot.lua',      -- GitHub Copilot (bundles copilot-language-server)
+
+	-- Indentation / tabstop
+	'lukas-reineke/indent-blankline.nvim', -- Add indentation guides even on blank lines
+	'farmergreg/vim-lastplace',         -- Automatically jump to the last cursor position
+	'tpope/vim-sleuth',                 -- Detect tabstop and shiftwidth automatically
 
 	-- Themes / Colorschemes
-	'lukas-reineke/indent-blankline.nvim',              -- Add indentation guides even on blank lines
-	'farmergreg/vim-lastplace',                         -- Automatically jump to the last cursor position
-	'tpope/vim-sleuth',                                 -- Detect tabstop and shiftwidth automatically
+	'sho-87/kanagawa-paper.nvim',      -- Colorscheme / theme
+	'catppuccin/nvim',                 -- Alternative colorscheme
+	'vague2k/vague.nvim',              -- Alternative colorscheme
+	'ramojus/mellifluous.nvim',        -- Alternative colorscheme
+	"folke/tokyonight.nvim",            -- Alternative colorscheme
 
-	'sho-87/kanagawa-paper.nvim',                       -- Colorscheme / theme
-	'catppuccin/nvim',                                  -- Alternative colorscheme
-	'vague2k/vague.nvim',                               -- Alternative colorscheme
+	'b0o/incline.nvim',                -- For showing current file and extra data about it
+	'nvim-lualine/lualine.nvim',       -- Statusline
 
-	'b0o/incline.nvim',                                 -- For showing current file and extra data about it
-
-	'stevearc/oil.nvim',                                -- File managment like Vim buffer (hit <leader>+e)
-	'ibhagwan/fzf-lua',                                 -- Other very fast picker for other things than files
-	'echasnovski/mini.surround',                        -- Allows to surround selected text with brackets, quotes, tags etc.
-	'nvim-treesitter/nvim-treesitter',                  -- Tresitter (for coloring syntax and doing AST-based operations)
-	'alexghergh/nvim-tmux-navigation',                  -- Better navigation with TMUX (can move between nvim and tmux splits with same motions)
-	'folke/lazydev.nvim',                               -- Better neovim config editing, without any non-valid warnings
-	'folke/todo-comments.nvim',                         -- Highlight comments like TODO, FIXME, BUG, INFO etc.
-	'mluders/comfy-line-numbers.nvim',                  -- More comfortable vertical motions (without needing to reach so far away from current buttons)
-	'brenoprata10/nvim-highlight-colors',               -- Highlight color codes
+	{
+		'stevearc/oil.nvim',
+		opts = {
+			default_file_explorer = false,
+			view_options = {
+				show_hidden = true,
+			},
+			float = {
+				padding = 2,
+				max_width = 120,
+				max_height = 30,
+			},
+		},
+		dependencies = { 'nvim-tree/nvim-web-devicons' },
+	}, -- File explorer in popup
+	'ibhagwan/fzf-lua',                -- Other very fast picker for other things than files
+	'echasnovski/mini.surround',       -- Allows to surround selected text with brackets, quotes, tags etc.
+	'nvim-treesitter/nvim-treesitter', -- Tresitter (for coloring syntax and doing AST-based operations)
+	'alexghergh/nvim-tmux-navigation', -- Better navigation with TMUX (can move between nvim and tmux splits with same motions)
+	'folke/lazydev.nvim',              -- Better neovim config editing, without any non-valid warnings
+	'folke/todo-comments.nvim',        -- Highlight comments like TODO, FIXME, BUG, INFO etc.
+	'mluders/comfy-line-numbers.nvim', -- More comfortable vertical motions (without needing to reach so far away from current buttons)
+	'brenoprata10/nvim-highlight-colors', -- Highlight color codes
 
 	-- Git
-	'akinsho/git-conflict.nvim',                        -- Coloring Git Conflict inline
-	'FabijanZulj/blame.nvim',                           -- Show git blame info in the gutter
+	{ 'akinsho/git-conflict.nvim', version = '*', config = true }, -- Coloring Git Conflict inline
+	'FabijanZulj/blame.nvim', -- Show git blame info in the gutter
 
 	-- Harpoon
 	{
 		'ThePrimeagen/harpoon',
-		branch = 'harpoon2'                             -- For better switching between files. Add files to the jumplist and switch between them with Alt+1,2,3,4,5. Also edit jumplist like a vim buffer
+		branch = 'harpoon2',    -- For better switching between files. Add files to the jumplist and switch between them with Alt+1,2,3,4,5. Also edit jumplist like a vim buffer
 	},
-	'kiennt63/harpoon-files.nvim',                      -- For showing the current harpoon indexes inside incline (that shows current file)
+	'kiennt63/harpoon-files.nvim', -- For showing the current harpoon indexes inside incline (that shows current file)
 
 	-- Markdown notetaking
 	'epwalsh/obsidian.nvim',
 	'bullets-vim/bullets.vim',
 	'MeanderingProgrammer/render-markdown.nvim',
 
-	'ThePrimeagen/refactoring.nvim',                    -- Refactoring
+	'ThePrimeagen/refactoring.nvim', -- Refactoring
 
-	'NickvanDyke/opencode.nvim',                        -- Opencode AI assistant integration
+	'NickvanDyke/opencode.nvim',  -- Opencode AI assistant integration
 }, {
 	defaults = {
 		lazy = true,
@@ -195,7 +214,6 @@ require('nvim-treesitter.configs').setup({
 -- @field options - some extra options as Lua table
 -- @field options.desc - Description of a keymap, that will be displayed in which-key
 local keymap = vim.keymap.set
-
 
 require('fzf-lua').setup({
 	-- Load the 'ivy' profile first
@@ -226,8 +244,8 @@ require('fzf-lua').setup({
 		-- ex: > enable --*/plugins/*
 		-- I still find this a bit cumbersome. There's probably a better way of doing this.
 		rg_glob = true,      -- enable glob parsing
-		glob_flag = "--iglob", -- case insensitive globs
-		glob_separator = "%s%-%-", -- query separator pattern (lua): ' --'
+		glob_flag = '--iglob', -- case insensitive globs
+		glob_separator = '%s%-%-', -- query separator pattern (lua): ' --'
 	},
 	-- Provide a table of your overrides
 	-- {
@@ -242,15 +260,15 @@ require('fzf-lua').setup({
 	-- },
 })
 
-
-
 local fzf_lua = require('fzf-lua')
 
 keymap('n', '<leader>ff', fzf_lua.files, { desc = '[F]ind [F]iles' })
 -- keymap('n', '<leader>fF', fff.find_files, { desc = '[F]ind (ALL) [F]iles' })
 keymap('n', '<leader>fw', fzf_lua.live_grep, { desc = '[F]ind [W]ords' })
 -- keymap('n', '<leader>fh', ':Pick help<CR>')
-keymap('n', '<leader>e', ':Oil --float<CR>', { desc = 'File [E]xplorer' })
+keymap('n', '<leader>e', function()
+	require('oil').open_float()
+end, { desc = 'File [E]xplorer (popup)' })
 -- LSP
 keymap('n', '<leader>la', vim.lsp.buf.code_action, { desc = '' })
 keymap('n', '<leader>lf', vim.lsp.buf.format)
@@ -278,11 +296,19 @@ keymap('n', '<leader>D', function()
 end, { desc = 'Diagnostics: hover (cursor/line)' })
 -- keymap('n', 'gi', vim.lsp.buf.implementation)
 keymap('n', 'gd', fzf_lua.lsp_definitions, { desc = 'Go to [D]efinition' })
-keymap('n', 'grr', function() require('snacks').picker.lsp_references() end, { desc = '[G]o to [R]eferences' })
-keymap('n', '<leader>ld', function() require('snacks').picker.lsp_definitions() end, { desc = '[L]SP [D]efinitions' })
-keymap('n', '<leader>lD', function() require('snacks').picker.lsp_references() end, { desc = '[L]SP References' })
+keymap('n', 'grr', function()
+	require('snacks').picker.lsp_references()
+end, { desc = '[G]o to [R]eferences' })
+keymap('n', '<leader>ld', function()
+	require('snacks').picker.lsp_definitions()
+end, { desc = '[L]SP [D]efinitions' })
+keymap('n', '<leader>lD', function()
+	require('snacks').picker.lsp_references()
+end, { desc = '[L]SP References' })
 
-keymap('n', '<leader>gg', function() require('snacks').lazygit() end, { desc = '[G]it [G]it (run lazygit client)' })
+keymap('n', '<leader>gg', function()
+	require('snacks').lazygit()
+end, { desc = '[G]it [G]it (run lazygit client)' })
 
 -- Setup snacks.picker for LSP functionality
 require('snacks').setup({
@@ -290,65 +316,80 @@ require('snacks').setup({
 		enabled = true,
 		-- Configure picker layout and appearance
 		layout = {
-			preset = "telescope", -- Use telescope-like layout
+			preset = 'telescope', -- Use telescope-like layout
 			backdrop = { transparent = false },
 		},
 		-- Configure sources
 		sources = {
 			lsp_definitions = {
-				title = "LSP Definitions",
-				format = "file",
+				title = 'LSP Definitions',
+				format = 'file',
 			},
 			lsp_references = {
-				title = "LSP References",
-				format = "file",
+				title = 'LSP References',
+				format = 'file',
 			},
 		},
 	},
 })
-keymap('n', '<leader>gb', '<cmd>Blame<CR>', { desc = '[G]it [B]lame' })
-
-
 require('git-conflict')
-keymap('n', '<leader>gb', '<cmd>BlameToggle window<CR>', { desc = '[G]it [Blame]' })
+keymap('n', '<leader>gb', '<cmd>BlameToggle window<CR>', { desc = '[G]it [B]lame' })
 keymap('n', '<leader>gcc', '<cmd>GitConflictChooseOurs<CR>', { desc = '[G]it [C]onflict Choose [C]urrent' })
 keymap('n', '<leader>gci', '<cmd>GitConflictChooseTheirs<CR>', { desc = '[G]it [C]onflict Choose [I]ncoming' })
 keymap('n', '<leader>gcb', '<cmd>GitConflictChooseBoth<CR>', { desc = '[G]it [Conflict] Choose [B]oth' })
-keymap('n', '<leader>gcn', '<cmd>GitConflictChooseOurs<CR>', { desc = '[G]it [Conflict] Choose [N]one' })
-keymap('n', '<leader>gc[', '<cmd>GitConflictChooseOurs<CR>', { desc = '[G]it [Conflict] Previous' })
-keymap('n', '<leader>gc]', '<cmd>GitConflictChooseOurs<CR>', { desc = '[G]it [Conflict] Next' })
+keymap('n', '<leader>gcn', '<cmd>GitConflictChooseNone<CR>', { desc = '[G]it [Conflict] Choose [N]one' })
+keymap('n', '<leader>gc[', '<cmd>GitConflictPrevConflict<CR>', { desc = '[G]it [Conflict] Previous' })
+keymap('n', '<leader>gc]', '<cmd>GitConflictNextConflict<CR>', { desc = '[G]it [Conflict] Next' })
 
 local nvim_tmux_nav = require('nvim-tmux-navigation')
 nvim_tmux_nav.setup({
 	disable_when_zoomed = false,
 	keybindings = {
-		left = "<C-h>",
-		down = "<C-j>",
-		up = "<C-k>",
-		right = "<C-l>",
-		last_active = "<C-\\>",
-		next = "<C-Space>",
-	}
+		left = '<C-h>',
+		down = '<C-j>',
+		up = '<C-k>',
+		right = '<C-l>',
+		last_active = '<C-\\>',
+		next = '<C-Space>',
+	},
 })
 
 -- keymap('n', '<leader>o', ':update<CR> :source<CR>') -- source file inline (most useful for editing neovim config file
 keymap('n', '<leader>w', ':write<CR>')
-keymap('n', '<leader>q', ':quit<CR>')
+keymap('n', '<leader>q', ':qa<CR>', { desc = 'Quit Neovim completely' })
 
 require('refactoring').setup({
 	show_success_message = false, -- shows a message with information about the refactor on success
 })
-keymap({ "n", "x" }, "<leader>rr", function() require('refactoring').select_refactor() end)
+keymap({ 'n', 'x' }, '<leader>rr', function()
+	require('refactoring').select_refactor()
+end)
 
 -- Opencode keymaps
-keymap({ "n", "x" }, "<leader>aa", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "[A]I [A]sk about this" })
-keymap({ "n", "x" }, "<leader>as", function() require("opencode").select() end, { desc = "[A]I [S]elect prompt" })
-keymap({ "n", "x" }, "<leader>a+", function() require("opencode").prompt("@this") end, { desc = "[A]I Add this" })
-keymap("n", "<leader>at", function() require("opencode").toggle() end, { desc = "[A]I [T]oggle embedded" })
-keymap("n", "<leader>ac", function() require("opencode").command() end, { desc = "[A]I Select [C]ommand" })
-keymap("n", "<leader>an", function() require("opencode").command("session_new") end, { desc = "[A]I [N]ew session" })
-keymap("n", "<leader>ai", function() require("opencode").command("session_interrupt") end, { desc = "[A]I [I]nterrupt session" })
-keymap("n", "<leader>aA", function() require("opencode").command("agent_cycle") end, { desc = "[A]I Cycle [A]gent" })
+keymap({ 'n', 'x' }, '<leader>aa', function()
+	require('opencode').ask('@this: ', { submit = true })
+end, { desc = '[A]I [A]sk about this' })
+keymap({ 'n', 'x' }, '<leader>as', function()
+	require('opencode').select()
+end, { desc = '[A]I [S]elect prompt' })
+keymap({ 'n', 'x' }, '<leader>a+', function()
+	require('opencode').prompt('@this')
+end, { desc = '[A]I Add this' })
+keymap('n', '<leader>at', function()
+	require('opencode').toggle()
+end, { desc = '[A]I [T]oggle embedded' })
+keymap('n', '<leader>ac', function()
+	require('opencode').command()
+end, { desc = '[A]I Select [C]ommand' })
+keymap('n', '<leader>an', function()
+	require('opencode').command('session_new')
+end, { desc = '[A]I [N]ew session' })
+keymap('n', '<leader>ai', function()
+	require('opencode').command('session_interrupt')
+end, { desc = '[A]I [I]nterrupt session' })
+keymap('n', '<leader>aA', function()
+	require('opencode').command('agent_cycle')
+end, { desc = '[A]I Cycle [A]gent' })
 
 -- Harpoon setup (quick file switching between files that I currently work on)
 local harpoon = require('harpoon')
@@ -356,8 +397,12 @@ local harpoon = require('harpoon')
 
 harpoon:setup()
 
-keymap('n', '<A-a>', function() harpoon:list():add() end)                         -- add file to harpoon jumplist
-keymap('n', '<A-e>', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end) -- open jumplist with currently added items
+keymap('n', '<A-a>', function()
+	harpoon:list():add()
+end) -- add file to harpoon jumplist
+keymap('n', '<A-e>', function()
+	harpoon.ui:toggle_quick_menu(harpoon:list())
+end) -- open jumplist with currently added items
 
 for i = 1, 9 do
 	keymap('n', '<A-' .. i .. '>', function()
@@ -384,8 +429,6 @@ keymap('n', '<leader>-', '<cmd>split<CR>', { desc = 'Split horizontally' })
 keymap('v', 'J', ":m '>+1<CR>gv=gv")
 keymap('v', 'K', ":m '<-2<CR>gv=gv")
 
-
-
 -- Move lines up and down in normal modellll
 
 -- 🇵🇱 Polish character mappings for Insert Mode
@@ -410,8 +453,7 @@ keymap('i', '<M-X>', 'Ź')
 keymap('i', '<M-Z>', 'Ż')
 
 -- Select all with Ctrl+A
-keymap("n", "<C-a>", "ggVG")
-
+keymap('n', '<C-a>', 'ggVG')
 
 local transparent_background = true
 require('catppuccin').setup({
@@ -437,22 +479,22 @@ require('catppuccin').setup({
 				DiagnosticVirtualTextWarn = { bg = cp.none },
 				DiagnosticVirtualTextInfo = { bg = cp.none },
 				DiagnosticVirtualTextHint = { bg = cp.none },
-				LspInfoBorder = { link = "FloatBorder" },
+				LspInfoBorder = { link = 'FloatBorder' },
 
 				-- For mason.nvim
-				MasonNormal = { link = "NormalFloat" },
+				MasonNormal = { link = 'NormalFloat' },
 
 				-- For indent-blankline
 				IblIndent = { fg = cp.surface0 },
-				IblScope = { fg = cp.surface2, style = { "bold" } },
+				IblScope = { fg = cp.surface2, style = { 'bold' } },
 
 				-- For nvim-cmp and wilder.nvim
 				Pmenu = { fg = cp.overlay2, bg = transparent_background and cp.none or cp.base },
 				PmenuBorder = { fg = cp.surface1, bg = transparent_background and cp.none or cp.base },
 				PmenuSel = { bg = cp.green, fg = cp.base },
 				CmpItemAbbr = { fg = cp.overlay2 },
-				CmpItemAbbrMatch = { fg = cp.blue, style = { "bold" } },
-				CmpDoc = { link = "NormalFloat" },
+				CmpItemAbbrMatch = { fg = cp.blue, style = { 'bold' } },
+				CmpDoc = { link = 'NormalFloat' },
 				CmpDocBorder = {
 					fg = transparent_background and cp.surface1 or cp.mantle,
 					bg = transparent_background and cp.none or cp.mantle,
@@ -460,7 +502,7 @@ require('catppuccin').setup({
 
 				-- For fidget
 				FidgetTask = { bg = cp.none, fg = cp.surface2 },
-				FidgetTitle = { fg = cp.blue, style = { "bold" } },
+				FidgetTitle = { fg = cp.blue, style = { 'bold' } },
 
 				-- For nvim-notify
 				NotifyBackground = { bg = cp.base },
@@ -480,20 +522,20 @@ require('catppuccin').setup({
 				TelescopeResultsDiffDelete = { fg = cp.red },
 
 				-- For glance.nvim
-				GlanceWinBarFilename = { fg = cp.subtext1, style = { "bold" } },
-				GlanceWinBarFilepath = { fg = cp.subtext0, style = { "italic" } },
-				GlanceWinBarTitle = { fg = cp.teal, style = { "bold" } },
+				GlanceWinBarFilename = { fg = cp.subtext1, style = { 'bold' } },
+				GlanceWinBarFilepath = { fg = cp.subtext0, style = { 'italic' } },
+				GlanceWinBarTitle = { fg = cp.teal, style = { 'bold' } },
 				GlanceListCount = { fg = cp.lavender },
-				GlanceListFilepath = { link = "Comment" },
+				GlanceListFilepath = { link = 'Comment' },
 				GlanceListFilename = { fg = cp.blue },
-				GlanceListMatch = { fg = cp.lavender, style = { "bold" } },
+				GlanceListMatch = { fg = cp.lavender, style = { 'bold' } },
 				GlanceFoldIcon = { fg = cp.green },
 
 				-- For nvim-treehopper
 				TSNodeKey = {
 					fg = cp.peach,
 					bg = transparent_background and cp.none or cp.base,
-					style = { "bold", "underline" },
+					style = { 'bold', 'underline' },
 				},
 
 				-- For treesitter
@@ -549,53 +591,7 @@ vim.schedule(function()
 	vim.api.nvim_set_hl(0, '@tag.svelte', { fg = '#8EA4A2', bold = false })
 	vim.api.nvim_set_hl(0, '@tag.attribute.svelte', { fg = '#B98D7B', bold = false })
 end)
-require('oil').setup({
-	keymaps = {
-		["q"] = "actions.close",
-		["<C-c>"] = "actions.close",
-		["<leader>e"] = "actions.close",
-	},
-	float = {
-		-- Padding around the floating window
-		padding = 8,
-		max_width = 0,
-		max_height = 0,
-		border = "rounded",
-		win_options = {
-			winblend = 1,
-		},
-		-- preview_split: Split direction: "auto", "left", "right", "above", "below".
-		preview_split = "right",
-		-- This is the config that will be passed to nvim_open_win.
-		-- Change values here to customize the layout
-		override = function(conf)
-			return conf
-		end,
-	},
-	view_options = {
-		-- Show files and directories that start with "."
-		show_hidden = true,
-		-- This function defines what will never be shown, even when `show_hidden` is set
-		is_always_hidden = function(name, bufnr)
-			return false
-		end,
-		-- Sort file names with numbers in a more intuitive order for humans.
-		-- Can be "fast", true, or false. "fast" will turn it off for large directories.
-		natural_order = "fast",
-		-- Sort file and directory names case insensitive
-		case_insensitive = false,
-		sort = {
-			-- sort order can be "asc" or "desc"
-			-- see :help oil-columns to see which columns are sortable
-			{ "type", "asc" },
-			{ "name", "asc" },
-		},
-		-- Customize the highlight group for the file name
-		highlight_filename = function(entry, is_hidden, is_link_target, is_link_orphan)
-			return nil
-		end,
-	},
-}) -- Setup file manager (that allows editing files like normal Vim buffer)
+
 -- require('mini.pick').setup()
 --
 require('mini.surround').setup()
@@ -607,8 +603,8 @@ require('blink.cmp').setup({
 	fuzzy = {
 		implementation = 'prefer_rust',
 		prebuilt_binaries = {
-			force_version = '1.*.*'
-		}
+			force_version = '1.*.*',
+		},
 	},
 	completion = {
 		menu = {
@@ -620,10 +616,10 @@ require('blink.cmp').setup({
 							-- default kind icon
 							local icon = ctx.kind_icon
 							-- if LSP source, check for color derived from documentation
-							if ctx.item.source_name == "LSP" then
-								local color_item = require("nvim-highlight-colors").format(ctx.item.documentation,
+							if ctx.item.source_name == 'LSP' then
+								local color_item = require('nvim-highlight-colors').format(ctx.item.documentation,
 									{ kind = ctx.kind })
-								if color_item and color_item.abbr ~= "" then
+								if color_item and color_item.abbr ~= '' then
 									icon = color_item.abbr
 								end
 							end
@@ -631,10 +627,10 @@ require('blink.cmp').setup({
 						end,
 						highlight = function(ctx)
 							-- default highlight group
-							local highlight = "BlinkCmpKind" .. ctx.kind
+							local highlight = 'BlinkCmpKind' .. ctx.kind
 							-- if LSP source, check for color derived from documentation
-							if ctx.item.source_name == "LSP" then
-								local color_item = require("nvim-highlight-colors").format(ctx.item.documentation,
+							if ctx.item.source_name == 'LSP' then
+								local color_item = require('nvim-highlight-colors').format(ctx.item.documentation,
 									{ kind = ctx.kind })
 								if color_item and color_item.abbr_hl_group then
 									highlight = color_item.abbr_hl_group
@@ -657,14 +653,14 @@ require('blink.cmp').setup({
 	},
 	signature = { enabled = true },
 	sources = {
-		default = { "lsp", "path", "snippets", "buffer" },
+		default = { 'lsp', 'path', 'snippets', 'buffer' },
 		per_filetype = {
-			codecompanion = { "codecompanion" },
+			codecompanion = { 'codecompanion' },
 		},
 	},
 })
 
-require("vague").setup({
+require('vague').setup({
 	-- optional configuration here
 })
 
@@ -696,6 +692,7 @@ require("vague").setup({
 -- vim.cmd('colorscheme kanagawa-paper-ink')
 -- vim.cmd('colorscheme catppuccin-mocha')
 vim.cmd('colorscheme kanagawa-paper-ink')
+-- vim.cmd('colorscheme tokyonight-night')
 vim.cmd(':hi statusline guibg=NONE')
 
 -- Autocommands
@@ -715,7 +712,7 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 	desc = 'Jump to last cursor position when opening a file',
 	group = vim.api.nvim_create_augroup('last-cursor-position', { clear = true }),
 	callback = function()
-		if vim.fn.line("'\"") > 0 then
+		if vim.fn.line('\'"') > 0 then
 			vim.cmd('normal! g`"')
 		end
 	end,
@@ -758,7 +755,6 @@ vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
 	end,
 })
 
-
 -- Disable Tree-sitter for buffers larger than MAX_FILESIZE in order to not lag the Neovim
 vim.api.nvim_create_autocmd('BufReadPre', {
 	pattern = '*',
@@ -781,7 +777,7 @@ require('comfy-line-numbers').setup({
 
 	-- Line numbers will be completely hidden for the following file/buffer types
 	hidden_file_types = { 'help', 'TelescopePrompt', 'undotree' },
-	hidden_buffer_types = { 'terminal', 'blink', 'cmp' }
+	hidden_buffer_types = { 'terminal', 'blink', 'cmp' },
 })
 require('todo-comments').setup()
 require('nvim-highlight-colors').setup({})
@@ -798,29 +794,29 @@ require('ibl').setup({
 		show_start = true,
 		show_end = false,
 		injected_languages = false,
-		highlight = { "Function", "Label" },
+		highlight = { 'Function', 'Label' },
 		priority = 500,
 	},
 	exclude = {
 		filetypes = {
-			"help",
-			"alpha",
-			"dashboard",
-			"neo-tree",
-			"Trouble",
-			"lazy",
-			"mason",
-			"notify",
-			"toggleterm",
-			"lazyterm",
+			'help',
+			'alpha',
+			'dashboard',
+			'neo-tree',
+			'Trouble',
+			'lazy',
+			'mason',
+			'notify',
+			'toggleterm',
+			'lazyterm',
 		},
 	},
 })
 require('obsidian').setup({
-	dir                   = vim.env.HOME .. '/second-brain', -- specify the vault location. no need to call 'vim.fn.expand' here
-	use_advanced_uri      = true,
-	finder                = 'telescope.nvim',
-	templates             = {
+	dir = vim.env.HOME .. '/second-brain', -- specify the vault location. no need to call 'vim.fn.expand' here
+	use_advanced_uri = true,
+	finder = 'telescope.nvim',
+	templates = {
 		subdir = 'templates',
 		date_format = '%Y-%m-%d-%a',
 		time_format = '%H:%M',
@@ -837,9 +833,9 @@ require('obsidian').setup({
 		end
 		return out
 	end,
-	ui                    = {
+	ui = {
 		enable = false,
-	}
+	},
 })
 require('incline').setup({
 	window = {
@@ -948,8 +944,6 @@ require('incline').setup({
 	end,
 })
 
-
-
 local servers = {
 	-- clangd = {},
 	-- gopls = {},
@@ -1007,7 +1001,6 @@ local servers = {
 -- for you, so that they are available from within Neovim.
 local ensure_installed = { 'lua_ls', 'rust_analyzer', 'svelte', 'intelephense' }
 
-
 -- LSP servers and clients are able to communicate to each other what features they support.
 --  By default, Neovim doesn't support everything that is in the LSP specification.
 --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
@@ -1054,10 +1047,10 @@ require('mason-lspconfig').setup({
 			server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
 			lspconfig[server_name].setup(server)
 		end,
-	}
+	},
 })
 
-require("render-markdown").setup({})
+require('render-markdown').setup({})
 require('blame').setup({})
 
 require('copilot').setup({
@@ -1068,9 +1061,7 @@ require('copilot').setup({
 
 keymap({ 'i' }, '<M-j>', 'copilot#accept("<CR>")', { expr = true, silent = true, desc = 'Accept Copilot suggestion' })
 
-
-
-require("barbecue").setup({
+require('barbecue').setup({
 	attach_navic = false, -- disable navic integration since we only want file path
 	show_navic = false, -- don't show LSP context symbols
 	show_dirname = true, -- show directory path
@@ -1078,31 +1069,71 @@ require("barbecue").setup({
 	context_follow_icon_color = false,
 	kinds = false,     -- disable all kind icons/symbols
 	modifiers = {
-		dirname = ":~:.", -- show relative path from home and current directory
-		basename = "", -- no modifiers for basename
+		dirname = ':~:.', -- show relative path from home and current directory
+		basename = '', -- no modifiers for basename
 	},
 	symbols = {
-		modified = "", -- no modified indicator
-		ellipsis = "…", -- keep ellipsis for long paths
-		separator = "/", -- use forward slash as separator
+		modified = '', -- no modified indicator
+		ellipsis = '…', -- keep ellipsis for long paths
+		separator = '/', -- use forward slash as separator
 	},
-	theme = {
-		normal = { fg = "#C4B38A" },
-		dirname = { fg = "#737aa2" },
-		basename = { fg = "#C4B38A", bold = true },
-	},
+	-- theme = {
+	-- 	normal = { fg = '#C4B38A' },
+	-- 	dirname = { fg = '#737aa2' },
+	-- 	basename = { fg = '#C4B38A', bold = true },
+	-- },
 	custom_section = function()
-		return "" -- empty custom section
+		return '' -- empty custom section
 	end,
 	lead_custom_section = function()
-		return "" -- empty leading section
+		return '' -- empty leading section
 	end,
+})
+
+-- Lualine setup
+require('lualine').setup({
+	options = {
+		theme = 'iceberg_dark',
+		component_separators = { left = '', right = '' },
+		section_separators = { left = '', right = '' },
+		globalstatus = true,
+	},
+	sections = {
+		lualine_a = {
+			{ 'mode', fmt = function(str) return str:sub(1, 1) end },
+		},
+		lualine_b = {
+			{ 'branch', icon = '' },
+			{
+				'diff',
+				symbols = { added = ' ', modified = ' ', removed = ' ' },
+			},
+		},
+		lualine_c = {
+			{
+				'diagnostics',
+				sources = { 'nvim_diagnostic' },
+				symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' },
+			},
+		},
+		lualine_x = {
+			{ 'filetype', icon_only = true },
+			{ 'encoding', fmt = function(str) return str ~= 'utf-8' and str or '' end },
+			{ 'fileformat', symbols = { unix = '', dos = '', mac = '' } },
+		},
+		lualine_y = { 'progress' },
+		lualine_z = { 'location' },
+	},
+	inactive_sections = {
+		lualine_a = {},
+		lualine_b = {},
+		lualine_c = { 'filename' },
+		lualine_x = { 'location' },
+		lualine_y = {},
+		lualine_z = {},
+	},
 })
 
 -- -- Undercurl errors and warnings like in VSCode
 vim.cmd([[let &t_Cs = "\e[4:3m"]])
 vim.cmd([[let &t_Ce = "\e[4:0m"]])
-
-
-
-
