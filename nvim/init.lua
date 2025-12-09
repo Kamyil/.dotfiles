@@ -561,7 +561,7 @@ require('kanagawa-paper').setup({
 	terminal_colors = false,
 	-- cache highlights and colors for faster startup.
 	-- see Cache section for more details.
-	cache = false,
+	cache = true,
 
 	styles = {
 		-- style for comments
@@ -584,11 +584,11 @@ require('kanagawa-paper').setup({
 
 	auto_plugins = true,
 })
--- FIXME: Kanagawa theme override: Override Svelte tag colors, to make them distinct
-vim.schedule(function()
-	vim.api.nvim_set_hl(0, '@tag.svelte', { fg = '#8EA4A2', bold = false })
-	vim.api.nvim_set_hl(0, '@tag.attribute.svelte', { fg = '#B98D7B', bold = false })
-end)
+-- -- FIXME: Kanagawa theme override: Override Svelte tag colors, to make them distinct
+-- vim.schedule(function()
+-- 	vim.api.nvim_set_hl(0, '@tag.svelte', { fg = '#8EA4A2', bold = false })
+-- 	vim.api.nvim_set_hl(0, '@tag.attribute.svelte', { fg = '#B98D7B', bold = false })
+-- end)
 
 -- require('mini.pick').setup()
 --
@@ -663,6 +663,7 @@ require('vague').setup({
 	-- optional configuration here
 })
 
+
 -- Zenbones setup
 -- require("zenbones").setup()
 
@@ -690,8 +691,9 @@ require('vague').setup({
 -- Set colorscheme
 -- vim.cmd('colorscheme kanagawa-paper-ink')
 -- vim.cmd('colorscheme catppuccin-mocha')
-vim.cmd('colorscheme kanagawa-paper-ink')
+-- vim.cmd('colorscheme kanagawa-paper-ink')
 -- vim.cmd('colorscheme tokyonight-night')
+vim.cmd('colorscheme mhfu-pokke')
 vim.cmd(':hi statusline guibg=NONE')
 
 -- Autocommands
@@ -836,6 +838,7 @@ require('obsidian').setup({
 		enable = false,
 	},
 })
+
 
 
 local servers = {
@@ -1084,7 +1087,7 @@ require('lualine').setup({
 			{ 'mode', fmt = function(str) return str:sub(1, 1) end },
 		},
 		lualine_b = {
-			{ 'branch', icon = '' },
+			{ 'branch', icon = '' },
 			{ harpoon_display, color = {} },
 		},
 		lualine_c = {
