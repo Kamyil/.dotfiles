@@ -1,0 +1,241 @@
+-- colors/mhfu-pokke.lua
+-- Monster Hunter Freedom Unite + Kanagawa Paper Ink–inspired theme
+
+local c = {
+ 	bg        = "#171b21", -- było #111417
+  	bg_alt    = "#1f242b", -- było #181c20
+  	gutter    = "#10141a",
+
+    fg        = "#e5d7be",
+    fg_dim    = "#b7a28a",
+
+
+    comment    = "#5A646E",
+
+    -- HUD tones
+    hud_brown = "#AC7A4C", -- wood / quest board
+    hud_blue  = "#8EA4A2", -- steel / HUD plate
+    hud_green = "#718B78", -- moss
+
+    -- Kanagawa-ish purple for keywords / definitions
+    kw_purple  = "#958294",
+    def_purple = "#958294",
+
+    -- other accents
+    hp_green      = "#718B78",
+    stam_yellow   = "#c5b066",
+    monster_red   = "#c75544",
+    info_cyan     = "#5d9ea8",
+	rare_magenta  = "#D27D9A",
+
+    selection     = "#22282b",
+    cursorline_bg = "#171b1f",
+    visual_bg     = "#222c26",
+    border        = "#252a30",
+    diff_add      = "#1f2f25",
+    diff_change   = "#262c35",
+    diff_delete   = "#321f23",
+}
+
+local function hi(group, opts)
+    vim.api.nvim_set_hl(0, group, opts)
+end
+
+local function link(from, to)
+    vim.api.nvim_set_hl(0, from, { link = to })
+end
+
+vim.cmd("hi clear")
+if vim.fn.exists("syntax_on") == 1 then
+    vim.cmd("syntax reset")
+end
+
+vim.g.colors_name = "mhfu-pokke"
+
+-----------------------------------------------------------------------
+-- UI
+-----------------------------------------------------------------------
+hi("Normal",       { fg = c.fg,     bg = c.bg })
+hi("NormalNC",     { fg = c.fg_dim, bg = c.bg })
+hi("NormalFloat",  { fg = c.fg,     bg = c.bg_alt })
+hi("FloatBorder",  { fg = c.hud_blue, bg = c.bg_alt })
+hi("SignColumn",   { fg = c.fg_dim, bg = c.bg })
+hi("ColorColumn",  { bg = c.bg_alt })
+hi("CursorLine",   { bg = c.cursorline_bg })
+hi("CursorColumn", { bg = c.cursorline_bg })
+hi("CursorLineNr", { fg = c.stam_yellow, bold = true })
+hi("LineNr",       { fg = c.fg_dim })
+hi("VertSplit",    { fg = c.border, bg = c.bg })
+hi("WinSeparator", { fg = c.border, bg = c.bg })
+
+-- statusline / tabline = HUD plates
+hi("StatusLine",   { fg = c.fg,     bg = c.hud_blue })
+hi("StatusLineNC", { fg = c.fg_dim, bg = c.hud_blue })
+hi("TabLine",      { fg = c.fg_dim, bg = c.bg_alt })
+hi("TabLineSel",   { fg = c.bg,     bg = c.hud_brown, bold = true })
+hi("TabLineFill",  { fg = c.fg_dim, bg = c.bg })
+
+hi("Pmenu",        { fg = c.fg,     bg = c.bg_alt })
+hi("PmenuSel",     { fg = c.bg,     bg = c.hud_brown })
+hi("PmenuSbar",    { bg = c.bg_alt })
+hi("PmenuThumb",   { bg = c.border })
+
+hi("Visual",       { bg = c.visual_bg })
+hi("Search",       { fg = c.bg,     bg = c.hud_brown })
+hi("IncSearch",    { fg = c.bg,     bg = c.stam_yellow })
+hi("MatchParen",   { fg = c.hud_brown, bold = true })
+
+hi("Title",        { fg = c.hud_brown, bold = true })
+hi("Directory",    { fg = c.hud_blue,  bold = true })
+
+hi("Folded",       { fg = c.fg_dim, bg = c.bg_alt, italic = true })
+hi("FoldColumn",   { fg = c.fg_dim, bg = c.bg })
+
+hi("ErrorMsg",     { fg = c.monster_red, bold = true })
+hi("WarningMsg",   { fg = c.hud_brown })
+hi("MoreMsg",      { fg = c.hud_green })
+hi("Question",     { fg = c.stam_yellow })
+
+-- Diff
+hi("DiffAdd",      { fg = c.hud_green,   bg = c.diff_add })
+hi("DiffChange",   { fg = c.info_cyan,   bg = c.diff_change })
+hi("DiffDelete",   { fg = c.monster_red, bg = c.diff_delete })
+hi("DiffText",     { fg = c.stam_yellow, bg = c.diff_change, bold = true })
+
+-----------------------------------------------------------------------
+-- Syntax
+-----------------------------------------------------------------------
+hi("Comment",      { fg = c.comment, italic = true })
+
+hi("Constant",     { fg = c.stam_yellow })
+hi("String",       { fg = c.hud_green })
+hi("Character",    { fg = c.hud_green })
+hi("Number",       { fg = c.stam_yellow })
+hi("Boolean",      { fg = c.stam_yellow })
+hi("Float",        { fg = c.stam_yellow })
+
+hi("Identifier",   { fg = c.fg })
+hi("Function",     { fg = c.hud_blue })
+
+hi("Statement",    { fg = c.kw_purple })
+hi("Conditional",  { fg = c.kw_purple })
+hi("Repeat",       { fg = c.kw_purple })
+hi("Label",        { fg = c.kw_purple })
+hi("Keyword",      { fg = c.kw_purple })
+hi("Exception",    { fg = c.kw_purple })
+
+hi("Operator",     { fg = c.fg })
+
+hi("PreProc",      { fg = c.info_cyan })
+hi("Include",      { fg = c.info_cyan })
+hi("Define",       { fg = c.def_purple })
+hi("Macro",        { fg = c.info_cyan })
+hi("PreCondit",    { fg = c.info_cyan })
+
+hi("Type",         { fg = c.def_purple })
+hi("StorageClass", { fg = c.def_purple })
+hi("Structure",    { fg = c.def_purple })
+hi("Typedef",      { fg = c.def_purple })
+
+hi("Special",      { fg = c.rare_magenta })
+hi("SpecialChar",  { fg = c.rare_magenta })
+hi("Tag",          { fg = c.hud_blue }) -- generic tags = blue
+hi("Delimiter",    { fg = c.fg })
+hi("SpecialComment", { fg = c.comment, italic = true })
+hi("Debug",        { fg = c.monster_red })
+
+hi("Todo",         { fg = c.bg, bg = c.stam_yellow, bold = true })
+
+-----------------------------------------------------------------------
+-- HTML / XML specific
+-----------------------------------------------------------------------
+hi("htmlTag",      { fg = c.hud_blue })
+hi("htmlEndTag",   { fg = c.hud_blue })
+hi("htmlTagName",  { fg = c.hud_blue })
+hi("htmlArg",      { fg = c.hud_brown })
+
+hi("xmlTag",       { fg = c.hud_blue })
+hi("xmlEndTag",    { fg = c.hud_blue })
+hi("xmlTagName",   { fg = c.hud_blue })
+hi("xmlAttrib",    { fg = c.hud_brown })
+
+-----------------------------------------------------------------------
+-- Diagnostics (LSP)
+-----------------------------------------------------------------------
+hi("DiagnosticError", { fg = c.monster_red })
+hi("DiagnosticWarn",  { fg = c.hud_brown })
+hi("DiagnosticInfo",  { fg = c.hud_blue })
+hi("DiagnosticHint",  { fg = c.hud_green })
+
+hi("DiagnosticUnderlineError", { undercurl = true, sp = c.monster_red })
+hi("DiagnosticUnderlineWarn",  { undercurl = true, sp = c.hud_brown })
+hi("DiagnosticUnderlineInfo",  { undercurl = true, sp = c.hud_blue })
+hi("DiagnosticUnderlineHint",  { undercurl = true, sp = c.hud_green })
+
+-----------------------------------------------------------------------
+-- Treesitter
+-----------------------------------------------------------------------
+link("@comment",          "Comment")
+link("@string",           "String")
+link("@character",        "Character")
+link("@number",           "Number")
+link("@float",            "Float")
+link("@boolean",          "Boolean")
+-- link("@constant",         "Constant")
+-- link("@constant.builtin", "Constant")
+-- link("@constant.macro",   "Define")
+
+link("@variable",         "Identifier")
+link("@variable.builtin", "Identifier")
+link("@field",            "Identifier")
+link("@property",         "Identifier")
+link("@parameter",        "Identifier")
+
+link("@function",         "Function")
+link("@function.builtin", "Function")
+link("@function.macro",   "Macro")
+link("@method",           "Function")
+link("@constructor",      "Function")
+
+link("@keyword",          "Keyword")
+link("@keyword.function", "Keyword")
+link("@keyword.return",   "Keyword")
+link("@conditional",      "Conditional")
+link("@repeat",           "Repeat")
+link("@operator",         "Operator")
+-- Typy / definicje
+hi("@type",           { fg = c.def_purple })
+hi("@type.builtin",   { fg = c.def_purple })
+hi("@type.definition",{ fg = c.def_purple })
+
+-- Namespace / module (używane m.in. w Rust importach)
+hi("@namespace",      { fg = c.hud_blue })
+hi("@module",         { fg = c.hud_blue })
+
+-- Stałe / enum warianty
+hi("@constant",         { fg = c.stam_yellow })
+hi("@constant.builtin", { fg = c.stam_yellow })
+hi("@constant.macro",   { fg = c.info_cyan })  -- np. RUST macro, assert! itd.
+
+-- Reszta może zostać jak było
+link("@variable",         "Identifier")
+link("@variable.builtin", "Identifier")
+link("@field",            "Identifier")
+link("@property",         "Identifier")
+link("@parameter",        "Identifier")
+
+hi("@function",           { fg = c.hud_blue })
+hi("@function.builtin",   { fg = c.hud_blue })
+hi("@function.macro",     { fg = c.info_cyan })
+hi("@method",             { fg = c.hud_blue })
+hi("@constructor",        { fg = c.hud_blue })
+
+-- link("@type",             "Type")
+-- link("@type.builtin",     "Type")
+-- link("@type.definition",  "Typedef")
+link("@attribute",        "PreProc")
+
+-- HTML-like tags (TS): <tag attr="...">
+link("@tag",              "Tag")                 -- tag names = blue
+hi("@tag.delimiter",      { fg = c.hud_blue })   -- <, </, >, />
+hi("@tag.attribute",      { fg = c.hud_brown })  -- attr names
