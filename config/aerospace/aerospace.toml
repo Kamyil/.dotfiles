@@ -83,7 +83,7 @@ outer.right = [{ monitor."LG HDR 4K" = 20 }, { monitor."Built-in Retina Display"
 inherit-env-vars = true # If you don't touch "exec" section,
 
 [exec.env-vars] # it will fallback to "default-config.toml"
-PATH = '/opt/homebrew/bin:/opt/homebrew/sbin:${PATH}'
+PATH = '/etc/profiles/per-user/kamil/bin:/opt/homebrew/bin:/opt/homebrew/sbin:${PATH}'
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -104,6 +104,9 @@ PATH = '/opt/homebrew/bin:/opt/homebrew/sbin:${PATH}'
 # All possible modifiers: cmd, alt, ctrl, shift
 
 # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
+
+# Quick capture to weekly note (second-brain)
+cmd-shift-n = 'exec-and-forget ~/.dotfiles/config/scripts/open-weekly-note.sh'
 
 # You can uncomment this line to open up terminal with alt + enter shortcut
 # See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget
@@ -231,3 +234,7 @@ run = ['layout floating']
 [[on-window-detected]]
 if.app-id = 'com.dygmalab.bazecor'
 run = ['layout floating']
+
+[[on-window-detected]]
+if.window-title-regex-substring = '^weekly-note'
+run = ['move-node-to-workspace N']
