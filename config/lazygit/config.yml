@@ -9,32 +9,32 @@ git:
 gui:
   theme:
     activeBorderColor:
-      - '#8ea49e'  # kanagawa-paper-ink cyan
+      - '#8a6850'  # pokke wood_brown (guild hall frame)
       - bold
     inactiveBorderColor:
-      - '#393836'  # kanagawa-paper-ink dark gray
+      - '#4a5a60'  # pokke border (inactive frame)
     optionsTextColor:
-      - '#a292a3'  # kanagawa-paper-ink magenta
+      - '#6a8a9a'  # pokke quest_blue (menu text)
     selectedLineBgColor:
-      - '#363646'  # kanagawa-paper-ink selection bg
+      - '#2E3838'  # pokke selection (HUD green)
     selectedRangeBgColor:
-      - '#363646'  # kanagawa-paper-ink selection bg
+      - '#2E3838'  # pokke selection (HUD green)
     cherryPickedCommitBgColor:
-      - '#435965'  # kanagawa-paper-ink blue
+      - '#304651'  # pokke hud_blue (item slot)
     cherryPickedCommitFgColor:
-      - '#c4b28a'  # kanagawa-paper-ink yellow
+      - '#b8964a'  # pokke stamina_gold
     unstagedChangesColor:
-      - '#c4746e'  # kanagawa-paper-ink red
+      - '#a85a5a'  # pokke meat_red (well-done steak)
     defaultFgColor:
-      - '#DCD7BA'  # kanagawa-paper-ink foreground
+      - '#d4c8b0'  # pokke cream parchment
     searchingActiveBorderColor:
-      - '#b4a7b5'  # kanagawa-paper-ink bright magenta
+      - '#8a7090'  # pokke rare_purple (rare item glow)
     stagedChangesColor:
-      - '#699469'  # kanagawa-paper-ink green
+      - '#7a9a6a'  # pokke health_green (health bar)
     markedBaseCommitFgColor:
-      - '#698a9b'  # kanagawa-paper-ink bright blue
+      - '#8a9aa8'  # pokke snow_blue (Pokke snow)
     markedBaseCommitBgColor:
-      - '#435965'  # kanagawa-paper-ink blue
+      - '#304651'  # pokke hud_blue (item slot)
 
 authorColors:
-  '*': '#8ea49e'  # kanagawa-paper-ink cyan
+  '*': '#6a8a9a'  # pokke quest_blue
