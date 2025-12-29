@@ -214,6 +214,11 @@ in
         sd && nvim .
       }
 
+      # Search directory and open opencode
+      sdo() {
+        sd && opencode
+      }
+
       # Config search
       config() {
         source "$HOME/.zsh_config_aliases"
