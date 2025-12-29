@@ -1,36 +1,33 @@
 #!/usr/bin/env python3
-"""
-Custom Kitty Tab Bar
-- Rounded pill-style tabs
-- Folder name (not full path)
-- Git branch with icon
-- Session-based colors
-"""
 
 import os
 import subprocess
 
-from kitty.fast_data_types import Screen, get_options
-from kitty.tab_bar import DrawData, ExtraData, TabBarData, TabAccessor, as_rgb
+from kitty.fast_data_types import Screen, get_boss
+from kitty.tab_bar import DrawData, ExtraData, TabBarData, as_rgb
 from kitty.utils import color_as_int
 
-# Nerd Font Icons
-ICON_GIT = ""  # git branch
+ICON_GIT = ""
 
-# Tab separators - boxy style (half blocks)
-LEFT_SEP = "▌"   # left half block U+258C
-RIGHT_SEP = "▐"  # right half block U+2590
+LEFT_SEP = "▌"
+RIGHT_SEP = "▐"
 
-# Session color palette (MHFU warm wood/earth tones only)
 SESSION_COLORS = [
-    0x9a7050,  # wood brown (default)
-    0xb89060,  # wood highlight
-    0x8a6a4a,  # dark wood
-    0xc4a860,  # stamina yellow
-    0xa85a5a,  # steak red
-    0x7a9a6a,  # health green
-    0x6a5a4a,  # deep wood
-    0xd4a870,  # light wood
+    0x9a7050,
+    0xb89060,
+    0x8a6a4a,
+    0xc4a860,
+    0xa85a5a,
+    0x7a9a6a,
+    0x6a5a4a,
+    0xd4a870,
+]
+
+GIT_PATHS = [
+    "/etc/profiles/per-user/kamil/bin/git",
+    "/usr/local/bin/git",
+    "/usr/bin/git",
+    "/opt/homebrew/bin/git",
 ]
 
 
@@ -40,27 +37,17 @@ def _get_session_color(session_name: str) -> int:
     return SESSION_COLORS[hash(session_name) % len(SESSION_COLORS)]
 
 
-# Git paths to try (nix-darwin path first, then common locations)
-GIT_PATHS = [
-    "/etc/profiles/per-user/kamil/bin/git",
-    "/usr/local/bin/git",
-    "/usr/bin/git",
-    "/opt/homebrew/bin/git",
-]
-
-
 def _find_git() -> str:
     for path in GIT_PATHS:
         if os.path.isfile(path):
             return path
-    return "git"  # fallback to PATH
+    return "git"
 
 
 GIT_CMD = _find_git()
 
 
 def _get_git_branch(cwd: str) -> str:
-    """Get git branch - no caching for debugging."""
     if not cwd or not os.path.isdir(cwd):
         return ""
     try:
@@ -81,6 +68,38 @@ def _get_git_branch(cwd: str) -> str:
     return ""
 
 
+def _get_pane_info(cwd: str) -> str:
+    folder_name = os.path.basename(cwd) if cwd else "shell"
+    if len(folder_name) > 12:
+        folder_name = folder_name[:9] + "..."
+    
+    git_branch = _get_git_branch(cwd)
+    if git_branch:
+        return f"{folder_name} {ICON_GIT} {git_branch}"
+    return folder_name
+
+
+def _get_all_panes_info(tab_id: int) -> str:
+    boss = get_boss()
+    tab = boss.tab_for_id(tab_id)
+    if not tab:
+        return "shell"
+    
+    windows = list(tab)
+    if len(windows) == 0:
+        return "shell"
+    
+    pane_infos = []
+    for window in windows:
+        cwd = window.get_cwd_of_child() or ""
+        pane_infos.append(_get_pane_info(cwd))
+    
+    if len(pane_infos) == 1:
+        return pane_infos[0]
+    
+    return " | ".join(pane_infos)
+
+
 def draw_tab(
     draw_data: DrawData,
     screen: Screen,
@@ -91,19 +110,15 @@ def draw_tab(
     is_last: bool,
     extra_data: ExtraData,
 ) -> int:
-    """Custom tab drawing function."""
-
-    # Get working directory and extract folder name
-    ta = TabAccessor(tab.tab_id)
-    cwd = ta.active_wd or ""
-    folder_name = os.path.basename(cwd) if cwd else ""
-
-    # Get git branch
-    git_branch = _get_git_branch(cwd)
-
-    # Determine colors
     default_bg = as_rgb(color_as_int(draw_data.default_bg))
     session_name = getattr(tab, 'session_name', '') or ''
+    active_session = getattr(tab, 'active_session_name', '') or session_name
+
+    if index == 1 and active_session:
+        session_color = as_rgb(_get_session_color(active_session))
+        screen.cursor.bg = default_bg
+        screen.cursor.fg = session_color
+        screen.draw(f" {active_session} │")
 
     if tab.is_active:
         if session_name:
@@ -115,44 +130,27 @@ def draw_tab(
         tab_bg = as_rgb(color_as_int(draw_data.inactive_bg))
         tab_fg = as_rgb(color_as_int(draw_data.inactive_fg))
 
-    # === Draw left separator ===
-    # Gap between tabs (or before first tab)
     if screen.cursor.x > 0:
         screen.cursor.bg = default_bg
         screen.cursor.fg = default_bg
         screen.draw("  ")
-    # Left edge of tab
+
     screen.cursor.bg = default_bg
     screen.cursor.fg = tab_bg
     screen.draw(LEFT_SEP)
 
-    # === Draw tab content ===
     screen.cursor.bg = tab_bg
     screen.cursor.fg = tab_fg
 
-    # Build content: " 1: folder_name  branch "
-    # Use folder name, fall back to session name or "shell"
-    display_name = folder_name or session_name or "shell"
-    if len(display_name) > 12:
-        display_name = display_name[:9] + "..."
-
-    content = f"  {index}: {display_name}"
-
-    # Add git branch if present
-    if git_branch:
-        content += f" {ICON_GIT} {git_branch}"
-
-    content += "  "
+    panes_info = _get_all_panes_info(tab.tab_id)
+    content = f"  {index}: {panes_info}  "
     screen.draw(content)
 
-    # Handle overflow
     extra = screen.cursor.x - before - max_tab_length
     if extra > 0:
         screen.cursor.x -= extra + 1
         screen.draw("…")
 
-    # === Draw right separator ===
-    # Determine next tab's background
     next_tab = extra_data.next_tab
     if is_last or not next_tab:
         next_bg = default_bg
@@ -172,7 +170,6 @@ def draw_tab(
 
     end = screen.cursor.x
 
-    # Add space after last tab
     if is_last and end < screen.columns:
         screen.cursor.bg = default_bg
         screen.cursor.fg = 0
