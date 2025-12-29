@@ -26,11 +26,10 @@ config.font = wezterm.font("Berkeley Mono", { weight = 510 })
 -- config.font = wezterm.font("ComicShannsMono Nerd Font Propo", { weight = "Bold" })
 -- config.font = wezterm.font("ComicMonoNF", { weight = "Regular" })
 -- config.font = wezterm.font("ComicMono Nerd Font", { weight = "Regular" })
--- config.font = wezterm.font("Maple Mono", { weight = 700 })
+-- config.font = wezterm.font("Maple Mono", { weight = 510 })
 -- config.font = wezterm.font("Monocraft Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("SF Mono", { weight = "Regular" })
 -- config.font = wezterm.font("BlexMono Nerd Font", { weight = "Medium" })
--- config.font = wezterm.font("CommitMono Nerd Font", { weight = "Bold" })
 -- config.font = wezterm.font("FiraCode Nerd Font", { weight = "Bold" })
 -- config.font = wezterm.font("GeistMono Nerd Font", { weight = 510 })
 -- config.font = wezterm.font("Hack Nerd Font", { weight = "Regular" })
@@ -101,35 +100,35 @@ config.color_schemes = {
   ["MHFU Pokke"] = {
     foreground = mhfu.fg,
     background = mhfu.bg,
-    cursor_bg = mhfu.ink_sepia,
+    cursor_bg = mhfu.wood_light,
     cursor_fg = mhfu.bg,
-    cursor_border = mhfu.ink_sepia,
+    cursor_border = mhfu.wood_light,
 
     selection_bg = mhfu.selection,
     selection_fg = mhfu.fg,
 
     scrollbar_thumb = mhfu.border,
-    split = mhfu.gutter,
+    split = mhfu.hud_blue,  -- visible split using HUD blue
 
     ansi = {
-      mhfu.bg_alt,        -- black
-      mhfu.ink_red,       -- red (faded sealing wax)
-      mhfu.ink_green,     -- green (faded green ink)
-      mhfu.ink_gold,      -- yellow (ochre ink)
-      mhfu.ink_blue,      -- blue (steel blue ink)
-      mhfu.ink_purple,    -- magenta (violet ink)
-      mhfu.ink_teal,      -- cyan (teal ink)
-      mhfu.fg,            -- white (parchment)
+      mhfu.bg_alt,          -- black (wood)
+      mhfu.meat_red,        -- red (well-done steak)
+      mhfu.health_green,    -- green (health bar)
+      mhfu.stamina_gold,    -- yellow (stamina bar)
+      mhfu.quest_blue,      -- blue (quest menu)
+      mhfu.rare_purple,     -- magenta (rare item)
+      mhfu.snow_blue,       -- cyan (pokke snow)
+      mhfu.fg,              -- white (parchment)
     },
     brights = {
-      mhfu.fg_dark,       -- bright black (faded marks)
-      mhfu.ink_orange,    -- bright red (burnt sienna)
-      "#7a9a6a",          -- bright green (slightly brighter moss)
-      "#baa065",          -- bright yellow (brighter ochre)
-      "#708090",          -- bright blue (lighter steel)
-      "#887888",          -- bright magenta (lighter violet)
-      "#6a8a88",          -- bright cyan (lighter teal)
-      "#d8c8a8",          -- bright white (lighter parchment)
+      mhfu.wood_dark,       -- bright black (wood dark)
+      mhfu.felyne_orange,   -- bright red (felyne kitchen)
+      "#8aaa7a",            -- bright green (brighter health)
+      mhfu.wood_light,      -- bright yellow (wood highlight)
+      "#7a9ab0",            -- bright blue (brighter quest)
+      "#9a80a0",            -- bright magenta (brighter rare)
+      mhfu.ice_pale,        -- bright cyan (ice)
+      "#e4d8c0",            -- bright white (lighter parchment)
     },
   },
 }
@@ -141,7 +140,7 @@ config.colors = {
     background = mhfu.bg,
 
     active_tab = {
-      bg_color = mhfu.ink_brown,
+      bg_color = mhfu.wood_brown,
       fg_color = mhfu.fg,
       intensity = "Bold",
     },
@@ -150,7 +149,7 @@ config.colors = {
       fg_color = mhfu.fg_dim,
     },
     inactive_tab_hover = {
-      bg_color = mhfu.ink_orange,
+      bg_color = mhfu.felyne_orange,
       fg_color = mhfu.bg,
       italic = true,
     },
@@ -159,7 +158,7 @@ config.colors = {
       fg_color = mhfu.fg_dim,
     },
     new_tab_hover = {
-      bg_color = mhfu.ink_orange,
+      bg_color = mhfu.felyne_orange,
       fg_color = mhfu.bg,
     },
   },
@@ -205,7 +204,7 @@ config.freetype_render_target = "Normal" -- Simplified rendering
 -- 		opacity = 1.0, -- Full opacity for better performance
 -- 	},
 -- }
-config.window_background_opacity = 0.90
+config.window_background_opacity = 1.00
 
 -- Merge my_own_tmux keys into config keys
 config.keys = config.keys or {}
@@ -222,6 +221,7 @@ end
 wezterm.on("pick_or_create_session", function(window, pane)
 	local mux = wezterm.mux
 	local session_names = {}
+
 
 	-- Get the names of all existing sessions
 	for _, window in ipairs(mux.all_windows()) do

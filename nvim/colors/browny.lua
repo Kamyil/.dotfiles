@@ -1,5 +1,5 @@
--- colors/mhfu-pokke.lua
--- Monster Hunter Freedom Unite – Pokke Village colorscheme for Neovim
+-- colors/browny.lua
+-- Backup of MHFU Pokke Village colorscheme (warm brown wood variant)
 -- Based on actual MHFU UI colors, muted paper-pastel style
 
 local c = {
@@ -23,22 +23,22 @@ local c = {
 
     -- MHFU UI Colors (muted, paper-pastel)
 
-     -- Quest Menu Blue/Teal (the iconic MHFU menu color)
-     quest_blue  = "#6a8a9a",   -- muted teal-blue (functions)
-     rathalos_red = "#b8756f",  -- softer rathalos red (imports) - blends better
+    -- Quest Menu Blue/Teal (the iconic MHFU menu color)
+    quest_blue  = "#6a8a9a",   -- muted teal-blue (functions)
+    rathalos_red = "#AD5958",  -- rathalos red (imports)
 
-     -- Health/Stamina bars (adjusted for comfort)
-     health_green = "#7a9a6a",  -- health bar green (strings, success) - keep, it's perfect
-     stamina_gold = "#b8964a",  -- softer stamina gold (numbers) - less harsh
+    -- Health/Stamina bars
+    health_green = "#7a9a6a",  -- health bar green (strings, success)
+    stamina_gold = "#c4a860",  -- stamina bar yellow (numbers)
 
-     -- Wooden UI frames / Guild Hall (borders, accents)
-     wood_brown  = "#8a6850",   -- softer wood frame brown (keywords) - more muted
-     wood_light  = "#b89060",   -- lighter wood (highlights) - keep
-     wood_dark   = "#6a5040",   -- darker wood (operators) - keep
+    -- Wooden UI frames / Guild Hall (borders, accents)
+    wood_brown  = "#9a7050",   -- wood frame brown (keywords)
+    wood_light  = "#b89060",   -- lighter wood (highlights)
+    wood_dark   = "#6a5040",   -- darker wood (operators)
 
-     -- Felyne Kitchen / Warm accents (adjusted for comfort)
-     felyne_orange = "#a8804a", -- warm cooking fire (warnings) - softer
-     meat_red    = "#a85a5a",   -- well-done steak red (errors) - keep
+    -- Felyne Kitchen / Warm accents
+    felyne_orange = "#b8864a", -- warm cooking fire (warnings)
+    meat_red    = "#a85a5a",   -- well-done steak red (errors)
 
     -- Snow/Ice from Pokke Village
     snow_blue   = "#8a9aa8",   -- cold snow reflection (types)
@@ -92,7 +92,7 @@ if vim.fn.exists("syntax_on") == 1 then
     vim.cmd("syntax reset")
 end
 
-vim.g.colors_name = "mhfu-pokke"
+vim.g.colors_name = "browny"
 
 -----------------------------------------------------------------------
 -- UI Elements
