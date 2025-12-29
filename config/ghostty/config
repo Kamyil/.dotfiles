@@ -1,28 +1,38 @@
-# Ghostty Terminal Configuration
-# https://ghostty.org/docs/config/reference
-
-# Theme and appearance
+# # Ghostty Terminal Configuration
+# # https://ghostty.org/docs/config/reference
+#
+# # Theme and appearance
+# # theme = Kanagawa Dragon
+# theme = Catppuccin Mocha
+# theme = Gruvbox Material Dark
+# theme = Everforest Dark Hard
 theme = Kanagawa Dragon
-background-opacity = 0.95
-
-# Font configuration
+# # theme = Kanagawa Dragon
+# # theme = Kanagawa Dragon
+# # theme = Kanagawa Dragon
+# # theme = Kanagawa Dragon
+background-opacity = 0.90
+background-blur = true
+#
+# # Font configuration
 font-family = "Berkeley Mono"
-font-size = 14
-
-# Window settings
-window-decoration = true
-window-theme = dark
-window-padding-x = 10
-window-padding-y = 10
-
-# Terminal behavior
-scrollback-limit = 10000
-confirm-close-surface = false
-
-# Performance
-copy-on-select = false
-
-# Keybindings
-keybind = cmd+t=new_tab
-keybind = cmd+w=close_surface
-keybind = cmd+shift+t=new_window
+# font-weight = 500
+# font-size = 14
+#
+# # Window settings
+# window-decoration = true
+# window-theme = dark
+# window-padding-x = 10
+# window-padding-y = 10
+#
+# # Terminal behavior
+# scrollback-limit = 10000
+# confirm-close-surface = false
+#
+# # Performance
+# copy-on-select = false
+#
+# # Keybindings
+# keybind = cmd+t=new_tab
+# keybind = cmd+w=close_surface
+# keybind = cmd+shift+t=new_window
