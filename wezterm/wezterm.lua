@@ -1,8 +1,6 @@
 local wezterm = require("wezterm")
 -- Initialize the config builder
 local config = wezterm.config_builder()
-local action = wezterm.action
-local act = wezterm.action
 
 -- Notification when the configuration is reloaded
 local function toast(window, message)
@@ -48,12 +46,12 @@ config.prefer_egl = false -- Improve font rendering
 -- config.cell_width = 1.05
 -- On Mac itself:
 config.cell_width = 1.00
-config.line_height = 1.10
+config.line_height = 1
 
 
 --
 -- Cursor settings - Disable blinking for CPU savings
-config.command_palette_font_size = 12
+config.command_palette_font_size = 14
 -- config.command_palette_font = wezterm.font 'Berkeley Mono'
 config.command_palette_bg_color = "#1a1b26" -- Darker Tokyo Night background
 config.force_reverse_video_cursor = false
@@ -64,9 +62,9 @@ config.default_cursor_style = "SteadyBlock"
 
 -- Performance settings - High FPS for snappy experience
 config.automatically_reload_config = true
-config.enable_kitty_graphics = true -- Keep for work functionality
+config.enable_kitty_graphics = true -- Keep for  work functionality
 config.window_close_confirmation = "AlwaysPrompt"
-config.custom_block_glyphs = false  -- Disable custom glyphs for performance
+config.custom_block_glyphs = true  -- Disable custom glyphs for performance
 config.animation_fps = 120          -- Restore high FPS for snappy feel
 config.max_fps = 120                -- Match animation fps
 
@@ -80,7 +78,7 @@ config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
 
 -- Disable blur for performance - major CPU/GPU saver on macOS
-config.macos_window_background_blur = 40
+config.macos_window_background_blur = 100
 config.scrollback_lines = 2000 -- Reduce from 3500 to save memory
 -- Disable ligatures for better performance
 -- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
@@ -95,8 +93,77 @@ config.window_padding = {
 }
 
 -- Color scheme
-config.color_scheme = "kanagawa-paper-ink"
+-- config.color_scheme = "kanagawa-paper-ink"
 
+local mhfu = require "colors/village".colors
+
+config.color_schemes = {
+  ["MHFU Pokke"] = {
+    foreground = mhfu.fg,
+    background = mhfu.bg,
+    cursor_bg = mhfu.ink_sepia,
+    cursor_fg = mhfu.bg,
+    cursor_border = mhfu.ink_sepia,
+
+    selection_bg = mhfu.selection,
+    selection_fg = mhfu.fg,
+
+    scrollbar_thumb = mhfu.border,
+    split = mhfu.gutter,
+
+    ansi = {
+      mhfu.bg_alt,        -- black
+      mhfu.ink_red,       -- red (faded sealing wax)
+      mhfu.ink_green,     -- green (faded green ink)
+      mhfu.ink_gold,      -- yellow (ochre ink)
+      mhfu.ink_blue,      -- blue (steel blue ink)
+      mhfu.ink_purple,    -- magenta (violet ink)
+      mhfu.ink_teal,      -- cyan (teal ink)
+      mhfu.fg,            -- white (parchment)
+    },
+    brights = {
+      mhfu.fg_dark,       -- bright black (faded marks)
+      mhfu.ink_orange,    -- bright red (burnt sienna)
+      "#7a9a6a",          -- bright green (slightly brighter moss)
+      "#baa065",          -- bright yellow (brighter ochre)
+      "#708090",          -- bright blue (lighter steel)
+      "#887888",          -- bright magenta (lighter violet)
+      "#6a8a88",          -- bright cyan (lighter teal)
+      "#d8c8a8",          -- bright white (lighter parchment)
+    },
+  },
+}
+
+config.color_scheme = "MHFU Pokke"
+
+config.colors = {
+  tab_bar = {
+    background = mhfu.bg,
+
+    active_tab = {
+      bg_color = mhfu.ink_brown,
+      fg_color = mhfu.fg,
+      intensity = "Bold",
+    },
+    inactive_tab = {
+      bg_color = mhfu.bg_alt,
+      fg_color = mhfu.fg_dim,
+    },
+    inactive_tab_hover = {
+      bg_color = mhfu.ink_orange,
+      fg_color = mhfu.bg,
+      italic = true,
+    },
+    new_tab = {
+      bg_color = mhfu.bg,
+      fg_color = mhfu.fg_dim,
+    },
+    new_tab_hover = {
+      bg_color = mhfu.ink_orange,
+      fg_color = mhfu.bg,
+    },
+  },
+}
 config.enable_tab_bar = true
 config.tab_bar_at_bottom = true
 config.use_fancy_tab_bar = false
@@ -122,17 +189,23 @@ config.freetype_load_target = "Normal"   -- Less CPU intensive than "Light"
 config.freetype_render_target = "Normal" -- Simplified rendering
 
 -- Simplified background for performance - solid color only
-config.background = {
-	{
-		source = {
-			-- Color = "#1F1F28",
-			Color = "#141416",
-		},
-		width = "100%",
-		height = "100%",
-		opacity = 0.70, -- Full opacity for better performance
-	},
-}
+-- config.background = {
+-- 	{
+-- 		source = {
+-- 			-- Color = "#1F1F28",
+-- 			-- Color = "#141416",
+-- 			-- Color = "#1C2123",
+-- 			Color = "#1C1C22",
+-- 			-- Color = "#1F2122",
+-- 			-- Color = "#1B1D1E"
+-- 			-- Color = '#050605'
+-- 		},
+-- 		width = "100%",
+-- 		height = "100%",
+-- 		opacity = 1.0, -- Full opacity for better performance
+-- 	},
+-- }
+config.window_background_opacity = 0.90
 
 -- Merge my_own_tmux keys into config keys
 config.keys = config.keys or {}

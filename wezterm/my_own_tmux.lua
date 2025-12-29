@@ -418,117 +418,80 @@ local my_own_tmux = {
 			}),
 		},
 		-- Projectifier: Pick project and build workspace layout
-		{
-			key = "t",
-			mods = "CTRL",
-			action = wezterm.action_callback(function(window, pane)
-				window:toast_notification("WezTerm", "Step 1: Loading projects...", nil, 2000)
-
-				local projects = discover_projects()
-				window:toast_notification("WezTerm", "Step 2: Found " .. #projects .. " projects", nil, 2000)
-
-				if #projects == 0 then
-					window:toast_notification("WezTerm", "No projects found!", nil, 3000)
-					return
-				end
-
-				-- Build choices
-				local choices = {}
-				for _, project in ipairs(projects) do
-					table.insert(choices, {
-						id = project.filename,
-						label = project.display_name,
-					})
-				end
-
-				window:toast_notification("WezTerm", "Step 3: Built " .. #choices .. " choices", nil, 2000)
-
-				-- Debug: Check first project structure
-				if projects[1] then
-					local debug_info = "First project: " .. projects[1].display_name
-					if projects[1].tabs then
-						debug_info = debug_info .. " | Tabs: " .. #projects[1].tabs
-					else
-						debug_info = debug_info .. " | No tabs found!"
-					end
-					window:toast_notification("WezTerm", debug_info, nil, 3000)
-				end
-
-				-- Try to show InputSelector
-				window:perform_action(
-					wezterm.action.InputSelector({
-						title = "Select Project",
-						choices = choices,
-						fuzzy = true,
-						action = wezterm.action_callback(function(child_window, child_pane, id, label)
-							if not id then
-								child_window:toast_notification("WezTerm", "Canceled", nil, 1000)
-								return
-							end
-
-							child_window:toast_notification("WezTerm", "Selected: " .. label, nil, 1000)
-
-							-- Find the selected project
-							for _, project in ipairs(projects) do
-								if project.filename == id then
-									child_window:toast_notification("WezTerm",
-										"Building project: " .. project.display_name, nil, 2000)
-
-									-- Build full workspace with tabs and panes
-									build_workspace(child_window, child_pane, project)
-									return
-								end
-							end
-
-							child_window:toast_notification("WezTerm", "Project not found: " .. id, nil, 2000)
-						end),
-					}),
-					pane
-				)
-			end),
-		},
+		-- {
+		-- 	key = "t",
+		-- 	mods = "CTRL",
+		-- 	action = wezterm.action_callback(function(window, pane)
+		-- 		window:toast_notification("WezTerm", "Step 1: Loading projects...", nil, 2000)
+		--
+		-- 		local projects = discover_projects()
+		-- 		window:toast_notification("WezTerm", "Step 2: Found " .. #projects .. " projects", nil, 2000)
+		--
+		-- 		if #projects == 0 then
+		-- 			window:toast_notification("WezTerm", "No projects found!", nil, 3000)
+		-- 			return
+		-- 		end
+		--
+		-- 		-- Build choices
+		-- 		local choices = {}
+		-- 		for _, project in ipairs(projects) do
+		-- 			table.insert(choices, {
+		-- 				id = project.filename,
+		-- 				label = project.display_name,
+		-- 			})
+		-- 		end
+		--
+		-- 		window:toast_notification("WezTerm", "Step 3: Built " .. #choices .. " choices", nil, 2000)
+		--
+		-- 		-- Debug: Check first project structure
+		-- 		if projects[1] then
+		-- 			local debug_info = "First project: " .. projects[1].display_name
+		-- 			if projects[1].tabs then
+		-- 				debug_info = debug_info .. " | Tabs: " .. #projects[1].tabs
+		-- 			else
+		-- 				debug_info = debug_info .. " | No tabs found!"
+		-- 			end
+		-- 			window:toast_notification("WezTerm", debug_info, nil, 3000)
+		-- 		end
+		--
+		-- 		-- Try to show InputSelector
+		-- 		window:perform_action(
+		-- 			wezterm.action.InputSelector({
+		-- 				title = "Select Project",
+		-- 				choices = choices,
+		-- 				fuzzy = true,
+		-- 				action = wezterm.action_callback(function(child_window, child_pane, id, label)
+		-- 					if not id then
+		-- 						child_window:toast_notification("WezTerm", "Canceled", nil, 1000)
+		-- 						return
+		-- 					end
+		--
+		-- 					child_window:toast_notification("WezTerm", "Selected: " .. label, nil, 1000)
+		--
+		-- 					-- Find the selected project
+		-- 					for _, project in ipairs(projects) do
+		-- 						if project.filename == id then
+		-- 							child_window:toast_notification("WezTerm",
+		-- 								"Building project: " .. project.display_name, nil, 2000)
+		--
+		-- 							-- Build full workspace with tabs and panes
+		-- 							build_workspace(child_window, child_pane, project)
+		-- 							return
+		-- 						end
+		-- 					end
+		--
+		-- 					child_window:toast_notification("WezTerm", "Project not found: " .. id, nil, 2000)
+		-- 				end),
+		-- 			}),
+		-- 			pane
+		-- 		)
+		-- 	end),
+		-- },
 		-- { key = "d", mods = "CTRL", action = wezterm.action.ShowDebugOverlay },
 	},
 }
 
 -- Event handlers (must be outside the module table to be registered globally)
-wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	-- RESPECT EXPLICIT TAB TITLES: Use tab.tab_title if it was explicitly set
-	local base_title
-	if tab.tab_title and tab.tab_title ~= "" then
-		-- Use explicitly set title (from our projectifier!)
-		base_title = tab.tab_title
-	else
-		-- Fall back to pane title only if no explicit title was set
-		base_title = tab.active_pane.title
-	end
-
-	-- Check for zoom status
-	local zoom_icon = ""
-	for _, pane in ipairs(tab.panes) do
-		if pane.is_zoomed then
-			zoom_icon = " 🔍"
-			break
-		end
-	end
-
-	local title = string.format(" %d: %s%s ", tab.tab_index + 1, base_title, zoom_icon)
-
-	if tab.is_active then
-		return {
-			{ Background = { Color = "#687560" } },
-			{ Foreground = { Color = "#000" } },
-			{ Text = title },
-		}
-	else
-		return {
-			{ Background = { Color = "#201F27" } },
-			{ Foreground = { Color = "#434852" } },
-			{ Text = title },
-		}
-	end
-end)
-
 wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
 	local zoomed = ""
 	if tab.active_pane.is_zoomed then
@@ -568,5 +531,12 @@ end)
 
 -- Add mux server configuration to the module
 my_own_tmux.default_prog = { "/usr/bin/env", "wezterm-mux-server" }
+
+
+
+local function dyupo() 
+end
+
+dyupo()
 
 return my_own_tmux
