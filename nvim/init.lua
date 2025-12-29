@@ -410,6 +410,78 @@ keymap('n', '<leader>aA', function()
 	require('opencode').command('agent_cycle')
 end, { desc = '[A]I Cycle [A]gent' })
 
+-- Note-taking keymaps (second-brain weekly notes)
+local second_brain = vim.fn.expand('~/second-brain')
+local weekly_dir = second_brain .. '/weekly'
+
+keymap('n', '<leader>ni', function()
+  local week_file = weekly_dir .. '/' .. os.date('%Y') .. '-W' .. os.date('%V') .. '.md'
+  vim.cmd('edit ' .. week_file)
+  vim.cmd('normal! G')
+end, { desc = '[N]ote [I]nbox (current week)' })
+
+keymap('n', '<leader>nw', function()
+  require('fzf-lua').files({
+    cwd = weekly_dir,
+    prompt = 'Weekly Notes> ',
+  })
+end, { desc = '[N]ote [W]eekly browse' })
+
+keymap('n', '<leader>np', function()
+  local prev_week = os.date('%Y-W%V', os.time() - 7 * 24 * 60 * 60)
+  local week_file = weekly_dir .. '/' .. prev_week .. '.md'
+  vim.cmd('edit ' .. week_file)
+end, { desc = '[N]ote [P]revious week' })
+
+keymap('n', '<leader>nf', function()
+  require('fzf-lua').files({
+    cwd = second_brain,
+    prompt = 'Find Notes> ',
+  })
+end, { desc = '[N]ote [F]ind by filename' })
+
+keymap('n', '<leader>ns', function()
+  require('fzf-lua').live_grep({
+    cwd = second_brain,
+    prompt = 'Search Notes> ',
+  })
+end, { desc = '[N]ote [S]earch contents' })
+
+keymap('n', '<leader>ntt', function()
+  local line = vim.api.nvim_get_current_line()
+  if line:match('^%s*$') then
+    vim.api.nvim_set_current_line('- [ ] ')
+    vim.cmd('startinsert!')
+  else
+    local row = vim.api.nvim_win_get_cursor(0)[1]
+    vim.api.nvim_buf_set_lines(0, row, row, false, { '- [ ] ' })
+    vim.api.nvim_win_set_cursor(0, { row + 1, 0 })
+    vim.cmd('startinsert!')
+  end
+end, { desc = '[N]ote [T]odo create' })
+
+keymap('n', '<leader>ntx', function()
+  local line = vim.api.nvim_get_current_line()
+  if line:match('%- %[ %]') then
+    vim.api.nvim_set_current_line((line:gsub('%- %[ %]', '- [x]')))
+  elseif line:match('%- %[x%]') then
+    vim.api.nvim_set_current_line((line:gsub('%- %[x%]', '- [ ]')))
+  elseif line:match('%- %[%-%]') then
+    vim.api.nvim_set_current_line((line:gsub('%- %[%-%]', '- [x]')))
+  end
+end, { desc = '[N]ote [T]odo toggle complete' })
+
+keymap('n', '<leader>ntp', function()
+  local line = vim.api.nvim_get_current_line()
+  if line:match('%- %[ %]') then
+    vim.api.nvim_set_current_line((line:gsub('%- %[ %]', '- [-]')))
+  elseif line:match('%- %[%-%]') then
+    vim.api.nvim_set_current_line((line:gsub('%- %[%-%]', '- [ ]')))
+  elseif line:match('%- %[x%]') then
+    vim.api.nvim_set_current_line((line:gsub('%- %[x%]', '- [-]')))
+  end
+end, { desc = '[N]ote [T]odo in progress' })
+
 -- Harpoon setup (quick file switching between files that I currently work on)
 local harpoon = require('harpoon')
 -- local harpoon_mark = require('harpoon.mark');
@@ -828,11 +900,66 @@ require('comfy-line-numbers').setup({
 })
 require('todo-comments').setup()
 require('nvim-highlight-colors').setup({})
-require('which-key').setup({
+local wk = require('which-key')
+wk.setup({
 	preset = 'helix',
 	win = {
 		border = borders,
 	},
+})
+wk.add({
+	{ '<leader>a', group = 'AI', icon = '󰧑' },
+	{ '<leader>aa', icon = '󰭻' },
+	{ '<leader>as', icon = '󰒅' },
+	{ '<leader>a+', icon = '󰐕' },
+	{ '<leader>at', icon = '󰔡' },
+	{ '<leader>ac', icon = '󰘳' },
+	{ '<leader>an', icon = '󰎔' },
+	{ '<leader>ai', icon = '󰜺' },
+	{ '<leader>aA', icon = '󰑐' },
+
+	{ '<leader>f', group = 'Find', icon = '󰍉' },
+	{ '<leader>ff', icon = '󰈞' },
+	{ '<leader>fw', icon = '󰈬' },
+
+	{ '<leader>g', group = 'Git', icon = '󰊢' },
+	{ '<leader>gg', icon = '󰊢' },
+	{ '<leader>gb', icon = '󰜘' },
+	{ '<leader>gc', group = 'Conflict', icon = '󰞇' },
+	{ '<leader>gcc', icon = '󰄬' },
+	{ '<leader>gci', icon = '󰏫' },
+	{ '<leader>gcb', icon = '󰐙' },
+	{ '<leader>gcn', icon = '󰜺' },
+	{ '<leader>gc[', icon = '󰒮' },
+	{ '<leader>gc]', icon = '󰒭' },
+
+	{ '<leader>l', group = 'LSP', icon = '󰒋' },
+	{ '<leader>la', icon = '󰌵' },
+	{ '<leader>lf', icon = '󰉢' },
+	{ '<leader>lr', icon = '󰑕' },
+	{ '<leader>ld', icon = '󰈮' },
+	{ '<leader>lD', icon = '󰈇' },
+
+	{ '<leader>n', group = 'Notes', icon = '󰠮' },
+	{ '<leader>ni', icon = '󰻃' },
+	{ '<leader>nw', icon = '󰨲' },
+	{ '<leader>np', icon = '󰒮' },
+	{ '<leader>nf', icon = '󰈞' },
+	{ '<leader>ns', icon = '󰍉' },
+	{ '<leader>nt', group = 'Todo', icon = '󰄲' },
+	{ '<leader>ntt', icon = '󰐕' },
+	{ '<leader>ntx', icon = '󰄬' },
+	{ '<leader>ntp', icon = '󰦖' },
+
+	{ '<leader>r', group = 'Refactor', icon = '󰑌' },
+	{ '<leader>rr', icon = '󰑌' },
+
+	{ '<leader>e', icon = '󰉋' },
+	{ '<leader>w', icon = '󰆓' },
+	{ '<leader>q', icon = '󰈆' },
+	{ '<leader>D', icon = '󰨮' },
+	{ '<leader>/', icon = '󰤼' },
+	{ '<leader>-', icon = '󰤻' },
 })
 
 -- Configure indent-blankline for better indentation visualization
