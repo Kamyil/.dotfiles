@@ -170,6 +170,13 @@ require('lazy').setup({
 		dependencies = { 'nvim-tree/nvim-web-devicons' },
 	}, -- File explorer in popup
 	'ibhagwan/fzf-lua',                -- Other very fast picker for other things than files
+	{
+		'dmtrKovalenko/fff.nvim',          -- Fast fuzzy file finder with pre-built Rust binary
+		build = function()
+			require('fff.download').download_or_build_binary()
+		end,
+		lazy = false,
+	},
 	'echasnovski/mini.surround',       -- Allows to surround selected text with brackets, quotes, tags etc.
 	'nvim-treesitter/nvim-treesitter', -- Tresitter (for coloring syntax and doing AST-based operations)
 	'alexghergh/nvim-tmux-navigation', -- Better navigation with TMUX (can move between nvim and tmux splits with same motions)
@@ -267,7 +274,9 @@ require('fzf-lua').setup({
 
 local fzf_lua = require('fzf-lua')
 
-keymap('n', '<leader>ff', fzf_lua.files, { desc = '[F]ind [F]iles' })
+keymap('n', '<leader>ff', function()
+	require('fff').find_files()
+end, { desc = '[F]ind [F]iles' })
 -- keymap('n', '<leader>fF', fff.find_files, { desc = '[F]ind (ALL) [F]iles' })
 keymap('n', '<leader>fw', fzf_lua.live_grep, { desc = '[F]ind [W]ords' })
 -- keymap('n', '<leader>fh', ':Pick help<CR>')
