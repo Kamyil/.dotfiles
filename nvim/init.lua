@@ -76,6 +76,12 @@ vim.opt.ignorecase = true -- ignore case in search patterns (again, for redundan
 vim.opt.smartcase = true -- smart case (again, for redundancy)
 vim.opt.smartindent = true -- make indenting smarter again
 
+-- Folding (treesitter-based)
+vim.o.foldmethod = 'expr'
+vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.o.foldlevel = 99 -- Start with all folds open
+vim.o.foldenable = true
+
 -- Toggle spell check
 vim.opt.spell = false                    -- Disable spell checking by default
 vim.opt.spelllang = { 'en_us', 'pl_PL' } -- Set spell check languages
@@ -203,6 +209,12 @@ require('lazy').setup({
 	'ThePrimeagen/refactoring.nvim', -- Refactoring
 
 	'NickvanDyke/opencode.nvim',  -- Opencode AI assistant integration
+
+	{
+		'mshiyaf/todoist.nvim',
+		dependencies = { 'ibhagwan/fzf-lua' },
+		lazy = false,
+	},
 }, {
 	defaults = {
 		lazy = true,
@@ -279,6 +291,7 @@ keymap('n', '<leader>ff', function()
 end, { desc = '[F]ind [F]iles' })
 -- keymap('n', '<leader>fF', fff.find_files, { desc = '[F]ind (ALL) [F]iles' })
 keymap('n', '<leader>fw', fzf_lua.live_grep, { desc = '[F]ind [W]ords' })
+keymap('n', '<leader>fk', fzf_lua.keymaps, { desc = '[F]ind [K]eymaps' })
 -- keymap('n', '<leader>fh', ':Pick help<CR>')
 keymap('n', '<leader>e', function()
 	require('oil').open_float()
@@ -410,6 +423,12 @@ keymap('n', '<leader>aA', function()
 	require('opencode').command('agent_cycle')
 end, { desc = '[A]I Cycle [A]gent' })
 
+keymap('n', '<leader>Tt', ':TodoistTasks<CR>', { desc = '[T]odoist [T]asks' })
+keymap('n', '<leader>Ty', ':TodoistToday<CR>', { desc = '[T]odoist Toda[y]' })
+keymap('n', '<leader>Ta', ':TodoistAdd<CR>', { desc = '[T]odoist [A]dd task' })
+keymap('n', '<leader>Tl', ':TodoistLogin<CR>', { desc = '[T]odoist [L]ogin' })
+keymap('n', '<leader>TL', ':TodoistLogout<CR>', { desc = '[T]odoist [L]ogout' })
+
 -- Note-taking keymaps (second-brain weekly notes)
 local second_brain = vim.fn.expand('~/second-brain')
 local weekly_dir = second_brain .. '/weekly'
@@ -515,6 +534,8 @@ keymap('n', '[q', '<cmd>cprev<CR>zz')
 -- Splits
 keymap('n', '<leader>/', '<cmd>vsplit<CR>', { desc = 'Split vertically' })
 keymap('n', '<leader>-', '<cmd>split<CR>', { desc = 'Split horizontally' })
+
+keymap('n', '<Tab>', 'za', { desc = 'Toggle fold' })
 
 -- Best remap ever - move selected lines up and down without leaving the selection, a.k.a move code around
 keymap('v', 'J', ":m '>+1<CR>gv=gv")
@@ -921,6 +942,7 @@ wk.add({
 	{ '<leader>f', group = 'Find', icon = '󰍉' },
 	{ '<leader>ff', icon = '󰈞' },
 	{ '<leader>fw', icon = '󰈬' },
+	{ '<leader>fk', icon = '󰌌' },
 
 	{ '<leader>g', group = 'Git', icon = '󰊢' },
 	{ '<leader>gg', icon = '󰊢' },
@@ -953,6 +975,13 @@ wk.add({
 
 	{ '<leader>r', group = 'Refactor', icon = '󰑌' },
 	{ '<leader>rr', icon = '󰑌' },
+
+	{ '<leader>T', group = 'Todoist', icon = '󰄲' },
+	{ '<leader>Tt', icon = '󰄲' },
+	{ '<leader>Ty', icon = '󰃭' },
+	{ '<leader>Ta', icon = '󰐕' },
+	{ '<leader>Tl', icon = '󰍂' },
+	{ '<leader>TL', icon = '󰍃' },
 
 	{ '<leader>e', icon = '󰉋' },
 	{ '<leader>w', icon = '󰆓' },
@@ -1127,6 +1156,10 @@ require('mason-lspconfig').setup({
 
 require('render-markdown').setup({})
 require('blame').setup({})
+
+require('todoist').setup({
+	keymaps = { enable = false },
+})
 
 require('copilot').setup({
 	panel = { enabled = false },
