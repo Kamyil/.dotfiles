@@ -108,4 +108,4 @@ if [[ ! -f "$WEEK_FILE" ]]; then
 EOF
 fi
 
-kitty --single-instance --title "$WINDOW_TITLE" --directory ~ nvim "+normal G" "+startinsert!" "$WEEK_FILE"
+kitty --single-instance --title "$WINDOW_TITLE" --directory "$SECOND_BRAIN" nvim "+normal G" "+startinsert!" "$WEEK_FILE"
