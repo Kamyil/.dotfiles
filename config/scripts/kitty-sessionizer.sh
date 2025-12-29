@@ -8,6 +8,7 @@ SD_BASE_DIRS=(
 )
 SD_DEPTH=1
 SESSIONS_DIR="$HOME/.local/share/kitty/sessions"
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
 mkdir -p "$SESSIONS_DIR"
 
@@ -29,9 +30,36 @@ if [ -f "$HOME/.zsh_personal_dirs" ]; then
   dirs+=("${PERSONAL_DIRS[@]}")
 fi
 
+for symlink in "$XDG_CONFIG_HOME"/*; do
+  if [ -L "$symlink" ]; then
+    target=$(readlink "$symlink")
+    if [[ "$target" == */.dotfiles/* ]]; then
+      dirs+=("[config] $target")
+    fi
+  fi
+done
+
 selected=$(printf '%s\n' "${dirs[@]}" | fzf --prompt="Session> " --height=40% --reverse)
 
 if [ -z "$selected" ]; then
+  exit 0
+fi
+
+if [[ "$selected" == "[config] "* ]]; then
+  selected="${selected#\[config\] }"
+  session_name=$(basename "$selected")
+  session_file="$SESSIONS_DIR/$session_name.kitty-session"
+
+  if [ ! -f "$session_file" ]; then
+    cat > "$session_file" << EOF
+layout tall
+cd $selected
+launch --title "$session_name"
+launch nvim .
+EOF
+  fi
+
+  kitten @ action goto_session "$session_file"
   exit 0
 fi
 

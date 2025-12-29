@@ -1,13 +1,13 @@
 gui:
   theme:
     activeBorderColor:
-      - '#8ea49e'  # kanagawa-paper-ink cyan
+      - '#8a6850'  # pokke wood_brown (active frame)
       - bold
     inactiveBorderColor:
-      - '#393836'  # kanagawa-paper-ink dark gray
+      - '#4a5a60'  # pokke border (inactive frame)
     optionsTextColor:
-      - '#a292a3'  # kanagawa-paper-ink magenta
+      - '#6a8a9a'  # pokke quest_blue (menu accents)
     selectedLineBgColor:
-      - '#363646'  # kanagawa-paper-ink selection bg
+      - '#2E3838'  # pokke selection (HUD green)
     defaultFgColor:
-      - '#DCD7BA'  # kanagawa-paper-ink foreground
+      - '#d4c8b0'  # pokke cream parchment
