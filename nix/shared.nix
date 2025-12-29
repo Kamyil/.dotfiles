@@ -26,7 +26,8 @@ in
       q = "exit";
       lg = "lazygit";
       ldk = "lazydocker";
-      ls = "lsd";
+      ls = "eza --git --color=always --icons";
+      lt = "eza --git --color=always --icons --tree";
       finder = "open";
       grep = "grep --color=auto";
       reset_zsh = "source ~/.zshrc";
@@ -334,7 +335,7 @@ in
   # Core packages available on both systems
   home.packages = with pkgs; [
     # Terminal tools
-    fzf bat delta lazygit lazydocker
+    fzf bat delta lazygit lazydocker eza
   ];
 
   programs.home-manager.enable = true;

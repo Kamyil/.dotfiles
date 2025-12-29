@@ -1,5 +1,19 @@
 -- REQUIRES NVIM v0.10.0+ to work with lazy.nvim package manager
 
+-- MHFU-style border characters (from colors/mhfu-pokke.lua theme)
+-- Available styles: rounded, dashed, braille, blocks, stippled, shaded, diagonal
+local border_styles = {
+	rounded = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
+	dashed = { '┌', '╌', '┐', '╎', '┘', '╌', '└', '╎' },
+	braille = { '⣏', '⣉', '⣹', '⣿', '⣹', '⣉', '⣏', '⣿' },
+	blocks = { '▛', '▀', '▜', '▐', '▟', '▄', '▙', '▌' },
+	stippled = { '░', '░', '░', '░', '░', '░', '░', '░' },
+	shaded = { '▒', '▒', '▒', '▒', '▒', '▒', '▒', '▒' },
+	diagonal = { '╱', '─', '╲', '│', '╱', '─', '╲', '│' },
+}
+-- Choose your border style here:
+local borders = border_styles.blocks
+
 -- OPTIONS -- (boring but important stuff)
 vim.o.number = true
 vim.o.relativenumber = true
@@ -15,7 +29,7 @@ vim.o.swapfile = false                                 -- it's annoying when sav
 vim.o.showmode = false                                 -- Don't show mode in command line (lualine shows it)
 vim.g.mapleader = ' '                                  -- Map leader to Space key
 vim.g.maplocalleader = ' '                             -- Sets the local leader key to <space>
-vim.opt.winborder = 'rounded'
+-- vim.opt.winborder set after theme loads (see below)
 vim.o.clipboard = 'unnamedplus'                        -- For Windows it's gonna be different
 vim.g.have_nerd_font = true                            -- Enables Nerd Font support for icons
 vim.o.encoding = 'utf-8'                               -- Sets the internal encoding
@@ -66,7 +80,7 @@ vim.opt.smartindent = true -- make indenting smarter again
 vim.opt.spell = false                    -- Disable spell checking by default
 vim.opt.spelllang = { 'en_us', 'pl_PL' } -- Set spell check languages
 
-vim.opt.winborder = 'single'             -- Set window border style to single line
+-- vim.opt.winborder set after theme loads (see after colorscheme)
 vim.g.autoformat = false                 -- Disable autoformatting by default
 
 -- Enable default LSP inline diagnostic
@@ -152,17 +166,7 @@ require('lazy').setup({
 
 	{
 		'stevearc/oil.nvim',
-		opts = {
-			default_file_explorer = false,
-			view_options = {
-				show_hidden = true,
-			},
-			float = {
-				padding = 2,
-				max_width = 120,
-				max_height = 30,
-			},
-		},
+		-- opts configured after colorscheme loads (see below)
 		dependencies = { 'nvim-tree/nvim-web-devicons' },
 	}, -- File explorer in popup
 	'ibhagwan/fzf-lua',                -- Other very fast picker for other things than files
@@ -216,6 +220,9 @@ local keymap = vim.keymap.set
 require('fzf-lua').setup({
 	-- Load the 'ivy' profile first
 	'telescope',
+	winopts = {
+		border = borders,
+	},
 	oldfiles = {
 		-- In Telescope, when I used <leader>fr, it would load old buffers.
 		-- fzf lua does the same, but by default buffers visited in the current
@@ -287,7 +294,7 @@ keymap('n', '<leader>D', function()
 	vim.diagnostic.open_float(nil, {
 		scope = has_at_cursor and 'cursor' or 'line',
 		focusable = false,
-		border = 'single',
+		border = borders,
 		source = 'if_many',
 		close_events = { 'CursorMoved', 'InsertEnter', 'BufLeave', 'WinScrolled' },
 	})
@@ -316,6 +323,11 @@ require('snacks').setup({
 		layout = {
 			preset = 'telescope', -- Use telescope-like layout
 			backdrop = { transparent = false },
+		},
+		win = {
+			input = { border = borders },
+			list = { border = borders },
+			preview = { border = borders },
 		},
 		-- Configure sources
 		sources = {
@@ -584,11 +596,11 @@ require('kanagawa-paper').setup({
 
 	auto_plugins = true,
 })
--- -- FIXME: Kanagawa theme override: Override Svelte tag colors, to make them distinct
--- vim.schedule(function()
--- 	vim.api.nvim_set_hl(0, '@tag.svelte', { fg = '#8EA4A2', bold = false })
--- 	vim.api.nvim_set_hl(0, '@tag.attribute.svelte', { fg = '#B98D7B', bold = false })
--- end)
+-- FIXME: Kanagawa theme override: Override Svelte tag colors, to make them distinct
+vim.schedule(function()
+	vim.api.nvim_set_hl(0, '@tag.svelte', { fg = '#8EA4A2', bold = false })
+	vim.api.nvim_set_hl(0, '@tag.attribute.svelte', { fg = '#B98D7B', bold = false })
+end)
 
 -- require('mini.pick').setup()
 --
@@ -606,6 +618,7 @@ require('blink.cmp').setup({
 	},
 	completion = {
 		menu = {
+			border = borders,
 			draw = {
 				components = {
 					-- customize the drawing of kind icons
@@ -645,12 +658,20 @@ require('blink.cmp').setup({
 			auto_show = true,
 			auto_show_delay_ms = 250,
 			treesitter_highlighting = true,
+			window = {
+				border = borders,
+			},
 		},
 		list = {
 			selection = { preselect = false, auto_insert = true },
 		},
 	},
-	signature = { enabled = true },
+	signature = {
+		enabled = true,
+		window = {
+			border = borders,
+		},
+	},
 	sources = {
 		default = { 'lsp', 'path', 'snippets', 'buffer' },
 		per_filetype = {
@@ -689,12 +710,28 @@ require('vague').setup({
 -- })
 --
 -- Set colorscheme
--- vim.cmd('colorscheme kanagawa-paper-ink')
+vim.cmd('colorscheme kanagawa-paper-ink')
 -- vim.cmd('colorscheme catppuccin-mocha')
--- vim.cmd('colorscheme kanagawa-paper-ink')
 -- vim.cmd('colorscheme tokyonight-night')
-vim.cmd('colorscheme mhfu-pokke')
+-- vim.cmd('colorscheme mhfu-pokke')
 vim.cmd(':hi statusline guibg=NONE')
+
+-- Set global window border using theme borders (after colorscheme loads)
+vim.opt.winborder = borders
+
+-- Configure oil.nvim float border (after theme loads)
+require('oil').setup({
+	default_file_explorer = false,
+	view_options = {
+		show_hidden = true,
+	},
+	float = {
+		padding = 2,
+		max_width = 120,
+		max_height = 30,
+		border = borders,
+	},
+})
 
 -- Autocommands
 -- Highlight when yanking (copying) text
@@ -782,7 +819,12 @@ require('comfy-line-numbers').setup({
 })
 require('todo-comments').setup()
 require('nvim-highlight-colors').setup({})
-require('which-key').setup({ preset = 'helix' })
+require('which-key').setup({
+	preset = 'helix',
+	win = {
+		border = borders,
+	},
+})
 
 -- Configure indent-blankline for better indentation visualization
 require('ibl').setup({
