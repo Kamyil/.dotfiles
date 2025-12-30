@@ -24,7 +24,6 @@ if [[ ! -f "$WEEK_FILE" ]]; then
     DAYS_TO_MON=$((DOW - 1))
     
     if [[ -x /bin/date ]]; then
-        # macOS date
         MON_DATE=$(/bin/date -v-${DAYS_TO_MON}d +"%Y-%m-%d")
         TUE_DATE=$(/bin/date -v-${DAYS_TO_MON}d -v+1d +"%Y-%m-%d")
         WED_DATE=$(/bin/date -v-${DAYS_TO_MON}d -v+2d +"%Y-%m-%d")
@@ -32,15 +31,7 @@ if [[ ! -f "$WEEK_FILE" ]]; then
         FRI_DATE=$(/bin/date -v-${DAYS_TO_MON}d -v+4d +"%Y-%m-%d")
         SAT_DATE=$(/bin/date -v-${DAYS_TO_MON}d -v+5d +"%Y-%m-%d")
         SUN_DATE=$(/bin/date -v-${DAYS_TO_MON}d -v+6d +"%Y-%m-%d")
-        MON_MONTH=$(/bin/date -v-${DAYS_TO_MON}d +"%B")
-        TUE_MONTH=$(/bin/date -v-${DAYS_TO_MON}d -v+1d +"%B")
-        WED_MONTH=$(/bin/date -v-${DAYS_TO_MON}d -v+2d +"%B")
-        THU_MONTH=$(/bin/date -v-${DAYS_TO_MON}d -v+3d +"%B")
-        FRI_MONTH=$(/bin/date -v-${DAYS_TO_MON}d -v+4d +"%B")
-        SAT_MONTH=$(/bin/date -v-${DAYS_TO_MON}d -v+5d +"%B")
-        SUN_MONTH=$(/bin/date -v-${DAYS_TO_MON}d -v+6d +"%B")
     else
-        # GNU date (Linux)
         MON_DATE=$(date -d "monday this week" +"%Y-%m-%d")
         TUE_DATE=$(date -d "tuesday this week" +"%Y-%m-%d")
         WED_DATE=$(date -d "wednesday this week" +"%Y-%m-%d")
@@ -48,13 +39,6 @@ if [[ ! -f "$WEEK_FILE" ]]; then
         FRI_DATE=$(date -d "friday this week" +"%Y-%m-%d")
         SAT_DATE=$(date -d "saturday this week" +"%Y-%m-%d")
         SUN_DATE=$(date -d "sunday this week" +"%Y-%m-%d")
-        MON_MONTH=$(date -d "monday this week" +"%B")
-        TUE_MONTH=$(date -d "tuesday this week" +"%B")
-        WED_MONTH=$(date -d "wednesday this week" +"%B")
-        THU_MONTH=$(date -d "thursday this week" +"%B")
-        FRI_MONTH=$(date -d "friday this week" +"%B")
-        SAT_MONTH=$(date -d "saturday this week" +"%B")
-        SUN_MONTH=$(date -d "sunday this week" +"%B")
     fi
     
     cat > "$WEEK_FILE" << EOF
@@ -74,35 +58,39 @@ if [[ ! -f "$WEEK_FILE" ]]; then
 
 ---
 
+## Tasks
+
+- 
+
 ## Capture
 
 - 
 
-## Monday | $MON_MONTH | $MON_DATE
+## Monday | $MON_DATE
 
 - 
 
-## Tuesday | $TUE_MONTH | $TUE_DATE
+## Tuesday | $TUE_DATE
 
 - 
 
-## Wednesday | $WED_MONTH | $WED_DATE
+## Wednesday | $WED_DATE
 
 - 
 
-## Thursday | $THU_MONTH | $THU_DATE
+## Thursday | $THU_DATE
 
 - 
 
-## Friday | $FRI_MONTH | $FRI_DATE
+## Friday | $FRI_DATE
 
 - 
 
-## Saturday | $SAT_MONTH | $SAT_DATE
+## Saturday | $SAT_DATE
 
 - 
 
-## Sunday | $SUN_MONTH | $SUN_DATE
+## Sunday | $SUN_DATE
 
 - 
 EOF

@@ -1,0 +1,161 @@
+{
+  "Scheduled": {
+    "prefix": "sch",
+    "body": "@scheduled(${1:YYYY-MM-DD})",
+    "description": "Add scheduled date annotation"
+  },
+  "Scheduled Tomorrow": {
+    "prefix": "scht",
+    "body": "@scheduled(tomorrow)",
+    "description": "Schedule for tomorrow (expanded on capture)"
+  },
+  "Deadline": {
+    "prefix": "dead",
+    "body": "@deadline(${1:YYYY-MM-DD})",
+    "description": "Add deadline date annotation"
+  },
+  "Time Spent": {
+    "prefix": "tsp",
+    "body": "@time-spent(${1:start} - ${2:end}, ${3:duration})",
+    "description": "Time tracking annotation"
+  },
+  "Todo": {
+    "prefix": "todo",
+    "body": "- [ ] ${1:task}",
+    "description": "Unchecked todo item"
+  },
+  "Todo Scheduled": {
+    "prefix": "todos",
+    "body": "- [ ] ${1:task} @scheduled(${2:YYYY-MM-DD})",
+    "description": "Todo with scheduled date"
+  },
+  "Todo Deadline": {
+    "prefix": "todod",
+    "body": "- [ ] ${1:task} @deadline(${2:YYYY-MM-DD})",
+    "description": "Todo with deadline"
+  },
+  "Todo In Progress": {
+    "prefix": "todop",
+    "body": "- [-] ${1:task}",
+    "description": "In-progress todo item"
+  },
+  "Todo Done": {
+    "prefix": "todox",
+    "body": "- [x] ${1:task}",
+    "description": "Completed todo item"
+  },
+  "Hunt Item": {
+    "prefix": "hunt",
+    "body": "- ${1|⭐,⭐⭐,⭐⭐⭐,⭐⭐⭐⭐,⭐⭐⭐⭐⭐|} [${2|w,t,d,p,l|}] ${3:description}",
+    "description": "Hunt board item with stars and domain"
+  },
+  "Code Block": {
+    "prefix": "code",
+    "body": [
+      "```${1:language}",
+      "${2:code}",
+      "```"
+    ],
+    "description": "Fenced code block"
+  },
+  "Code Block Lua": {
+    "prefix": "codelua",
+    "body": [
+      "```lua",
+      "${1:code}",
+      "```"
+    ],
+    "description": "Lua code block"
+  },
+  "Code Block TypeScript": {
+    "prefix": "codets",
+    "body": [
+      "```typescript",
+      "${1:code}",
+      "```"
+    ],
+    "description": "TypeScript code block"
+  },
+  "Code Block Shell": {
+    "prefix": "codesh",
+    "body": [
+      "```bash",
+      "${1:code}",
+      "```"
+    ],
+    "description": "Shell code block"
+  },
+  "Link": {
+    "prefix": "link",
+    "body": "[${1:text}](${2:url})",
+    "description": "Markdown link"
+  },
+  "Image": {
+    "prefix": "img",
+    "body": "![${1:alt}](${2:url})",
+    "description": "Markdown image"
+  },
+  "Bold": {
+    "prefix": "bold",
+    "body": "**${1:text}**",
+    "description": "Bold text"
+  },
+  "Italic": {
+    "prefix": "italic",
+    "body": "*${1:text}*",
+    "description": "Italic text"
+  },
+  "Strikethrough": {
+    "prefix": "strike",
+    "body": "~~${1:text}~~",
+    "description": "Strikethrough text"
+  },
+  "Highlight": {
+    "prefix": "highlight",
+    "body": "==${1:text}==",
+    "description": "Highlighted text"
+  },
+  "Blockquote": {
+    "prefix": "quote",
+    "body": "> ${1:text}",
+    "description": "Blockquote"
+  },
+  "Horizontal Rule": {
+    "prefix": "hr",
+    "body": "---",
+    "description": "Horizontal rule"
+  },
+  "Table": {
+    "prefix": "table",
+    "body": [
+      "| ${1:Header 1} | ${2:Header 2} |",
+      "|-------------|-------------|",
+      "| ${3:Cell 1}  | ${4:Cell 2}  |"
+    ],
+    "description": "Markdown table"
+  },
+  "Callout Note": {
+    "prefix": "note",
+    "body": [
+      "> [!NOTE]",
+      "> ${1:content}"
+    ],
+    "description": "GitHub-style note callout"
+  },
+  "Callout Warning": {
+    "prefix": "warn",
+    "body": [
+      "> [!WARNING]",
+      "> ${1:content}"
+    ],
+    "description": "GitHub-style warning callout"
+  },
+  "Callout Tip": {
+    "prefix": "tip",
+    "body": [
+      "> [!TIP]",
+      "> ${1:content}"
+    ],
+    "description": "GitHub-style tip callout"
+  }
+}
