@@ -205,6 +205,7 @@ require('lazy').setup({
 	'epwalsh/obsidian.nvim',
 	'bullets-vim/bullets.vim',
 	'MeanderingProgrammer/render-markdown.nvim',
+	'bngarren/checkmate.nvim',
 
 	'ThePrimeagen/refactoring.nvim', -- Refactoring
 
@@ -433,9 +434,14 @@ keymap('n', '<leader>TL', ':TodoistLogout<CR>', { desc = '[T]odoist [L]ogout' })
 local second_brain = vim.fn.expand('~/second-brain')
 local weekly_dir = second_brain .. '/weekly'
 
+local function get_iso_week_file()
+  local year = vim.fn.system('date +%G'):gsub('%s+', '')
+  local week = vim.fn.system('date +%V'):gsub('%s+', '')
+  return weekly_dir .. '/' .. year .. '-W' .. week .. '.md'
+end
+
 keymap('n', '<leader>ni', function()
-  local week_file = weekly_dir .. '/' .. os.date('%Y') .. '-W' .. os.date('%V') .. '.md'
-  vim.cmd('edit ' .. week_file)
+  vim.cmd('edit ' .. get_iso_week_file())
   vim.cmd('normal! G')
 end, { desc = '[N]ote [I]nbox (current week)' })
 
@@ -447,9 +453,8 @@ keymap('n', '<leader>nw', function()
 end, { desc = '[N]ote [W]eekly browse' })
 
 keymap('n', '<leader>np', function()
-  local prev_week = os.date('%Y-W%V', os.time() - 7 * 24 * 60 * 60)
-  local week_file = weekly_dir .. '/' .. prev_week .. '.md'
-  vim.cmd('edit ' .. week_file)
+  local prev_week = vim.fn.system('date -v-7d +%G-W%V'):gsub('%s+', '')
+  vim.cmd('edit ' .. weekly_dir .. '/' .. prev_week .. '.md')
 end, { desc = '[N]ote [P]revious week' })
 
 keymap('n', '<leader>nf', function()
@@ -500,6 +505,16 @@ keymap('n', '<leader>ntp', function()
     vim.api.nvim_set_current_line((line:gsub('%- %[x%]', '- [-]')))
   end
 end, { desc = '[N]ote [T]odo in progress' })
+
+local capture = require('custom.capture')
+local timetracking = require('custom.timetracking')
+local agenda = require('custom.agenda')
+
+keymap('n', '<leader>nc', capture.capture, { desc = '[N]ote [C]apture to weekly' })
+keymap('n', '<leader>na', agenda.open, { desc = '[N]ote [A]genda view' })
+
+keymap('n', '<leader>nts', timetracking.start, { desc = '[N]ote [T]ime [S]tart' })
+keymap('n', '<leader>nte', timetracking.stop, { desc = '[N]ote [T]ime [E]nd' })
 
 -- Harpoon setup (quick file switching between files that I currently work on)
 local harpoon = require('harpoon')
@@ -711,7 +726,7 @@ require('marks').setup()
 require('nvim-autopairs').setup()
 
 require('blink.cmp').setup({
-	-- preset = 'enter',
+	keymap = { preset = 'enter' },
 	fuzzy = {
 		implementation = 'prefer_rust',
 		prebuilt_binaries = {
@@ -765,7 +780,7 @@ require('blink.cmp').setup({
 			},
 		},
 		list = {
-			selection = { preselect = false, auto_insert = true },
+			selection = { preselect = false, auto_insert = false },
 		},
 	},
 	signature = {
@@ -968,10 +983,14 @@ wk.add({
 	{ '<leader>np', icon = '󰒮' },
 	{ '<leader>nf', icon = '󰈞' },
 	{ '<leader>ns', icon = '󰍉' },
-	{ '<leader>nt', group = 'Todo', icon = '󰄲' },
+	{ '<leader>nc', icon = '󰄀' },
+	{ '<leader>na', icon = '󰃭' },
+	{ '<leader>nt', group = 'Todo/Time', icon = '󰄲' },
 	{ '<leader>ntt', icon = '󰐕' },
 	{ '<leader>ntx', icon = '󰄬' },
 	{ '<leader>ntp', icon = '󰦖' },
+	{ '<leader>nts', icon = '󱎫' },
+	{ '<leader>nte', icon = '󱎬' },
 
 	{ '<leader>r', group = 'Refactor', icon = '󰑌' },
 	{ '<leader>rr', icon = '󰑌' },
@@ -1046,6 +1065,7 @@ require('obsidian').setup({
 	},
 })
 
+require('checkmate').setup({})
 
 
 local servers = {
@@ -1296,6 +1316,11 @@ require('lualine').setup({
 	sections = {
 		lualine_a = {
 			{ 'mode', fmt = function(str) return str:sub(1, 1) end },
+		},
+		lualine_b = {
+			{ 'branch', icon = '' },
+			{ harpoon_display, color = {} },
+			{ timetracking.statusline, color = { fg = '#f7768e' } },
 		},
 		lualine_b = {
 			{ 'branch', icon = '' },
