@@ -206,6 +206,16 @@ require('lazy').setup({
 	'bullets-vim/bullets.vim',
 	'MeanderingProgrammer/render-markdown.nvim',
 	'bngarren/checkmate.nvim',
+	{
+		'Kamyil/markdown-agenda.nvim',
+		lazy = false,
+		opts = {
+			directory = '~/second-brain',
+			keymaps = {
+				open = false,
+			},
+		},
+	},
 
 	'ThePrimeagen/refactoring.nvim', -- Refactoring
 
@@ -508,10 +518,9 @@ end, { desc = '[N]ote [T]odo in progress' })
 
 local capture = require('custom.capture')
 local timetracking = require('custom.timetracking')
-local agenda = require('custom.agenda')
 
 keymap('n', '<leader>nc', capture.capture, { desc = '[N]ote [C]apture to weekly' })
-keymap('n', '<leader>na', agenda.open, { desc = '[N]ote [A]genda view' })
+keymap('n', '<leader>na', '<cmd>MarkdownAgenda<cr>', { desc = '[N]ote [A]genda view' })
 
 keymap('n', '<leader>nts', timetracking.start, { desc = '[N]ote [T]ime [S]tart' })
 keymap('n', '<leader>nte', timetracking.stop, { desc = '[N]ote [T]ime [E]nd' })
