@@ -39,7 +39,10 @@ for symlink in "$XDG_CONFIG_HOME"/*; do
   fi
 done
 
-selected=$(printf '%s\n' "${dirs[@]}" | fzf --prompt="Session> " --height=40% --reverse)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/kitty-fzf-theme.sh"
+
+selected=$(printf '%s\n' "${dirs[@]}" | fzf $FZF_POKKE_OPTS --prompt="Session> " --height=40% --reverse)
 
 if [ -z "$selected" ]; then
   exit 0
