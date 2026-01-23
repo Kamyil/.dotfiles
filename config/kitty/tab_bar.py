@@ -9,8 +9,29 @@ from kitty.utils import color_as_int
 
 ICON_GIT = ""
 
-LEFT_SEP = "▌"
-RIGHT_SEP = "▐"
+# MHFU-style hexagonal/diamond tab separators
+# Inspired by Monster Hunter Freedom Unite item selection UI
+#
+# Active tab design:   ◆━━━━━━━━━━◆
+#                      ┃  content  ┃
+#                      ◆━━━━━━━━━━◆
+#
+# Using diamond shapes to evoke the carved item slots
+
+# Diamond/hex separators for the ornate look
+LEFT_CAP_ACTIVE = "◆┃"
+RIGHT_CAP_ACTIVE = "┃◆"
+LEFT_CAP_INACTIVE = "◇│"
+RIGHT_CAP_INACTIVE = "│◇"
+
+# Decorative rivets for the bar edges
+RIVET = "•"
+BORDER_H = "━"
+BORDER_V = "┃"
+
+# Legacy separators (kept for reference)
+LEFT_SEP = "◀"
+RIGHT_SEP = "▶"
 
 SESSION_COLORS = [
     0x9a7050,
@@ -113,12 +134,24 @@ def draw_tab(
     default_bg = as_rgb(color_as_int(draw_data.default_bg))
     session_name = getattr(tab, 'session_name', '') or ''
     active_session = getattr(tab, 'active_session_name', '') or session_name
+    
+    # MHFU color palette additions
+    border_color = as_rgb(0x6a5040)  # wood_dark - ornate border
+    rivet_color = as_rgb(0xc4a860)   # stamina_bar - golden rivets
+    diamond_active = as_rgb(0xb89060)  # wood_light - glowing diamond
+    diamond_inactive = as_rgb(0x4a4038)  # dimmed diamond
 
-    if index == 1 and active_session:
-        session_color = as_rgb(_get_session_color(active_session))
+    # Draw session indicator with decorative border on first tab
+    if index == 1:
         screen.cursor.bg = default_bg
-        screen.cursor.fg = session_color
-        screen.draw(f" {active_session} │")
+        screen.cursor.fg = rivet_color
+        screen.draw(f"{RIVET}")
+        if active_session:
+            session_color = as_rgb(_get_session_color(active_session))
+            screen.cursor.fg = session_color
+            screen.draw(f" {active_session} ")
+        screen.cursor.fg = rivet_color
+        screen.draw(f"{RIVET} ")
 
     if tab.is_active:
         if session_name:
@@ -126,53 +159,58 @@ def draw_tab(
         else:
             tab_bg = as_rgb(color_as_int(draw_data.active_bg))
         tab_fg = as_rgb(color_as_int(draw_data.active_fg))
+        left_cap = LEFT_CAP_ACTIVE
+        right_cap = RIGHT_CAP_ACTIVE
+        diamond_color = diamond_active
     else:
         tab_bg = as_rgb(color_as_int(draw_data.inactive_bg))
         tab_fg = as_rgb(color_as_int(draw_data.inactive_fg))
+        left_cap = LEFT_CAP_INACTIVE
+        right_cap = RIGHT_CAP_INACTIVE
+        diamond_color = diamond_inactive
 
+    # Spacing between tabs
     if screen.cursor.x > 0:
         screen.cursor.bg = default_bg
-        screen.cursor.fg = default_bg
-        screen.draw("  ")
+        screen.cursor.fg = border_color
+        screen.draw(" ")
 
+    # Draw left diamond cap ◆┃ or ◇│
     screen.cursor.bg = default_bg
-    screen.cursor.fg = tab_bg
-    screen.draw(LEFT_SEP)
+    screen.cursor.fg = diamond_color
+    screen.draw(left_cap[0])  # Diamond
+    screen.cursor.fg = border_color
+    screen.cursor.bg = tab_bg
+    screen.draw(left_cap[1])  # Border line
 
+    # Tab content
     screen.cursor.bg = tab_bg
     screen.cursor.fg = tab_fg
 
     panes_info = _get_all_panes_info(tab.tab_id)
-    content = f"  {index}: {panes_info}  "
+    content = f" {index}: {panes_info} "
     screen.draw(content)
 
+    # Truncate if needed
     extra = screen.cursor.x - before - max_tab_length
     if extra > 0:
         screen.cursor.x -= extra + 1
         screen.draw("…")
 
-    next_tab = extra_data.next_tab
-    if is_last or not next_tab:
-        next_bg = default_bg
-    else:
-        if next_tab.is_active:
-            next_session = getattr(next_tab, 'session_name', '') or ''
-            if next_session:
-                next_bg = as_rgb(_get_session_color(next_session))
-            else:
-                next_bg = as_rgb(color_as_int(draw_data.active_bg))
-        else:
-            next_bg = as_rgb(color_as_int(draw_data.inactive_bg))
-
-    screen.cursor.fg = tab_bg
-    screen.cursor.bg = next_bg
-    screen.draw(RIGHT_SEP)
+    # Draw right diamond cap ┃◆ or │◇
+    screen.cursor.fg = border_color
+    screen.cursor.bg = default_bg
+    screen.draw(right_cap[0])  # Border line
+    screen.cursor.fg = diamond_color
+    screen.draw(right_cap[1])  # Diamond
 
     end = screen.cursor.x
 
+    # Fill remaining space on last tab
     if is_last and end < screen.columns:
         screen.cursor.bg = default_bg
-        screen.cursor.fg = 0
-        screen.draw(" ")
+        screen.cursor.fg = rivet_color
+        # Add trailing rivet decoration
+        screen.draw(f" {RIVET}")
 
     return end

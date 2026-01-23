@@ -1,7 +1,7 @@
 -- REQUIRES NVIM v0.10.0+ to work with lazy.nvim package manager
 
 -- MHFU-style border characters (from colors/mhfu-pokke.lua theme)
--- Available styles: rounded, dashed, braille, blocks, stippled, shaded, diagonal
+-- Available styles: rounded, dashed, braille, blocks, stippled, shaded, diagonal, mhfu
 local border_styles = {
 	rounded = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
 	dashed = { '┌', '╌', '┐', '╎', '┘', '╌', '└', '╎' },
@@ -10,9 +10,16 @@ local border_styles = {
 	stippled = { '░', '░', '░', '░', '░', '░', '░', '░' },
 	shaded = { '▒', '▒', '▒', '▒', '▒', '▒', '▒', '▒' },
 	diagonal = { '╱', '─', '╲', '│', '╱', '─', '╲', '│' },
+	-- MHFU Diamond style - matches Kitty tab bar aesthetic
+	-- ◆━━━━━━━━━━◆
+	-- ┃ content  ┃
+	-- ◆━━━━━━━━━━◆
+	mhfu = { '◆', '━', '◆', '┃', '◆', '━', '◆', '┃' },
+	-- MHFU with thinner borders (alternative)
+	mhfu_light = { '◇', '─', '◇', '│', '◇', '─', '◇', '│' },
 }
 -- Choose your border style here:
-local borders = border_styles.blocks
+local borders = border_styles.mhfu
 
 -- OPTIONS -- (boring but important stuff)
 vim.o.number = true
@@ -219,12 +226,72 @@ require('lazy').setup({
 
 	'ThePrimeagen/refactoring.nvim', -- Refactoring
 
+	{ 'mbbill/undotree', cmd = 'UndotreeToggle' }, -- Undo history visualizer
+
 	'NickvanDyke/opencode.nvim',  -- Opencode AI assistant integration
 
 	{
 		'mshiyaf/todoist.nvim',
 		dependencies = { 'ibhagwan/fzf-lua' },
 		lazy = false,
+	},
+
+	{
+		'TheNoeTrevino/haunt.nvim',
+		opts = {
+			sign = '󱙝',
+			sign_hl = 'DiagnosticInfo',
+			virt_text_hl = 'HauntAnnotation',
+			annotation_prefix = ' 󰆉 ',
+			line_hl = nil,
+			virt_text_pos = 'eol',
+			data_dir = nil,
+			picker_keys = {
+				delete = { key = 'd', mode = { 'n' } },
+				edit_annotation = { key = 'a', mode = { 'n' } },
+			},
+		},
+		init = function()
+			local haunt = require('haunt.api')
+			local haunt_picker = require('haunt.picker')
+			local map = vim.keymap.set
+			local prefix = '<leader>h'
+
+			-- annotations
+			map('n', prefix .. 'a', function()
+				haunt.annotate()
+			end, { desc = 'Annotate' })
+
+			map('n', prefix .. 't', function()
+				haunt.toggle_annotation()
+			end, { desc = 'Toggle annotation' })
+
+			map('n', prefix .. 'T', function()
+				haunt.toggle_all_lines()
+			end, { desc = 'Toggle all annotations' })
+
+			map('n', prefix .. 'd', function()
+				haunt.delete()
+			end, { desc = 'Delete bookmark' })
+
+			map('n', prefix .. 'C', function()
+				haunt.clear_all()
+			end, { desc = 'Delete all bookmarks' })
+
+			-- move
+			map('n', prefix .. 'p', function()
+				haunt.prev()
+			end, { desc = 'Previous bookmark' })
+
+			map('n', prefix .. 'n', function()
+				haunt.next()
+			end, { desc = 'Next bookmark' })
+
+			-- picker
+			map('n', prefix .. 'l', function()
+				haunt_picker.show()
+			end, { desc = 'Show Picker' })
+		end,
 	},
 }, {
 	defaults = {
@@ -399,6 +466,7 @@ nvim_tmux_nav.setup({
 
 -- keymap('n', '<leader>o', ':update<CR> :source<CR>') -- source file inline (most useful for editing neovim config file
 keymap('n', '<leader>w', ':write<CR>')
+keymap('n', '<leader>u', '<cmd>UndotreeToggle<CR>', { desc = 'Toggle [U]ndotree' })
 keymap('n', '<leader>q', ':qa<CR>', { desc = 'Quit Neovim completely' })
 
 require('refactoring').setup({
@@ -515,6 +583,17 @@ keymap('n', '<leader>ntp', function()
     vim.api.nvim_set_current_line((line:gsub('%- %[x%]', '- [-]')))
   end
 end, { desc = '[N]ote [T]odo in progress' })
+
+keymap('x', '<leader>nl', function()
+  vim.cmd('normal! "zy')
+  local text = vim.fn.getreg('z')
+
+  vim.ui.input({ prompt = 'Link URL: ' }, function(url)
+    if url and url ~= '' then
+      vim.cmd('normal! gv"_c[' .. text .. '](' .. url .. ')')
+    end
+  end)
+end, { desc = '[N]ote [L]ink from selection' })
 
 local capture = require('custom.capture')
 local timetracking = require('custom.timetracking')
@@ -842,6 +921,10 @@ vim.cmd('colorscheme kanagawa-paper-ink')
 -- vim.cmd('colorscheme mhfu-pokke')
 vim.cmd(':hi statusline guibg=NONE')
 
+-- MHFU border highlight - warm wood tones matching Kitty tab bar
+vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#b89060', bg = 'NONE' })
+vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#1a1816' })
+
 -- Set global window border using theme borders (after colorscheme loads)
 vim.opt.winborder = borders
 
@@ -856,6 +939,9 @@ require('oil').setup({
 		max_width = 120,
 		max_height = 30,
 		border = borders,
+	},
+	keymaps = {
+		['q'] = 'actions.close',
 	},
 })
 
@@ -1003,6 +1089,8 @@ wk.add({
 
 	{ '<leader>r', group = 'Refactor', icon = '󰑌' },
 	{ '<leader>rr', icon = '󰑌' },
+
+	{ '<leader>u', icon = '󰄬' },
 
 	{ '<leader>T', group = 'Todoist', icon = '󰄲' },
 	{ '<leader>Tt', icon = '󰄲' },
@@ -1228,6 +1316,31 @@ require('barbecue').setup({
 })
 
 -- Lualine setup
+local mhfu_theme = {
+	normal = {
+		a = { fg = '#1a1816', bg = '#9a7050', gui = 'bold' },
+		b = { fg = '#d4c8b0', bg = '#2a2520' },
+		c = { fg = '#9a8a70', bg = '#1a1816' },
+	},
+	insert = {
+		a = { fg = '#1a1816', bg = '#7a9a6a', gui = 'bold' },
+	},
+	visual = {
+		a = { fg = '#1a1816', bg = '#c4a860', gui = 'bold' },
+	},
+	replace = {
+		a = { fg = '#1a1816', bg = '#a85a5a', gui = 'bold' },
+	},
+	command = {
+		a = { fg = '#1a1816', bg = '#b89060', gui = 'bold' },
+	},
+	inactive = {
+		a = { fg = '#6a5040', bg = '#1a1816' },
+		b = { fg = '#6a5040', bg = '#1a1816' },
+		c = { fg = '#6a5040', bg = '#1a1816' },
+	},
+}
+
 local function filetype_with_icon()
 	local icon, icon_color = require('nvim-web-devicons').get_icon_color_by_filetype(vim.bo.filetype)
 	local filetype = vim.bo.filetype ~= '' and vim.bo.filetype or 'no ft'
@@ -1313,8 +1426,8 @@ end
 
 require('lualine').setup({
 	options = {
-		theme = 'iceberg_dark',
-		component_separators = { left = '', right = '' },
+		theme = mhfu_theme,
+		component_separators = { left = '│', right = '│' },
 		section_separators = { left = '', right = '' },
 		globalstatus = true,
 		icons_enabled = true,
