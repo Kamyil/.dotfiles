@@ -107,15 +107,18 @@ in
         homebrew = {
           enable = true;
           onActivation.cleanup = "uninstall";
-          taps = [ "nikitabobko/tap" "FelixKratz/formulae" ];
+          taps = [ "nikitabobko/tap" "FelixKratz/formulae" "steveyegge/beads" "steipete/tap" ];
           brews = [
             "sketchybar"
             "codex"
             "vercel-cli"
             "jiratui"
+			"bd"
+			"stripe-cli"
           ];
           casks = [
             # Keep these that aren't available in nixpkgs or ARM macOS
+			  "chromium"
             "firefox"
             "vivaldi"
             "libreoffice"
@@ -134,6 +137,8 @@ in
             "postman"
 			"opencode-desktop"
 			"ovim" # macOS system-wide Vim keybindings and modal editor.
+			"emacs"
+			"codexbar"
           ];
         };
       })

@@ -72,10 +72,10 @@ inner.horizontal = 10
 inner.vertical = 10
 
 # Per-monitor configuration for outer gaps
-outer.top = [{ monitor."LG HDR 4K" = 10 }, { monitor."Built-in Retina Display" = 10 }, 10]
-outer.left = [{ monitor."LG HDR 4K" = 20 }, { monitor."Built-in Retina Display" = 5 }, 5]
-outer.bottom = [{ monitor."LG HDR 4K" = 10 }, { monitor."Built-in Retina Display" = 5 }, 5]
-outer.right = [{ monitor."LG HDR 4K" = 20 }, { monitor."Built-in Retina Display" = 5 }, 10]
+outer.top = [{ monitor."LG HDR 4K" = 10 }, { monitor."Built-in Retina Display" = 10 }, 40]
+outer.left = [{ monitor."LG HDR 4K" = 20 }, { monitor."Built-in Retina Display" = 5 }, 0]
+outer.bottom = [{ monitor."LG HDR 4K" = 10 }, { monitor."Built-in Retina Display" = 5 }, 0]
+outer.right = [{ monitor."LG HDR 4K" = 20 }, { monitor."Built-in Retina Display" = 5 }, 0]
 
 
 # See https://nikitabobko.github.io/AeroSpace/guide#exec-env-vars
