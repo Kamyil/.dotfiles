@@ -21,7 +21,7 @@ in
 {
   nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
     inherit system;
-    specialArgs = { inherit pkgs; };
+    specialArgs = { inherit pkgs nixpkgs; };
     modules = [
       ./configuration.nix
 
