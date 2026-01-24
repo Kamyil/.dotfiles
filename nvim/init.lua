@@ -39,6 +39,7 @@ vim.g.maplocalleader = ' '                             -- Sets the local leader 
 -- vim.opt.winborder set after theme loads (see below)
 vim.o.clipboard = 'unnamedplus'                        -- For Windows it's gonna be different
 vim.g.have_nerd_font = true                            -- Enables Nerd Font support for icons
+vim.o.guifont = 'Berkeley Mono:h12'
 vim.o.encoding = 'utf-8'                               -- Sets the internal encoding
 vim.o.fileencoding = 'utf-8'                           -- Sets the encoding for the current file
 vim.o.fileencodings = 'utf-8'                          -- Sets the list of encodings to try when reading a file
