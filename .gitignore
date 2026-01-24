@@ -2,5 +2,4 @@ config/lazygit/state.yml
 config/lazygit/state.yml
 nvim/startup.log
 config/tmux/plugins
-wezterm/colors
 pynvim
