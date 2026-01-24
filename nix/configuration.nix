@@ -35,8 +35,6 @@
     };
   };
 
-  # SPICE guest agent for clipboard sharing betwen host and vm
-  services.spice-vdagentd.enable = true;
 
   # Sreenshare, filepickers etc. (desktop portals)
   xdg.portal.enable = true;
@@ -56,11 +54,6 @@
   # Enable OpenGL GPU acceleration
   hardware.graphics.enable = true;
 
-  boot.initrd.kernelModules = [ "virtio_gpu" ];
-  services.xserver.videoDrivers = [ "virtio" ];
-
-  # Set default resolution for virtio display
-  boot.kernelParams = [ "video=Virtual-1:1920x1200" ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -119,6 +112,8 @@
     gnumake
 
     vivaldi
+    slack
+    keepassxc
 
     # Shell tools
     starship

@@ -2,7 +2,7 @@
 { self, nixpkgs, nixpkgs-stable, home-manager, neovim-nightly-overlay, dotfiles, rust-overlay, lib, ... }:
 
 let
-  system = builtins.currentSystem or "aarch64-linux";
+  system = builtins.currentSystem or "x86_64-linux";
   
   # Helper function to create packages for a given system
   mkPkgs = system: import nixpkgs {
@@ -14,6 +14,7 @@ let
   pkgs = mkPkgs system;
   pkgsStable = import nixpkgs-stable {
     inherit system;
+    overlays = [ rust-overlay.overlays.default ];
     config.allowUnfree = true;
   };
 in
@@ -43,16 +44,73 @@ in
           home.homeDirectory = lib.mkForce "/home/kamil";
 
           # NixOS-specific packages
-          home.packages = (with pkgs; [
+          home.packages = (with pkgsStable; [
             # Development tools
             gcc docker
-            (pkgs.rust-bin.nightly.latest.default.override {
+            go yarn pnpm deno fnm wrangler
+            lua luarocks python3 php
+            zig stylua lua-language-server
+            rustup
+            vscode
+            (pkgsStable.rust-bin.nightly.latest.default.override {
               extensions = [ "rust-src" "cargo" "rustc" ];
             })
-            
+
+            # Terminal tools
+            yazi tmux
+
+            # Shell and CLI utilities
+            gh tree fd difftastic just jq yq
+            gnugrep gnused coreutils
+
+            # System monitoring and management
+            htop fastfetch pfetch neofetch
+
+            # File and archive tools
+            unzip p7zip trash-cli
+
+            # Network and system tools
+            nmap wireshark-cli socat
+
+            # Container tools
+            podman podman-compose
+
+            # Media and graphics
+            ffmpeg imagemagick
+
+            # Database and data tools
+            sqlite postgresql
+
+            # Text editors and viewers
+            helix
+
+            # Version control extras
+            git-extras tig
+
+            # Virtualization and containers
+            qemu
+
+            # System utilities
+            stow cowsay figlet fortune lolcat
+
+            # Libraries
+            libssh2
+
+            # Terminal multiplexers and sessions
+            zellij
+
+            # File synchronization and transfer
+            rsync openssh sshfs
+
+            # Other useful tools
+            tldr watchexec
+            nerd-fonts.geist-mono
+
             # Network tools
             impala # TUI for managing WiFi
           ]) ++ [
+            # Unstable-only packages
+            pkgs.opencode
             # packages from unstable branch
             neovim-nightly-overlay.packages.${system}.default
           ];
@@ -113,7 +171,7 @@ in
         # fonts.fontconfig.defaultFonts.monospace = [ "Berkeley Mono" ];
 
         # Nice defaults
-        xdg.enable = false;
+        xdg.enable = true;
         };
 
         # Per-OS gating for files you only want on macOS / Linux
