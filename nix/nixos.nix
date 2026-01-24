@@ -43,77 +43,80 @@ in
           
           home.homeDirectory = lib.mkForce "/home/kamil";
 
-          # NixOS-specific packages
-          home.packages = (with pkgsStable; [
-            # Development tools
-            gcc docker
-            go yarn pnpm deno fnm wrangler
-            lua luarocks python3 php
-            zig stylua lua-language-server
-            rustup
-            vscode
-            (pkgsStable.rust-bin.nightly.latest.default.override {
-              extensions = [ "rust-src" "cargo" "rustc" ];
-            })
+           # NixOS-specific packages
+           home.packages = (with pkgsStable; [
+             # Development tools
+             gcc docker
+             go yarn pnpm deno fnm wrangler
+             lua luarocks python3 php
+             zig stylua lua-language-server
+             rustup
+             vscode
+             (pkgsStable.rust-bin.nightly.latest.default.override {
+               extensions = [ "rust-src" "cargo" "rustc" ];
+             })
 
-            # Terminal tools
-            yazi tmux
+             # Terminal tools
+             yazi tmux
 
-            # Shell and CLI utilities
-            gh tree fd difftastic just jq yq
-            gnugrep gnused coreutils
+             # Shell and CLI utilities
+             gh tree fd difftastic just jq yq
+             gnugrep gnused coreutils
 
-            # System monitoring and management
-            htop fastfetch pfetch neofetch
+             # System monitoring and management
+             htop fastfetch pfetch neofetch
 
-            # File and archive tools
-            unzip p7zip trash-cli
+             # File and archive tools
+             unzip p7zip trash-cli
 
-            # Network and system tools
-            nmap wireshark-cli socat
+             # Network and system tools
+             nmap wireshark-cli socat
 
-            # Container tools
-            podman podman-compose
+             # Container tools
+             podman podman-compose
 
-            # Media and graphics
-            ffmpeg imagemagick
+             # Media and graphics
+             ffmpeg imagemagick
 
-            # Database and data tools
-            sqlite postgresql
+             # Database and data tools
+             sqlite postgresql
 
-            # Text editors and viewers
-            helix
+             # Text editors and viewers
+             helix
 
-            # Version control extras
-            git-extras tig
+             # Version control extras
+             git-extras tig
 
-            # Virtualization and containers
-            qemu
+             # Virtualization and containers
+             qemu
 
-            # System utilities
-            stow cowsay figlet fortune lolcat
+             # System utilities
+             stow cowsay figlet fortune lolcat
 
-            # Libraries
-            libssh2
+             # Libraries
+             libssh2
 
-            # Terminal multiplexers and sessions
-            zellij
+             # Terminal multiplexers and sessions
+             zellij
 
-            # File synchronization and transfer
-            rsync openssh sshfs
+             # File synchronization and transfer
+             rsync openssh sshfs
 
-            # Other useful tools
-            tldr watchexec
-            nerd-fonts.geist-mono
+             # Other useful tools
+             tldr watchexec
+             nerd-fonts.geist-mono
 
-            # Network tools
-            impala # TUI for managing WiFi
-          ]) ++ [
-            # Unstable-only packages
-            pkgs.opencode
-            # packages from unstable branch
-            neovim-nightly-overlay.packages.${system}.default
-          ];
+             # Network tools
+             impala # TUI for managing WiFi
+             
+             # Cursor themes - minimal macOS-like style
+             capitaine-cursors
+           ]) ++ [
+             # Unstable-only packages
+             pkgs.opencode
+             # packages from unstable branch
+             neovim-nightly-overlay.packages.${system}.default
+           ];
 
           # NixOS-specific zsh additions
           programs.zsh.shellAliases = lib.mkMerge [
@@ -136,23 +139,31 @@ in
             esac
           '';
 
-          # Linux-specific configs
-        } // lib.optionalAttrs (builtins.match ".*linux.*" system != null) {
+           # Linux-specific configs
+         } // lib.optionalAttrs (builtins.match ".*linux.*" system != null) {
 
-        home.file."second-brain/.keep".text = "";
+         home.file."second-brain/.keep".text = "";
 
-        # Commented out font configuration as noted in original
-        # home.file.".local/share/fonts/BerkeleyMono-Regular.otf".source = berkeley-font + "/BerkeleyMono-Regular.otf";
-        # home.file.".local/share/fonts/BerkeleyMono-Bold.otf".source = berkeley-font + "/BerkeleyMono-Bold.otf";
-        # home.file.".local/share/fonts/BerkeleyMono-Oblique.otf".source = berkeley-font + "/BerkeleyMono-Oblique.otf";
-        # home.file.".local/share/fonts/BerkeleyMono-Bold-Oblique.otf".source = berkeley-font + "/BerkeleyMono-Bold-Oblique.otf";
+         # Commented out font configuration as noted in original
+         # home.file.".local/share/fonts/BerkeleyMono-Regular.otf".source = berkeley-font + "/BerkeleyMono-Regular.otf";
+         # home.file.".local/share/fonts/BerkeleyMono-Bold.otf".source = berkeley-font + "/BerkeleyMono-Bold.otf";
+         # home.file.".local/share/fonts/BerkeleyMono-Oblique.otf".source = berkeley-font + "/BerkeleyMono-Oblique.otf";
+         # home.file.".local/share/fonts/BerkeleyMono-Bold-Oblique.otf".source = berkeley-font + "/BerkeleyMono-Bold-Oblique.otf";
 
-        fonts.fontconfig.enable = true;
-        # fonts.fontconfig.defaultFonts.monospace = [ "Berkeley Mono" ];
+         fonts.fontconfig.enable = true;
+         # fonts.fontconfig.defaultFonts.monospace = [ "Berkeley Mono" ];
 
-        # Nice defaults
-        xdg.enable = true;
-        };
+         # GTK cursor theme - minimal macOS-like style
+         gtk.enable = true;
+         gtk.cursorTheme = {
+           package = pkgsStable.capitaine-cursors;
+           name = "capitaine-cursors";
+           size = 24;
+         };
+
+         # Nice defaults
+         xdg.enable = true;
+         };
 
         # Per-OS gating for files you only want on macOS / Linux
         # Example: only install yabai/skhd configs on macOS
