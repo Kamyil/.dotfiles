@@ -153,6 +153,14 @@ in
          fonts.fontconfig.enable = true;
          # fonts.fontconfig.defaultFonts.monospace = [ "Berkeley Mono" ];
 
+         # Set cursor theme environment variables for better compatibility
+         home.sessionVariables = {
+           XCURSOR_THEME = "capitaine-cursors";
+           XCURSOR_SIZE = "24";
+           HYPRCURSOR_THEME = "capitaine-cursors";
+           HYPRCURSOR_SIZE = "24";
+         };
+
          # GTK cursor theme - minimal macOS-like style
          gtk.enable = true;
          gtk.cursorTheme = {
