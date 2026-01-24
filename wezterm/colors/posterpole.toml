@@ -1,0 +1,81 @@
+[colors]
+ansi = [
+  "#2C2C30",
+  "#A97070",
+  "#778C73",
+  "#CC9166",
+  "#6C7F93",
+  "#B894AF",
+  "#8EA4A2",
+  "#AFA79D"
+]
+foreground = "#AEA79C"
+background = "#25222A"
+brights = [
+  "#2C2C30",
+  "#BC8F8F",
+  "#778C73",
+  "#D9AC8C",
+  "#8A99A8",
+  "#CCB3C6",
+  "#8FA4A2",
+  "#C6C0B9"
+]
+
+compose_cursor = "#CC9166"
+cursor_bg = "#C6C0B9"
+cursor_fg = "black"
+cursor_border = "#000"
+scrollbar_thumb = "#44475a"
+selection_fg = "#AFA79D"
+selection_bg = "#4D4D4D"
+split = '#8FA4A2'
+
+[colors.tab_bar]
+background = '#2C2C30'
+
+[colors.tab_bar.active_tab]
+bg_color = "#25222A"
+fg_color = "#AFA79D"
+intensity = 'Normal'
+italic = false
+strikethrough = false
+underline = 'None'
+
+[colors.tab_bar.inactive_tab]
+bg_color = "#2C2C30"
+fg_color = "#AFA79D"
+intensity = 'Normal'
+italic = false
+strikethrough = false
+underline = 'None'
+
+[colors.tab_bar.inactive_tab_hover]
+bg_color = "#2C2C30"
+fg_color = "#C8C093"
+intensity = 'Normal'
+italic = true
+strikethrough = false
+underline = 'None'
+
+[colors.tab_bar.new_tab]
+bg_color = "#2C2C30"
+fg_color = "#AFA79D"
+intensity = 'Normal'
+italic = false
+strikethrough = false
+underline = 'None'
+
+[colors.tab_bar.new_tab_hover]
+bg_color = "#25222A"
+fg_color = "#C8C093"
+intensity = 'Normal'
+italic = true
+strikethrough = false
+underline = 'None'
+
+[metadata]
+aliases = []
+author = 'ilof2'
+name = 'posterpole'
+origin_url = 'https://github.com/posterpole/wezterm'

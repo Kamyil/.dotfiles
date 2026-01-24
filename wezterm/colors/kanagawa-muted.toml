@@ -1,0 +1,75 @@
+# -----------------------------------------------------------------------------
+# Kanagawa Muted - Based on Kanagawa with desaturated bright colors
+# Custom muted version to reduce bright greens, reds, and cyans
+# -----------------------------------------------------------------------------
+
+[colors]
+foreground = "#DCD7BA"
+background = "#1F1F28"
+cursor_bg = "#C8C093"
+cursor_border = "#C8C093"
+cursor_fg = "#1F1F28"
+selection_bg = "#2D4F67"
+selection_fg = "#C8C093"
+split = "#54546D"
+compose_cursor = "#7AA89F"
+scrollbar_thumb = "#363646"
+
+# ANSI colors - evenly muted, consistent distance from gray
+ansi = [
+  "#16161D",  # black
+  "#6B6565",  # red - muted evenly
+  "#656B65",  # green - muted evenly
+  "#6A6A65",  # yellow - muted evenly
+  "#65656B",  # blue - muted evenly
+  "#6A656A",  # magenta - muted evenly
+  "#656A6A",  # cyan - muted evenly
+  "#C8C093",  # white
+]
+
+# Bright colors - evenly muted, consistent saturation
+brights = [
+  "#727169",  # bright black
+  "#7A7575",  # bright red - evenly muted
+  "#757A75",  # bright green - evenly muted
+  "#797975",  # bright yellow - evenly muted
+  "#75757A",  # bright blue - evenly muted
+  "#797579",  # bright magenta - evenly muted
+  "#757979",  # bright cyan - evenly muted
+  "#DCD7BA",  # bright white
+]
+
+[colors.indexed]
+16 = "#A08066"  # orange - muted
+17 = "#A07575"  # peach - muted
+
+[colors.tab_bar]
+background = "#16161D"
+inactive_tab_edge = "#54546D"
+
+[colors.tab_bar.active_tab]
+fg_color = "#DCD7BA"
+bg_color = "#2D4F67"
+intensity = "Normal"
+
+[colors.tab_bar.inactive_tab]
+fg_color = "#727169"
+bg_color = "#1F1F28"
+
+[colors.tab_bar.inactive_tab_hover]
+fg_color = "#C8C093"
+bg_color = "#363646"
+
+[colors.tab_bar.new_tab]
+fg_color = "#727169"
+bg_color = "#1F1F28"
+
+[colors.tab_bar.new_tab_hover]
+fg_color = "#C8C093"
+bg_color = "#363646"
+intensity = "Normal"
+
+[metadata]
+name = "kanagawa-muted"
+author = "Custom"
+origin_url = ""
