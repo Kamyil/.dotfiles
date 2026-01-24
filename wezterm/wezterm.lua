@@ -19,7 +19,7 @@ config.audible_bell = "Disabled"
 -- Disable ligatures and complex text shaping for better performance
 -- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
 
--- Font settings
+-- Font settings - Berkeley Mono optimized for 1440p sharp rendering
 config.font = wezterm.font("Berkeley Mono", { weight = 510 })
 -- config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Regular" })
 -- config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Bold" })
@@ -35,17 +35,17 @@ config.font = wezterm.font("Berkeley Mono", { weight = 510 })
 -- config.font = wezterm.font("Hack Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("RobotoMono Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("ZedMono Nerd Font")
-config.font_size = 14
+config.font_size = 13
 
--- config.freetype_load_flags = "FORCE_AUTOHINT"
+-- FreeType rendering optimized for 1440p sharpness
+-- HorizontalLcd: best for subpixel rendering on 1440p (uses RGB ordering)
 config.freetype_load_target = "HorizontalLcd"
-config.prefer_egl = false -- Improve font rendering
--- Adjust font width for different environments:
--- On work monitor:
--- config.cell_width = 1.05
--- On Mac itself:
-config.cell_width = 1.00
-config.line_height = 1
+config.prefer_egl = false  -- Improve font rendering stability
+config.freetype_render_target = "HorizontalLcd"  -- Matching render target
+config.freetype_interpreter_version = 38  -- Latest FreeType interpreter for best hinting
+-- 1440p Display precise dimensions
+config.cell_width = 1.0
+config.line_height = 1.0
 
 
 --
@@ -182,10 +182,6 @@ config.keys = {
 	-- { key = "Insert", mods = "SHIFT", action = wezterm.action.PasteFrom("Clipboard") },
 	{ key = "P", mods = "CMD|SHIFT", action = wezterm.action.ActivateCommandPalette },
 }
-
--- Font rendering - Optimized for performance
-config.freetype_load_target = "Normal"   -- Less CPU intensive than "Light"
-config.freetype_render_target = "Normal" -- Simplified rendering
 
 -- Simplified background for performance - solid color only
 -- config.background = {
