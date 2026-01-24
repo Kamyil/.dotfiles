@@ -1,0 +1,24 @@
+-- ~/.config/wezterm/mhfu_palette.lua
+
+local M = {}
+
+M.colors = {
+  bg        = "#171b21", -- było #111417
+  bg_alt    = "#1f242b", -- było #181c20
+  gutter    = "#10141a",
+
+  fg        = "#e5d7be", -- more “paper” than bright white
+  fg_dim    = "#b7a28a",
+  comment    = "#5A646E",
+
+  -- toned-down “HUD” colors
+  hp_green      = "#8A9A7B", -- less neon, more moss
+  stam_yellow   = "#d5bb63", -- more earthy, less canary
+  monster_red   = "#C4746E", -- muted brick red
+  quest_orange  = "#c98443", -- browned quest icon orange
+  ui_teal       = "#3f7f7f", -- desaturated teal
+  info_cyan     = "#5d9ea8", -- softer cyan
+  rare_magenta  = "#a46bb8", -- not screaming purple
+}
+
+return M
