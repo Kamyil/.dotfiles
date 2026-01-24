@@ -191,7 +191,19 @@ require('lazy').setup({
 		lazy = false,
 	},
 	'echasnovski/mini.surround',       -- Allows to surround selected text with brackets, quotes, tags etc.
-	'nvim-treesitter/nvim-treesitter', -- Tresitter (for coloring syntax and doing AST-based operations)
+	{
+		'nvim-treesitter/nvim-treesitter', -- Tresitter (for coloring syntax and doing AST-based operations)
+		lazy = false,
+		config = function()
+			local ok, treesitter_configs = pcall(require, 'nvim-treesitter.configs')
+			if ok then
+				treesitter_configs.setup({
+					ensure_installed = { 'svelte', 'typescript', 'javascript', 'php' },
+					highlight = { enable = true },
+				})
+			end
+		end,
+	},
 	'alexghergh/nvim-tmux-navigation', -- Better navigation with TMUX (can move between nvim and tmux splits with same motions)
 	'folke/lazydev.nvim',              -- Better neovim config editing, without any non-valid warnings
 	'folke/todo-comments.nvim',        -- Highlight comments like TODO, FIXME, BUG, INFO etc.
@@ -297,12 +309,6 @@ require('lazy').setup({
 	defaults = {
 		lazy = true,
 	},
-})
-
--- Setup syntax color highlighting (+ more AST-based operations)
-require('nvim-treesitter.configs').setup({
-	ensure_installed = { 'svelte', 'typescript', 'javascript', 'php' },
-	highlight = { enable = true },
 })
 
 -- # KEYMAPS #
@@ -925,8 +931,8 @@ vim.cmd(':hi statusline guibg=NONE')
 vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#b89060', bg = 'NONE' })
 vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#1a1816' })
 
--- Set global window border using theme borders (after colorscheme loads)
-vim.opt.winborder = borders
+-- Set global window border (after colorscheme loads)
+vim.opt.winborder = 'rounded'
 
 -- Configure oil.nvim float border (after theme loads)
 require('oil').setup({
