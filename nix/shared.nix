@@ -340,7 +340,7 @@ in
   # Core packages available on both systems
   home.packages = with pkgs; [
     # Terminal tools
-    fzf bat delta lazygit lazydocker eza
+    fzf bat delta lazygit lazydocker eza opencode
   ];
 
   programs.home-manager.enable = true;
