@@ -47,7 +47,7 @@ in
             home.enableNixpkgsReleaseCheck = false;
 
              # NixOS-specific packages
-             home.packages = (with pkgsStable; [
+             home.packages = (with pkgs; [
                # Development tools
                gcc docker
                go yarn pnpm deno fnm wrangler
@@ -55,7 +55,7 @@ in
                zig stylua lua-language-server
                rustup
                vscode
-               (pkgsStable.rust-bin.nightly.latest.default.override {
+               (pkgs.rust-bin.nightly.latest.default.override {
                  extensions = [ "rust-src" "cargo" "rustc" ];
                })
 
@@ -173,7 +173,7 @@ in
           # GTK cursor theme - minimal macOS-like style
           gtk.enable = true;
           gtk.cursorTheme = {
-            package = pkgsStable.capitaine-cursors;
+            package = pkgs.capitaine-cursors;
             name = "capitaine-cursors";
             size = 24;
           };
