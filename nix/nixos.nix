@@ -45,8 +45,8 @@ in
            # Disable version mismatch warning between HM and nixpkgs
             home.enableNixpkgsReleaseCheck = false;
 
-             # NixOS-specific packages (merged with shared packages via mkAfter)
-             home.packages = lib.mkAfter (with pkgsStable; [
+             # NixOS-specific packages (force override shared.nix packages and include all)
+             home.packages = lib.mkForce ((with pkgsStable; [
                # Development tools
                gcc docker
                go yarn pnpm deno fnm wrangler
@@ -115,7 +115,11 @@ in
 
                # Cursor themes - minimal macOS-like style
                capitaine-cursors
-             ] ++ [
+
+               # Shared packages (from shared.nix, duplicated here with mkForce)
+               fzf bat delta lazygit lazydocker eza
+               fnm just fastfetch
+             ]) ++ [
                # Unstable-only packages
                pkgs.opencode
                # packages from unstable branch
