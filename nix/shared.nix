@@ -337,11 +337,15 @@ in
     };
   };
 
-  # Core packages available on both systems
-  home.packages = with pkgs; [
+  # Core packages available on both systems (uses mkBefore to allow OS-specific additions)
+  home.packages = lib.mkBefore (with pkgs; [
     # Terminal tools
     fzf bat delta lazygit lazydocker eza opencode
-  ];
+    # Node version manager and build tool
+    fnm just
+    # System information
+    fastfetch
+  ]);
 
   programs.home-manager.enable = true;
 }
