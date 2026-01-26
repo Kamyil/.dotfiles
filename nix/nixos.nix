@@ -46,8 +46,8 @@ in
            # Disable version mismatch warning between HM and nixpkgs
             home.enableNixpkgsReleaseCheck = false;
 
-             # NixOS-specific packages (force override shared.nix packages and include all)
-             home.packages = lib.mkForce ((with pkgsStable; [
+             # NixOS-specific packages
+             home.packages = (with pkgsStable; [
                # Development tools
                gcc docker
                go yarn pnpm deno fnm wrangler
@@ -117,7 +117,7 @@ in
                # Cursor themes - minimal macOS-like style
                capitaine-cursors
 
-               # Shared packages (from shared.nix, duplicated here with mkForce)
+               # Shared packages (duplicated from shared.nix for NixOS)
                fzf bat delta lazygit lazydocker eza
                fnm just fastfetch
              ]) ++ [
@@ -125,7 +125,7 @@ in
                pkgs.opencode
                # packages from unstable branch
                neovim-nightly-overlay.packages.${system}.default
-             ]);
+             ];
 
            # NixOS-specific zsh additions
            programs.zsh.shellAliases = lib.mkMerge [
