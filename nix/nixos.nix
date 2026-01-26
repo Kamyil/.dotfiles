@@ -54,7 +54,6 @@ in
             go yarn pnpm deno fnm wrangler
             lua luarocks python3 php
             zig stylua lua-language-server
-            rustup
             vscode
             (pkgsStable.rust-bin.nightly.latest.default.override {
               extensions = [ "rust-src" "cargo" "rustc" ];
