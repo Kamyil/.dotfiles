@@ -30,9 +30,10 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
+        home-manager.extraSpecialArgs = { inherit pkgsStable neovim-nightly-overlay system; };
 
         # --- your user ---
-        home-manager.users.kamil = { pkgs, config, ... }:
+        home-manager.users.kamil = { pkgs, config, pkgsStable, neovim-nightly-overlay, system, ... }:
           let
             repo = "${config.home.homeDirectory}/.dotfiles";
             link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";

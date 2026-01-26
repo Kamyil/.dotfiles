@@ -2,14 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running 'nixos-help').
 
-{ config, pkgs, nixpkgs, ... }:
-
-let
-  pkgsUnstable = import nixpkgs {
-    system = pkgs.system;
-    config.allowUnfree = true;
-  };
-in
+{ config, pkgs, ... }:
 
 {
   imports = [ # Include the results of the hardware scan.
@@ -20,27 +13,31 @@ in
 
   users.groups.kamil = { };
   programs.zsh.enable = true;
-  users.users.kamil = {
-    shell = pkgs.zsh;
-    isNormalUser = true;
-    group = "kamil"; # Add this line
-    description = "kamil";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [ ];
-  };
+   users.users.kamil = {
+     shell = pkgs.zsh;
+     isNormalUser = true;
+     group = "kamil"; # Add this line
+     description = "kamil";
+     extraGroups = [ "networkmanager" "wheel" "docker" ];
+     packages = with pkgs; [ ];
+   };
 
   services.xserver.enable = false;
 
-  # FIX: Improved greetd configuration
+  # FIX: Improved greetd configuration with start-hyprland wrapper
+  # start-hyprland is the official Hyprland wrapper that properly sets up session management
   services.greetd = {
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd start-hyprland";
         user = "greeter";
       };
     };
   };
+
+  # Ensure displayManager knows about Hyprland session
+  services.displayManager.sessionPackages = [ pkgs.hyprland ];
 
 
   # Sreenshare, filepickers etc. (desktop portals)
@@ -60,6 +57,7 @@ in
 
   # Enable OpenGL GPU acceleration
   hardware.graphics.enable = true;
+  hardware.bluetooth.enable = true;
 
 
   # Bootloader.
@@ -133,6 +131,7 @@ in
     lsd
 
     # Terminals
+    foot
     ghostty
     wezterm
     kitty
@@ -146,27 +145,29 @@ in
     # Others
     hyprpaper
     hypridle
-    hyprlock
+    swaylock
     waybar
-    wofi
+    impala
+    bluetuith
     wl-clipboard
     grim
     slurp
 
-    # AI - FIX: Replace the problematic buildFHSUserEnv with just bun
-    bun
-    nodejs
-    
-    # FIX: Add greetd.tuigreet to system packages
-    greetd.tuigreet
-  ] ++ [
-    pkgsUnstable.opencode
+     # AI - FIX: Replace the problematic buildFHSUserEnv with just bun
+     bun
+     nodejs
+     
+     # FIX: Add tuigreet to system packages
+     tuigreet
+
+     # opencode from unstable (pkgs already is unstable via flake)
+     opencode
   ];
 
   system.activationScripts.dotfilesSymlinks = {
     text = ''
       # Remove existing paths that may block symlinks
-      rm -rf /home/kamil/.config/nvim /home/kamil/.config/wezterm /home/kamil/.config/lazygit /home/kamil/.config/lazydocker /home/kamil/.config/lsd /home/kamil/.config/btop /home/kamil/.config/bat /home/kamil/.config/hypr /home/kamil/.config/waybar /home/kamil/.config/wofi /home/kamil/.config/sketchybar /home/kamil/.config/aerospace /home/kamil/.config/yabai /home/kamil/.config/skhd /home/kamil/.config/ghostty /home/kamil/.config/tmux /home/kamil/.config/opencode /home/kamil/.config/kitty /home/kamil/.hammerspoon
+      rm -rf /home/kamil/.config/nvim /home/kamil/.config/wezterm /home/kamil/.config/lazygit /home/kamil/.config/lazydocker /home/kamil/.config/lsd /home/kamil/.config/btop /home/kamil/.config/bat /home/kamil/.config/hypr /home/kamil/.config/waybar /home/kamil/.config/sketchybar /home/kamil/.config/aerospace /home/kamil/.config/yabai /home/kamil/.config/skhd /home/kamil/.config/ghostty /home/kamil/.config/tmux /home/kamil/.config/opencode /home/kamil/.config/kitty /home/kamil/.hammerspoon
 
       # Create direct symlinks
       ln -sfn /home/kamil/.dotfiles/nvim /home/kamil/.config/nvim
@@ -178,7 +179,6 @@ in
       ln -sfn /home/kamil/.dotfiles/bat /home/kamil/.config/bat
       ln -sfn /home/kamil/.dotfiles/config/hypr /home/kamil/.config/hypr
       ln -sfn /home/kamil/.dotfiles/config/waybar /home/kamil/.config/waybar
-      ln -sfn /home/kamil/.dotfiles/config/wofi /home/kamil/.config/wofi
       ln -sfn /home/kamil/.dotfiles/sketchybar /home/kamil/.config/sketchybar
       ln -sfn /home/kamil/.dotfiles/config/aerospace /home/kamil/.config/aerospace
       ln -sfn /home/kamil/.dotfiles/yabai /home/kamil/.config/yabai
@@ -202,7 +202,13 @@ in
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+   services.openssh.enable = true;
+
+   # Docker configuration
+   virtualisation.docker.enable = true;
+   virtualisation.docker.daemon.settings = {
+     userland-proxy = false;
+   };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
