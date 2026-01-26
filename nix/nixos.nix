@@ -72,13 +72,13 @@ in
               # File and archive tools
               unzip p7zip trash-cli
 
-              # Network and system tools
-              nmap wireshark-cli socat
+               # Network and system tools
+               nmap wireshark-cli socat
 
                # Container tools
                docker-compose podman podman-compose
 
-              # Media and graphics
+               # Media and graphics
               ffmpeg imagemagick
 
               # Database and data tools
