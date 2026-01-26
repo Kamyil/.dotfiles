@@ -337,15 +337,8 @@ in
     };
   };
 
-  # Core packages available on both systems
-  home.packages = with pkgs; [
-    # Terminal tools
-    fzf bat delta lazygit lazydocker eza opencode
-    # Node version manager and build tool
-    fnm just
-    # System information
-    fastfetch
-  ];
+  # Core packages are defined in OS-specific configs (nixos.nix / macos.nix)
+  # to avoid module merging issues with home.packages
 
   programs.home-manager.enable = true;
 }
