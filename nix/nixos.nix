@@ -38,15 +38,16 @@ in
             link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";
           in
         {
-          imports = [ ./shared.nix ];
-          
-          home.homeDirectory = lib.mkForce "/home/kamil";
-          
-          # Disable version mismatch warning between HM and nixpkgs
-          home.enableNixpkgsReleaseCheck = false;
+           imports = [ ./shared.nix ];
+           
+           home.homeDirectory = lib.mkForce "/home/kamil";
+           
+           # Disable version mismatch warning between HM and nixpkgs
+           home.enableNixpkgsReleaseCheck = false;
 
-           # NixOS-specific packages
-           home.packages = (with pkgsStable; [
+            # NixOS-specific packages (merged with shared packages)
+            home.packages = lib.mkMerge [
+              (with pkgsStable; [
               # Development tools
               gcc docker
               go yarn pnpm deno fnm wrangler
@@ -112,14 +113,15 @@ in
               # Network tools
               impala # TUI for managing WiFi
               bluetuith
-              
-              # Cursor themes - minimal macOS-like style
-              capitaine-cursors
-            ]) ++ [
-              # Unstable-only packages
-              pkgs.opencode
-              # packages from unstable branch
-              neovim-nightly-overlay.packages.${system}.default
+               
+               # Cursor themes - minimal macOS-like style
+               capitaine-cursors
+              ]) ++ [
+                # Unstable-only packages
+                pkgs.opencode
+                # packages from unstable branch
+                neovim-nightly-overlay.packages.${system}.default
+              ])
             ];
 
            # NixOS-specific zsh additions
