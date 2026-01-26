@@ -39,9 +39,11 @@ in
             link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";
           in
         {
-           imports = [ ./shared.nix ];
+           # imports = [ ./shared.nix ];  # TEMPORARILY DISABLED FOR TESTING
            
            home.homeDirectory = lib.mkForce "/home/kamil";
+           home.username = "kamil";
+           home.stateVersion = "24.11";
            
             # Disable version mismatch warning between HM and nixpkgs
              home.enableNixpkgsReleaseCheck = false;
