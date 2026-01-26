@@ -43,86 +43,84 @@ in
            home.homeDirectory = lib.mkForce "/home/kamil";
            
            # Disable version mismatch warning between HM and nixpkgs
-           home.enableNixpkgsReleaseCheck = false;
+            home.enableNixpkgsReleaseCheck = false;
 
-             # NixOS-specific packages (merged with shared packages)
-             home.packages = lib.mkMerge [
-               (with pkgsStable; [
-                 # Development tools
-                 gcc docker
-                 go yarn pnpm deno fnm wrangler
-                 lua luarocks python3 php
-                 zig stylua lua-language-server
-                 rustup
-                 vscode
-                 (pkgsStable.rust-bin.nightly.latest.default.override {
-                   extensions = [ "rust-src" "cargo" "rustc" ];
-                 })
+             # NixOS-specific packages (merged with shared packages via mkAfter)
+             home.packages = lib.mkAfter (with pkgsStable; [
+               # Development tools
+               gcc docker
+               go yarn pnpm deno fnm wrangler
+               lua luarocks python3 php
+               zig stylua lua-language-server
+               rustup
+               vscode
+               (pkgsStable.rust-bin.nightly.latest.default.override {
+                 extensions = [ "rust-src" "cargo" "rustc" ];
+               })
 
-                 # Terminal tools
-                 yazi tmux
+               # Terminal tools
+               yazi tmux
 
-                 # Shell and CLI utilities
-                 gh tree fd difftastic just jq yq
-                 gnugrep gnused coreutils
-                 nixd
+               # Shell and CLI utilities
+               gh tree fd difftastic just jq yq
+               gnugrep gnused coreutils
+               nixd
 
-                 # System monitoring and management
-                 htop fastfetch pfetch neofetch
+               # System monitoring and management
+               htop fastfetch pfetch neofetch
 
-                 # File and archive tools
-                 unzip p7zip trash-cli
+               # File and archive tools
+               unzip p7zip trash-cli
 
-                 # Network and system tools
-                 nmap wireshark-cli socat
+               # Network and system tools
+               nmap wireshark-cli socat
 
-                 # Container tools
-                 docker-compose podman podman-compose
+               # Container tools
+               docker-compose podman podman-compose
 
-                 # Media and graphics
-                 ffmpeg imagemagick
+               # Media and graphics
+               ffmpeg imagemagick
 
-                 # Database and data tools
-                 sqlite postgresql
+               # Database and data tools
+               sqlite postgresql
 
-                 # Text editors and viewers
-                 helix
+               # Text editors and viewers
+               helix
 
-                 # Version control extras
-                 git-extras tig
+               # Version control extras
+               git-extras tig
 
-                 # Virtualization and containers
-                 qemu
+               # Virtualization and containers
+               qemu
 
-                 # System utilities
-                 stow cowsay figlet fortune lolcat
+               # System utilities
+               stow cowsay figlet fortune lolcat
 
-                 # Libraries
-                 libssh2
+               # Libraries
+               libssh2
 
-                 # Terminal multiplexers and sessions
-                 zellij
+               # Terminal multiplexers and sessions
+               zellij
 
-                 # File synchronization and transfer
-                 rsync openssh sshfs
+               # File synchronization and transfer
+               rsync openssh sshfs
 
-                 # Other useful tools
-                 tldr watchexec
-                 nerd-fonts.geist-mono
+               # Other useful tools
+               tldr watchexec
+               nerd-fonts.geist-mono
 
-                 # Network tools
-                 impala # TUI for managing WiFi
-                 bluetuith
+               # Network tools
+               impala # TUI for managing WiFi
+               bluetuith
 
-                 # Cursor themes - minimal macOS-like style
-                 capitaine-cursors
-               ] ++ [
-                 # Unstable-only packages
-                 pkgs.opencode
-                 # packages from unstable branch
-                 neovim-nightly-overlay.packages.${system}.default
-               ])
-             ];
+               # Cursor themes - minimal macOS-like style
+               capitaine-cursors
+             ] ++ [
+               # Unstable-only packages
+               pkgs.opencode
+               # packages from unstable branch
+               neovim-nightly-overlay.packages.${system}.default
+             ]);
 
            # NixOS-specific zsh additions
            programs.zsh.shellAliases = lib.mkMerge [
