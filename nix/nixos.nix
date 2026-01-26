@@ -56,7 +56,7 @@ in
             zig stylua lua-language-server
             rustup
             vscode
-            (pkgs.rust-bin.nightly.latest.default.override {
+            (pkgsStable.rust-bin.nightly.latest.default.override {
               extensions = [ "rust-src" "cargo" "rustc" ];
             })
 
