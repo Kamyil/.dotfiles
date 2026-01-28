@@ -77,10 +77,10 @@ in
             nmap wireshark-cli socat
 
             # Container tools
-            docker-compose podman podman-compose
+            buildkit docker-compose podman podman-compose
 
             # Media and graphics
-            ffmpeg imagemagick
+            ffmpeg imagemagick flameshot swappy chromium
 
             # Database and data tools
             sqlite postgresql
@@ -123,6 +123,7 @@ in
           ]) ++ [
             # Unstable-only packages
             pkgs.opencode
+            pkgs.playwright-mcp
             # packages from unstable branch
             neovim-nightly-overlay.packages.${system}.default
           ];
@@ -151,7 +152,9 @@ in
           # Linux-specific configs (always applies on NixOS)
           home.file."second-brain/.keep".text = "";
 
-          fonts.fontconfig.enable = true;
+           fonts.fontconfig = {
+             enable = true;
+           };
 
           # Set cursor theme environment variables for better compatibility
           home.sessionVariables = {

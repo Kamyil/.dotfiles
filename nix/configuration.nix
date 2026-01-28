@@ -94,9 +94,24 @@
     LC_TIME = "pl_PL.UTF-8";
   };
 
+  fonts = {
+    packages = with pkgs; [
+      ubuntu-classic
+      noto-fonts-color-emoji
+      jetbrains-mono
+      corefonts
+    ];
+    fontconfig.defaultFonts = {
+      serif = [ "Ubuntu" ];
+      sansSerif = [ "Ubuntu" ];
+      monospace = [ "Berkeley Mono" "Ubuntu Mono" ];
+      emoji = [ "Noto Color Emoji" ];
+    };
+  };
+
   # Configure keymap in X11
   services.xserver.xkb = {
-    layout = "us";
+    layout = "pl";
     variant = "";
   };
 
@@ -113,6 +128,7 @@
     wget
     curl
     git
+    xorg.xkeyboardconfig
     pkg-config
     openssl
     gnumake
@@ -204,11 +220,14 @@
   # Enable the OpenSSH daemon.
    services.openssh.enable = true;
 
-   # Docker configuration
-   virtualisation.docker.enable = true;
-   virtualisation.docker.daemon.settings = {
-     userland-proxy = false;
-   };
+    # Docker configuration
+    virtualisation.docker.enable = true;
+    virtualisation.docker.daemon.settings = {
+      userland-proxy = false;
+      features = {
+        buildkit = true;
+      };
+    };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
