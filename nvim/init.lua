@@ -145,6 +145,13 @@ require('lazy').setup({
 	'neovim/nvim-lspconfig',          -- Baked-in, ready-to-use LSP configs to not configure them manually
 	'williamboman/mason-lspconfig.nvim', -- Configs
 	'WhoIsSethDaniel/mason-tool-installer.nvim',
+	{
+		'Wansmer/symbol-usage.nvim',
+		event = 'LspAttach',
+		config = function()
+			require('symbol-usage').setup()
+		end,
+	},
 
 	'folke/snacks.nvim',  -- Collection of quality of life plugins that are useful for most people
 

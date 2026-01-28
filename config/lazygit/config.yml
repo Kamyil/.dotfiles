@@ -1,40 +1,38 @@
 git:
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never --syntax-theme=gruvbox-dark
-    # pager: difft
-    # externalDiffCommand: difft --color=always
-    # externalDiffCommand: difft --color=always --display=inline --syntax-highlight=on
-
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never --syntax-theme=gruvbox-dark
+      # pager: difft
+      # externalDiffCommand: difft --color=always
+      # externalDiffCommand: difft --color=always --display=inline --syntax-highlight=on
 gui:
   theme:
     activeBorderColor:
-      - '#8a6850'  # pokke wood_brown (guild hall frame)
+      - '#8a6850' # pokke wood_brown (guild hall frame)
       - bold
     inactiveBorderColor:
-      - '#4a5a60'  # pokke border (inactive frame)
+      - '#4a5a60' # pokke border (inactive frame)
     optionsTextColor:
-      - '#6a8a9a'  # pokke quest_blue (menu text)
+      - '#6a8a9a' # pokke quest_blue (menu text)
     selectedLineBgColor:
-      - '#2E3838'  # pokke selection (HUD green)
+      - '#2E3838' # pokke selection (HUD green)
     selectedRangeBgColor:
-      - '#2E3838'  # pokke selection (HUD green)
+      - '#2E3838' # pokke selection (HUD green)
     cherryPickedCommitBgColor:
-      - '#304651'  # pokke hud_blue (item slot)
+      - '#304651' # pokke hud_blue (item slot)
     cherryPickedCommitFgColor:
-      - '#b8964a'  # pokke stamina_gold
+      - '#b8964a' # pokke stamina_gold
     unstagedChangesColor:
-      - '#a85a5a'  # pokke meat_red (well-done steak)
+      - '#a85a5a' # pokke meat_red (well-done steak)
     defaultFgColor:
-      - '#d4c8b0'  # pokke cream parchment
+      - '#d4c8b0' # pokke cream parchment
     searchingActiveBorderColor:
-      - '#8a7090'  # pokke rare_purple (rare item glow)
+      - '#8a7090' # pokke rare_purple (rare item glow)
     stagedChangesColor:
-      - '#7a9a6a'  # pokke health_green (health bar)
+      - '#7a9a6a' # pokke health_green (health bar)
     markedBaseCommitFgColor:
-      - '#8a9aa8'  # pokke snow_blue (Pokke snow)
+      - '#8a9aa8' # pokke snow_blue (Pokke snow)
     markedBaseCommitBgColor:
-      - '#304651'  # pokke hud_blue (item slot)
-
+      - '#304651' # pokke hud_blue (item slot)
 authorColors:
-  '*': '#6a8a9a'  # pokke quest_blue
+  '*': '#6a8a9a' # pokke quest_blue

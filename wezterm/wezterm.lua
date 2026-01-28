@@ -21,6 +21,8 @@ config.audible_bell = "Disabled"
 
 -- Font settings - Berkeley Mono optimized for 1440p sharp rendering
 config.font = wezterm.font("Berkeley Mono", { weight = 510 })
+-- config.font = wezterm.font("Comic Sans MS", { weight = 510 })
+-- config.font = wezterm.font("JetBrains Mono", { weight = 510 })
 -- config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Regular" })
 -- config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Bold" })
 -- config.font = wezterm.font("ComicShannsMono Nerd Font Propo", { weight = "Bold" })
@@ -38,11 +40,14 @@ config.font = wezterm.font("Berkeley Mono", { weight = 510 })
 config.font_size = 13
 
 -- FreeType rendering optimized for 1440p sharpness
--- HorizontalLcd: best for subpixel rendering on 1440p (uses RGB ordering)
-config.freetype_load_target = "HorizontalLcd"
-config.prefer_egl = false  -- Improve font rendering stability
-config.freetype_render_target = "HorizontalLcd"  -- Matching render target
+-- Light hinting with LCD rendering for smoother Berkeley Mono
+config.freetype_load_target = "Light"
+config.freetype_render_target = "HorizontalLcd"  -- LCD render target
+config.freetype_load_flags = "NO_HINTING"  -- Reduce rough edges from hinting
+config.display_pixel_geometry = "RGB"
 config.freetype_interpreter_version = 38  -- Latest FreeType interpreter for best hinting
+config.prefer_egl = false  -- Improve font rendering stability
+
 -- 1440p Display precise dimensions
 config.cell_width = 1.0
 config.line_height = 1.0
@@ -217,7 +222,6 @@ end
 wezterm.on("pick_or_create_session", function(window, pane)
 	local mux = wezterm.mux
 	local session_names = {}
-
 
 	-- Get the names of all existing sessions
 	for _, window in ipairs(mux.all_windows()) do
