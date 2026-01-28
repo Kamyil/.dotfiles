@@ -5,7 +5,6 @@ export MANPAGER="nvim -c 'Man!' -"
 
 export DISABLE_AUTO_TITLE=true
 
-source "$HOME/.zsh_config_aliases"
 
 # export ZSH=$HOME/.oh-my-zsh export WEZTERM_CONFIG_FILE=$HOME/.config/wezterm/init.lua
 
@@ -109,6 +108,16 @@ SD_BASE_DIRS=(
 # Max depth for subdirectory traversal (1 = immediate children only)
 SD_DEPTH=1
 
+# (fuzzly) Config search base dirs
+C_BASE_DIRS=(
+  "$HOME/.dotfiles/config"
+  "$HOME/.dotfiles"
+)
+# Max depth for config traversal (1 = immediate children only)
+C_DEPTH=1
+
+unalias c 2>/dev/null
+
 sd() {
   local dirs=()
   
@@ -134,6 +143,24 @@ sd() {
   local selected
   selected=$(printf '%s\n' "${dirs[@]}" | fzf)
   [ -n "$selected" ] && cd "$selected"
+}
+
+# (fuzzly) Search config directory and open nvim
+c() {
+  local dirs=()
+
+  for base in "${C_BASE_DIRS[@]}"; do
+    if [ -d "$base" ]; then
+      dirs+=("$base")
+      while IFS= read -r dir; do
+        dirs+=("$dir")
+      done < <(find "$base" -mindepth 1 -maxdepth "$C_DEPTH" -type d ! -name ".git" ! -path "*/.git/*" 2>/dev/null)
+    fi
+  done
+
+  local selected
+  selected=$(printf '%s\n' "${dirs[@]}" | fzf)
+  [ -n "$selected" ] && nvim "$selected"
 }
 
 # (fuzzly) search ssh alias and ssh into
@@ -187,23 +214,6 @@ remote_sshfs() {
 # (fuzzly) Search directory (and `cd` into it and run neovim on that directory)
 sdn() {
   sd && nvim .
-}
-
-# Config search and run alias
-config() {
-  # Load the config aliases from the file
-  source "$HOME/.zsh_config_aliases"
-
-  # Get the key names from the array (only keys for selection)
-  local config_keys=("${(k)CONFIG_ALIASES[@]}")
-
-  # Use fzf to select a config alias key
-  local selected_key=$(printf '%s\n' "${config_keys[@]}" | fzf)
-
-  # If a key is selected, evaluate and run the associated command (the value from the key-value pair)
-  if [[ -n $selected_key ]]; then
-    eval "${CONFIG_ALIASES[$selected_key]}"
-  fi
 }
 
 db() {
@@ -297,7 +307,6 @@ macos_set_proper_key_repeat() {
 alias n="nvim ."
 alias y="yazi ."
 alias b="browser"
-alias c="config"
 alias hf="his"
 alias x="exit"
 alias q="exit"

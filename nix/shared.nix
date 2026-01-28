@@ -20,7 +20,6 @@ in
       n = "nvim .";
       y = "yazi .";
       b = "browser";
-      c = "config";
       hf = "his";
       x = "exit";
       q = "exit";
@@ -149,6 +148,16 @@ in
       # Max depth for subdirectory traversal (1 = immediate children only)
       SD_DEPTH=1
 
+      # Config search base dirs
+      C_BASE_DIRS=(
+        "$HOME/.dotfiles/config"
+        "$HOME/.dotfiles"
+      )
+      # Max depth for config traversal (1 = immediate children only)
+      C_DEPTH=1
+
+      unalias c 2>/dev/null
+
       sd() {
         local dirs=()
         
@@ -174,6 +183,24 @@ in
         local selected
         selected=$(printf '%s\n' "''${dirs[@]}" | fzf)
         [ -n "$selected" ] && cd "$selected"
+      }
+
+      # Search config directory and open nvim
+      c() {
+        local dirs=()
+
+        for base in "''${C_BASE_DIRS[@]}"; do
+          if [ -d "$base" ]; then
+            dirs+=("$base")
+            while IFS= read -r dir; do
+              dirs+=("$dir")
+            done < <(find "$base" -mindepth 1 -maxdepth "$C_DEPTH" -type d ! -name ".git" ! -path "*/.git/*" 2>/dev/null)
+          fi
+        done
+
+        local selected
+        selected=$(printf '%s\n' "''${dirs[@]}" | fzf)
+        [ -n "$selected" ] && nvim "$selected"
       }
 
       # SSH fuzzy search
@@ -217,16 +244,6 @@ in
       # Search directory and open opencode
       sdo() {
         sd && opencode
-      }
-
-      # Config search
-      config() {
-        source "$HOME/.zsh_config_aliases"
-        local config_keys=("''${(k)CONFIG_ALIASES[@]}")
-        local selected_key=$(printf '%s\n' "''${config_keys[@]}" | fzf)
-        if [[ -n $selected_key ]]; then
-          eval "''${CONFIG_ALIASES[$selected_key]}"
-        fi
       }
 
       # Database search
