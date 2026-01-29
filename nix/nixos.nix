@@ -184,6 +184,7 @@ in
             ".config/elephant/desktopapplications.toml".source = link "config/elephant/desktopapplications.toml";
             ".config/omarchy/current/theme/walker.css".source = link "config/omarchy/current/theme/walker.css";
             ".config/omarchy/current/theme/waybar.css".source = link "config/omarchy/current/theme/waybar.css";
+            ".config/omarchy/current/background".source = link "wallpapers/kanagawa-black-and-white-wallpaper.jpg";
             ".config/walker/config.toml".source = link "config/walker/config.toml";
             ".config/walker/themes/kanagawa.css".source = link "config/walker/themes/kanagawa.css";
             ".local/share/omarchy/bin".source = link "config/omarchy/bin";
