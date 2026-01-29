@@ -138,6 +138,7 @@
     keepassxc
 
     # Shell tools
+    bash
     starship
     ripgrep
     delta
@@ -160,6 +161,7 @@
 
     # Others
     hyprpaper
+    swaybg
     hypridle
     swaylock
     waybar
@@ -212,6 +214,11 @@
       ln -sfn /home/kamil/.dotfiles/hammerspoon /home/kamil/.hammerspoon
     '';
   };
+
+  # Provide /bin/bash for tools expecting an absolute path
+  systemd.tmpfiles.rules = [
+    "L+ /bin/bash - - - - /run/current-system/sw/bin/bash"
+  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

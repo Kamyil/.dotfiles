@@ -82,11 +82,11 @@ config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
 
 -- Disable blur for performance - major CPU/GPU saver on macOS
-config.macos_window_background_blur = 100
+config.macos_window_background_blur = 20
 config.scrollback_lines = 2000 -- Reduce from 3500 to save memory
 -- Disable ligatures for better performance
 -- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
-config.enable_wayland = false
+config.enable_wayland = true
 
 -- Window padding
 config.window_padding = {
@@ -205,7 +205,7 @@ config.keys = {
 -- 		opacity = 1.0, -- Full opacity for better performance
 -- 	},
 -- }
-config.window_background_opacity = 1.00
+config.window_background_opacity = 0.96
 
 -- Merge my_own_tmux keys into config keys
 config.keys = config.keys or {}
