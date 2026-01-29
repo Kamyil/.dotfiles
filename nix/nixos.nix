@@ -162,6 +162,7 @@ in
             XCURSOR_SIZE = "24";
             HYPRCURSOR_THEME = "capitaine-cursors";
             HYPRCURSOR_SIZE = "24";
+            OMARCHY_PATH = "$HOME/.local/share/omarchy";
           };
 
           # GTK cursor theme - minimal macOS-like style
@@ -174,6 +175,22 @@ in
 
           # Nice defaults
           xdg.enable = true;
+
+          home.sessionPath = [ "$HOME/.local/share/omarchy/bin" ];
+
+          home.file = {
+            ".config/autostart/walker.desktop".source = link "config/autostart/walker.desktop";
+            ".config/elephant/calc.toml".source = link "config/elephant/calc.toml";
+            ".config/elephant/desktopapplications.toml".source = link "config/elephant/desktopapplications.toml";
+            ".config/omarchy/current/theme/walker.css".source = link "config/omarchy/current/theme/walker.css";
+            ".config/omarchy/current/theme/waybar.css".source = link "config/omarchy/current/theme/waybar.css";
+            ".config/walker/config.toml".source = link "config/walker/config.toml";
+            ".config/walker/themes/kanagawa.css".source = link "config/walker/themes/kanagawa.css";
+            ".local/share/omarchy/bin".source = link "config/omarchy/bin";
+            ".local/share/omarchy/default/walker/themes/omarchy-default/layout.xml".source = link "config/omarchy/default/walker/themes/omarchy-default/layout.xml";
+            ".local/share/omarchy/default/walker/themes/omarchy-default/style.css".source = link "config/omarchy/default/walker/themes/omarchy-default/style.css";
+            ".local/share/omarchy/default/waybar/indicators".source = link "config/omarchy/default/waybar/indicators";
+          };
         };
       }
     ];

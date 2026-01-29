@@ -10,18 +10,26 @@
 						"reasoningSummary": "auto",
 						"include": [
 							"reasoning.encrypted_content"
-						],
-					},
-				},
-			},
-		},
+						]
+					}
+				}
+			}
+		}
 	},
 	"mcp": {
+		"context7": {
+			"type": "remote",
+			"url": "https://mcp.context7.com/mcp"
+		},
 		"playwright": {
 			"type": "local",
 			"command": [
 				"playwright-mcp"
 			]
+		},
+		"websearch_exa": {
+			"type": "remote",
+			"url": "https://mcp.exa.ai/mcp"
 		}
 	},
 	"instructions": [

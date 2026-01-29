@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -eq 0 ]; then
+  echo "Usage: omarchy-launch-or-focus-tui <command> [args...]" >&2
+  exit 1
+fi
+
+omarchy_bin="${OMARCHY_BIN:-$HOME/.local/share/omarchy/bin}"
+app_id="org.omarchy.$(basename "$1")"
+launch_command="$omarchy_bin/omarchy-launch-tui $*"
+
+exec "$omarchy_bin/omarchy-launch-or-focus" "$app_id" "$launch_command"

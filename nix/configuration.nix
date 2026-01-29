@@ -165,9 +165,15 @@
     waybar
     impala
     bluetuith
+    pulsemixer
+    pamixer
+    rfkill_udev
     wl-clipboard
+    wtype
     grim
     slurp
+    uwsm
+    walker
 
      # AI - FIX: Replace the problematic buildFHSUserEnv with just bun
      bun

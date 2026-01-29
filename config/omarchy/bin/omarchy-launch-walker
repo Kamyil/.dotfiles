@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Launch Walker using the Nixpkgs build (no elephant service).
+
+# Ensure walker service is running
+if ! pgrep -f "walker --gapplication-service" > /dev/null; then
+  setsid uwsm-app -- walker --gapplication-service &
+fi
+
+exec walker --width 644 --height 300 "$@"

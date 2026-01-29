@@ -5,6 +5,7 @@
 - **Test configs**: Restart applications or source files (e.g., `source ~/.zshrc`)
 - **NixOS**: Suggest changes but let user run `sudo nixos-rebuild switch` manually
 - **Manual testing**: Check individual configs by loading them in respective applications
+- **Hyprland config errors**: Use `hyprctl configerrors` to check config issues
 
 ## Code Style Guidelines
 - **Lua (WezTerm/Hammerspoon)**: Use `local` variables, snake_case, tabs for indentation

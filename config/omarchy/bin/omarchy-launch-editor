@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+editor="${EDITOR:-nvim}"
+omarchy_bin="${OMARCHY_BIN:-$HOME/.local/share/omarchy/bin}"
+
+if ! command -v "$editor" >/dev/null 2>&1; then
+  editor="nvim"
+fi
+
+case "$editor" in
+  nvim|vim|nano|micro|hx|helix)
+    exec "$omarchy_bin/omarchy-launch-tui" "$editor" "$@"
+    ;;
+  *)
+    exec setsid "$editor" "$@"
+    ;;
+esac
