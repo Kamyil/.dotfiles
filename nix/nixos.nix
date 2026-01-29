@@ -80,7 +80,7 @@ in
             buildkit docker-compose podman podman-compose
 
             # Media and graphics
-            ffmpeg imagemagick flameshot swappy chromium
+            ffmpeg imagemagick flameshot swappy chromium thunderbird
 
             # Database and data tools
             sqlite postgresql

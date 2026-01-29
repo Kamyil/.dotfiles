@@ -76,6 +76,19 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
+  services.dnsmasq = {
+    enable = true;
+    settings = {
+      address = [
+        "/.localhost/127.0.0.1"
+        "/.localhost/::1"
+      ];
+      "resolv-file" = "/run/NetworkManager/resolv.conf";
+    };
+  };
+
+  networking.nameservers = [ "127.0.0.1" ];
+
   # Set your time zone.
   time.timeZone = "Europe/Warsaw";
 
