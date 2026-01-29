@@ -322,6 +322,11 @@ in
     '';
   };
 
+  programs.atuin = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   # Starship prompt configuration
   programs.starship = {
     enable = true;

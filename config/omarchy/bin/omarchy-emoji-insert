@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+emoji=$(cat)
+emoji=${emoji//$'\n'/}
+emoji=${emoji//$'\r'/}
+
+[ -n "$emoji" ] || exit 0
+
+printf '%s' "$emoji" | wl-copy
+
+if command -v wtype >/dev/null 2>&1; then
+  sleep 0.05
+  wtype -- "$emoji"
+fi

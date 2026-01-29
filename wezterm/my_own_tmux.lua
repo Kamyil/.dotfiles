@@ -210,213 +210,213 @@ local my_own_tmux = {
 		-- 	}),
 		-- },
 		-- Create new workspace with optional naming
-		{
-			key = "p",
-			mods = "CTRL",
-			action = wezterm.action.PromptInputLine({
-				description = wezterm.format({
-					{ Attribute = { Intensity = "Bold" } },
-					{ Foreground = { AnsiColor = "Fuchsia" } },
-					{ Text = "Enter name for new workspace (or press Enter for auto-name)" },
-				}),
-				action = wezterm.action_callback(function(window, pane, line)
-					local workspace_name
-
-					if line and line ~= "" then
-						-- User provided a name
-						workspace_name = line
-					else
-						-- Auto-generate name using utility function
-						workspace_name = my_own_tmux.generate_workspace_name(pane)
-					end
-
-					window:perform_action(
-						wezterm.action.SwitchToWorkspace({
-							name = workspace_name,
-						}),
-						pane
-					)
-				end),
-			}),
-		},
-		-- Quick create workspace with auto-name (no prompt)
-		{
-			key = "P",
-			mods = "CTRL|SHIFT",
-			action = wezterm.action_callback(function(window, pane)
-				local workspace_name = my_own_tmux.generate_workspace_name(pane)
-
-				window:perform_action(
-					wezterm.action.SwitchToWorkspace({
-						name = workspace_name,
-					}),
-					pane
-				)
-			end),
-		},
-		-- Toggle second-brain notes session and back
-		{
-			key = "s",
-			mods = "CTRL",
-			action = wezterm.action.EmitEvent("toggle_second_brain"),
-		},
-
-		-- Rename current workspace
-		{
-			key = "R",
-			mods = "CTRL|SHIFT",
-			action = wezterm.action.PromptInputLine({
-				description = wezterm.format({
-					{ Attribute = { Intensity = "Bold" } },
-					{ Foreground = { AnsiColor = "Blue" } },
-					{ Text = "Enter new name for current workspace" },
-				}),
-				action = wezterm.action_callback(function(window, pane, line)
-					if line and line ~= "" then
-						local current_workspace = window:active_workspace()
-						local mux = wezterm.mux
-
-						-- Get the current workspace
-						local workspace = mux.get_workspace(current_workspace)
-						if workspace then
-							-- Move all tabs from current workspace to new workspace
-							for _, tab in ipairs(workspace:tabs()) do
-								tab:move_to_workspace(line)
-							end
-							-- Switch to the new workspace
-							window:perform_action(
-								wezterm.action.SwitchToWorkspace({
-									name = line,
-								}),
-								pane
-							)
-						end
-					end
-				end),
-			}),
-		},
-		-- Show workspace info
-		{
-			key = "i",
-			mods = "CTRL",
-			action = wezterm.action_callback(function(window, pane)
-				local workspace_name = window:active_workspace()
-				local cwd = pane:get_current_working_dir()
-				local path = cwd and cwd.file_path or "unknown"
-
-				window:toast_notification("WezTerm",
-					string.format("Workspace: %s\nDirectory: %s", workspace_name, path),
-					nil, 3000)
-			end),
-		},
-		-- Tmux-sessionizer: Pick directory and create workspace
-		{
-			key = "f",
-			mods = "CTRL",
-			action = wezterm.action.SpawnCommandInNewTab({
-				args = {
-					"bash", "-c",
-					[[
-						# Find git repositories in common locations
-						echo "Searching for git repositories..."
-						dirs=$(find ~ ~/.config ~/Documents ~/Projects ~/dev ~/Code \
-							-maxdepth 3 -type d -name ".git" \
-							-exec dirname "{}" \; 2>/dev/null | sort -u)
-						
-						if [ -z "$dirs" ]; then
-							echo "No git repositories found in searched directories"
-							echo "Searched: ~, ~/.config, ~/Documents, ~/Projects, ~/dev, ~/Code"
-							read -p "Press Enter to close..."
-							exit 1
-						fi
-						
-						echo "Found repositories, opening selector..."
-						
-						# Use fzf to select directory
-						selected=$(echo "$dirs" | /opt/homebrew/bin/fzf \
-							--prompt='Select git repo: ' \
-							--height=40% \
-							--reverse \
-							--preview='ls -la {}' \
-							--preview-window=right:50%:wrap)
-						
-						if [ -n "$selected" ]; then
-							# Create more descriptive workspace name using parent/project pattern
-							parent_dir=$(basename "$(dirname "$selected")")
-							project_dir=$(basename "$selected")
-							workspace_name="${parent_dir}/${project_dir}"
-							echo "Creating workspace: $workspace_name"
-							echo "Directory: $selected"
-							
-							# Create new workspace with the selected directory
-							/opt/homebrew/bin/wezterm cli spawn --new-window --workspace "$workspace_name" --cwd "$selected"
-							
-							echo "Created workspace: $workspace_name"
-							sleep 1
-						else
-							echo "No directory selected"
-							sleep 1
-						fi
-					]]
-				},
-			}),
-		},
-		-- Alternative sessionizer: Pick any directory (custom paths)
-		{
-			key = "m",
-			mods = "CTRL",
-			action = wezterm.action.SpawnCommandInNewTab({
-				args = {
-					"bash", "-c",
-					[[
-						echo "Searching for directories in custom paths..."
-						
-						# Find directories in specific paths (customize these)
-						dirs=$(find ~/.config ~/Work/Projects \
-							-maxdepth 2 -type d \
-							! -path "*/.*" \
-							! -path "*/node_modules" \
-							! -path "*/target" \
-							! -path "*/.git" \
-							2>/dev/null | sort)
-						
-						if [ -z "$dirs" ]; then
-							echo "No directories found in: ~/.config, ~/Work/Projects"
-							read -p "Press Enter to close..."
-							exit 1
-						fi
-						
-						echo "Found directories, opening selector..."
-						
-						# Use fzf to select directory
-						selected=$(echo "$dirs" | /opt/homebrew/bin/fzf \
-							--prompt='Select directory: ' \
-							--height=40% \
-							--reverse \
-							--preview='ls -la {}' \
-							--preview-window=right:50%:wrap)
-						
-						if [ -n "$selected" ]; then
-							# Create more descriptive workspace name using parent/project pattern
-							parent_dir=$(basename "$(dirname "$selected")")
-							project_dir=$(basename "$selected")
-							workspace_name="${parent_dir}/${project_dir}"
-							echo "Creating workspace: $workspace_name"
-							echo "Directory: $selected"
-							
-							# Create new workspace with the selected directory
-							/opt/homebrew/bin/wezterm cli spawn --new-window --workspace "$workspace_name" --cwd "$selected"
-							
-							echo "Created workspace: $workspace_name"
-							sleep 1
-						else
-							echo "No directory selected"
-							sleep 1
-						fi
-					]]
-				},
-			}),
-		},
+		-- {
+		-- 	key = "p",
+		-- 	mods = "CTRL",
+		-- 	action = wezterm.action.PromptInputLine({
+		-- 		description = wezterm.format({
+		-- 			{ Attribute = { Intensity = "Bold" } },
+		-- 			{ Foreground = { AnsiColor = "Fuchsia" } },
+		-- 			{ Text = "Enter name for new workspace (or press Enter for auto-name)" },
+		-- 		}),
+		-- 		action = wezterm.action_callback(function(window, pane, line)
+		-- 			local workspace_name
+		--
+		-- 			if line and line ~= "" then
+		-- 				-- User provided a name
+		-- 				workspace_name = line
+		-- 			else
+		-- 				-- Auto-generate name using utility function
+		-- 				workspace_name = my_own_tmux.generate_workspace_name(pane)
+		-- 			end
+		--
+		-- 			window:perform_action(
+		-- 				wezterm.action.SwitchToWorkspace({
+		-- 					name = workspace_name,
+		-- 				}),
+		-- 				pane
+		-- 			)
+		-- 		end),
+		-- 	}),
+		-- },
+		-- -- Quick create workspace with auto-name (no prompt)
+		-- {
+		-- 	key = "P",
+		-- 	mods = "CTRL|SHIFT",
+		-- 	action = wezterm.action_callback(function(window, pane)
+		-- 		local workspace_name = my_own_tmux.generate_workspace_name(pane)
+		--
+		-- 		window:perform_action(
+		-- 			wezterm.action.SwitchToWorkspace({
+		-- 				name = workspace_name,
+		-- 			}),
+		-- 			pane
+		-- 		)
+		-- 	end),
+		-- },
+		-- -- Toggle second-brain notes session and back
+		-- {
+		-- 	key = "s",
+		-- 	mods = "CTRL",
+		-- 	action = wezterm.action.EmitEvent("toggle_second_brain"),
+		-- },
+		--
+		-- -- Rename current workspace
+		-- {
+		-- 	key = "R",
+		-- 	mods = "CTRL|SHIFT",
+		-- 	action = wezterm.action.PromptInputLine({
+		-- 		description = wezterm.format({
+		-- 			{ Attribute = { Intensity = "Bold" } },
+		-- 			{ Foreground = { AnsiColor = "Blue" } },
+		-- 			{ Text = "Enter new name for current workspace" },
+		-- 		}),
+		-- 		action = wezterm.action_callback(function(window, pane, line)
+		-- 			if line and line ~= "" then
+		-- 				local current_workspace = window:active_workspace()
+		-- 				local mux = wezterm.mux
+		--
+		-- 				-- Get the current workspace
+		-- 				local workspace = mux.get_workspace(current_workspace)
+		-- 				if workspace then
+		-- 					-- Move all tabs from current workspace to new workspace
+		-- 					for _, tab in ipairs(workspace:tabs()) do
+		-- 						tab:move_to_workspace(line)
+		-- 					end
+		-- 					-- Switch to the new workspace
+		-- 					window:perform_action(
+		-- 						wezterm.action.SwitchToWorkspace({
+		-- 							name = line,
+		-- 						}),
+		-- 						pane
+		-- 					)
+		-- 				end
+		-- 			end
+		-- 		end),
+		-- 	}),
+		-- },
+		-- -- Show workspace info
+		-- {
+		-- 	key = "i",
+		-- 	mods = "CTRL",
+		-- 	action = wezterm.action_callback(function(window, pane)
+		-- 		local workspace_name = window:active_workspace()
+		-- 		local cwd = pane:get_current_working_dir()
+		-- 		local path = cwd and cwd.file_path or "unknown"
+		--
+		-- 		window:toast_notification("WezTerm",
+		-- 			string.format("Workspace: %s\nDirectory: %s", workspace_name, path),
+		-- 			nil, 3000)
+		-- 	end),
+		-- },
+		-- -- Tmux-sessionizer: Pick directory and create workspace
+		-- {
+		-- 	key = "f",
+		-- 	mods = "CTRL",
+		-- 	action = wezterm.action.SpawnCommandInNewTab({
+		-- 		args = {
+		-- 			"bash", "-c",
+		-- 			[[
+		-- 				# Find git repositories in common locations
+		-- 				echo "Searching for git repositories..."
+		-- 				dirs=$(find ~ ~/.config ~/Documents ~/Projects ~/dev ~/Code \
+		-- 					-maxdepth 3 -type d -name ".git" \
+		-- 					-exec dirname "{}" \; 2>/dev/null | sort -u)
+		--
+		-- 				if [ -z "$dirs" ]; then
+		-- 					echo "No git repositories found in searched directories"
+		-- 					echo "Searched: ~, ~/.config, ~/Documents, ~/Projects, ~/dev, ~/Code"
+		-- 					read -p "Press Enter to close..."
+		-- 					exit 1
+		-- 				fi
+		--
+		-- 				echo "Found repositories, opening selector..."
+		--
+		-- 				# Use fzf to select directory
+		-- 				selected=$(echo "$dirs" | /opt/homebrew/bin/fzf \
+		-- 					--prompt='Select git repo: ' \
+		-- 					--height=40% \
+		-- 					--reverse \
+		-- 					--preview='ls -la {}' \
+		-- 					--preview-window=right:50%:wrap)
+		--
+		-- 				if [ -n "$selected" ]; then
+		-- 					# Create more descriptive workspace name using parent/project pattern
+		-- 					parent_dir=$(basename "$(dirname "$selected")")
+		-- 					project_dir=$(basename "$selected")
+		-- 					workspace_name="${parent_dir}/${project_dir}"
+		-- 					echo "Creating workspace: $workspace_name"
+		-- 					echo "Directory: $selected"
+		--
+		-- 					# Create new workspace with the selected directory
+		-- 					/opt/homebrew/bin/wezterm cli spawn --new-window --workspace "$workspace_name" --cwd "$selected"
+		--
+		-- 					echo "Created workspace: $workspace_name"
+		-- 					sleep 1
+		-- 				else
+		-- 					echo "No directory selected"
+		-- 					sleep 1
+		-- 				fi
+		-- 			]]
+		-- 		},
+		-- 	}),
+		-- },
+		-- -- Alternative sessionizer: Pick any directory (custom paths)
+		-- {
+		-- 	key = "m",
+		-- 	mods = "CTRL",
+		-- 	action = wezterm.action.SpawnCommandInNewTab({
+		-- 		args = {
+		-- 			"bash", "-c",
+		-- 			[[
+		-- 				echo "Searching for directories in custom paths..."
+		--
+		-- 				# Find directories in specific paths (customize these)
+		-- 				dirs=$(find ~/.config ~/Work/Projects \
+		-- 					-maxdepth 2 -type d \
+		-- 					! -path "*/.*" \
+		-- 					! -path "*/node_modules" \
+		-- 					! -path "*/target" \
+		-- 					! -path "*/.git" \
+		-- 					2>/dev/null | sort)
+		--
+		-- 				if [ -z "$dirs" ]; then
+		-- 					echo "No directories found in: ~/.config, ~/Work/Projects"
+		-- 					read -p "Press Enter to close..."
+		-- 					exit 1
+		-- 				fi
+		--
+		-- 				echo "Found directories, opening selector..."
+		--
+		-- 				# Use fzf to select directory
+		-- 				selected=$(echo "$dirs" | /opt/homebrew/bin/fzf \
+		-- 					--prompt='Select directory: ' \
+		-- 					--height=40% \
+		-- 					--reverse \
+		-- 					--preview='ls -la {}' \
+		-- 					--preview-window=right:50%:wrap)
+		--
+		-- 				if [ -n "$selected" ]; then
+		-- 					# Create more descriptive workspace name using parent/project pattern
+		-- 					parent_dir=$(basename "$(dirname "$selected")")
+		-- 					project_dir=$(basename "$selected")
+		-- 					workspace_name="${parent_dir}/${project_dir}"
+		-- 					echo "Creating workspace: $workspace_name"
+		-- 					echo "Directory: $selected"
+		--
+		-- 					# Create new workspace with the selected directory
+		-- 					/opt/homebrew/bin/wezterm cli spawn --new-window --workspace "$workspace_name" --cwd "$selected"
+		--
+		-- 					echo "Created workspace: $workspace_name"
+		-- 					sleep 1
+		-- 				else
+		-- 					echo "No directory selected"
+		-- 					sleep 1
+		-- 				fi
+		-- 			]]
+		-- 		},
+		-- 	}),
+		-- },
 		-- Projectifier: Pick project and build workspace layout
 		-- {
 		-- 	key = "t",

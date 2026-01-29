@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "Run: sudo timedatectl set-timezone <zone>" >&2
+exit 1

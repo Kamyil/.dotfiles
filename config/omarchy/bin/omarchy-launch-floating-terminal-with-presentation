@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cmd="$*"
+
+if [ -z "$cmd" ]; then
+  exec setsid foot --app-id=org.omarchy.terminal
+fi
+
+exec setsid foot --app-id=org.omarchy.terminal -e bash -lc "$cmd"
