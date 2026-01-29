@@ -159,7 +159,7 @@ local my_own_tmux = {
 		-- Rename tab
 		{
 			key = "r",
-			mods = "CTRL",
+			mods = "CTRL|SHIFT",
 			action = wezterm.action.PromptInputLine({
 				description = "Enter new name for tab",
 				action = wezterm.action_callback(function(window, pane, line)
