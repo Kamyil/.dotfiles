@@ -247,13 +247,13 @@
    services.openssh.enable = true;
 
     # Docker configuration
-    virtualisation.docker.enable = true;
-    virtualisation.docker.daemon.settings = {
-      userland-proxy = false;
-      features = {
-        buildkit = true;
-      };
+  virtualisation.docker.enable = true;
+  virtualisation.docker.daemon.settings = {
+    userland-proxy = true;
+    features = {
+      buildkit = true;
     };
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
