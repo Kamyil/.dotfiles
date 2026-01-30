@@ -1,22 +1,27 @@
+-- Settings matching waybar configuration
 return {
-	height = 45,
-	paddings = 3,
-	group_paddings = 5,
+	height = 26,
+	paddings = 0,
+	group_paddings = 0,
+	margin_left = 8,
+	margin_right = 8,
+	module_spacing = 7.5,
+	workspace_spacing = 6,
 	padding = {
 		icon_item = {
 			icon = {
-				padding_left = 12,
-				padding_right = 12,
+				padding_left = 0,
+				padding_right = 0,
 			},
 		},
 		icon_label_item = {
 			icon = {
-				padding_left = 8,
+				padding_left = 0,
 				padding_right = 0,
 			},
 			label = {
-				padding_left = 6,
-				padding_right = 8,
+				padding_left = 0,
+				padding_right = 0,
 			},
 		},
 	},

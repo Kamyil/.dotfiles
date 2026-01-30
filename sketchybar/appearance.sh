@@ -1,32 +1,32 @@
 #!/bin/bash
 
-# Appearance configuration - converted from Lua to shell
+# Appearance configuration matching waybar style
 source "$CONFIG_DIR/colors.sh"
 
-# Bar defaults based on appearance.lua
+# Waybar uses: JetBrainsMono Nerd Font, 12px, flat design, no backgrounds
 defaults=(
-  updates=when_shown
-  icon.font="Berkeley Mono:Bold:13.0"
-  icon.color=$BLUE
+  updates=on
+  icon.font="JetBrainsMono Nerd Font:Regular:12.0"
+  icon.color=$WHITE
   icon.padding_left=0
   icon.padding_right=0
-  label.font="Berkeley Mono:Semibold:13.0"
-  label.color=$BLUE
-  label.padding_left=3
-  label.padding_right=3
-  background.border_color=$GREY
+  label.font="JetBrainsMono Nerd Font:Regular:12.0"
+  label.color=$WHITE
+  label.padding_left=0
+  label.padding_right=0
+  background.border_color=$TRANSPARENT
   background.border_width=0
-  background.color=0x33000000
+  background.color=$TRANSPARENT
   background.corner_radius=0
-  background.height=32
+  background.height=26
   popup.background.border_width=0
-  popup.background.corner_radius=6
-  popup.background.color=$WHITE
-  popup.blur_radius=50
-  popup.y_offset=5
-  padding_left=3
-  padding_right=3
-  scroll_texts=on
+  popup.background.corner_radius=0
+  popup.background.color=$BAR_COLOR
+  popup.blur_radius=0
+  popup.y_offset=0
+  padding_left=0
+  padding_right=0
+  scroll_texts=off
 )
 
 sketchybar --default "${defaults[@]}"

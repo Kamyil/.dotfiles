@@ -2,16 +2,19 @@ local colors = require("appearance")
 local settings = require("settings")
 local sbar = require("sketchybar")
 
--- Equivalent to the --bar domain
+-- Bar configuration matching waybar
+-- Position: bottom, height: 26px, no blur, minimal styling
 sbar.bar({
-	color = colors.colors.bg3,
+	color = colors.colors.background,
 	height = settings.height,
-	padding_right = 10,
-	padding_left = 10,
+	padding_right = settings.margin_right,
+	padding_left = settings.margin_left,
+	position = "bottom",
 	sticky = "on",
-	topmost = "window",
-	y_offset = -5,
-	margin = -2,
-	blur_radius = 30,
-	border_color = 0x00000000,
+	topmost = "off",
+	y_offset = 0,
+	margin = 0,
+	blur_radius = 0,
+	border_color = colors.colors.transparent,
+	border_width = 0,
 })

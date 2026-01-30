@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# The $NAME variable is passed from sketchybar and holds the name of
-# the item invoking this script:
-# https://felixkratz.github.io/SketchyBar/config/events#events-and-scripting
+# Calendar plugin matching waybar format: Full weekday + 24h time
+# e.g., "Friday 14:30"
 
-sketchybar --set $NAME label="$(date '+%d/%m %H:%M:%S')"
+weekday=$(date '+%A')
+time=$(date '+%H:%M')
+sketchybar --set $NAME label="$weekday $time"

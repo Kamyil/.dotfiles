@@ -1,15 +1,20 @@
+-- Apple icon matching waybar's NixOS logo (custom/omarchy)
 local icons = require("icons")
 local settings = require("settings")
 local sbar = require("sketchybar")
 
-sbar.add("item", {
-	default = true,
+sbar.add("item", "apple", {
+	position = "left",
 	icon = {
-		padding_left = settings.padding.icon_item.icon.padding_left,
-		padding_right = settings.padding.icon_item.icon.padding_right,
 		string = icons.apple,
+		font = {
+			family = "JetBrainsMono Nerd Font",
+			style = "Regular",
+			size = 12.0,
+		},
+		padding_left = 0,
+		padding_right = settings.module_spacing,
 	},
 	label = { drawing = false },
-	click_script = "$CONFIG_DIR/plugins/apple.sh",
-	subscribe = "logo mouse.clicked window_focus front_app_switched space_change title_change",
+	click_script = "open -a 'System Preferences'",
 })
