@@ -99,6 +99,9 @@ in
             # Cursor themes - minimal macOS-like style
             capitaine-cursors
 
+            # Fonts for waybar and terminal
+            nerd-fonts.jetbrains-mono
+
             # Keyboard remapping
             kmonad
           ]) ++ [
