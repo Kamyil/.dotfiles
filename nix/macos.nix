@@ -23,7 +23,7 @@ in
     };
     modules = [
       # nix-darwin system configuration
-      ({ config, pkgs, ... }: {
+      ({ config, pkgs, lib, ... }: {
         nix.enable = false;
         # List packages installed in system profile
         environment.systemPackages = with pkgs; [
@@ -33,11 +33,21 @@ in
           wget
         ];
 
+        # Work around nix-darwin applications buildEnv pathsToLink type
+        system.build.applications = lib.mkForce (pkgs.buildEnv {
+          name = "system-applications";
+          paths = config.environment.systemPackages;
+          pathsToLink = [ "/Applications" ];
+        });
+
         # Nix configuration (nix-daemon is enabled by default when nix.enable = true)
         nix.package = pkgs.nix;
 
         # Enable flakes
         nix.settings.experimental-features = "nix-command flakes";
+
+        # Disable darwin-uninstaller to avoid broken buildEnv pathsToLink
+        system.tools.darwin-uninstaller.enable = false;
 
         # Create /etc/zshrc that loads the nix-darwin environment
         programs.zsh = {
@@ -150,7 +160,7 @@ in
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
 
-        home-manager.users.kamil = { pkgs, config, ... }:
+        home-manager.users.kamil = { pkgs, config, lib, ... }:
           let
             repo = "${config.home.homeDirectory}/.dotfiles";
             link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";
@@ -159,37 +169,22 @@ in
           imports = [ ./shared.nix ];
           
           home.homeDirectory = lib.mkForce "/Users/kamil";
+          home.enableNixpkgsReleaseCheck = false;
 
-          # macOS-specific packages
+          # macOS-specific packages (shared packages are in shared.nix)
           home.packages = (with pkgs; [
             # Development tools
             vscode 
 
             # Terminal tools
-            docker ripgrep btop yazi tmux wezterm kitty
-
-            # Shell and CLI utilities
-            gh curl wget tree fd
-            eza difftastic just jq yq
+            docker wezterm kitty
 
             # Development tools
             gcc go nodejs yarn pnpm deno fnm wrangler
             lua luarocks python3 php
 
-            # Text processing and search
-            gnugrep gnused coreutils
-
-            # System monitoring and management
-            htop fastfetch pfetch neofetch
-
-            # File and archive tools
-            unzip p7zip trash-cli
-
             # Network and system tools
-            nmap wireshark-cli socat
-
-            # Development/Programming
-            # kitty removed - using WezTerm instead
+            wireshark-cli
 
             # Container tools (CLI versions, GUI via homebrew)
             podman podman-compose
@@ -198,22 +193,19 @@ in
             ffmpeg imagemagick
 
             # Database and data tools
-            sqlite postgresql
+            postgresql
 
             # Text editors and viewers
             helix
-
-            # Version control extras
-            git-extras tig
 
             # Virtualization and containers
             qemu lima colima
 
             # System utilities
-            stow cowsay figlet fortune lolcat
+            trash-cli cowsay figlet fortune lolcat
 
             # Programming language tools
-            zig stylua lua-language-server rustup
+            lua-language-server rustup
             
             # Libraries for fff.nvim
             openssl libssh2
@@ -222,11 +214,7 @@ in
             zellij
 
             # File synchronization and transfer
-            rsync openssh sshfs-fuse
-
-            # Other useful tools
-            tldr # Simplified man pages
-            watchexec # File watching
+            sshfs-fuse
 
             nerd-fonts.geist-mono # Cool programming font (good alternative to BerkeleyMono and JetBrains Mono)
           ]) ++ [

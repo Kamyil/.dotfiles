@@ -359,8 +359,45 @@ in
     };
   };
 
-  # Core packages are defined in OS-specific configs (nixos.nix / macos.nix)
-  # to avoid module merging issues with home.packages
+  # Common packages shared between macOS and NixOS
+  home.packages = with pkgs; [
+    # Terminal tools
+    ripgrep btop yazi tmux
+
+    # Shell and CLI utilities
+    gh curl wget tree fd
+    eza difftastic just jq yq lazygit lazydocker
+
+    # Text processing and search
+    gnugrep gnused coreutils bat delta fzf
+
+    # System monitoring
+    htop fastfetch pfetch neofetch
+
+    # File and archive tools
+    unzip p7zip
+
+    # Network tools
+    nmap socat
+
+    # Database tools
+    sqlite
+
+    # Version control
+    git-extras tig
+
+    # System utilities
+    stow
+
+    # Programming tools
+    zig stylua
+
+    # File sync
+    rsync openssh
+
+    # Other
+    tldr watchexec
+  ];
 
   programs.home-manager.enable = true;
 }
