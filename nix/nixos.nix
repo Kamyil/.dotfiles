@@ -47,7 +47,7 @@ in
           # Disable version mismatch warning between HM and nixpkgs
           home.enableNixpkgsReleaseCheck = false;
 
-          # NixOS-specific packages
+          # NixOS-specific packages (shared packages are in shared.nix)
           home.packages = (with pkgs; [
             # Development tools
             gcc docker
@@ -59,22 +59,14 @@ in
               extensions = [ "rust-src" "cargo" "rustc" ];
             })
 
-            # Terminal tools
-            yazi tmux
-
-            # Shell and CLI utilities
-            gh tree fd difftastic just jq yq
-            gnugrep gnused coreutils
+            # Nix LSP (not available on macOS)
             nixd
 
-            # System monitoring and management
-            htop fastfetch pfetch neofetch
-
-            # File and archive tools
-            unzip p7zip trash-cli
+            # System utilities
+            trash-cli
 
             # Network and system tools
-            nmap wireshark-cli socat
+            wireshark-cli
 
             # Container tools
             buildkit docker-compose podman podman-compose
@@ -83,32 +75,19 @@ in
             ffmpeg imagemagick flameshot swappy chromium thunderbird
 
             # Database and data tools
-            sqlite postgresql
+            postgresql
 
             # Text editors and viewers
             helix
 
-            # Version control extras
-            git-extras tig
-
             # Virtualization and containers
             qemu
-
-            # System utilities
-            stow cowsay figlet fortune lolcat
 
             # Libraries
             libssh2
 
-            # Terminal multiplexers and sessions
-            zellij
-
             # File synchronization and transfer
-            rsync openssh sshfs
-
-            # Other useful tools
-            tldr watchexec
-            nerd-fonts.geist-mono
+            sshfs
 
             # Network tools
             impala # TUI for managing WiFi
@@ -122,10 +101,6 @@ in
 
             # Keyboard remapping
             kmonad
-
-            # Shared packages (duplicated from shared.nix for NixOS)
-            fzf bat delta lazygit lazydocker eza
-            fnm just fastfetch
           ]) ++ [
             # Unstable-only packages
             pkgs.opencode
