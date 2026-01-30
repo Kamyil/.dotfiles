@@ -1,0 +1,23 @@
+(defcfg
+  input (device-file "/dev/input/by-path/pci-0000:00:14.0-usb-0:6:1.0-event-kbd")
+  output (uinput-sink "kmonad-super-to-ctrl")
+  fallthrough true
+)
+
+(defsrc
+  lsft rsft
+  lctrl rctrl
+  lalt ralt
+  lmet rmet
+)
+
+(deflayer base
+  lsft lsft
+  rsft rsft
+  lctrl lctrl
+  rctrl rctrl
+  lalt ralt
+  ralt lalt
+  lmet lctrl
+  rmet rctrl
+)

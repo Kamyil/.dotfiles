@@ -113,11 +113,12 @@
       noto-fonts-color-emoji
       jetbrains-mono
       corefonts
+      liberation_ttf
     ];
     fontconfig.defaultFonts = {
-      serif = [ "Ubuntu" ];
-      sansSerif = [ "Ubuntu" ];
-      monospace = [ "Berkeley Mono" "Ubuntu Mono" ];
+      serif = [ "Liberation Sans" ];
+      sansSerif = [ "Liberation Sans" ];
+      monospace = [ "Berkeley Mono" "BerkeleyMono" "Ubuntu Mono" ];
       emoji = [ "Noto Color Emoji" ];
     };
   };

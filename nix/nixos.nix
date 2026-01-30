@@ -114,8 +114,14 @@ in
             impala # TUI for managing WiFi
             bluetuith
 
+            # Hyprland lock screen
+            hyprlock
+
             # Cursor themes - minimal macOS-like style
             capitaine-cursors
+
+            # Keyboard remapping
+            kmonad
 
             # Shared packages (duplicated from shared.nix for NixOS)
             fzf bat delta lazygit lazydocker eza
@@ -123,7 +129,6 @@ in
           ]) ++ [
             # Unstable-only packages
             pkgs.opencode
-            pkgs.playwright-mcp
             # packages from unstable branch
             neovim-nightly-overlay.packages.${system}.default
           ];
@@ -153,8 +158,8 @@ in
           home.file."second-brain/.keep".text = "";
 
            fonts.fontconfig = {
-             enable = true;
-           };
+              enable = true;
+            };
 
           # Set cursor theme environment variables for better compatibility
           home.sessionVariables = {
@@ -187,10 +192,26 @@ in
             ".config/omarchy/current/background".source = link "wallpapers/kanagawa-black-and-white-wallpaper.jpg";
             ".config/walker/config.toml".source = link "config/walker/config.toml";
             ".config/walker/themes/kanagawa.css".source = link "config/walker/themes/kanagawa.css";
+            ".config/kmonad/config.kbd".source = link "config/kmonad/config.kbd";
             ".local/share/omarchy/bin".source = link "config/omarchy/bin";
             ".local/share/omarchy/default/walker/themes/omarchy-default/layout.xml".source = link "config/omarchy/default/walker/themes/omarchy-default/layout.xml";
             ".local/share/omarchy/default/walker/themes/omarchy-default/style.css".source = link "config/omarchy/default/walker/themes/omarchy-default/style.css";
             ".local/share/omarchy/default/waybar/indicators".source = link "config/omarchy/default/waybar/indicators";
+          };
+
+          systemd.user.services.kmonad = {
+            Unit = {
+              Description = "kmonad keyboard remapping daemon";
+              After = [ "graphical-session.target" ];
+              PartOf = [ "graphical-session.target" ];
+            };
+            Service = {
+              ExecStart = "${pkgs.kmonad}/bin/kmonad %h/.config/kmonad/config.kbd";
+              Restart = "on-failure";
+            };
+            Install = {
+              WantedBy = [ "graphical-session.target" ];
+            };
           };
         };
       }
