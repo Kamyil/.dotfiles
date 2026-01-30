@@ -34,7 +34,8 @@
   opacity: 0.5;
 }
 
-#workspaces button.active {
+#workspaces button.active,
+#workspaces button.active label {
   color: #dca561;
   font-weight: bold;
 }
