@@ -41,51 +41,52 @@ local icons = {
 		},
 	},
 
-	-- Alternative NerdFont icons
+	-- Alternative NerdFont icons (matching waybar icons)
 	nerdfont = {
-		plus = "",
-		loading = "",
-		apple = "",
-		gear = "",
-		cpu = "",
-		clipboard = "Missing Icon",
+		plus = "+",
+		loading = "󰔟",
+		apple = "􀣺",
+		gear = "󰢻",
+		cpu = "󰍛",
+		memory = "󰘚",
+		clipboard = "󰅌",
 
 		switch = {
 			on = "󱨥",
 			off = "󱨦",
 		},
 		volume = {
-			_100 = "",
-			_66 = "",
-			_33 = "",
-			_10 = "",
-			_0 = "",
+			_100 = "",
+			_66 = "",
+			_33 = "",
+			_10 = "",
+			_0 = "",
 		},
 		battery = {
-			_100 = "",
-			_75 = "",
-			_50 = "",
-			_25 = "",
-			_0 = "",
-			charging = "",
+			_100 = "󰁹",
+			_75 = "󰂂",
+			_50 = "󰁿",
+			_25 = "󰁽",
+			_0 = "󰁺",
+			charging = "󰂄",
 		},
 		wifi = {
-			upload = "",
-			download = "",
-			connected = "󰖩",
-			disconnected = "󰖪",
-			router = "Missing Icon",
+			upload = "󰁞",
+			download = "󰁆",
+			connected = "󰤨",
+			disconnected = "󰤮",
+			router = "󰣺",
 		},
 		media = {
-			back = "",
-			forward = "",
-			play_pause = "",
+			back = "󰒮",
+			forward = "󰒭",
+			play_pause = "󰐎",
+		},
+		workspace = {
+			default = "",
+			active = "󱓻",
 		},
 	},
 }
 
-if not (settings.icons == "NerdFont") then
-	return icons.sf_symbols
-else
-	return icons.nerdfont
-end
+return icons.nerdfont

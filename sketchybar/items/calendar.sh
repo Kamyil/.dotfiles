@@ -1,19 +1,17 @@
 #!/bin/bash
 
+# Clock matching waybar format: "{:%A %H:%M}"
+source "$CONFIG_DIR/colors.sh"
+
 calendar=(
-  icon=󰸗
-  icon.font="Berkeley Mono:Black:12.0"
-  icon.color=$YELLOW
-  icon.padding_right=0
-  label.align=right
+  icon.drawing=off
+  label.align=center
   label.color=$WHITE
-  label.font="Berkeley Mono:Regular:12.0"
-  padding_left=15
-  update_freq=1
+  label.font="JetBrainsMono Nerd Font:Regular:12.0"
+  update_freq=30
   script="$PLUGIN_DIR/calendar.sh"
-  click_script="$PLUGIN_DIR/zen.sh"
 )
 
-sketchybar --add item calendar right       \
+sketchybar --add item calendar center \
            --set calendar "${calendar[@]}" \
            --subscribe calendar system_woke

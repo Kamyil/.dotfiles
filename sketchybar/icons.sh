@@ -2,7 +2,7 @@
 
 # General Icons
 LOADING=􀖇
-APPLE=􀣺
+APPLE=
 PREFERENCES=􀺽
 ACTIVITY=􀒓
 LOCK=􀒳

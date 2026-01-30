@@ -24,10 +24,23 @@
   padding: 0 6px;
   margin: 0 1.5px;
   min-width: 9px;
+  color: @foreground;
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 12px;
+  font-weight: normal;
 }
 
 #workspaces button.empty {
   opacity: 0.5;
+}
+
+#workspaces button.active {
+  color: #dca561;
+  font-weight: bold;
+}
+
+#workspaces button:hover {
+  background-color: transparent;
 }
 
 #cpu,

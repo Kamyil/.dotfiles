@@ -1,17 +1,20 @@
 #!/bin/bash
 
+# Battery plugin matching waybar format
 source "$CONFIG_DIR/colors.sh"
 
-PERCENTAGE=$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)
+PERCENTAGE=$(pmset -g batt | grep -Eo '\d+%' | head -1 | cut -d% -f1)
 CHARGING=$(pmset -g batt | grep 'AC Power')
 
 if [ -z "$PERCENTAGE" ]; then
-    exit 0
+  exit 0
 fi
 
-LABEL="${PERCENTAGE}%"
-
-case ${PERCENTAGE} in
+# Icons matching waybar format
+if [[ $CHARGING != "" ]]; then
+  ICON="󰂄"
+else
+  case ${PERCENTAGE} in
     9[0-9]|100) ICON="󰁹";;
     8[0-9]) ICON="󰂂";;
     7[0-9]) ICON="󰂁";;
@@ -22,10 +25,7 @@ case ${PERCENTAGE} in
     2[0-9]) ICON="󰁼";;
     1[0-9]) ICON="󰁻";;
     *) ICON="󰁺";;
-esac
-
-if [[ $CHARGING != "" ]]; then
-    ICON="󰂄"
+  esac
 fi
 
-sketchybar --set $NAME icon="$ICON" label="$LABEL"
+sketchybar --set $NAME icon="$ICON" label="${PERCENTAGE}%"

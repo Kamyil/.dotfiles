@@ -1,30 +1,37 @@
+-- Clock matching waybar's clock format
+-- waybar: "{:%A %H:%M}" - Full weekday + 24h time
 local sbar = require("sketchybar")
 local fonts = require("fonts")
+local settings = require("settings")
 
-local cal = sbar.add("item", {
+local clock = sbar.add("item", "clock", {
+	position = "center",
 	icon = {
 		font = {
-			family = fonts.font_heavy.text,
-			style = fonts.font_heavy.style_map["Regular"],
-			size = fonts.font_heavy.size,
+			family = fonts.font.text,
+			style = fonts.font.style_map["Regular"],
+			size = fonts.font.size,
 		},
-		padding_left = 8,
+		padding_left = 0,
+		padding_right = 0,
 	},
 	label = {
-		align = "right",
 		font = {
-			family = fonts.font_heavy.text,
-			style = fonts.font_heavy.style_map["Regular"],
-			size = fonts.font_heavy.size,
+			family = fonts.font.text,
+			style = fonts.font.style_map["Regular"],
+			size = fonts.font.size,
 		},
-		padding_right = 10,
+		padding_left = 0,
+		padding_right = 0,
 	},
-	position = "right",
 	update_freq = 30,
-	padding_left = 1,
-	padding_right = 1,
 })
 
-cal:subscribe({ "forced", "routine", "system_woke" }, function()
-	cal:set({ icon = os.date("%a %b %d"), label = os.date("%I:%M %p") })
+clock:subscribe({ "forced", "routine", "system_woke" }, function()
+	-- Format matching waybar: Full weekday + 24h time (e.g., "Friday 14:30")
+	local weekday = os.date("%A")
+	local time = os.date("%H:%M")
+	clock:set({ 
+		label = weekday .. " " .. time,
+	})
 end)

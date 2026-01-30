@@ -72,9 +72,11 @@ inner.horizontal = 10
 inner.vertical = 10
 
 # Per-monitor configuration for outer gaps
-outer.top = [{ monitor."LG HDR 4K" = 10 }, { monitor."Built-in Retina Display" = 10 }, 40]
+# Bottom gap = 26px for sketchybar (matching waybar on NixOS)
+# Top gap = 0 (no gap needed at top since bar is at bottom)
+outer.top = 0
 outer.left = [{ monitor."LG HDR 4K" = 20 }, { monitor."Built-in Retina Display" = 5 }, 0]
-outer.bottom = [{ monitor."LG HDR 4K" = 10 }, { monitor."Built-in Retina Display" = 5 }, 0]
+outer.bottom = [{ monitor."LG HDR 4K" = 26 }, { monitor."Built-in Retina Display" = 26 }, 26]
 outer.right = [{ monitor."LG HDR 4K" = 20 }, { monitor."Built-in Retina Display" = 5 }, 0]
 
 

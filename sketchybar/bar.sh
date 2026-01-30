@@ -1,20 +1,28 @@
 #!/bin/bash
 
-# Bar configuration - converted from Lua to shell
+# Bar configuration matching waybar
+# Position: bottom, height: 26px, no blur, minimal styling
 source "$CONFIG_DIR/colors.sh"
 
-# Equivalent to the --bar domain from bar.lua
+# Convert waybar colors to sketchybar format
+# waybar: foreground #dcd7ba, background rgba(31, 31, 40, 0.95)
+BAR_HEIGHT=26
+BAR_POSITION="bottom"
+FONT="JetBrainsMono Nerd Font"
+
 bar=(
-  color=0x80000000
-  height=45
-  padding_right=10
-  padding_left=10
+  color=$BAR_COLOR
+  height=$BAR_HEIGHT
+  padding_right=8
+  padding_left=8
+  position=$BAR_POSITION
   sticky=on
-  topmost=window
-  y_offset=-5
-  margin=-2
-  blur_radius=30
-  border_color=0x00000000
+  topmost=off
+  y_offset=0
+  margin=0
+  blur_radius=0
+  border_color=$TRANSPARENT
+  border_width=0
 )
 
 sketchybar --bar "${bar[@]}"

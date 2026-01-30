@@ -125,6 +125,7 @@ in
             "jiratui"
 			"bd"
 			"stripe-cli"
+			"opencode"
           ];
           casks = [
             # Keep these that aren't available in nixpkgs or ARM macOS
@@ -217,6 +218,7 @@ in
             sshfs-fuse
 
             nerd-fonts.geist-mono # Cool programming font (good alternative to BerkeleyMono and JetBrains Mono)
+            nerd-fonts.jetbrains-mono # Used for sketchybar to match waybar styling
           ]) ++ [
             # Add neovim from the overlay
             neovim-nightly-overlay.packages.${darwinSystem}.default
