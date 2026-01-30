@@ -1,0 +1,41 @@
+general {
+    ignore_empty_input = true
+}
+
+background {
+    monitor =
+    color = rgba(31, 31, 40, 1.0)
+    path = ~/.config/omarchy/current/background
+    blur_passes = 3
+}
+
+animations {
+    enabled = false
+}
+
+input-field {
+    monitor =
+    size = 650, 100
+    position = 0, 0
+    halign = center
+    valign = center
+
+    inner_color = rgba(31, 31, 40, 0.8)
+    outer_color = rgba(220, 215, 186, 1.0)
+    outline_thickness = 4
+
+    font_family = JetBrainsMono Nerd Font
+    font_color = rgba(220, 215, 186, 1.0)
+
+    placeholder_text = Enter Password
+    check_color = rgba(126, 156, 216, 1.0)
+    fail_text = <i>$FAIL ($ATTEMPTS)</i>
+
+    rounding = 0
+    shadow_passes = 0
+    fade_on_empty = false
+}
+
+auth {
+    fingerprint:enabled = true
+}

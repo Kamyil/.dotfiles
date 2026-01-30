@@ -14,6 +14,43 @@
 					}
 				}
 			}
+		},
+		"zai coding plan": {
+			"npm": "@ai-sdk/openai-compatible",
+			"name": "Z.AI GLM",
+			"options": {
+				"baseURL": "https://api.z.ai/api/paas/v4/"
+			},
+			"models": {
+				"glm-4.7": {
+					"name": "GLM-4.7",
+					"variants": {
+						"extra-high": {
+							"thinking": {
+								"type": "enabled",
+								"budgetTokens": 64000
+							}
+						},
+						"high": {
+							"thinking": {
+								"type": "enabled",
+								"budgetTokens": 32000
+							}
+						},
+						"fast": {
+							"thinking": {
+								"type": "disabled"
+							}
+						}
+					}
+				},
+				"glm-4.7-flashx": {
+					"name": "GLM-4.7-FlashX"
+				},
+				"glm-4.7-flash": {
+					"name": "GLM-4.7-Flash"
+				}
+			}
 		}
 	},
 	"mcp": {
@@ -24,7 +61,8 @@
 		"playwright": {
 			"type": "local",
 			"command": [
-				"playwright-mcp"
+				"npx",
+				"@playwright/mcp@latest"
 			]
 		},
 		"websearch_exa": {

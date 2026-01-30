@@ -1,7 +1,7 @@
 {
   "reload_style_on_change": true,
   "layer": "top",
-  "position": "top",
+  "position": "bottom",
   "spacing": 0,
   "height": 26,
   "modules-left": ["custom/omarchy", "hyprland/workspaces"],
