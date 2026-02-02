@@ -15,6 +15,8 @@
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     rust-overlay.url = "github:oxalica/rust-overlay";
+    sqlit.url = "github:Maxteabag/sqlit";
+    sqlit.inputs.nixpkgs.follows = "nixpkgs";
 
     # Add private fonts
     # berkeley-font = {
@@ -23,7 +25,7 @@
     # };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, ... }:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, sqlit, ... }:
     let
       # Define supported systems
       systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
@@ -31,14 +33,14 @@
 
       # Import platform-specific configurations
       nixosConfig = import ./nixos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager neovim-nightly-overlay dotfiles rust-overlay lib;
+        inherit self nixpkgs nixpkgs-stable home-manager neovim-nightly-overlay dotfiles rust-overlay lib sqlit;
       };
 
       macosConfig = import ./macos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin neovim-nightly-overlay dotfiles rust-overlay lib;
+        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin neovim-nightly-overlay dotfiles rust-overlay lib sqlit;
       };
 
-    in 
+    in
     # Merge the configurations from both platforms
     lib.recursiveUpdate nixosConfig macosConfig;
 }

@@ -1,5 +1,5 @@
 # NixOS-specific configuration
-{ self, nixpkgs, nixpkgs-stable, home-manager, neovim-nightly-overlay, dotfiles, rust-overlay, lib, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, ... }:
 
 let
   system = builtins.currentSystem or "x86_64-linux";
@@ -116,6 +116,8 @@ in
             pkgs.opencode
             # packages from unstable branch
             neovim-nightly-overlay.packages.${system}.default
+            # SQL TUI from flake
+            sqlit.packages.${system}.default
           ];
 
           # NixOS-specific zsh additions
