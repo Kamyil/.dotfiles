@@ -205,7 +205,7 @@ config.keys = {
 -- 		opacity = 1.0, -- Full opacity for better performance
 -- 	},
 -- }
-config.window_background_opacity = 0.98
+config.window_background_opacity = 1
 
 -- Merge my_own_tmux keys into config keys
 config.keys = config.keys or {}

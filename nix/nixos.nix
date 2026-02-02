@@ -5,10 +5,16 @@ let
   system = builtins.currentSystem or "x86_64-linux";
   isLinux = builtins.match ".*linux.*" system != null;
   
+  # Local overlay for opencode
+  opencode-overlay = import ./overlays/opencode.nix;
+  
   # Helper function to create packages for a given system
   mkPkgs = system: import nixpkgs {
     inherit system;
-    overlays = [ rust-overlay.overlays.default ];
+    overlays = [ 
+      rust-overlay.overlays.default
+      opencode-overlay
+    ];
     config.allowUnfree = true;
   };
 
@@ -69,7 +75,7 @@ in
             wireshark-cli
 
             # Container tools
-            buildkit docker-compose podman podman-compose
+            docker-buildx docker-compose podman podman-compose
 
             # Media and graphics
             ffmpeg imagemagick flameshot swappy chromium thunderbird
@@ -101,6 +107,7 @@ in
 
             # Fonts for waybar and terminal
             nerd-fonts.jetbrains-mono
+            lexend
 
             # Keyboard remapping
             kmonad
@@ -167,7 +174,7 @@ in
             ".config/elephant/desktopapplications.toml".source = link "config/elephant/desktopapplications.toml";
             ".config/omarchy/current/theme/walker.css".source = link "config/omarchy/current/theme/walker.css";
             ".config/omarchy/current/theme/waybar.css".source = link "config/omarchy/current/theme/waybar.css";
-            ".config/omarchy/current/background".source = link "wallpapers/kanagawa-black-and-white-wallpaper.jpg";
+            ".config/omarchy/current/background".source = link "Downloads/2-Pawel-Czerwinski-Abstract-Purple-Blue.jpg";
             ".config/walker/config.toml".source = link "config/walker/config.toml";
             ".config/walker/themes/kanagawa.css".source = link "config/walker/themes/kanagawa.css";
             ".config/kmonad/config.kbd".source = link "config/kmonad/config.kbd";
@@ -175,6 +182,9 @@ in
             ".local/share/omarchy/default/walker/themes/omarchy-default/layout.xml".source = link "config/omarchy/default/walker/themes/omarchy-default/layout.xml";
             ".local/share/omarchy/default/walker/themes/omarchy-default/style.css".source = link "config/omarchy/default/walker/themes/omarchy-default/style.css";
             ".local/share/omarchy/default/waybar/indicators".source = link "config/omarchy/default/waybar/indicators";
+            # Docker CLI plugins - symlink buildx and compose
+            ".docker/cli-plugins/docker-buildx".source = "${pkgs.docker-buildx}/bin/docker-buildx";
+            ".docker/cli-plugins/docker-compose".source = "${pkgs.docker-compose}/bin/docker-compose";
           };
 
           systemd.user.services.kmonad = {

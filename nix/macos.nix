@@ -3,9 +3,16 @@
 
 let
   darwinSystem = "aarch64-darwin"; # or "x86_64-darwin" for Intel Macs
+  
+  # Local overlay for opencode
+  opencode-overlay = import ./overlays/opencode.nix;
+  
   darwinPkgs = import nixpkgs {
     system = darwinSystem;
-    overlays = [ rust-overlay.overlays.default ];
+    overlays = [ 
+      rust-overlay.overlays.default
+      opencode-overlay
+    ];
     config.allowUnfree = true;
   };
   darwinPkgsStable = import nixpkgs-stable {
