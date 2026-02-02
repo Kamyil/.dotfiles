@@ -2,8 +2,8 @@ local settings = require("settings")
 local sbar = require("sketchybar")
 local fonts = require("fonts")
 
--- Waybar-compatible color scheme from config/omarchy/current/theme/waybar.css
--- foreground: #dcd7ba, background: rgba(31, 31, 40, 0.95)
+-- Waybar-compatible color scheme from config/waybar/style.css
+-- foreground: #dcd7ba, background: rgba(16, 16, 16, 0.95)
 local M = {}
 
 -- Convert hex to ARGB format for sketchybar
@@ -19,8 +19,8 @@ end
 M.colors = {
 	-- Core colors from waybar theme
 	foreground = hex_to_argb("#dcd7ba"),
-	background = hex_to_argb("#1f1f28", 0.95),
-	background_solid = hex_to_argb("#1f1f28"),
+	background = hex_to_argb("#101010", 0.95),
+	background_solid = hex_to_argb("#101010"),
 	
 	-- Accent colors (using Kanagawa palette)
 	red = hex_to_argb("#a55555"),
@@ -31,7 +31,7 @@ M.colors = {
 	magenta = hex_to_argb("#d27e99"),
 	cyan = hex_to_argb("#7aa89f"),
 	white = hex_to_argb("#dcd7ba"),
-	black = hex_to_argb("#1f1f28"),
+	black = hex_to_argb("#101010"),
 	
 	-- Transparent
 	transparent = 0x00000000,
