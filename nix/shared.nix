@@ -103,11 +103,14 @@ in
       export BUN_INSTALL="$HOME/.bun"
       export PATH="$BUN_INSTALL/bin:$PATH"
 
-      # Homebrew
-      export HOMEBREW_NO_AUTO_UPDATE=1
+       # Homebrew
+       export HOMEBREW_NO_AUTO_UPDATE=1
 
-      # Bat theme
-      export BAT_THEME="gruvbox-dark"
+       # Docker BuildKit
+       export DOCKER_BUILDKIT=1
+
+       # Bat theme
+       export BAT_THEME="gruvbox-dark"
 
       # Vi mode and key bindings
       bindkey -v

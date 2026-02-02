@@ -4,12 +4,18 @@
 
 { config, pkgs, ... }:
 
+let
+  opencode-overlay = import ./overlays/opencode.nix;
+in
 {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
   programs.hyprland.enable = true; # ships Hyprland + Xwayland
+
+  # Enable nix-ld for running dynamically linked binaries (like opencode)
+  programs.nix-ld.enable = true;
 
   users.groups.kamil = { };
   programs.zsh.enable = true;
@@ -131,6 +137,9 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+
+  # Apply custom overlays
+  nixpkgs.overlays = [ opencode-overlay ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -255,6 +264,9 @@
       buildkit = true;
     };
   };
+  virtualisation.docker.enableOnBoot = true;
+  environment.variables.DOCKER_BUILDKIT = "1";
+  environment.variables.COMPOSE_DOCKER_CLI_BUILD = "1";
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
