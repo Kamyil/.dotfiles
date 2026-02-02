@@ -1,5 +1,5 @@
 # macOS-specific configuration using nix-darwin
-{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, lib, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, ... }:
 
 let
   darwinSystem = "aarch64-darwin"; # or "x86_64-darwin" for Intel Macs
@@ -229,6 +229,8 @@ in
           ]) ++ [
             # Add neovim from the overlay
             neovim-nightly-overlay.packages.${darwinSystem}.default
+            # SQL TUI from flake
+            sqlit.packages.${darwinSystem}.default
           ];
 
           # macOS-specific zsh additions
