@@ -14,13 +14,14 @@ local nvim_split_navigator = require("./nvim_split_navigator")
 -- General settings - Performance optimized
 config.front_end = "OpenGL" -- OpenGL is more stable and performant than WebGPU
 config.audible_bell = "Disabled"
+
 -- Disable expensive hyperlink detection
 -- config.hyperlink_rules = wezterm.default_hyperlink_rules()
 -- Disable ligatures and complex text shaping for better performance
 -- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
 
 -- Font settings - Berkeley Mono optimized for 1440p sharp rendering
-config.font = wezterm.font("Berkeley Mono", { weight = 510 })
+config.font = wezterm.font("Berkeley Mono SemiCondensed", {weight = 610})
 -- config.font = wezterm.font("Comic Sans MS", { weight = 510 })
 -- config.font = wezterm.font("JetBrains Mono", { weight = 510 })
 -- config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Regular" })
@@ -49,8 +50,8 @@ config.freetype_interpreter_version = 38  -- Latest FreeType interpreter for bes
 config.prefer_egl = false  -- Improve font rendering stability
 
 -- 1440p Display precise dimensions
-config.cell_width = 1.0
-config.line_height = 1.0
+config.cell_width = 1.10
+config.line_height = 1.00
 
 
 --
@@ -176,9 +177,9 @@ config.tab_max_width = 256
 config.bold_brightens_ansi_colors = false
 
 -- Environment variables
-config.set_environment_variables = {
-	TERM = "xterm-256color", -- Set TERM environment variable
-}
+-- config.set_environment_variables = {
+-- 	TERM = "xterm-256color", -- Set TERM environment variable
+-- }
 
 -- Key bindings
 config.keys = {

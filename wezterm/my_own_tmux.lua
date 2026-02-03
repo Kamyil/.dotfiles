@@ -152,7 +152,7 @@ local my_own_tmux = {
 		-- activate copy (a.k.a VISUAL) mode or vim mode
 		{
 			key = "v",
-			mods = "CTRL",
+			mods = "CTRL|SHIFT",
 			action = wezterm.action.ActivateCopyMode,
 		},
 

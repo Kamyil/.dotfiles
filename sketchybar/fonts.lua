@@ -1,8 +1,8 @@
 -- Fonts matching waybar configuration
 return {
 	font = {
-		text = "JetBrainsMono Nerd Font",
-		numbers = "JetBrainsMono Nerd Font",
+		text = "Lexend",
+		numbers = "Lexend",
 		size = 12.0,
 		style_map = {
 			["Regular"] = "Regular",
