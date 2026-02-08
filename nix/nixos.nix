@@ -5,15 +5,17 @@ let
   system = builtins.currentSystem or "x86_64-linux";
   isLinux = builtins.match ".*linux.*" system != null;
   
-  # Local overlay for opencode
+  # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
-  
+  codex-overlay = import ./overlays/codex.nix;
+
   # Helper function to create packages for a given system
   mkPkgs = system: import nixpkgs {
     inherit system;
-    overlays = [ 
+    overlays = [
       rust-overlay.overlays.default
       opencode-overlay
+      codex-overlay
     ];
     config.allowUnfree = true;
   };
@@ -114,6 +116,7 @@ in
           ]) ++ [
             # Unstable-only packages
             pkgs.opencode
+            pkgs.codex
             # packages from unstable branch
             neovim-nightly-overlay.packages.${system}.default
             # SQL TUI from flake
