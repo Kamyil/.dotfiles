@@ -4,14 +4,16 @@
 let
   darwinSystem = "aarch64-darwin"; # or "x86_64-darwin" for Intel Macs
   
-  # Local overlay for opencode
+  # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
-  
+  codex-overlay = import ./overlays/codex.nix;
+
   darwinPkgs = import nixpkgs {
     system = darwinSystem;
-    overlays = [ 
+    overlays = [
       rust-overlay.overlays.default
       opencode-overlay
+      codex-overlay
     ];
     config.allowUnfree = true;
   };
@@ -38,6 +40,7 @@ in
           git
           curl
           wget
+          codex
         ];
 
         # Work around nix-darwin applications buildEnv pathsToLink type
@@ -127,7 +130,6 @@ in
           taps = [ "nikitabobko/tap" "FelixKratz/formulae" "steveyegge/beads" "steipete/tap" ];
           brews = [
             "sketchybar"
-            "codex"
             "vercel-cli"
             "jiratui"
 			"bd"
@@ -136,7 +138,7 @@ in
           ];
           casks = [
             # Keep these that aren't available in nixpkgs or ARM macOS
-			  "chromium"
+		    "chromium"
             "firefox"
             "vivaldi"
             "libreoffice"
@@ -155,9 +157,8 @@ in
             "postman"
 			"opencode-desktop"
 			"ovim" # macOS system-wide Vim keybindings and modal editor.
-			"emacs"
-			"codexbar"
-          ];
+			"emacs-app"
+	          ];
         };
       })
 
@@ -237,7 +238,7 @@ in
           programs.zsh.shellAliases = lib.mkMerge [
             {
               # Override nrs alias for macOS
-              nrs = "sudo darwin-rebuild switch --flake ~/.dotfiles/nixos";
+              nrs = "sudo darwin-rebuild switch --flake ~/.dotfiles/nix";
             }
           ];
 
