@@ -13,9 +13,11 @@ theme = Kanagawa Dragon
 # # theme = Kanagawa Dragon
 background-opacity = 0.90
 background-blur = true
+
+macos-option-as-alt = true
 #
 # # Font configuration
-font-family = "Berkeley Mono"
+font-family = "Berkeley Mono Bold SemiCondensed"
 # font-weight = 500
 # font-size = 14
 #
