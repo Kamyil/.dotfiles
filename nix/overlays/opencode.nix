@@ -9,7 +9,7 @@
 final: prev: {
   opencode = prev.stdenv.mkDerivation rec {
     pname = "opencode";
-    version = "1.1.48"; # GitHub release tag (without 'v' prefix)
+    version = "1.1.56"; # GitHub release tag (without 'v' prefix)
     
     src = let
       # Determine platform-specific download URL
@@ -18,11 +18,18 @@ final: prev: {
       else
         if prev.stdenv.isAarch64 then "linux-arm64" else "linux-x64";
       ext = if prev.stdenv.isDarwin then "zip" else "tar.gz";
+      # Platform-specific hashes
+      hashes = {
+        "darwin-arm64" = "050ys1w37x9yzx6rr2vca4wngns9cim2ykm2cicznakrkc56bv74";
+        "linux-x64" = "158l5l43xsi1x7rbqh9bcxms1wp9fmgm9z6v7i6rkwmrrc2hhi2y";
+        # Use lib.fakeHash for untested platforms to get the hash from build error
+        "darwin-x64" = prev.lib.fakeHash;
+        "linux-arm64" = prev.lib.fakeHash;
+      };
     in
       prev.fetchurl {
         url = "https://github.com/anomalyco/opencode/releases/download/v${version}/opencode-${platform}.${ext}";
-        # SHA256 for linux-x64 (glibc version)
-        sha256 = "1g403v47zl1hd0im51wabis92d5yr9d1msn2izh38m116868h93m";
+        sha256 = hashes.${platform};
       };
     
     nativeBuildInputs = prev.lib.optionals prev.stdenv.isDarwin [ prev.unzip ];

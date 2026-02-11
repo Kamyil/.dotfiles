@@ -188,6 +188,7 @@ in
             ".local/share/omarchy/default/walker/themes/omarchy-default/layout.xml".source = link "config/omarchy/default/walker/themes/omarchy-default/layout.xml";
             ".local/share/omarchy/default/walker/themes/omarchy-default/style.css".source = link "config/omarchy/default/walker/themes/omarchy-default/style.css";
             ".local/share/omarchy/default/waybar/indicators".source = link "config/omarchy/default/waybar/indicators";
+            ".config/atuin/config.toml".source = link "config/atuin/config.toml";
             # Docker CLI plugins - symlink buildx and compose
             ".docker/cli-plugins/docker-buildx".source = "${pkgs.docker-buildx}/bin/docker-buildx";
             ".docker/cli-plugins/docker-compose".source = "${pkgs.docker-compose}/bin/docker-compose";
