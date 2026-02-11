@@ -134,7 +134,7 @@ in
             "jiratui"
 			"bd"
 			"stripe-cli"
-			"opencode"
+			# opencode - installed via nix overlay (see overlays/opencode.nix)
           ];
           casks = [
             # Keep these that aren't available in nixpkgs or ARM macOS
@@ -203,6 +203,9 @@ in
 
             # Database and data tools
             postgresql
+
+            # AI coding tools
+            opencode
 
             # Text editors and viewers
             helix
