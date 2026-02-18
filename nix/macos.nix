@@ -182,11 +182,8 @@ in
 
           # macOS-specific packages (shared packages are in shared.nix)
           home.packages = (with pkgs; [
-            # Development tools
-            vscode 
-
             # Terminal tools
-            docker wezterm kitty
+            docker wezterm kitty alacritty
 
             # Development tools
             gcc go nodejs yarn pnpm deno fnm wrangler
@@ -222,11 +219,14 @@ in
             # Libraries for fff.nvim
             openssl libssh2
 
-            # Terminal multiplexers and sessions
-            zellij
+             # Terminal multiplexers and sessions
+             zellij
 
-            # File synchronization and transfer
-            sshfs-fuse
+             # File synchronization and transfer
+             sshfs-fuse
+
+             # Browsers
+             qutebrowser
 
             nerd-fonts.geist-mono # Cool programming font (good alternative to BerkeleyMono and JetBrains Mono)
             nerd-fonts.jetbrains-mono # Used for sketchybar to match waybar styling
@@ -282,6 +282,8 @@ in
             ln -sf /Users/kamil/.dotfiles/config/tmux ~/.config/tmux
             ln -sf /Users/kamil/.dotfiles/config/opencode ~/.config/opencode
             ln -sf /Users/kamil/.dotfiles/config/kitty ~/.config/kitty
+            ln -sf /Users/kamil/.dotfiles/config/alacritty ~/.config/alacritty
+            ln -sf /Users/kamil/.dotfiles/config/alacritty/alacritty.toml ~/.alacritty.toml
             ln -sf /Users/kamil/.dotfiles/hammerspoon ~/.hammerspoon
             
             echo "Created direct symlinks to dotfiles"

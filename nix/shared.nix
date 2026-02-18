@@ -368,7 +368,7 @@ in
     ripgrep btop yazi tmux
 
     # Shell and CLI utilities
-    gh curl wget tree fd
+    gh railway curl wget tree fd
     eza difftastic just jq yq lazygit lazydocker
 
     # Text processing and search

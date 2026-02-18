@@ -62,7 +62,6 @@ in
             go yarn pnpm deno fnm wrangler
             lua luarocks python3 php
             zig stylua lua-language-server
-            vscode
             (pkgsStable.rust-bin.nightly.latest.default.override {
               extensions = [ "rust-src" "cargo" "rustc" ];
             })
@@ -85,8 +84,11 @@ in
             # Database and data tools
             postgresql
 
-            # Text editors and viewers
-            helix
+             # Text editors and viewers
+             helix
+
+             # Terminal emulators
+             alacritty
 
             # Virtualization and containers
             qemu
@@ -94,11 +96,14 @@ in
             # Libraries
             libssh2
 
-            # File synchronization and transfer
-            sshfs
+             # File synchronization and transfer
+             sshfs
 
-            # Network tools
-            impala # TUI for managing WiFi
+             # Browsers
+             qutebrowser
+
+             # Network tools
+             impala # TUI for managing WiFi
             bluetuith
 
             # Hyprland lock screen
@@ -181,6 +186,7 @@ in
             ".config/omarchy/current/theme/waybar.css".source = link "config/omarchy/current/theme/waybar.css";
             ".config/omarchy/current/background".source = link "Downloads/2-Pawel-Czerwinski-Abstract-Purple-Blue.jpg";
             ".config/tmux".source = link "config/tmux";
+            ".config/alacritty".source = link "config/alacritty";
             ".config/walker/config.toml".source = link "config/walker/config.toml";
             ".config/walker/themes/kanagawa.css".source = link "config/walker/themes/kanagawa.css";
             ".config/kmonad/config.kbd".source = link "config/kmonad/config.kbd";
