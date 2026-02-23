@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+#
+# tmux-setup-session: Initialize a tmux session with standard windows
+# Usage: tmux-setup-session [session_name] [working_directory]
+#
+# If no arguments provided, uses current directory and creates session with dirname
+# Creates windows: nvim, opencode, commands, dev_server, ssh
+
+set -euo pipefail
+
+# Get arguments or use defaults
+INSIDE_TMUX="${TMUX:-}"
+CURRENT_SESSION=""
+if [[ -n "$INSIDE_TMUX" ]]; then
+	CURRENT_SESSION="$(tmux display-message -p '#S')"
+fi
+
+# Inside tmux with no explicit session name: target the current session.
+if [[ $# -eq 0 && -n "$CURRENT_SESSION" ]]; then
+	SESSION_NAME="$CURRENT_SESSION"
+else
+	SESSION_NAME="${1:-$(basename "$(pwd)")}"
+fi
+
+WORK_DIR="${2:-$(pwd)}"
+
+create_window_if_missing() {
+	local target_session="$1"
+	local window_name="$2"
+	local window_cmd="${3:-}"
+
+	if tmux list-windows -t "$target_session" -F '#W' | grep -Fxq "$window_name"; then
+		return
+	fi
+
+	tmux new-window -t "$target_session" -n "$window_name" -c "$WORK_DIR"
+	if [[ -n "$window_cmd" ]]; then
+		tmux send-keys -t "$target_session:$window_name" "$window_cmd" C-m
+	fi
+}
+
+# If session exists and we're already in it, just ensure required windows exist.
+if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+	if [[ -n "$INSIDE_TMUX" && "$CURRENT_SESSION" == "$SESSION_NAME" ]]; then
+		create_window_if_missing "$SESSION_NAME" "nvim" "nvim"
+		create_window_if_missing "$SESSION_NAME" "opencode" "opencode"
+		create_window_if_missing "$SESSION_NAME" "commands"
+		create_window_if_missing "$SESSION_NAME" "dev_server"
+		create_window_if_missing "$SESSION_NAME" "ssh"
+
+		tmux select-window -t "$SESSION_NAME:nvim"
+		echo "✓ Session '$SESSION_NAME' already existed; ensured windows: nvim, opencode, commands, dev_server, ssh"
+		exit 0
+	fi
+
+	echo "Error: Session '$SESSION_NAME' already exists. Use 'tmux attach -t $SESSION_NAME' to connect."
+	exit 1
+fi
+
+# Create new session with first window named 'nvim'
+tmux new-session -d -s "$SESSION_NAME" -c "$WORK_DIR" -x 200 -y 50 -n "nvim"
+
+# Start nvim in the nvim window
+tmux send-keys -t "$SESSION_NAME:nvim" "nvim" C-m
+
+# Create and setup remaining windows
+create_window_if_missing "$SESSION_NAME" "opencode" "opencode"
+create_window_if_missing "$SESSION_NAME" "commands"
+create_window_if_missing "$SESSION_NAME" "dev_server"
+create_window_if_missing "$SESSION_NAME" "ssh"
+
+# Select the nvim window as the default
+tmux select-window -t "$SESSION_NAME:nvim"
+
+# Only attach if we're not already in a tmux session
+if [[ -z "$INSIDE_TMUX" ]]; then
+	tmux attach-session -t "$SESSION_NAME"
+else
+	echo "✓ Session '$SESSION_NAME' created with windows: nvim, opencode, commands, dev_server, ssh"
+	echo "  Attach with: tmux attach-session -t $SESSION_NAME"
+fi
