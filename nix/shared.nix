@@ -37,6 +37,7 @@ in
       json = "fx";
       doom = "~/.config/emacs/bin/doom";
       chsh = "~/.local/scripts/tmux-cht/tmux-cht.sh";
+      setup = "~/.dotfiles/config/scripts/tmux-setup-session";
       private_gitignore = "nvim .git/info/exclude";
       git_log = "serie";
 
@@ -400,6 +401,8 @@ in
 
     # Other
     tldr watchexec
+
+	qutebrowser
   ];
 
   programs.home-manager.enable = true;

@@ -324,6 +324,7 @@ alias serpl="~/bin/serpl"
 alias json="fx"
 alias doom="~/.config/emacs/bin/doom"
 alias chsh="~/.local/scripts/tmux-cht/tmux-cht.sh"
+alias setup="~/.dotfiles/config/scripts/tmux-setup-session"
 alias private_gitignore="nvim .git/info/exclude"
 alias git_log="serie"
 
