@@ -382,7 +382,7 @@ in
     unzip p7zip
 
     # Network tools
-    nmap socat
+    nmap socat wireguard-tools wireguard-go
 
     # Database tools
     sqlite
