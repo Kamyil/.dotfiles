@@ -11,15 +11,20 @@ theme = Kanagawa Dragon
 # # theme = Kanagawa Dragon
 # # theme = Kanagawa Dragon
 # # theme = Kanagawa Dragon
-background-opacity = 0.90
+background-opacity = 0.94
+
 background-blur = true
+
+# Remove padding to let tmux status sit at bottom
+window-padding-y = 0
 
 macos-option-as-alt = true
 #
 # # Font configuration
 font-family = "Berkeley Mono Bold SemiCondensed"
+# font-family = "Iosevka Term Slab"
 # font-weight = 500
-# font-size = 14
+font-size = 21
 #
 # # Window settings
 # window-decoration = true
