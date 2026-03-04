@@ -13,6 +13,7 @@ M.colors = {
 
     -- Backgrounds: warm wood tones (guild hall / quest board)
     bg        = "#1a1816",   -- dark wood
+	-- bg = "#16181B",
     bg_alt    = "#22201c",   -- slightly lighter wood
     bg_float  = "#22201c",   -- same as bg_alt for floats (wood)
     gutter    = "#16140f",   -- darkest wood shadow

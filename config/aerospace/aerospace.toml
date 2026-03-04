@@ -31,10 +31,10 @@ enable-normalization-opposite-orientation-for-nested-containers = false
 # See: https://nikitabobko.github.io/AeroSpace/guide#layouts
 # The 'accordion-padding' specifies the size of accordion padding
 # You can set 0 to disable the padding feature
-accordion-padding = 20
+accordion-padding = 200
 
 # Possible values: tiles|accordion
-default-root-container-layout = 'tiles'
+default-root-container-layout = 'accordion'
 
 # Possible values: horizontal|vertical|auto
 # 'auto' means: wide monitor (anything wider than high) gets horizontal orientation,
@@ -75,9 +75,9 @@ inner.vertical = 10
 # Bottom gap = 26px for sketchybar (matching waybar on NixOS)
 # Top gap = 0 (no gap needed at top since bar is at bottom)
 outer.top = 0
-outer.left = [{ monitor."LG HDR 4K" = 20 }, { monitor."Built-in Retina Display" = 5 }, 0]
-outer.bottom = [{ monitor."LG HDR 4K" = 26 }, { monitor."Built-in Retina Display" = 26 }, 26]
-outer.right = [{ monitor."LG HDR 4K" = 20 }, { monitor."Built-in Retina Display" = 5 }, 0]
+outer.left = [{ monitor."LG HDR 4K" = 0 }, { monitor."Built-in Retina Display" = 5 }, 0]
+outer.bottom = [{monitor."PL2483H" = 30}, { monitor."LG HDR 4K" = 26 }, { monitor."Built-in Retina Display" = 30 }, 0]
+outer.right = [{ monitor."LG HDR 4K" = 0 }, { monitor."Built-in Retina Display" = 5 }, 0]
 
 
 # See https://nikitabobko.github.io/AeroSpace/guide#exec-env-vars

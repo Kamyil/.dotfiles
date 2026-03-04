@@ -48,6 +48,9 @@ in
       gcb = "git checkout -b";
       gags = "git add . && git stash";
       gsp = "git stash pop";
+
+      # WireGuard helpers (pass interface name, e.g. wgu myvpn)
+      wgs = "sudo wg show";
     };
 
     # History configuration
@@ -141,6 +144,42 @@ in
       # Weather function
       weather() {
         curl "wttr.in/$1?lang=pl"
+      }
+
+      unalias wgu wgd wgs 2>/dev/null
+
+      wgu() {
+        local iface="$1"
+
+        if [[ -z "$iface" ]]; then
+          if command -v fzf >/dev/null 2>&1; then
+            iface=$(ls /etc/wireguard/*.conf(/N:t:r) /usr/local/etc/wireguard/*.conf(/N:t:r) 2>/dev/null | sort -u | fzf --prompt='WireGuard up > ')
+          else
+            echo "Usage: wgu <interface>"
+            echo "Example: wgu myvpn"
+            return 1
+          fi
+        fi
+
+        [[ -z "$iface" ]] && return 1
+        sudo WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go wg-quick up "$iface"
+      }
+
+      wgd() {
+        local iface="$1"
+
+        if [[ -z "$iface" ]]; then
+          if command -v fzf >/dev/null 2>&1; then
+            iface=$(ls /etc/wireguard/*.conf(/N:t:r) /usr/local/etc/wireguard/*.conf(/N:t:r) 2>/dev/null | sort -u | fzf --prompt='WireGuard down > ')
+          else
+            echo "Usage: wgd <interface>"
+            echo "Example: wgd myvpn"
+            return 1
+          fi
+        fi
+
+        [[ -z "$iface" ]] && return 1
+        sudo WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go wg-quick down "$iface"
       }
 
       # Directory search and navigation
@@ -394,7 +433,7 @@ in
     stow
 
     # Programming tools
-    zig stylua
+    zig stylua tree-sitter
 
     # File sync
     rsync openssh

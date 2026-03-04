@@ -58,5 +58,8 @@
 	},
 	"instructions": [
 		"beads.md"
-  ]
+	],
+	"keybinds": {
+		"leader": "ctrl+f"
+	}
 }

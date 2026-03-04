@@ -337,6 +337,45 @@ alias gcb="git checkout -b"
 alias gags="git add . && git stash"
 alias gsp="git stash pop"
 
+# WireGuard helpers
+unalias wgu wgd wgs 2>/dev/null
+
+wgu() {
+  local iface="$1"
+
+  if [[ -z "$iface" ]]; then
+    if command -v fzf >/dev/null 2>&1; then
+      iface=$(ls /etc/wireguard/*.conf(/N:t:r) /usr/local/etc/wireguard/*.conf(/N:t:r) 2>/dev/null | sort -u | fzf --prompt='WireGuard up > ')
+    else
+      echo "Usage: wgu <interface>"
+      echo "Example: wgu myvpn"
+      return 1
+    fi
+  fi
+
+  [[ -z "$iface" ]] && return 1
+  sudo WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go wg-quick up "$iface"
+}
+
+wgd() {
+  local iface="$1"
+
+  if [[ -z "$iface" ]]; then
+    if command -v fzf >/dev/null 2>&1; then
+      iface=$(ls /etc/wireguard/*.conf(/N:t:r) /usr/local/etc/wireguard/*.conf(/N:t:r) 2>/dev/null | sort -u | fzf --prompt='WireGuard down > ')
+    else
+      echo "Usage: wgd <interface>"
+      echo "Example: wgd myvpn"
+      return 1
+    fi
+  fi
+
+  [[ -z "$iface" ]] && return 1
+  sudo WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go wg-quick down "$iface"
+}
+
+alias wgs="sudo wg show"
+
 # export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 # disable Brew auto updates

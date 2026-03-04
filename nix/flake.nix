@@ -18,6 +18,9 @@
     sqlit.url = "github:Maxteabag/sqlit";
     sqlit.inputs.nixpkgs.follows = "nixpkgs";
 
+    worktrunk.url = "github:max-sixty/worktrunk";
+    worktrunk.inputs.nixpkgs.follows = "nixpkgs";
+
     # Add private fonts
     # berkeley-font = {
     #   url = "path:///home/kamil/.local/share/fonts";
@@ -25,7 +28,7 @@
     # };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, sqlit, ... }:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, sqlit, worktrunk, ... }:
     let
       # Define supported systems
       systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
@@ -33,11 +36,11 @@
 
       # Import platform-specific configurations
       nixosConfig = import ./nixos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager neovim-nightly-overlay dotfiles rust-overlay lib sqlit;
+        inherit self nixpkgs nixpkgs-stable home-manager neovim-nightly-overlay dotfiles rust-overlay lib sqlit worktrunk;
       };
 
       macosConfig = import ./macos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin neovim-nightly-overlay dotfiles rust-overlay lib sqlit;
+        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin neovim-nightly-overlay dotfiles rust-overlay lib sqlit worktrunk;
       };
 
     in

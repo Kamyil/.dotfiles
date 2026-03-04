@@ -1,0 +1,262 @@
+#!/usr/bin/env bash
+# WezTerm Session Switcher - fzf-based workspace selector
+
+set -euo pipefail
+
+MODE="${1:-}"
+OUTPUT_FILE="${2:-}"
+SCRIPT_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+MRU_FILE="${HOME}/.config/wezterm/workspaces.mru"
+PROJECTS_DIR="${HOME}/.dotfiles/wezterm/projects"
+
+# Configuration: Define your project search paths here
+# You can override by setting WEZTERM_PROJECT_PATHS environment variable
+# Example: export WEZTERM_PROJECT_PATHS="$HOME/Work/Projects:$HOME/Personal/Projects"
+PROJECT_SEARCH_PATHS="${WEZTERM_PROJECT_PATHS:-"$HOME/Work/Projects:$HOME/Personal/Projects"}"
+
+# Convert colon-separated paths to array
+IFS=':' read -ra SEARCH_DIRS <<< "$PROJECT_SEARCH_PATHS"
+
+# Find fzf - check common locations
+FZF_CMD="${FZF_CMD:-$(command -v fzf 2>/dev/null || true)}"
+if [[ -z "$FZF_CMD" ]]; then
+	for path in /etc/profiles/per-user/*/bin/fzf /opt/homebrew/bin/fzf /usr/local/bin/fzf /usr/bin/fzf; do
+		if [[ -x "$path" ]]; then
+			FZF_CMD="$path"
+			break
+		fi
+	done
+fi
+
+if [[ -z "$FZF_CMD" ]]; then
+	echo "Error: fzf not found. Please install fzf." >&2
+	exit 1
+fi
+
+# Colors for fzf
+FZF_COLORS='--color=bg+:#1f1f28,bg:#1f1f28,spinner:#e6c384,hl:#957fb8,fg:#dcd7ba,header:#7fb4ca,info:#7aa89f,pointer:#e6c384,marker:#d27e99,fg+:#dcd7ba,prompt:#7fb4ca,hl+:#957fb8,selected-bg:#363646'
+
+get_workspaces() {
+	local all
+	all=$(wezterm cli list 2>/dev/null | awk 'NR>1 {print $4}' | sort -u | grep -v '^$' || true)
+	[[ -z "$all" ]] && return 0
+
+	if [[ -f "$MRU_FILE" ]]; then
+		while IFS= read -r ws; do
+			[[ -z "$ws" ]] && continue
+			if printf '%s\n' "$all" | grep -Fxq "$ws"; then
+				echo "$ws"
+				local remaining=""
+				while IFS= read -r item; do
+					[[ "$item" == "$ws" ]] && continue
+					remaining+="$item"$'\n'
+				done <<< "$all"
+				all="$remaining"
+			fi
+		done < "$MRU_FILE"
+	fi
+
+	printf '%s\n' "$all"
+}
+
+get_projects() {
+	if [[ -d "$PROJECTS_DIR" ]]; then
+		for file in "$PROJECTS_DIR"/*.lua; do
+			[[ -f "$file" ]] || continue
+			local name
+			local root_dir
+			name=$(grep -o 'name\s*=\s*"[^"]*"' "$file" 2>/dev/null | head -1 | sed 's/.*"\([^"]*\)".*/\1/')
+			root_dir=$(grep -o 'root_dir\s*=\s*"[^"]*"' "$file" 2>/dev/null | head -1 | sed 's/.*"\([^"]*\)".*/\1/')
+			if [[ -n "$name" ]]; then
+				root_dir="${root_dir/#\~/$HOME}"
+				echo "proj|$name|$root_dir"
+			fi
+		done
+	fi
+}
+
+get_git_repos() {
+	for dir in "${SEARCH_DIRS[@]}"; do
+		[[ -d "$dir" ]] || continue
+		find "$dir" -maxdepth 2 -type d -name ".git" 2>/dev/null | while read -r gitdir; do
+			local repo_dir
+			local basename
+			local parent
+			repo_dir=$(dirname "$gitdir")
+			basename=$(basename "$repo_dir")
+			parent=$(basename "$(dirname "$repo_dir")")
+			echo "repo|${parent}/${basename}|$repo_dir"
+		done
+	done
+}
+
+build_choices() {
+	get_workspaces | sed 's/^/ws|/' | sed 's/$/|/'
+	get_projects
+	get_git_repos | sort -u
+}
+
+preview_line() {
+	local line="$1"
+	local kind
+	local rest
+	local name
+	local path
+
+	[[ -z "$line" ]] && return 0
+
+	kind="${line%%|*}"
+	rest="${line#*|}"
+	name="${rest%%|*}"
+	path="${rest#*|}"
+
+	case "$kind" in
+		ws)
+			echo "Workspace: $name"
+			wezterm cli list 2>/dev/null | awk -v ws="$name" 'NR==1 {print; next} $4==ws {print}'
+			;;
+		proj)
+			echo "Project: $name"
+			if [[ -n "$path" ]]; then
+				echo "Path: $path"
+			fi
+			;;
+		repo)
+			echo "Repo: $name"
+			if [[ -n "$path" ]]; then
+				echo "Path: $path"
+				if [[ -d "$path/.git" ]]; then
+					git -C "$path" log --oneline -5 2>/dev/null || echo "No commits yet"
+				fi
+			fi
+			;;
+		new)
+			echo "New workspace: $name"
+			if [[ -n "$path" ]]; then
+				echo "Path: $path"
+			fi
+			;;
+	esac
+}
+
+delete_workspace() {
+	local workspace_name="$1"
+	local current_pane="${WEZTERM_PANE:-}"
+	local pane_ids
+
+	pane_ids=$(wezterm cli list 2>/dev/null | awk -v ws="$workspace_name" 'NR>1 && $4==ws {print $3}')
+	[[ -z "$pane_ids" ]] && return 0
+
+	while IFS= read -r pane_id; do
+		[[ -z "$pane_id" ]] && continue
+		[[ -n "$current_pane" && "$pane_id" == "$current_pane" ]] && continue
+		wezterm cli kill-pane --pane-id "$pane_id" 2>/dev/null || true
+	done <<< "$pane_ids"
+
+	if [[ -f "$MRU_FILE" ]]; then
+		grep -Fxv "$workspace_name" "$MRU_FILE" > "${MRU_FILE}.tmp" || true
+		mv "${MRU_FILE}.tmp" "$MRU_FILE"
+	fi
+}
+
+if [[ "$MODE" == "--preview" ]]; then
+	preview_line "$OUTPUT_FILE"
+	exit 0
+fi
+
+select_with_fzf() {
+	local selection
+	local query
+	local choice
+	local line
+	local key
+
+	selection=$(build_choices | awk '!seen[$0]++' | "$FZF_CMD" \
+		--prompt='Workspace/Project > ' \
+		--height=60% \
+		--reverse \
+		--delimiter='|' \
+		--with-nth=1,2 \
+		--nth=2 \
+		--print-query \
+		--expect=ctrl-d \
+		--preview "$SCRIPT_PATH --preview \"{}\"" \
+		--preview-window=right:40%:wrap \
+		$FZF_COLORS \
+		--header='ws=workspace proj=project repo=repo | Type new name to create | ctrl-d delete' \
+		|| true
+	)
+
+	if [[ -z "$selection" ]]; then
+		if [[ "$MODE" == "--select-to-file" && -n "$OUTPUT_FILE" ]]; then
+			: > "$OUTPUT_FILE"
+		fi
+		exit 0
+	fi
+
+	local line1
+	local line2
+	local line3
+
+	line1=$(printf '%s\n' "$selection" | sed -n '1p')
+	line2=$(printf '%s\n' "$selection" | sed -n '2p')
+	line3=$(printf '%s\n' "$selection" | sed -n '3p')
+
+	if [[ "$line1" == "ctrl-d" ]]; then
+		key="ctrl-d"
+		query="$line2"
+		choice="$line3"
+	else
+		key=""
+		query="$line1"
+		choice="$line2"
+	fi
+
+	if [[ "$key" == "ctrl-d" ]]; then
+		if [[ -n "$choice" ]]; then
+			local kind
+			local rest
+			local name
+			kind="${choice%%|*}"
+			rest="${choice#*|}"
+			name="${rest%%|*}"
+			if [[ "$kind" == "ws" && -n "$name" ]]; then
+				delete_workspace "$name"
+			fi
+		fi
+
+		if [[ "$MODE" == "--select-to-file" && -n "$OUTPUT_FILE" ]]; then
+			: > "$OUTPUT_FILE"
+		fi
+		exit 0
+	fi
+
+	if [[ -n "$choice" ]]; then
+		line="$choice"
+	else
+		if [[ -z "$query" ]]; then
+			exit 0
+		fi
+
+		local cwd=""
+		for search_dir in "${SEARCH_DIRS[@]}"; do
+			if [[ -d "$search_dir/$query" ]]; then
+				cwd="$search_dir/$query"
+				break
+			fi
+		done
+		line="new|$query|$cwd"
+	fi
+
+	if [[ "$MODE" == "--select-to-file" ]]; then
+		if [[ -z "$OUTPUT_FILE" ]]; then
+			echo "Error: output file path required" >&2
+			exit 1
+		fi
+		printf '%s\n' "$line" > "$OUTPUT_FILE"
+	else
+		printf '%s\n' "$line"
+	fi
+}
+
+select_with_fzf

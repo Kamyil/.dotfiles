@@ -7,7 +7,7 @@ local function toast(window, message)
 	window:toast_notification("wezterm", message .. " - " .. os.date("%I:%M:%S %p"), nil, 1000)
 end
 
-local my_own_tmux = require("./my_own_tmux")
+-- local my_own_tmux = require("./my_own_tmux")
 -- local utils = require("./utils")
 local nvim_split_navigator = require("./nvim_split_navigator")
 
@@ -21,7 +21,11 @@ config.audible_bell = "Disabled"
 -- config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
 
 -- Font settings - Berkeley Mono optimized for 1440p sharp rendering
-config.font = wezterm.font("Berkeley Mono SemiCondensed", {weight = 610})
+config.font = wezterm.font("Berkeley Mono SemiBold SemiCondensed")
+-- config.font = wezterm.font("Iosevka Term Slab")
+
+
+-- Rest of them are kinda meh
 -- config.font = wezterm.font("Comic Sans MS", { weight = 510 })
 -- config.font = wezterm.font("JetBrains Mono", { weight = 510 })
 -- config.font = wezterm.font("JetBrainsMonoNL Nerd Font Propo", { weight = "Regular" })
@@ -38,7 +42,7 @@ config.font = wezterm.font("Berkeley Mono SemiCondensed", {weight = 610})
 -- config.font = wezterm.font("Hack Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("RobotoMono Nerd Font", { weight = "Regular" })
 -- config.font = wezterm.font("ZedMono Nerd Font")
-config.font_size = 13
+config.font_size = 21
 
 -- FreeType rendering optimized for 1440p sharpness
 -- Light hinting with LCD rendering for smoother Berkeley Mono
@@ -50,8 +54,8 @@ config.freetype_interpreter_version = 38  -- Latest FreeType interpreter for bes
 config.prefer_egl = false  -- Improve font rendering stability
 
 -- 1440p Display precise dimensions
-config.cell_width = 1.10
-config.line_height = 1.00
+-- config.cell_width = 1.05
+-- config.line_height = 0.95
 
 
 --
@@ -91,10 +95,10 @@ config.enable_wayland = true
 
 -- Window padding
 config.window_padding = {
-	left = "30",
-	right = "30",
-	top = "30",
-	bottom = "30",
+	left = "00",
+	right = "00",
+	top = "00",
+	bottom = "00",
 }
 
 -- Color scheme
@@ -169,12 +173,15 @@ config.colors = {
     },
   },
 }
-config.enable_tab_bar = true
+config.enable_tab_bar = false
 config.tab_bar_at_bottom = true
 config.use_fancy_tab_bar = false
 config.switch_to_last_active_tab_when_closing_tab = true
 config.tab_max_width = 256
 config.bold_brightens_ansi_colors = false
+
+-- Enable status bar for workspace name display
+config.status_update_interval = 1000
 
 -- Environment variables
 -- config.set_environment_variables = {
@@ -206,62 +213,18 @@ config.keys = {
 -- 		opacity = 1.0, -- Full opacity for better performance
 -- 	},
 -- }
-config.window_background_opacity = 1
+config.window_background_opacity = 0.9
 
 -- Merge my_own_tmux keys into config keys
 config.keys = config.keys or {}
 
-for _, my_own_tmux_config_kv_pair in ipairs(my_own_tmux.keys) do
-	table.insert(config.keys, my_own_tmux_config_kv_pair)
-end
-for _, nvim_split_navigator_keys in ipairs(nvim_split_navigator.keys) do
-	table.insert(config.keys, nvim_split_navigator_keys)
-end
+-- for _, my_own_tmux_config_kv_pair in ipairs(my_own_tmux.keys) do
+-- 	table.insert(config.keys, my_own_tmux_config_kv_pair)
+-- end
+-- for _, nvim_split_navigator_keys in ipairs(nvim_split_navigator.keys) do
+-- 	table.insert(config.keys, nvim_split_navigator_keys)
+-- end
 
 
--- Session picker functionality
-wezterm.on("pick_or_create_session", function(window, pane)
-	local mux = wezterm.mux
-	local session_names = {}
-
-	-- Get the names of all existing sessions
-	for _, window in ipairs(mux.all_windows()) do
-		table.insert(session_names, window:get_workspace())
-	end
-
-	-- Prompt the user with a fuzzy search input
-	window:perform_action(
-		wezterm.action.PromptInputLine({
-			description = "Select or create a session:",
-			action = wezterm.action_callback(function(input)
-				if input and input ~= "" then
-					-- Check if the session already exists
-					local session_exists = false
-					for _, name in ipairs(session_names) do
-						if name == input then
-							session_exists = true
-							break
-						end
-					end
-
-					if session_exists then
-						-- Attach to the existing session
-						mux.set_active_workspace(input)
-					else
-						-- Create a new session
-						mux.set_active_workspace(input)
-						mux.spawn_window({ workspace = input })
-					end
-				end
-			end),
-		}),
-		pane
-	)
-end)
-
--- Configuration reload notification
-wezterm.on("window-config-reloaded", function(window, pane)
-	toast(window, "Configuration reloaded!")
-end)
 -- Return the configuration
 return config
