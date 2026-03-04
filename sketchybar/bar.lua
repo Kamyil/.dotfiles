@@ -9,7 +9,7 @@ sbar.bar({
 	height = settings.height,
 	padding_right = settings.margin_right,
 	padding_left = settings.margin_left,
-	position = "bottom",
+	position = "top",
 	sticky = "on",
 	topmost = "off",
 	y_offset = 0,

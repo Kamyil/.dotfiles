@@ -1,6 +1,158 @@
 local wezterm = require("wezterm")
 
 -- Inline projectifier functionality
+local pending_workspace_file = nil
+local mru_path = wezterm.home_dir .. "/.config/wezterm/workspaces.mru"
+local last_workspace = nil
+
+local function read_lines(path)
+	local lines = {}
+	local file = io.open(path, "r")
+	if not file then
+		return lines
+	end
+
+	for line in file:lines() do
+		if line ~= "" then
+			table.insert(lines, line)
+		end
+	end
+
+	file:close()
+	return lines
+end
+
+local function write_lines(path, lines)
+	local file = io.open(path, "w")
+	if not file then
+		return
+	end
+
+	for _, line in ipairs(lines) do
+		file:write(line .. "\n")
+	end
+
+	file:close()
+end
+
+local function update_workspace_mru(name)
+	if not name or name == "" then
+		return
+	end
+
+	local lines = read_lines(mru_path)
+	local new_lines = { name }
+
+	for _, line in ipairs(lines) do
+		if line ~= name then
+			table.insert(new_lines, line)
+		end
+	end
+
+	write_lines(mru_path, new_lines)
+end
+
+local function switch_workspace(window, pane, name, spawn_opts)
+	local payload = {
+		name = name,
+	}
+
+	if spawn_opts then
+		payload.spawn = spawn_opts
+	end
+
+	window:perform_action(
+		wezterm.action.SwitchToWorkspace(payload),
+		pane
+	)
+end
+
+local function parse_selection_line(line)
+	if not line or line == "" then
+		return nil
+	end
+
+	local kind, name, cwd = line:match("^([^|]+)|([^|]*)|(.*)$")
+	if not kind or not name or name == "" then
+		return nil
+	end
+
+	if cwd == "" then
+		cwd = nil
+	end
+
+	return {
+		kind = kind,
+		name = name,
+		cwd = cwd,
+	}
+end
+
+local function workspace_exists(name)
+	for _, window in ipairs(wezterm.mux.all_windows()) do
+		if window:get_workspace() == name then
+			return true
+		end
+	end
+
+	return false
+end
+
+local function apply_workspace_selection(window, pane, selection)
+	if selection.kind == "ws" or workspace_exists(selection.name) then
+		switch_workspace(window, pane, selection.name, nil)
+		return
+	end
+
+	local spawn_opts = {}
+	if selection.cwd then
+		spawn_opts.cwd = selection.cwd
+	end
+
+	switch_workspace(window, pane, selection.name, spawn_opts)
+end
+
+local function consume_workspace_selection(window, pane)
+	if not pending_workspace_file then
+		return
+	end
+
+	local file = io.open(pending_workspace_file, "r")
+	if not file then
+		return
+	end
+
+	local line = file:read("*l")
+	file:close()
+	os.remove(pending_workspace_file)
+	pending_workspace_file = nil
+
+	local selection = parse_selection_line(line)
+	if selection then
+		apply_workspace_selection(window, pane, selection)
+	end
+end
+
+local function start_workspace_selector(window, pane)
+	local tmp_dir = os.getenv("TMPDIR") or "/tmp"
+	local token = tostring(os.time()) .. "-" .. tostring(math.random(1000, 9999))
+	local output_file = tmp_dir .. "/wezterm-session-" .. token .. ".out"
+	local script_path = wezterm.home_dir .. "/.dotfiles/config/scripts/wezterm-session"
+
+	pending_workspace_file = output_file
+
+	window:perform_action(
+		wezterm.action.SpawnCommandInNewTab({
+			args = {
+				script_path,
+				"--select-to-file",
+				output_file,
+			},
+		}),
+		pane
+	)
+end
+
 local function discover_projects()
 	local projects = {}
 	local projects_dir = wezterm.home_dir .. "/.dotfiles/wezterm/projects"
@@ -107,15 +259,13 @@ local function build_workspace(window, pane, project_config)
 end
 
 -- Enhanced tmux-like functionality for WezTerm
--- Workspace Management:
+-- Workspace Management (ENABLED):
 --   Ctrl+p: Create new workspace (prompts for name, auto-names if empty)
 --   Ctrl+Shift+P: Quick create workspace with auto-name (no prompt)
 --   Ctrl+o: Switch between workspaces (fuzzy finder)
 --   Ctrl+Shift+R: Rename current workspace
 --   Ctrl+i: Show workspace info
 --   Ctrl+f: Tmux-sessionizer (pick git repo directory and create workspace)
---   Ctrl+m: Custom directory sessionizer
---   Ctrl+t: Projectifier (select project and build workspace layout)
 
 local my_own_tmux = {
 	-- Counter for auto-naming workspaces
@@ -202,58 +352,58 @@ local my_own_tmux = {
 		{ key = "l",  mods = "CTRL",       action = wezterm.action({ ActivatePaneDirection = "Right" }) },
 
 		-- Session Switching with FZF like in tmux-sessionx
-		-- {
-		-- 	key = "o",
-		-- 	mods = "CTRL",
-		-- 	action = wezterm.action.ShowLauncherArgs({
-		-- 		flags = "FUZZY|WORKSPACES",
-		-- 	}),
-		-- },
+		{
+			key = "o",
+			mods = "CTRL",
+			action = wezterm.action.ShowLauncherArgs({
+				flags = "FUZZY|WORKSPACES",
+			}),
+		},
 		-- Create new workspace with optional naming
-		-- {
-		-- 	key = "p",
-		-- 	mods = "CTRL",
-		-- 	action = wezterm.action.PromptInputLine({
-		-- 		description = wezterm.format({
-		-- 			{ Attribute = { Intensity = "Bold" } },
-		-- 			{ Foreground = { AnsiColor = "Fuchsia" } },
-		-- 			{ Text = "Enter name for new workspace (or press Enter for auto-name)" },
-		-- 		}),
-		-- 		action = wezterm.action_callback(function(window, pane, line)
-		-- 			local workspace_name
-		--
-		-- 			if line and line ~= "" then
-		-- 				-- User provided a name
-		-- 				workspace_name = line
-		-- 			else
-		-- 				-- Auto-generate name using utility function
-		-- 				workspace_name = my_own_tmux.generate_workspace_name(pane)
-		-- 			end
-		--
-		-- 			window:perform_action(
-		-- 				wezterm.action.SwitchToWorkspace({
-		-- 					name = workspace_name,
-		-- 				}),
-		-- 				pane
-		-- 			)
-		-- 		end),
-		-- 	}),
-		-- },
-		-- -- Quick create workspace with auto-name (no prompt)
-		-- {
-		-- 	key = "P",
-		-- 	mods = "CTRL|SHIFT",
-		-- 	action = wezterm.action_callback(function(window, pane)
-		-- 		local workspace_name = my_own_tmux.generate_workspace_name(pane)
-		--
-		-- 		window:perform_action(
-		-- 			wezterm.action.SwitchToWorkspace({
-		-- 				name = workspace_name,
-		-- 			}),
-		-- 			pane
-		-- 		)
-		-- 	end),
-		-- },
+		{
+			key = "p",
+			mods = "CTRL",
+			action = wezterm.action.PromptInputLine({
+				description = wezterm.format({
+					{ Attribute = { Intensity = "Bold" } },
+					{ Foreground = { AnsiColor = "Fuchsia" } },
+					{ Text = "Enter name for new workspace (or press Enter for auto-name)" },
+				}),
+				action = wezterm.action_callback(function(window, pane, line)
+					local workspace_name
+
+					if line and line ~= "" then
+						-- User provided a name
+						workspace_name = line
+					else
+						-- Auto-generate name using utility function
+						workspace_name = my_own_tmux.generate_workspace_name(pane)
+					end
+
+					window:perform_action(
+						wezterm.action.SwitchToWorkspace({
+							name = workspace_name,
+						}),
+						pane
+					)
+				end),
+			}),
+		},
+		-- Quick create workspace with auto-name (no prompt)
+		{
+			key = "P",
+			mods = "CTRL|SHIFT",
+			action = wezterm.action_callback(function(window, pane)
+				local workspace_name = my_own_tmux.generate_workspace_name(pane)
+
+				window:perform_action(
+					wezterm.action.SwitchToWorkspace({
+						name = workspace_name,
+					}),
+					pane
+				)
+			end),
+		},
 		-- -- Toggle second-brain notes session and back
 		-- {
 		-- 	key = "s",
@@ -261,55 +411,60 @@ local my_own_tmux = {
 		-- 	action = wezterm.action.EmitEvent("toggle_second_brain"),
 		-- },
 		--
-		-- -- Rename current workspace
-		-- {
-		-- 	key = "R",
-		-- 	mods = "CTRL|SHIFT",
-		-- 	action = wezterm.action.PromptInputLine({
-		-- 		description = wezterm.format({
-		-- 			{ Attribute = { Intensity = "Bold" } },
-		-- 			{ Foreground = { AnsiColor = "Blue" } },
-		-- 			{ Text = "Enter new name for current workspace" },
-		-- 		}),
-		-- 		action = wezterm.action_callback(function(window, pane, line)
-		-- 			if line and line ~= "" then
-		-- 				local current_workspace = window:active_workspace()
-		-- 				local mux = wezterm.mux
-		--
-		-- 				-- Get the current workspace
-		-- 				local workspace = mux.get_workspace(current_workspace)
-		-- 				if workspace then
-		-- 					-- Move all tabs from current workspace to new workspace
-		-- 					for _, tab in ipairs(workspace:tabs()) do
-		-- 						tab:move_to_workspace(line)
-		-- 					end
-		-- 					-- Switch to the new workspace
-		-- 					window:perform_action(
-		-- 						wezterm.action.SwitchToWorkspace({
-		-- 							name = line,
-		-- 						}),
-		-- 						pane
-		-- 					)
-		-- 				end
-		-- 			end
-		-- 		end),
-		-- 	}),
-		-- },
-		-- -- Show workspace info
-		-- {
-		-- 	key = "i",
-		-- 	mods = "CTRL",
-		-- 	action = wezterm.action_callback(function(window, pane)
-		-- 		local workspace_name = window:active_workspace()
-		-- 		local cwd = pane:get_current_working_dir()
-		-- 		local path = cwd and cwd.file_path or "unknown"
-		--
-		-- 		window:toast_notification("WezTerm",
-		-- 			string.format("Workspace: %s\nDirectory: %s", workspace_name, path),
-		-- 			nil, 3000)
-		-- 	end),
-		-- },
-		-- -- Tmux-sessionizer: Pick directory and create workspace
+		-- Rename current workspace
+		{
+			key = "R",
+			mods = "CTRL|SHIFT",
+			action = wezterm.action.PromptInputLine({
+				description = wezterm.format({
+					{ Attribute = { Intensity = "Bold" } },
+					{ Foreground = { AnsiColor = "Blue" } },
+					{ Text = "Enter new name for current workspace" },
+				}),
+				action = wezterm.action_callback(function(window, pane, line)
+					if line and line ~= "" then
+						local current_workspace = window:active_workspace()
+						local mux = wezterm.mux
+
+						-- Move all tabs from current workspace to new workspace
+						-- We need to iterate through all windows and find those in current workspace
+						for _, mux_window in ipairs(mux.all_windows()) do
+							if mux_window:get_workspace() == current_workspace then
+								-- Move all tabs in this window to the new workspace
+								for _, tab in ipairs(mux_window:tabs()) do
+									tab:move_to_workspace(line)
+								end
+							end
+						end
+
+						-- Switch to the new workspace
+						window:perform_action(
+							wezterm.action.SwitchToWorkspace({
+								name = line,
+							}),
+							pane
+						)
+
+						window:toast_notification("WezTerm", "Workspace renamed to: " .. line, nil, 2000)
+					end
+				end),
+			}),
+		},
+		-- Show workspace info
+		{
+			key = "i",
+			mods = "CTRL",
+			action = wezterm.action_callback(function(window, pane)
+				local workspace_name = window:active_workspace()
+				local cwd = pane:get_current_working_dir()
+				local path = cwd and cwd.file_path or "unknown"
+
+				window:toast_notification("WezTerm",
+					string.format("Workspace: %s\nDirectory: %s", workspace_name, path),
+					nil, 3000)
+			end),
+		},
+		-- Tmux-sessionizer: Pick directory and create workspace
 		-- {
 		-- 	key = "f",
 		-- 	mods = "CTRL",
@@ -506,9 +661,48 @@ wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
 	return zoomed .. index .. tab.active_pane.title
 end)
 
--- Auto-name workspaces based on directory when switching
+-- Format tab titles - simplified without workspace
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+	local mhfu = require "colors/village".colors
+	local tab_title = tab.active_pane.title
+	
+	local title = " " .. tab_title .. " "
+	if tab.is_active then
+		return {
+			{ Background = { Color = mhfu.wood_brown } },
+			{ Foreground = { Color = mhfu.fg } },
+			{ Attribute = { Intensity = "Bold" } },
+			{ Text = title },
+		}
+	else
+		return {
+			{ Background = { Color = mhfu.bg_alt } },
+			{ Foreground = { Color = mhfu.fg_dim } },
+			{ Text = title },
+		}
+	end
+end)
+
+-- Auto-name workspaces based on directory when switching + show workspace in status
 wezterm.on("update-status", function(window, pane)
+	consume_workspace_selection(window, pane)
+
 	local workspace_name = window:active_workspace()
+	if workspace_name and workspace_name ~= last_workspace then
+		update_workspace_mru(workspace_name)
+		last_workspace = workspace_name
+	end
+
+	-- Set left status bar with workspace name (like tmux session name)
+	local mhfu = require "colors/village".colors
+	local workspace_text = "  " .. (workspace_name or "unknown") .. "  "
+	
+	window:set_left_status(wezterm.format({
+		{ Background = { Color = mhfu.wood_brown } },
+		{ Foreground = { Color = mhfu.fg } },
+		{ Attribute = { Intensity = "Bold" } },
+		{ Text = workspace_text },
+	}))
 
 	-- Check if workspace has a generic name that should be auto-renamed
 	if workspace_name and workspace_name:match("^default$") then

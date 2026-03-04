@@ -1,5 +1,5 @@
 # NixOS-specific configuration
-{ self, nixpkgs, nixpkgs-stable, home-manager, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, worktrunk, ... }:
 
 let
   system = builtins.currentSystem or "x86_64-linux";
@@ -39,10 +39,10 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
-        home-manager.extraSpecialArgs = { inherit pkgsStable neovim-nightly-overlay system; };
+        home-manager.extraSpecialArgs = { inherit pkgsStable neovim-nightly-overlay system worktrunk; };
 
         # --- your user ---
-        home-manager.users.kamil = { pkgs, config, pkgsStable, neovim-nightly-overlay, system, ... }:
+        home-manager.users.kamil = { pkgs, config, pkgsStable, neovim-nightly-overlay, system, worktrunk, ... }:
           let
             repo = "${config.home.homeDirectory}/.dotfiles";
             link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";
@@ -126,6 +126,8 @@ in
             neovim-nightly-overlay.packages.${system}.default
             # SQL TUI from flake
             sqlit.packages.${system}.default
+            # Git worktree CLI from flake
+            worktrunk.packages.${system}.default
           ];
 
           # NixOS-specific zsh additions

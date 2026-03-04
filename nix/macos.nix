@@ -1,5 +1,5 @@
 # macOS-specific configuration using nix-darwin
-{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, worktrunk, ... }:
 
 let
   darwinSystem = "aarch64-darwin"; # or "x86_64-darwin" for Intel Macs
@@ -168,8 +168,9 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
+        home-manager.extraSpecialArgs = { inherit worktrunk darwinSystem; };
 
-        home-manager.users.kamil = { pkgs, config, lib, ... }:
+        home-manager.users.kamil = { pkgs, config, lib, worktrunk, darwinSystem, ... }:
           let
             repo = "${config.home.homeDirectory}/.dotfiles";
             link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";
@@ -235,6 +236,8 @@ in
             neovim-nightly-overlay.packages.${darwinSystem}.default
             # SQL TUI from flake
             sqlit.packages.${darwinSystem}.default
+            # Git worktree CLI from flake
+            worktrunk.packages.${darwinSystem}.default
           ];
 
           # macOS-specific zsh additions
