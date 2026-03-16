@@ -275,7 +275,10 @@ require('lazy').setup({
       })
     end,
   },
-  'alexghergh/nvim-tmux-navigation', -- Better navigation with TMUX (can move between nvim and tmux splits with same motions)
+  {
+    'mrjones2014/smart-splits.nvim', -- Better navigation between Neovim and Kitty splits
+    build = './kitty/install-kittens.bash',
+  },
   'folke/lazydev.nvim', -- Better neovim config editing, without any non-valid warnings
   'folke/todo-comments.nvim', -- Highlight comments like TODO, FIXME, BUG, INFO etc.
   'mluders/comfy-line-numbers.nvim', -- More comfortable vertical motions (without needing to reach so far away from current buttons)
@@ -497,18 +500,18 @@ keymap('n', '<leader>gcn', '<cmd>GitConflictChooseNone<CR>', { desc = '[G]it [Co
 keymap('n', '<leader>gc[', '<cmd>GitConflictPrevConflict<CR>', { desc = '[G]it [Conflict] Previous' })
 keymap('n', '<leader>gc]', '<cmd>GitConflictNextConflict<CR>', { desc = '[G]it [Conflict] Next' })
 
-local nvim_tmux_nav = require('nvim-tmux-navigation')
-nvim_tmux_nav.setup({
-  disable_when_zoomed = false,
-  keybindings = {
-    left = '<C-h>',
-    down = '<C-j>',
-    up = '<C-k>',
-    right = '<C-l>',
-    last_active = '<C-\\>',
-    next = '<C-Space>',
-  },
+local smart_splits = require('smart-splits')
+smart_splits.setup({
+  at_edge = 'stop',
+  multiplexer_integration = 'kitty',
+  disable_multiplexer_nav_when_zoomed = true,
 })
+
+keymap('n', '<C-h>', smart_splits.move_cursor_left, { desc = 'Move to left split' })
+keymap('n', '<C-j>', smart_splits.move_cursor_down, { desc = 'Move to lower split' })
+keymap('n', '<C-k>', smart_splits.move_cursor_up, { desc = 'Move to upper split' })
+keymap('n', '<C-l>', smart_splits.move_cursor_right, { desc = 'Move to right split' })
+keymap('n', '<C-\\>', smart_splits.move_cursor_previous, { desc = 'Move to previous split' })
 
 -- keymap('n', '<leader>o', ':update<CR> :source<CR>') -- source file inline (most useful for editing neovim config file
 keymap('n', '<leader>w', ':write<CR>')
