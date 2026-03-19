@@ -6,12 +6,21 @@ SESSIONS_DIR="$HOME/.local/share/kitty/sessions"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/kitty-fzf-theme.sh"
 
-if [ ! -d "$SESSIONS_DIR" ] || [ -z "$(ls -A "$SESSIONS_DIR" 2>/dev/null)" ]; then
-  echo "No sessions found. Use Ctrl+f to create one."
+shopt -s nullglob
+session_files=("$SESSIONS_DIR"/*.kitty-session)
+shopt -u nullglob
+
+if [ ${#session_files[@]} -eq 0 ]; then
+  echo "No sessions found. Use Ctrl+Shift+F to create one."
   exit 0
 fi
 
-selected=$(ls "$SESSIONS_DIR"/*.kitty-session 2>/dev/null | xargs -n1 basename | sed 's/.kitty-session$//' | fzf $FZF_POKKE_OPTS --prompt="Switch Session> " --height=40% --reverse)
+session_names=()
+for session_file in "${session_files[@]}"; do
+  session_names+=("$(basename "${session_file%.kitty-session}")")
+done
+
+selected=$(printf '%s\n' "${session_names[@]}" | fzf $FZF_POKKE_OPTS --prompt="Switch Session> " --height=40% --reverse)
 
 if [ -z "$selected" ]; then
   exit 0
