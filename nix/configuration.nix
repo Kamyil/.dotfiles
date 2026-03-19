@@ -214,14 +214,13 @@ in
   system.activationScripts.dotfilesSymlinks = {
     text = ''
       # Remove existing paths that may block symlinks
-      rm -rf /home/kamil/.config/nvim /home/kamil/.config/wezterm /home/kamil/.config/lazygit /home/kamil/.config/lazydocker /home/kamil/.config/lsd /home/kamil/.config/btop /home/kamil/.config/bat /home/kamil/.config/hypr /home/kamil/.config/waybar /home/kamil/.config/sketchybar /home/kamil/.config/aerospace /home/kamil/.config/yabai /home/kamil/.config/skhd /home/kamil/.config/ghostty /home/kamil/.config/tmux /home/kamil/.config/opencode /home/kamil/.config/kitty /home/kamil/.hammerspoon
+      rm -rf /home/kamil/.config/nvim /home/kamil/.config/wezterm /home/kamil/.config/lazygit /home/kamil/.config/lazydocker /home/kamil/.config/btop /home/kamil/.config/bat /home/kamil/.config/hypr /home/kamil/.config/waybar /home/kamil/.config/sketchybar /home/kamil/.config/aerospace /home/kamil/.config/yabai /home/kamil/.config/skhd /home/kamil/.config/ghostty /home/kamil/.config/tmux /home/kamil/.config/opencode /home/kamil/.config/kitty /home/kamil/.hammerspoon
 
       # Create direct symlinks
       ln -sfn /home/kamil/.dotfiles/nvim /home/kamil/.config/nvim
       ln -sfn /home/kamil/.dotfiles/wezterm /home/kamil/.config/wezterm
       ln -sfn /home/kamil/.dotfiles/config/lazygit /home/kamil/.config/lazygit
       ln -sfn /home/kamil/.dotfiles/config/lazydocker /home/kamil/.config/lazydocker
-      ln -sfn /home/kamil/.dotfiles/config/lsd /home/kamil/.config/lsd
       ln -sfn /home/kamil/.dotfiles/config/btop /home/kamil/.config/btop
       ln -sfn /home/kamil/.dotfiles/bat /home/kamil/.config/bat
       ln -sfn /home/kamil/.dotfiles/config/hypr /home/kamil/.config/hypr
