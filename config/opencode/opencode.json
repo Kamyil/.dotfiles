@@ -40,6 +40,13 @@
 		}
 	},
 	"mcp": {
+		"fff": {
+			"type": "local",
+			"command": [
+				"fff-mcp"
+			],
+			"enabled": true
+		},
 		"context7": {
 			"type": "remote",
 			"url": "https://mcp.context7.com/mcp"
@@ -51,6 +58,10 @@
 				"@playwright/mcp@latest"
 			]
 		},
+		"chrome-devtools": {
+			"type": "local",
+			"command": [ "npx", "-y", "chrome-devtools-mcp@latest" ]
+		},
 		"websearch_exa": {
 			"type": "remote",
 			"url": "https://mcp.exa.ai/mcp"
@@ -58,5 +69,5 @@
 	},
 	"instructions": [
 		"beads.md"
-  ]
+	]
 }
