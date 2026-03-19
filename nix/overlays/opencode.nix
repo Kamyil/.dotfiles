@@ -4,12 +4,12 @@
 # REQUIRES: programs.nix-ld.enable = true; in configuration.nix
 # nix-ld provides /lib64/ld-linux-x86-64.so.2 that the binary expects
 #
-# To update: change `version` below and update the sha256 hash.
-# Use lib.fakeHash temporarily to get the new hash from the build error.
+# To update quickly on the current machine, run:
+#   scripts/update-opencode-overlay.sh <version>
 final: prev: {
   opencode = prev.stdenv.mkDerivation rec {
     pname = "opencode";
-    version = "1.2.15"; # GitHub release tag (without 'v' prefix)
+    version = "1.2.27"; # GitHub release tag (without 'v' prefix)
     
     src = let
       # Determine platform-specific download URL
@@ -20,7 +20,7 @@ final: prev: {
       ext = if prev.stdenv.isDarwin then "zip" else "tar.gz";
       # Platform-specific hashes
       hashes = {
-        "darwin-arm64" = "sha256-QUTNt65NGDlk17I73TcGHtUnYbveflV2Pg69EpmMHl4=";
+        "darwin-arm64" = "sha256-+mgPp5CGx1CdOiwh5JySZLgD2nwPG3gH7YQrjjcyVZc=";
         "linux-x64" = "158l5l43xsi1x7rbqh9bcxms1wp9fmgm9z6v7i6rkwmrrc2hhi2y";
         # Use lib.fakeHash for untested platforms to get the hash from build error
         "darwin-x64" = prev.lib.fakeHash;
