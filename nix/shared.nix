@@ -25,7 +25,7 @@ in
       q = "exit";
       lg = "lazygit";
       ldk = "lazydocker";
-      ls = "eza --git --color=always --icons";
+      ls = "eza --no-filesize --long --color=always --icons=always --no-user";
       lt = "eza --git --color=always --icons --tree";
       finder = "open";
       grep = "grep --color=auto";
@@ -374,21 +374,10 @@ in
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
-    settings = {
-      format = "$directory$git_branch$character";
-      directory = {
-        style = "#7B958E";  # muted teal-green
-        format = "[$path]($style) ";
-      };
-      git_branch = {
-        style = "#958294";  # muted purple-grey
-        format = "on [$symbol$branch]($style) ";
-      };
-      character = {
-        success_symbol = "[➜](#7B9A5B)";  # muted green with similar saturation
-        error_symbol = "[➜](#A95B58)";    # muted red-brown
-      };
-    };
+  };
+
+  home.file = {
+    ".config/starship.toml".source = link "starship/starship.toml";
   };
 
   # Git configuration
