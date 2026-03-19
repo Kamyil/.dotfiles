@@ -16,6 +16,14 @@ in
     syntaxHighlighting.enable = true;
     enableCompletion = true;
 
+    plugins = [
+      {
+        name = "zsh-vi-mode";
+        src = pkgs.zsh-vi-mode;
+        file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
+      }
+    ];
+
     shellAliases = {
       n = "nvim .";
       y = "yazi .";
@@ -113,19 +121,26 @@ in
        # Docker BuildKit
        export DOCKER_BUILDKIT=1
 
-       # Bat theme
-       export BAT_THEME="gruvbox-dark"
+      # Bat theme
+      export BAT_THEME="Kanagawa"
 
       # Vi mode and key bindings
-      bindkey -v
       export KEYTIMEOUT=1
-      export VI_MODE_SET_CURSOR=true
       bindkey '^[[A' history-search-backward
       bindkey '^[[B' history-search-forward
 
+      # Edit command line in $EDITOR
+      autoload -U edit-command-line
+      zle -N edit-command-line
+      bindkey -M vicmd 'v' edit-command-line
+      bindkey -M viins '^x^e' edit-command-line
+
       # ZVM configuration
       ZVM_VI_HIGHLIGHT_BACKGROUND=#A33FC4
-      ZVM_LINE_INIT_MODE=$ZVM_MODE_NORMAL
+      ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+      ZVM_CURSOR_STYLE_ENABLED=true
+      # Too-small timeout breaks multi-key motions like ci"/di".
+      ZVM_KEYTIMEOUT=0.4
 
       # FZF completion helper
       _fzf_comprun() {
@@ -362,6 +377,9 @@ in
 
       # Set up fzf key bindings and fuzzy completion
       eval "$(fzf --zsh)"
+
+      # Optional machine-local overrides (not tracked in git)
+      [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
     '';
   };
 
