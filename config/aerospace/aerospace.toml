@@ -18,7 +18,9 @@ after-startup-command = [
 ]
 
 exec-on-workspace-change = [
-    '/Users/kamil/.dotfiles/sketchybar/plugins/aerospace_trigger.sh'
+    '/bin/bash',
+    '-lc',
+    '/Users/kamil/.dotfiles/sketchybar/plugins/aerospace_trigger.sh; /Users/kamil/.dotfiles/config/scripts/aerospace-follow-pip.sh'
 ]
 
 # Start AeroSpace at login
