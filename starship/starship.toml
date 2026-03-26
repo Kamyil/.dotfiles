@@ -21,7 +21,9 @@ right_format = """
 $all
 """
 
-palette = "catppuccin_mocha"
+palette = "kanagawa"
+# palette = "catppuccin_frappe"
+# palette = "catppuccin_mocha_muted"
 
 # [fill]
 # symbol = "'"
@@ -229,6 +231,76 @@ sky = "#89dceb"
 sapphire = "#74c7ec"
 blue = "#89b4fa"
 lavender = "#b4befe" # git branch fg
+
+[palettes.catppuccin_mocha_muted]
+# --- background ---
+crust = "#0f0f18"
+mantle = "#14141f"
+base = "#1a1a28" # git branch bg
+
+overlay2 = "#6f7892"
+overlay1 = "#5f6883"
+overlay0 = "#4f5874"
+
+surface2 = "#3a3b52"
+surface1 = "#2e2f42"
+surface0 = "#252535"
+
+# --- text (muted) ---
+text = "#9aa3bf"
+subtext1 = "#858ea9"
+subtext0 = "#727b96"
+
+# --- accents (catppuccin_mocha muted text) ---
+rosewater = "#c8b8b5"
+flamingo = "#c3a2a4"
+pink = "#b595b3"
+mauve = "#9f88b7"
+red = "#ba7d8a"
+maroon = "#b2838c"
+peach = "#bc916f"
+yellow = "#b39f79"
+green = "#82a57a"
+teal = "#699d93"
+sky = "#73a2b6"
+sapphire = "#6f97af"
+blue = "#6f89ba"
+lavender = "#8e99c0" # git branch fg
+
+[palettes.catppuccin_frappe]
+# --- background ---
+crust = "#232634"
+mantle = "#292c3c"
+base = "#303446" # git branch bg
+
+overlay2 = "#949cbb"
+overlay1 = "#838ba7"
+overlay0 = "#737994"
+
+surface2 = "#626880"
+surface1 = "#51576d"
+surface0 = "#414559"
+
+# --- text ---
+text = "#c6d0f5"
+subtext1 = "#b5bfe2"
+subtext0 = "#a5adce"
+
+# --- accents (catppuccin_frappe) ---
+rosewater = "#f2d5cf"
+flamingo = "#eebebe"
+pink = "#f4b8e4"
+mauve = "#ca9ee6"
+red = "#e78284"
+maroon = "#ea999c"
+peach = "#ef9f76"
+yellow = "#e5c890"
+green = "#a6d189"
+teal = "#81c8be"
+sky = "#99d1db"
+sapphire = "#85c1dc"
+blue = "#8caaee"
+lavender = "#babbf1" # git branch fg
 
 [palettes.gruvbox_dark]
 # --- background ---

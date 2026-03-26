@@ -86,6 +86,7 @@ in
 
              # Text editors and viewers
              helix
+             superfile
 
              # Terminal emulators
              alacritty

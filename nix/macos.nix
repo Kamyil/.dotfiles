@@ -207,6 +207,7 @@ in
 
             # Text editors and viewers
             helix
+            superfile
 
             # Virtualization and containers
             qemu lima colima

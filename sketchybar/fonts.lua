@@ -1,8 +1,8 @@
 -- Fonts matching waybar configuration
 return {
 	font = {
-		text = "Lexend",
-		numbers = "Lexend",
+		text = "BerkeleyMono",
+		numbers = "BerkeleyMono",
 		size = 12.0,
 		style_map = {
 			["Regular"] = "Regular",
@@ -13,8 +13,8 @@ return {
 		},
 	},
 	font_icon = {
-		text = "JetBrainsMono Nerd Font",
-		numbers = "JetBrainsMono Nerd Font",
+		text = "BerkeleyMono SemiCondensed",
+		numbers = "BerkeleyMono SemiCondensed",
 		size = 12.0,
 		style_map = {
 			["Regular"] = "Regular",

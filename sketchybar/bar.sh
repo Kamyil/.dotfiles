@@ -8,7 +8,7 @@ source "$CONFIG_DIR/colors.sh"
 # waybar: foreground #dcd7ba, background rgba(31, 31, 40, 0.95)
 BAR_HEIGHT=26
 BAR_POSITION="bottom"
-FONT="JetBrainsMono Nerd Font"
+FONT="BerkeleyMono SemiCondensed"
 
 bar=(
   color=$BAR_COLOR

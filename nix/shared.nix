@@ -48,6 +48,8 @@ in
       setup = "~/.dotfiles/config/scripts/tmux-setup-session";
       private_gitignore = "nvim .git/info/exclude";
       git_log = "serie";
+      spf = "command spf --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
+      superfile = "command spf --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
 
       # Git aliases
       gpom = "git pull origin master";
@@ -128,6 +130,8 @@ in
       export KEYTIMEOUT=1
       bindkey '^[[A' history-search-backward
       bindkey '^[[B' history-search-forward
+      bindkey -M viins '^P' up-line-or-beginning-search
+      bindkey -M viins '^N' down-line-or-beginning-search
 
       # Edit command line in $EDITOR
       autoload -U edit-command-line
@@ -396,6 +400,7 @@ in
 
   home.file = {
     ".config/starship.toml".source = link "starship/starship.toml";
+    ".config/superfile".source = link "config/superfile";
   };
 
   # Git configuration

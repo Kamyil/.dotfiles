@@ -1,13 +1,12 @@
 gui:
   theme:
     activeBorderColor:
-      - '#8a6850'  # pokke wood_brown (active frame)
-      - bold
+      - '#698a9b'
     inactiveBorderColor:
-      - '#4a5a60'  # pokke border (inactive frame)
+      - '#2A2A37'
     optionsTextColor:
-      - '#6a8a9a'  # pokke quest_blue (menu accents)
+      - '#c4b28a'
     selectedLineBgColor:
-      - '#2E3838'  # pokke selection (HUD green)
+      - '#363646'
     defaultFgColor:
-      - '#d4c8b0'  # pokke cream parchment
+      - '#DCD7BA'
