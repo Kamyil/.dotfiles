@@ -1,38 +1,40 @@
 git:
   pagers:
     - colorArg: always
-      pager: delta --dark --paging=never --syntax-theme=gruvbox-dark
+      pager: delta --dark --paging=never --syntax-theme=gruvmax-fang
       # pager: difft
       # externalDiffCommand: difft --color=always
       # externalDiffCommand: difft --color=always --display=inline --syntax-highlight=on
+
+
 gui:
+  language: en
   theme:
     activeBorderColor:
-      - '#8a6850' # pokke wood_brown (guild hall frame)
-      - bold
+      - '#698a9b'
     inactiveBorderColor:
-      - '#4a5a60' # pokke border (inactive frame)
+      - '#2A2A37'
     optionsTextColor:
-      - '#6a8a9a' # pokke quest_blue (menu text)
+      - '#c4b28a'
     selectedLineBgColor:
-      - '#2E3838' # pokke selection (HUD green)
+      - '#363646'
     selectedRangeBgColor:
-      - '#2E3838' # pokke selection (HUD green)
+      - '#363646'
     cherryPickedCommitBgColor:
-      - '#304651' # pokke hud_blue (item slot)
+      - '#393836'
     cherryPickedCommitFgColor:
-      - '#b8964a' # pokke stamina_gold
+      - '#c4b28a'
     unstagedChangesColor:
-      - '#a85a5a' # pokke meat_red (well-done steak)
+      - '#c4746e'
     defaultFgColor:
-      - '#d4c8b0' # pokke cream parchment
+      - '#DCD7BA'
     searchingActiveBorderColor:
-      - '#8a7090' # pokke rare_purple (rare item glow)
+      - '#8ea49e'
     stagedChangesColor:
-      - '#7a9a6a' # pokke health_green (health bar)
+      - '#699469'
     markedBaseCommitFgColor:
-      - '#8a9aa8' # pokke snow_blue (Pokke snow)
+      - '#9e9b93'
     markedBaseCommitBgColor:
-      - '#304651' # pokke hud_blue (item slot)
+      - '#393836'
 authorColors:
-  '*': '#6a8a9a' # pokke quest_blue
+  '*': '#8ea49e'

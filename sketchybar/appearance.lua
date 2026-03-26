@@ -3,7 +3,11 @@ local sbar = require("sketchybar")
 local fonts = require("fonts")
 
 -- Waybar-compatible color scheme from config/waybar/style.css
--- foreground: #dcd7ba, background: rgba(16, 16, 16, 0.95)
+-- Kanagawa (previous): foreground #dcd7ba, background rgba(16, 16, 16, 0.95)
+-- Catppuccin Frappé (previous): foreground #c6d0f5, background rgba(48, 52, 70, 0.95)
+-- Catppuccin Mocha (previous): foreground #bac2de, background rgba(30, 30, 46, 0.95)
+-- Catppuccin Mocha (previous extra-muted): foreground #aeb6d0, background rgba(37, 37, 53, 0.95)
+-- Kanagawa Paper Ink (active): foreground #dcd7ba, background rgba(31, 31, 40, 0.95)
 local M = {}
 
 -- Convert hex to ARGB format for sketchybar
@@ -13,25 +17,26 @@ local function hex_to_argb(hex, alpha)
 	local g = tonumber(hex:sub(4, 5), 16)
 	local b = tonumber(hex:sub(6, 7), 16)
 	local a = math.floor(alpha * 255)
+
 	return (a * 0x1000000) + (r * 0x10000) + (g * 0x100) + b
 end
 
 M.colors = {
-	-- Core colors from waybar theme
+	-- Core colors from Kanagawa Paper Ink
 	foreground = hex_to_argb("#dcd7ba"),
-	background = hex_to_argb("#101010", 0.95),
-	background_solid = hex_to_argb("#101010"),
+	background = hex_to_argb("#1f1f28", 0.95),
+	background_solid = hex_to_argb("#1f1f28"),
 	
-	-- Accent colors (using Kanagawa palette)
-	red = hex_to_argb("#a55555"),
-	red_bright = hex_to_argb("#ff5d62"),
-	green = hex_to_argb("#76946a"),
-	blue = hex_to_argb("#7aa89f"),
-	yellow = hex_to_argb("#dca561"),
-	magenta = hex_to_argb("#d27e99"),
-	cyan = hex_to_argb("#7aa89f"),
+	-- Accent colors
+	red = hex_to_argb("#c4746e"),
+	red_bright = hex_to_argb("#cc928e"),
+	green = hex_to_argb("#699469"),
+	blue = hex_to_argb("#698a9b"),
+	yellow = hex_to_argb("#c4b28a"),
+	magenta = hex_to_argb("#a292a3"),
+	cyan = hex_to_argb("#8ea49e"),
 	white = hex_to_argb("#dcd7ba"),
-	black = hex_to_argb("#101010"),
+	black = hex_to_argb("#141416"),
 	
 	-- Transparent
 	transparent = 0x00000000,

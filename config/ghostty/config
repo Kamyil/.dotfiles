@@ -1,8 +1,13 @@
+#
 # # Ghostty Terminal Configuration
 # # https://ghostty.org/docs/config/reference
 #
 # # Theme and appearance
 theme = Kanagawa Dragon
+# theme = Popping And Locking
+# theme = Black Metal (Bathory)
+
+# theme = Kanagawabones
 # theme = Catppuccin Mocha
 # theme = Gruvbox Dark Hard
 # theme = Gruvbox Material Dark
@@ -11,7 +16,6 @@ theme = Kanagawa Dragon
 # theme = Everforest Dark Hard
 # theme = Embers Dark
 # theme = Kanagawa Dragon
-# # theme = Kanagawa Dragon
 # # theme = Kanagawa Dragon
 # # theme = Kanagawa Dragon
 background-opacity = 0.90
@@ -28,6 +32,8 @@ macos-option-as-alt = true
 font-synthetic-style = true
 adjust-cell-height = 1%
 
+auto-update-channel = tip
+
 cursor-style = block
 cursor-style-blink = true
 shell-integration-features = no-cursor
@@ -37,6 +43,15 @@ font-family = "Berkeley Mono Bold SemiCondensed"
 # font-family = "Iosevka Term Slab"
 # font-weight = 500
 font-size = 21
+
+
+notify-on-command-finish = unfocused
+notify-on-command-finish-action = no-bell,notify
+notify-on-command-finish-after = 10s
+
+window-inherit-working-directory = true
+tab-inherit-working-directory = true
+split-inherit-working-directory = true
 #
 # # Window settings
 # window-decoration = true
