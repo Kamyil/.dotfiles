@@ -9,7 +9,7 @@
 final: prev: {
   opencode = prev.stdenv.mkDerivation rec {
     pname = "opencode";
-    version = "1.2.27"; # GitHub release tag (without 'v' prefix)
+    version = "1.3.7"; # GitHub release tag (without 'v' prefix)
     
     src = let
       # Determine platform-specific download URL
@@ -20,7 +20,7 @@ final: prev: {
       ext = if prev.stdenv.isDarwin then "zip" else "tar.gz";
       # Platform-specific hashes
       hashes = {
-        "darwin-arm64" = "sha256-+mgPp5CGx1CdOiwh5JySZLgD2nwPG3gH7YQrjjcyVZc=";
+        "darwin-arm64" = "sha256-uJYim7rQGppVXnq87qdVh+OBvHLe0S5Rr4E3xcRZLDk=";
         "linux-x64" = "158l5l43xsi1x7rbqh9bcxms1wp9fmgm9z6v7i6rkwmrrc2hhi2y";
         # Use lib.fakeHash for untested platforms to get the hash from build error
         "darwin-x64" = prev.lib.fakeHash;
