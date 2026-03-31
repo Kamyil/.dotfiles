@@ -1,5 +1,5 @@
 # Shared configuration between macOS and NixOS systems
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, lazyjira, ... }:
 
 let
   repo = "${config.home.homeDirectory}/.dotfiles";
@@ -454,6 +454,8 @@ in
     tldr watchexec
 
 	qutebrowser
+  ] ++ [
+    lazyjira.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   programs.home-manager.enable = true;
