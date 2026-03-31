@@ -78,7 +78,7 @@ inner.vertical = 10
 # Top gap = 0 (no gap needed at top since bar is at bottom)
 outer.top = 0
 outer.left = [{ monitor."LG HDR 4K" = 0 }, { monitor."Built-in Retina Display" = 5 }, 0]
-outer.bottom = [{monitor."PL2483H" = 30}, { monitor."LG HDR 4K" = 26 }, { monitor."Built-in Retina Display" = 30 }, 0]
+outer.bottom = [{monitor."PL2483H" = 35}, { monitor."LG HDR 4K" = 35 }, { monitor."Built-in Retina Display" = 30 }, 0]
 outer.right = [{ monitor."LG HDR 4K" = 0 }, { monitor."Built-in Retina Display" = 5 }, 0]
 
 
