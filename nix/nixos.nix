@@ -1,5 +1,5 @@
 # NixOS-specific configuration
-{ self, nixpkgs, nixpkgs-stable, home-manager, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, worktrunk, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, ... }:
 
 let
   system = builtins.currentSystem or "x86_64-linux";
@@ -39,7 +39,7 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
-        home-manager.extraSpecialArgs = { inherit pkgsStable neovim-nightly-overlay system worktrunk; };
+        home-manager.extraSpecialArgs = { inherit pkgsStable neovim-nightly-overlay system worktrunk lazyjira; };
 
         # --- your user ---
         home-manager.users.kamil = { pkgs, config, pkgsStable, neovim-nightly-overlay, system, worktrunk, ... }:

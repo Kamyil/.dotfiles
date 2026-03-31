@@ -1,5 +1,5 @@
 # macOS-specific configuration using nix-darwin
-{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, worktrunk, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, ... }:
 
 let
   darwinSystem = "aarch64-darwin"; # or "x86_64-darwin" for Intel Macs
@@ -168,7 +168,7 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
-        home-manager.extraSpecialArgs = { inherit worktrunk darwinSystem; };
+        home-manager.extraSpecialArgs = { inherit worktrunk darwinSystem lazyjira; };
 
         home-manager.users.kamil = { pkgs, config, lib, worktrunk, darwinSystem, ... }:
           let

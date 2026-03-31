@@ -21,6 +21,8 @@
     worktrunk.url = "github:max-sixty/worktrunk";
     worktrunk.inputs.nixpkgs.follows = "nixpkgs";
 
+    lazyjira.url = "github:textfuel/lazyjira";
+
     # Add private fonts
     # berkeley-font = {
     #   url = "path:///home/kamil/.local/share/fonts";
@@ -28,7 +30,7 @@
     # };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, sqlit, worktrunk, ... }:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, sqlit, worktrunk, lazyjira, ... }:
     let
       # Define supported systems
       systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
@@ -36,11 +38,11 @@
 
       # Import platform-specific configurations
       nixosConfig = import ./nixos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager neovim-nightly-overlay dotfiles rust-overlay lib sqlit worktrunk;
+        inherit self nixpkgs nixpkgs-stable home-manager neovim-nightly-overlay dotfiles rust-overlay lib sqlit worktrunk lazyjira;
       };
 
       macosConfig = import ./macos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin neovim-nightly-overlay dotfiles rust-overlay lib sqlit worktrunk;
+        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin neovim-nightly-overlay dotfiles rust-overlay lib sqlit worktrunk lazyjira;
       };
 
     in
