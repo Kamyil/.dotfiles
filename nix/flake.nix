@@ -13,7 +13,6 @@
 
     dotfiles.flake = false;
 
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     rust-overlay.url = "github:oxalica/rust-overlay";
     sqlit.url = "github:Maxteabag/sqlit";
     sqlit.inputs.nixpkgs.follows = "nixpkgs";
@@ -30,7 +29,7 @@
     # };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, sqlit, worktrunk, lazyjira, ... }:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, dotfiles, rust-overlay, sqlit, worktrunk, lazyjira, ... }:
     let
       # Define supported systems
       systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
@@ -38,11 +37,11 @@
 
       # Import platform-specific configurations
       nixosConfig = import ./nixos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager neovim-nightly-overlay dotfiles rust-overlay lib sqlit worktrunk lazyjira;
+        inherit self nixpkgs nixpkgs-stable home-manager dotfiles rust-overlay lib sqlit worktrunk lazyjira;
       };
 
       macosConfig = import ./macos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin neovim-nightly-overlay dotfiles rust-overlay lib sqlit worktrunk lazyjira;
+        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin dotfiles rust-overlay lib sqlit worktrunk lazyjira;
       };
 
     in

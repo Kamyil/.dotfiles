@@ -427,7 +427,7 @@ in
     gnugrep gnused coreutils bat delta fzf
 
     # System monitoring
-    htop fastfetch pfetch neofetch
+    htop fastfetch pfetch
 
     # File and archive tools
     unzip p7zip
@@ -445,7 +445,7 @@ in
     stow
 
     # Programming tools
-    zig stylua tree-sitter
+    neovim zig stylua tree-sitter
 
     # File sync
     rsync openssh

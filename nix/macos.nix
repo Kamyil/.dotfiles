@@ -1,5 +1,5 @@
 # macOS-specific configuration using nix-darwin
-{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, ... }:
 
 let
   darwinSystem = "aarch64-darwin"; # or "x86_64-darwin" for Intel Macs
@@ -34,6 +34,8 @@ in
       # nix-darwin system configuration
       ({ config, pkgs, lib, ... }: {
         nix.enable = false;
+        nixpkgs.pkgs = darwinPkgs;
+
         # List packages installed in system profile
         environment.systemPackages = with pkgs; [
           vim
@@ -156,7 +158,6 @@ in
             "ghostty"
             "postman"
 			"opencode-desktop"
-			"ovim" # macOS system-wide Vim keybindings and modal editor.
 			"emacs-app"
 	          ];
         };
@@ -187,7 +188,7 @@ in
             docker wezterm kitty alacritty
 
             # Development tools
-            gcc go nodejs yarn pnpm deno fnm wrangler
+            gcc go nodejs yarn pnpm fnm wrangler
             lua luarocks python3 php
 
             # Network and system tools
@@ -233,8 +234,6 @@ in
             nerd-fonts.geist-mono # Cool programming font (good alternative to BerkeleyMono and JetBrains Mono)
             nerd-fonts.jetbrains-mono # Used for sketchybar to match waybar styling
           ]) ++ [
-            # Add neovim from the overlay
-            neovim-nightly-overlay.packages.${darwinSystem}.default
             # SQL TUI from flake
             sqlit.packages.${darwinSystem}.default
             # Git worktree CLI from flake

@@ -1,5 +1,5 @@
 # NixOS-specific configuration
-{ self, nixpkgs, nixpkgs-stable, home-manager, neovim-nightly-overlay, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, ... }:
 
 let
   system = builtins.currentSystem or "x86_64-linux";
@@ -39,10 +39,10 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
-        home-manager.extraSpecialArgs = { inherit pkgsStable neovim-nightly-overlay system worktrunk lazyjira; };
+        home-manager.extraSpecialArgs = { inherit pkgsStable system worktrunk lazyjira; };
 
         # --- your user ---
-        home-manager.users.kamil = { pkgs, config, pkgsStable, neovim-nightly-overlay, system, worktrunk, ... }:
+        home-manager.users.kamil = { pkgs, config, pkgsStable, system, worktrunk, ... }:
           let
             repo = "${config.home.homeDirectory}/.dotfiles";
             link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";
@@ -59,7 +59,7 @@ in
           home.packages = (with pkgs; [
             # Development tools
             gcc docker
-            go yarn pnpm deno fnm wrangler
+            go yarn pnpm fnm wrangler
             lua luarocks python3 php
             zig stylua lua-language-server
             (pkgsStable.rust-bin.nightly.latest.default.override {
@@ -123,8 +123,6 @@ in
             # Unstable-only packages
             pkgs.opencode
             pkgs.codex
-            # packages from unstable branch
-            neovim-nightly-overlay.packages.${system}.default
             # SQL TUI from flake
             sqlit.packages.${system}.default
             # Git worktree CLI from flake
