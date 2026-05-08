@@ -488,6 +488,12 @@ keymap('n', '<leader>gg', function()
 	require('snacks').lazygit()
 end, { desc = '[G]it [G]it (run lazygit client)' })
 
+keymap('n', '<leader>gd', function()
+	require('snacks').terminal.toggle('hunk diff', {
+		cwd = vim.fn.getcwd(),
+	})
+end, { desc = '[G]it [D]iff (run hunk diff in floating terminal)' })
+
 -- Setup snacks.picker for LSP functionality
 require('snacks').setup({
 	picker = {
@@ -1095,8 +1101,9 @@ wk.add({
 	{ '<leader>fw', icon = '󰈬' },
 	{ '<leader>fk', icon = '󰌌' },
 
-	{ '<leader>g', group = 'Git', icon = '󰊢' },
+	{ '<leader>g',  group = 'Git', icon = '󰊢' },
 	{ '<leader>gg', icon = '󰊢' },
+	{ '<leader>gd', icon = '󰊢' },
 	{ '<leader>gb', icon = '󰜘' },
 	{ '<leader>gc', group = 'Conflict', icon = '󰞇' },
 	{ '<leader>gcc', icon = '󰄬' },
