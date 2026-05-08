@@ -8,6 +8,7 @@ let
   # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
   codex-overlay = import ./overlays/codex.nix;
+  hunkdiff-overlay = import ./overlays/hunkdiff.nix;
 
   # Helper function to create packages for a given system
   mkPkgs = system: import nixpkgs {
@@ -16,6 +17,7 @@ let
       rust-overlay.overlays.default
       opencode-overlay
       codex-overlay
+      hunkdiff-overlay
     ];
     config.allowUnfree = true;
   };

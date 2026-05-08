@@ -7,6 +7,7 @@ let
   # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
   codex-overlay = import ./overlays/codex.nix;
+  hunkdiff-overlay = import ./overlays/hunkdiff.nix;
 
   darwinPkgs = import nixpkgs {
     system = darwinSystem;
@@ -14,6 +15,7 @@ let
       rust-overlay.overlays.default
       opencode-overlay
       codex-overlay
+      hunkdiff-overlay
     ];
     config.allowUnfree = true;
   };
