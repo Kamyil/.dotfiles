@@ -410,6 +410,7 @@ in
       user.name = "Kamil Ksen";
       user.email = "mccom_kks@mccom.pl";
       core.editor = "nvim";
+      core.pager = "hunk pager";
       init.defaultBranch = "main";
     };
   };

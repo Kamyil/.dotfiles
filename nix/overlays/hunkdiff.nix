@@ -11,18 +11,18 @@ let
   platformInfo = if prev.stdenv.isDarwin then
     if prev.stdenv.isAarch64 then {
       binaryPkg = "hunkdiff-darwin-arm64";
-      binaryHash = "sha256-09hgb7yzvwsfpp3gxpjzvgjf85njak7p8j0mgp5nmngdadwf62f3";
+      binaryHash = "09hgb7yzvwsfpp3gxpjzvgjf85njak7p8j0mgp5nmngdadwf62f3";
     } else {
       binaryPkg = "hunkdiff-darwin-x64";
-      binaryHash = "sha256-13r8vygzqwvq2npakgk8cmkljq0h0pdnp60wxxnc3zpkqcxsgw9c";
+      binaryHash = "13r8vygzqwvq2npakgk8cmkljq0h0pdnp60wxxnc3zpkqcxsgw9c";
     }
   else
     if prev.stdenv.isAarch64 then {
       binaryPkg = "hunkdiff-linux-arm64";
-      binaryHash = "sha256-0phq4z67qif8i5h2lwrklm6a14v97q4zdwrh96c2m4r62xbywpzv";
+      binaryHash = "0phq4z67qif8i5h2lwrklm6a14v97q4zdwrh96c2m4r62xbywpzv";
     } else {
       binaryPkg = "hunkdiff-linux-x64";
-      binaryHash = "sha256-083xvh247x06g56fdfg05a2w6lz6rxyh8m9v60rvfpxw59w1wa90";
+      binaryHash = "083xvh247x06g56fdfg05a2w6lz6rxyh8m9v60rvfpxw59w1wa90";
     };
 in
 
@@ -33,7 +33,7 @@ in
 
     src = prev.fetchurl {
       url = "https://registry.npmjs.org/hunkdiff/-/hunkdiff-${version}.tgz";
-      hash = "sha256-05mnjgd0b7c13jh1ry8q1qcsxlyl5ygwdqd2z36a64wzpiq7vsn0";
+      sha256 = "05mnjgd0b7c13jh1ry8q1qcsxlyl5ygwdqd2z36a64wzpiq7vsn0";
     };
 
     nativeBuildInputs = [ prev.makeWrapper ];
@@ -49,7 +49,7 @@ in
       mkdir -p $out/lib/node_modules/hunkdiff/node_modules/${platformInfo.binaryPkg}
       tar xzf ${prev.fetchurl {
         url = "https://registry.npmjs.org/${platformInfo.binaryPkg}/-/${platformInfo.binaryPkg}-${version}.tgz";
-        hash = platformInfo.binaryHash;
+        sha256 = platformInfo.binaryHash;
       }} -C $out/lib/node_modules/hunkdiff/node_modules/${platformInfo.binaryPkg} --strip-components=1
       chmod +x $out/lib/node_modules/hunkdiff/node_modules/${platformInfo.binaryPkg}/bin/hunk
 
