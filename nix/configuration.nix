@@ -6,6 +6,7 @@
 
 let
   opencode-overlay = import ./overlays/opencode.nix;
+  hunkdiff-overlay = import ./overlays/hunkdiff.nix;
 in
 {
   imports = [ # Include the results of the hardware scan.
@@ -139,7 +140,7 @@ in
   nixpkgs.config.allowUnfree = true;
 
   # Apply custom overlays
-  nixpkgs.overlays = [ opencode-overlay ];
+  nixpkgs.overlays = [ opencode-overlay hunkdiff-overlay ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
