@@ -2,7 +2,7 @@
 
 -- OPTIONS -- (boring but important stuff)
 vim.o.number = true
-vim.o.relativenumber = true
+vim.o.relativenumber = false
 vim.o.signcolumn = 'yes'                               -- will use 3 columns to make line numbers have a little bit more margin
 vim.o.termguicolors = true                             -- Enable nice colors
 vim.o.wrap = false                                     -- Disable line wrap
@@ -138,6 +138,7 @@ require('lazy').setup({
 	'folke/which-key.nvim',      -- Shows available shortcuts when hitting <leader> or some motion
 	'windwp/nvim-autopairs',     -- Autopair brackets, strings etc.
 	'smithbm2316/centerpad.nvim',
+	"mvllow/modes.nvim",
 	{
 		'Saghen/blink.cmp',
 		version = '1.*',
@@ -921,6 +922,8 @@ vim.cmd(':hi statusline guibg=NONE')
 -- vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#1e1e2e' })
 vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#5a637e', bg = 'NONE' })
 vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#1a1a28' })
+
+require("modes").setup()
 
 local function set_fyler_kanagawa_ink_highlights()
 	local fyler_hl = {
