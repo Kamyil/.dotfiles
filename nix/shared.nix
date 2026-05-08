@@ -455,6 +455,7 @@ in
 
 	qutebrowser
   ] ++ [
+    (pkgs.callPackage ./packages/hunkdiff { })
     lazyjira.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
