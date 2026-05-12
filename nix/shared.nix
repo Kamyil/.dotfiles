@@ -406,6 +406,8 @@ in
   home.activation.obsidianConfigSymlink = config.lib.dag.entryAfter [ "writeBoundary" ] ''
     obsidian_target="$HOME/second-brain/.obsidian"
     obsidian_source="$HOME/.dotfiles/config/obsidian"
+    obsidian_vimrc_target="$HOME/second-brain/.obsidian.vimrc"
+    obsidian_vimrc_source="$HOME/.dotfiles/config/obsidian/obsidian.vimrc"
 
     if [ -d "$HOME/second-brain" ] && [ -d "$obsidian_source" ]; then
       if [ -e "$obsidian_target" ] && [ ! -L "$obsidian_target" ]; then
@@ -419,6 +421,20 @@ in
       fi
 
       ln -sfn "$obsidian_source" "$obsidian_target"
+
+      if [ -f "$obsidian_vimrc_source" ]; then
+        if [ -e "$obsidian_vimrc_target" ] && [ ! -L "$obsidian_vimrc_target" ]; then
+          backup="$HOME/second-brain/.obsidian.vimrc.backup-before-dotfiles"
+          if [ ! -e "$backup" ]; then
+            mv "$obsidian_vimrc_target" "$backup"
+          else
+            echo "Skipping Obsidian vimrc symlink: $obsidian_vimrc_target exists and $backup already exists"
+            exit 0
+          fi
+        fi
+
+        ln -sfn "$obsidian_vimrc_source" "$obsidian_vimrc_target"
+      fi
     fi
   '';
 
