@@ -193,6 +193,7 @@ config.keys = {
 	-- { key = "C", mods = "CMD", action = wezterm.action.CopyTo("Clipboard") },
 	-- { key = "V", mods = "CMD", action = wezterm.action.PasteFrom("Clipboard") },
 	-- { key = "Insert", mods = "SHIFT", action = wezterm.action.PasteFrom("Clipboard") },
+	{ key = "E", mods = "CMD", action = wezterm.action.SendString("\x1b[25~") },
 	{ key = "P", mods = "CMD|SHIFT", action = wezterm.action.ActivateCommandPalette },
 }
 
