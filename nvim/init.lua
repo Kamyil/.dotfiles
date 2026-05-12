@@ -442,11 +442,21 @@ keymap('n', '<leader>fw', function()
 end, { desc = '[F]ind [W]ords' })
 keymap('n', '<leader>fk', fzf_lua.keymaps, { desc = '[F]ind [K]eymaps' })
 -- keymap('n', '<leader>fh', ':Pick help<CR>')
-keymap('n', '<leader>e', function()
-	local fyler = require('fyler')
+local function toggle_fyler()
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		local buf = vim.api.nvim_win_get_buf(win)
+		if vim.bo[buf].filetype == 'fyler' then
+			vim.api.nvim_win_close(win, true)
+			return
+		end
+	end
 
-	fyler.open()
-end, { desc = 'File [E]xplorer' })
+	require('fyler').open()
+end
+
+keymap('n', '<F13>', function()
+	toggle_fyler()
+end, { desc = 'File Explorer' })
 -- LSP
 keymap('n', '<leader>la', vim.lsp.buf.code_action, { desc = '' })
 keymap('n', '<leader>lf', vim.lsp.buf.format)
@@ -564,6 +574,17 @@ keymap('n', '<C-j>', smart_splits.move_cursor_down, { desc = 'Move to lower spli
 keymap('n', '<C-k>', smart_splits.move_cursor_up, { desc = 'Move to upper split' })
 keymap('n', '<C-l>', smart_splits.move_cursor_right, { desc = 'Move to right split' })
 keymap('n', '<C-\\>', smart_splits.move_cursor_previous, { desc = 'Move to previous split' })
+
+vim.api.nvim_create_autocmd('FileType', {
+	group = vim.api.nvim_create_augroup('fyler-smart-splits', { clear = true }),
+	pattern = 'fyler',
+	callback = function(args)
+		vim.keymap.set('n', '<C-h>', smart_splits.move_cursor_left, { buffer = args.buf, desc = 'Move to left split' })
+		vim.keymap.set('n', '<C-j>', smart_splits.move_cursor_down, { buffer = args.buf, desc = 'Move to lower split' })
+		vim.keymap.set('n', '<C-k>', smart_splits.move_cursor_up, { buffer = args.buf, desc = 'Move to upper split' })
+		vim.keymap.set('n', '<C-l>', smart_splits.move_cursor_right, { buffer = args.buf, desc = 'Move to right split' })
+	end,
+})
 
 -- keymap('n', '<leader>o', ':update<CR> :source<CR>') -- source file inline (most useful for editing neovim config file
 keymap('n', '<leader>w', ':write<CR>')
@@ -1140,7 +1161,6 @@ wk.add({
 
 	{ '<leader>u', icon = '󰄬' },
 
-	{ '<leader>e', icon = '󰉋' },
 	{ '<leader>w', icon = '󰆓' },
 	{ '<leader>q', icon = '󰈆' },
 	{ '<leader>D', icon = '󰨮' },
