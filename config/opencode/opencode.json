@@ -69,5 +69,8 @@
 	},
 	"instructions": [
 		"beads.md"
-	]
+  ],
+  "plugin": [
+    "@mohak34/opencode-notifier"
+  ]
 }

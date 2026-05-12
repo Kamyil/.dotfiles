@@ -1,0 +1,8 @@
+{
+	"showIcon": true,
+	"true": false,
+	"showProjectName": true,
+	"enableOnDesktop": false,
+	"notificationSystem": "osascript",
+	"showSessionTitle": false
+}
