@@ -32,6 +32,22 @@ nmap <Space>ff :quickSwitcher<CR>
 exmap globalSearch obcommand global-search:open
 nmap <Space>fw :globalSearch<CR>
 
+exmap toggleChecklist obcommand editor:toggle-checklist-status
+nmap <Space>ntx :toggleChecklist<CR>
+
+exmap splitVertical obcommand workspace:split-vertical
+nmap <Space>/ :splitVertical<CR>
+
+exmap splitHorizontal obcommand workspace:split-horizontal
+nmap <Space>- :splitHorizontal<CR>
+
+" Neovim-style go to definition: open link/file under cursor.
+nmap gd gf
+
+" Neovim-style references: show backlinks for the active note.
+exmap backlinks obcommand backlink:open
+nmap grr :backlinks<CR>
+
 exmap togglefold obcommand editor:toggle-fold
 nmap <Tab> :togglefold<CR>
 nmap za :togglefold<CR>
@@ -45,6 +61,7 @@ nmap zM :foldall<CR>
 " Obsidian navigation that maps cleanly to Vim habits.
 exmap back obcommand app:go-back
 nmap <C-o> :back<CR>
+nmap <C-t> :back<CR>
 
 exmap forward obcommand app:go-forward
 nmap <C-i> :forward<CR>
