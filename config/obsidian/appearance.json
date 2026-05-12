@@ -1,0 +1,14 @@
+{
+  "accentColor": "#dcd7ba",
+  "interfaceFontFamily": "DIN Alternate,Helvetica,D-DIN Exp,D-DIN,DIN Condensed,Helvetica Neue,FiraCode Nerd Font Propo,JetBrainsMonoNL Nerd Font Propo",
+  "cssTheme": "",
+  "textFontFamily": "Helvetica,Oswald,Berkeley Mono,PT Serif,Charter,Lora,Domaine Display Narrow,EB Garamond,Beirut,Inter,DIN Alternate,Helvetica Neue,JetBrainsMonoNL Nerd Font Propo,Apple Color Emoji",
+  "monospaceFontFamily": "Berkeley Mono,JetBrainsMonoNL Nerd Font Propo",
+  "translucency": true,
+  "showViewHeader": true,
+  "nativeMenus": false,
+  "baseFontSizeAction": false,
+  "enabledCssSnippets": [],
+  "showRibbon": false,
+  "baseFontSize": 17
+}

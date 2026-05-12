@@ -1,0 +1,17 @@
+{
+  "everforest-enchanted-theme@@readable-line-length-custom": 700,
+  "everforest-enchanted-theme@@highlighted-folders": false,
+  "everforest-enchanted-theme@@wide-width-readable-line-length-custom": 1000,
+  "everforest-enchanted-theme@@enable-menu-blur": true,
+  "everforest-enchanted-theme@@background-image-enabled": true,
+  "everforest-enchanted-theme@@background-image-dark-url": "url(\"https://i.etsystatic.com/22845678/r/il/cba060/4701668083/il_fullxfull.4701668083_lb68.jpg\")",
+  "everforest-enchanted-theme@@visual-parity-enabled": false,
+  "everforest-enchanted-theme@@background-image-pane-view": false,
+  "everforest-enchanted-theme@@tab-opacity": 0.9,
+  "everforest-enchanted-theme@@ui-opacity": 0.9,
+  "everforest-enchanted-theme@@background-image-light-url": "url(\"https://i.etsystatic.com/22845678/r/il/cba060/4701668083/il_fullxfull.4701668083_lb68.jpg\")",
+  "everforest-enchanted-theme@@image-embed-enable-zoom": true,
+  "everforest-enchanted-theme@@rounded-tables": true,
+  "everforest-enchanted-theme@@centered-tables": true,
+  "everforest-enchanted-theme@@pane-opacity": 0.9
+}

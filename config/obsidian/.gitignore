@@ -1,0 +1,13 @@
+# Machine/session state. Keep the reproducible config tracked, but not UI state.
+workspace*.json
+
+# Secrets and local cursor history.
+plugins/obsidian-jira-issue/data.json
+plugins/remember-cursor-position/cursor-positions.json
+
+# Local/generated files.
+.trash/
+.DS_Store
+**/.DS_Store
+._*
+**/._*

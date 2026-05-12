@@ -1,0 +1,35 @@
+/*
+
+This CSS file will be included with your plugin, and
+available in the app when your plugin is enabled.
+
+If your plugin does not need CSS, delete this file.
+
+*/
+.harpoon-highlight {
+	background: gray;
+}
+.hooked-file {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+    width: 100%;
+}
+
+.hooked-file-path {
+    flex-grow: 1;
+    margin-right: 8px;  /* Add some space between the path and the delete button */
+}
+
+.hooked-file-delete {
+    opacity: 0;
+    cursor: pointer;
+    padding: 0 4px;
+    font-size: 1.2em;
+    margin-left: auto;  /* This will push the delete button to the far right */
+}
+
+.hooked-file:hover .hooked-file-delete {
+    opacity: 1;
+}

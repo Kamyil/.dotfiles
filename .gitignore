@@ -3,3 +3,11 @@ config/lazygit/state.yml
 nvim/startup.log
 config/tmux/plugins
 pynvim
+config/obsidian/workspace*.json
+config/obsidian/plugins/obsidian-jira-issue/data.json
+config/obsidian/plugins/remember-cursor-position/cursor-positions.json
+config/obsidian/.trash/
+config/obsidian/.DS_Store
+config/obsidian/**/.DS_Store
+config/obsidian/._*
+config/obsidian/**/._*

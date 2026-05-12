@@ -1,0 +1,48 @@
+
+.tree-item-content {
+	padding-top: 3px;
+	width: 100%;
+}
+
+/* Do not header number on hover because it's not clickable */
+.tree-item-self:hover .tree-item-flair {
+	color: var(--text-faint);
+}
+
+.external-links-header {
+	padding: 4px 8px;
+}
+
+div.MuiTreeItem-content {
+	padding: 0;
+}
+
+/* Used to remove the default padding of the lean node on Mui Tree Item */
+.leaf-tree-item > div.MuiTreeItem-content > div.MuiTreeItem-iconContainer {
+	display: none;
+}
+
+/* remove the default background color of the tree item component */
+div.MuiTreeItem-content.Mui-selected {
+	background-color: transparent;
+}
+
+div.MuiTreeItem-content.Mui-focused {
+	background-color: transparent;
+}
+
+div.MuiTreeItem-content.Mui-selected.Mui-focused {
+	background-color: transparent;
+}
+
+.Mui-expanded {
+	color: var(--nav-heading-color);
+}
+
+a.tree-item-inner {
+	display: block;
+	text-overflow: ellipsis;
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+}

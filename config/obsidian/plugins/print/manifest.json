@@ -1,0 +1,11 @@
+{
+	"id": "print",
+	"name": "Print",
+	"version": "0.3.9",
+	"minAppVersion": "1.6.0",
+	"description": "Print notes and documents directly from your workspace.",
+	"author": "Marijn Bent",
+	"authorUrl": "https://marijnbent.nl",
+	"isDesktopOnly": true,
+	"fundingUrl": "https://buymeacoffee.com/marijnbent"
+}
