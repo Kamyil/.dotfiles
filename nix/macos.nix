@@ -155,6 +155,7 @@ in
             "ytmdesktop-youtube-music"
             "aerospace"
             "raycast"
+            "obsidian"
             "font-sketchybar-app-font"
             "eqmac"
             "ghostty"

@@ -1,0 +1,48 @@
+{
+  "settings": {
+    "migrated": 6,
+    "iconPacksPath": ".obsidian/icons",
+    "fontSize": 16,
+    "emojiStyle": "native",
+    "iconColor": null,
+    "recentlyUsedIcons": [
+      "LiChessRook",
+      "LiAtom",
+      "LiScroll",
+      "🌐",
+      "LiBaby"
+    ],
+    "recentlyUsedIconsSize": 5,
+    "rules": [],
+    "extraMargin": {
+      "top": 0,
+      "right": 4,
+      "bottom": 0,
+      "left": 0
+    },
+    "iconInTabsEnabled": false,
+    "iconInTitleEnabled": false,
+    "iconInTitlePosition": "above",
+    "iconInFrontmatterEnabled": false,
+    "iconInFrontmatterFieldName": "icon",
+    "iconColorInFrontmatterFieldName": "iconColor",
+    "iconsBackgroundCheckEnabled": false,
+    "iconsInNotesEnabled": true,
+    "iconsInLinksEnabled": true,
+    "iconIdentifier": ":",
+    "debugMode": false
+  },
+  "Praca/Impuls": "LiDatabase",
+  "Praca/Pomysły": "💡",
+  "Praca/Problemy": "❓",
+  "Praca/Przydatne komendy": "LiCommand",
+  "Praca/Przydatne linki": "LiLink",
+  "Praca/Przydatne narzędzia": "LiHammer",
+  "Muzyka": "LiMusic",
+  "Muzyka/Albumy/TheAlbum/Świat/Postacie": "LiBaby",
+  "Muzyka/Albumy/TheAlbum/Świat": "🌐",
+  "Muzyka/Albumy/TheAlbum/Świat/Historia.canvas": "LiScroll",
+  "Muzyka/Albumy/TheAlbum/Świat/Guideline.md": "LiHammer",
+  "Muzyka/Albumy/TheAlbum/Świat/Symbole": "LiAtom",
+  "youtuby/Clanker/Strategia.canvas": "LiChessRook"
+}

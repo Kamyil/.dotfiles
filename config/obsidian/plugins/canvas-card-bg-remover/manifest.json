@@ -1,0 +1,11 @@
+{
+	"id": "canvas-card-bg-remover",
+	"name": "Canvas Card Background Remover",
+	"version": "0.1.4",
+	"minAppVersion": "0.15.0",
+	"description": "You can make the background of cards transparent in the Canvas",
+	"author": "luxmargos",
+	"authorUrl": "https://github.com/luxmargos",
+	"fundingUrl": "https://www.buymeacoffee.com/luxmargos",
+	"isDesktopOnly": false
+}

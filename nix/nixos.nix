@@ -86,9 +86,10 @@ in
             # Database and data tools
             postgresql
 
-             # Text editors and viewers
-             helix
-             superfile
+            # Text editors and viewers
+            helix
+            superfile
+            obsidian
 
              # Terminal emulators
              alacritty

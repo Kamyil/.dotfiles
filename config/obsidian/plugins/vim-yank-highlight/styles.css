@@ -1,0 +1,53 @@
+/*
+
+This CSS file will be included with your plugin, and
+available in the app when your plugin is enabled.
+
+If your plugin does not need CSS, delete this file.
+
+*/
+
+@keyframes yankedHighlight {
+    0% {
+        background-color: transparent;
+    }
+    5% {
+        background-color: var(--link-unresolved-decoration-color);
+    }
+    95% {
+        background-color: var(--link-unresolved-decoration-color);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.ovy-highlight {
+    /*
+        There is a stupid gap between the lines which is not covered by the background-color and it looks ugly
+        since line contents are inline elements their height is [pretty arbitrary](https://iamvdo.me/en/blog/css-font-metrics-line-height-and-vertical-align) and depend on
+        on font properties and not line-height or font-size.
+
+        There is something called [line gap override](https://web.dev/articles/css-size-adjust#line-gap-override) which
+        can close the gap for the background highlighting, but I can't figure out how to apply it.
+
+        The best solution so far is to approximately [pad the highlight span](https://stackoverflow.com/a/56781592) to overlap the gap.
+
+        This works mostly well, but is finicky and might not work for all fonts and not the best for semi-transparent highlights;
+        also, the bottom line of the selection jumps a little on highlight, but it's mostly unnoticeable.
+
+        Another solution would be to grab the actual span element that is not wrapped,
+        get it's calculated height and calculate the exact padding values, but it requires
+        accessing DOM elements and CodeMirror doesn't let you get to the actual HTML elements
+        and I don't want to query them manually as it's messy and should be done for every range.
+
+        🤷‍♀️
+    */
+    --expected-text-height: calc(var(--line-height) * var(--font-text-size));
+    --approximate-gap-height: calc(
+        (var(--expected-text-height) - var(--font-text-size)) / 4
+    );
+    padding: var(--approximate-gap-height) 0;
+
+    animation: yankedHighlight 0.5s ease-out;
+}

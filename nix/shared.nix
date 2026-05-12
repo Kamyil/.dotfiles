@@ -403,6 +403,25 @@ in
     ".config/superfile".source = link "config/superfile";
   };
 
+  home.activation.obsidianConfigSymlink = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+    obsidian_target="$HOME/second-brain/.obsidian"
+    obsidian_source="$HOME/.dotfiles/config/obsidian"
+
+    if [ -d "$HOME/second-brain" ] && [ -d "$obsidian_source" ]; then
+      if [ -e "$obsidian_target" ] && [ ! -L "$obsidian_target" ]; then
+        backup="$HOME/second-brain/.obsidian.backup-before-dotfiles"
+        if [ ! -e "$backup" ]; then
+          mv "$obsidian_target" "$backup"
+        else
+          echo "Skipping Obsidian config symlink: $obsidian_target exists and $backup already exists"
+          exit 0
+        fi
+      fi
+
+      ln -sfn "$obsidian_source" "$obsidian_target"
+    fi
+  '';
+
   # Git configuration
   programs.git = {
     enable = true;

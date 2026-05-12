@@ -1,0 +1,136 @@
+/*
+
+This CSS file will be included with your plugin, and
+available in the app when your plugin is enabled.
+
+If your plugin does not need CSS, delete this file.
+
+*/
+
+/* 'image-embed'|'canvas-embed'|'markdown-embed'; */
+
+/* ALL */
+/* Normal State */
+.workspace.ccbgrm-plugin .canvas-node:not(.is-focused):not(:hover):has(.canvas-node-content) .canvas-node-container{
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.workspace.ccbgrm-plugin .canvas-node:not(.is-focused):not(:hover):has(.canvas-node-content) .canvas-node-content{
+    background-color: transparent;
+}
+
+/* Focus State */
+.workspace.ccbgrm-plugin .canvas-node.is-focused:has(.canvas-node-content) .canvas-node-container{
+    background-color: transparent;
+}
+
+.workspace.ccbgrm-plugin .canvas-node.is-focused:has(.canvas-node-content) .canvas-node-content{
+    background-color: transparent;
+}
+
+/* Hover State */
+.workspace.ccbgrm-plugin .canvas-node:hover:has(.canvas-node-content) .canvas-node-container {
+    background-color: transparent;
+}
+
+.workspace.ccbgrm-plugin .canvas-node:hover:has(.canvas-node-content) .canvas-node-content{
+    background-color: transparent;
+}
+
+/* Image */
+
+/* Normal State */
+.workspace.ccbgrm-plugin-img .canvas-node:not(.is-focused):not(:hover):has(.canvas-node-content.image-embed) .canvas-node-container{
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.workspace.ccbgrm-plugin-img .canvas-node:not(.is-focused):not(:hover):has(.canvas-node-content.image-embed) .canvas-node-content{
+    background-color: transparent;
+}
+
+/* Focus State */
+.workspace.ccbgrm-plugin-img .canvas-node.is-focused:has(.canvas-node-content.image-embed) .canvas-node-container{
+    background-color: transparent;
+}
+
+.workspace.ccbgrm-plugin-img .canvas-node.is-focused:has(.canvas-node-content.image-embed) .canvas-node-content{
+    background-color: transparent;
+}
+
+/* Hover State */
+.workspace.ccbgrm-plugin-img .canvas-node:hover:has(.canvas-node-content.image-embed) .canvas-node-container{
+    background-color: transparent;
+}
+
+.workspace.ccbgrm-plugin-img .canvas-node:hover:has(.canvas-node-content.image-embed) .canvas-node-content{
+    background-color: transparent;
+}
+
+
+/* Canvas */
+
+/* Normal State */
+.workspace.ccbgrm-plugin-cnvs .canvas-node:not(.is-focused):not(:hover):has(.canvas-node-content.canvas-embed) .canvas-node-container{
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.workspace.ccbgrm-plugin-cnvs .canvas-node:not(.is-focused):not(:hover):has(.canvas-node-content.canvas-embed) .canvas-node-content{
+    background-color: transparent;
+}
+
+/* Focus State */
+.workspace.ccbgrm-plugin-cnvs .canvas-node.is-focused:has(.canvas-node-content.canvas-embed) .canvas-node-container{
+    background-color: transparent;
+}
+
+.workspace.ccbgrm-plugin-cnvs .canvas-node.is-focused:has(.canvas-node-content.canvas-embed) .canvas-node-content{
+    background-color: transparent;
+}
+
+/* Hover State */
+.workspace.ccbgrm-plugin-cnvs .canvas-node:hover:has(.canvas-node-content.canvas-embed) .canvas-node-container{
+    background-color: transparent;
+}
+
+.workspace.ccbgrm-plugin-cnvs .canvas-node:hover:has(.canvas-node-content.canvas-embed) .canvas-node-content{
+    background-color: transparent;
+}
+
+
+
+/* Markdown */
+
+/* Normal State */
+.workspace.ccbgrm-plugin-md .canvas-node:not(.is-focused):not(:hover):has(.canvas-node-content.markdown-embed) .canvas-node-container{
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.workspace.ccbgrm-plugin-md .canvas-node:not(.is-focused):not(:hover):has(.canvas-node-content.markdown-embed) .canvas-node-content{
+    background-color: transparent;
+}
+
+/* Focus State */
+.workspace.ccbgrm-plugin-md .canvas-node.is-focused:has(.canvas-node-content.markdown-embed) .canvas-node-container{
+    background-color: transparent;
+}
+
+.workspace.ccbgrm-plugin-md .canvas-node.is-focused:has(.canvas-node-content.markdown-embed) .canvas-node-content{
+    background-color: transparent;
+}
+
+/* Hover State */
+.workspace.ccbgrm-plugin-md .canvas-node:hover:has(.canvas-node-content.markdown-embed) .canvas-node-container{
+    background-color: transparent;
+}
+
+.workspace.ccbgrm-plugin-md .canvas-node:hover:has(.canvas-node-content.markdown-embed) .canvas-node-content{
+    background-color: transparent;
+}

@@ -1,0 +1,37 @@
+/*
+
+This CSS file will be included with your plugin, and
+available in the app when your plugin is enabled.
+
+If your plugin does not need CSS, delete this file.
+
+*/
+
+.setting-item-info:empty {
+	display: none;
+}
+
+.setting_jira_instance_url {
+	width: 100%;
+}
+
+.jira_instance_title {
+	font-size: 18px;
+	margin: 0;
+	padding: 0;
+	color: rgb(172, 170, 170);
+}
+
+.jira_instance_url {
+	font-size: 14px;
+	margin: 0;
+	padding: 0;
+	color: gray;
+	margin-left: 12px;
+	font-style: italic;
+}
+
+.assigned-default-button {
+	color:rgb(127, 83, 243);
+}
+
