@@ -1,5 +1,5 @@
 # macOS-specific configuration using nix-darwin
-{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, hunk, ... }:
 
 let
   darwinSystem = "aarch64-darwin"; # or "x86_64-darwin" for Intel Macs
@@ -7,7 +7,6 @@ let
   # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
   codex-overlay = import ./overlays/codex.nix;
-  hunkdiff-overlay = import ./overlays/hunkdiff.nix;
 
   darwinPkgs = import nixpkgs {
     system = darwinSystem;
@@ -15,7 +14,6 @@ let
       rust-overlay.overlays.default
       opencode-overlay
       codex-overlay
-      hunkdiff-overlay
     ];
     config.allowUnfree = true;
   };
@@ -172,7 +170,7 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
-        home-manager.extraSpecialArgs = { inherit worktrunk darwinSystem lazyjira; };
+        home-manager.extraSpecialArgs = { inherit worktrunk darwinSystem lazyjira hunk; };
 
         home-manager.users.kamil = { pkgs, config, lib, worktrunk, darwinSystem, ... }:
           let
