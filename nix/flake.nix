@@ -22,6 +22,9 @@
 
     lazyjira.url = "github:textfuel/lazyjira";
 
+    hunk.url = "github:modem-dev/hunk/v0.12.0";
+    hunk.inputs.nixpkgs.follows = "nixpkgs";
+
     # Add private fonts
     # berkeley-font = {
     #   url = "path:///home/kamil/.local/share/fonts";
@@ -29,7 +32,7 @@
     # };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, dotfiles, rust-overlay, sqlit, worktrunk, lazyjira, ... }:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, dotfiles, rust-overlay, sqlit, worktrunk, lazyjira, hunk, ... }:
     let
       # Define supported systems
       systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
@@ -37,11 +40,11 @@
 
       # Import platform-specific configurations
       nixosConfig = import ./nixos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager dotfiles rust-overlay lib sqlit worktrunk lazyjira;
+        inherit self nixpkgs nixpkgs-stable home-manager dotfiles rust-overlay lib sqlit worktrunk lazyjira hunk;
       };
 
       macosConfig = import ./macos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin dotfiles rust-overlay lib sqlit worktrunk lazyjira;
+        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin dotfiles rust-overlay lib sqlit worktrunk lazyjira hunk;
       };
 
     in

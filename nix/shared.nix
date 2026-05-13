@@ -1,5 +1,5 @@
 # Shared configuration between macOS and NixOS systems
-{ pkgs, config, lib, lazyjira, ... }:
+{ pkgs, config, lib, lazyjira, hunk, ... }:
 
 let
   repo = "${config.home.homeDirectory}/.dotfiles";
@@ -491,7 +491,7 @@ in
 
 	qutebrowser
   ] ++ [
-    pkgs.hunkdiff
+    hunk.packages.${pkgs.stdenv.hostPlatform.system}.default
     lazyjira.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 

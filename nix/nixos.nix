@@ -1,5 +1,5 @@
 # NixOS-specific configuration
-{ self, nixpkgs, nixpkgs-stable, home-manager, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, hunk, ... }:
 
 let
   system = builtins.currentSystem or "x86_64-linux";
@@ -8,7 +8,6 @@ let
   # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
   codex-overlay = import ./overlays/codex.nix;
-  hunkdiff-overlay = import ./overlays/hunkdiff.nix;
 
   # Helper function to create packages for a given system
   mkPkgs = system: import nixpkgs {
@@ -17,7 +16,6 @@ let
       rust-overlay.overlays.default
       opencode-overlay
       codex-overlay
-      hunkdiff-overlay
     ];
     config.allowUnfree = true;
   };
@@ -41,7 +39,7 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
-        home-manager.extraSpecialArgs = { inherit pkgsStable system worktrunk lazyjira; };
+        home-manager.extraSpecialArgs = { inherit pkgsStable system worktrunk lazyjira hunk; };
 
         # --- your user ---
         home-manager.users.kamil = { pkgs, config, pkgsStable, system, worktrunk, ... }:
