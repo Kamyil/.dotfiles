@@ -1,0 +1,13 @@
+{
+  "packages": [
+    "git:github.com/arpagon/pi-rewind@v0.5.0",
+    "git:github.com/nicobailon/pi-subagents@v0.24.0",
+    "git:github.com/nicobailon/pi-mcp-adapter",
+    "git:github.com/aporcelli/pi-usage",
+    "npm:pi-opencode-bridge@0.2.0"
+  ],
+  "lastChangelogVersion": "0.73.1",
+  "defaultProvider": "oc-sdk-go",
+  "defaultModel": "deepseek-v4-pro",
+  "defaultThinkingLevel": "medium"
+}

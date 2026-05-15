@@ -1,0 +1,12 @@
+auth.json
+*.local.json
+*.log
+tmp/
+cache/
+node_modules/
+npm/
+git/
+sessions/
+mcp-cache.json
+memory/daily/
+memory/notes/
