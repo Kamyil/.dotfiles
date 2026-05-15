@@ -429,6 +429,7 @@ local function run_from_edit_window(fn)
 	fn()
 end
 
+keymap('x', '<C-a>', 'ggVg')
 keymap('n', '<leader>ff', function()
 	run_from_edit_window(function()
 		require('fff').find_files()
@@ -863,10 +864,7 @@ require('nvim-autopairs').setup()
 require('blink.cmp').setup({
 	keymap = { preset = 'enter' },
 	fuzzy = {
-		implementation = 'prefer_rust',
-		prebuilt_binaries = {
-			force_version = '1.*.*',
-		},
+		implementation = 'prefer_rust_with_warning',
 	},
 	completion = {
 		menu = {
