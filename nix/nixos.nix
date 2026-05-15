@@ -1,5 +1,5 @@
 # NixOS-specific configuration
-{ self, nixpkgs, nixpkgs-stable, home-manager, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, hunk, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, hunk, lumen, ... }:
 
 let
   system = builtins.currentSystem or "x86_64-linux";
@@ -39,10 +39,10 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
-        home-manager.extraSpecialArgs = { inherit pkgsStable system worktrunk lazyjira hunk; };
+        home-manager.extraSpecialArgs = { inherit pkgsStable system worktrunk lazyjira hunk lumen; };
 
         # --- your user ---
-        home-manager.users.kamil = { pkgs, config, pkgsStable, system, worktrunk, ... }:
+        home-manager.users.kamil = { pkgs, config, pkgsStable, system, worktrunk, lumen, ... }:
           let
             repo = "${config.home.homeDirectory}/.dotfiles";
             link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";
@@ -128,6 +128,8 @@ in
             sqlit.packages.${system}.default
             # Git worktree CLI from flake
             worktrunk.packages.${system}.default
+            # Git diff/review TUI from flake
+            lumen.packages.${system}.default
           ];
 
           # NixOS-specific zsh additions

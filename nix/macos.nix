@@ -1,5 +1,5 @@
 # macOS-specific configuration using nix-darwin
-{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, hunk, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, hunk, lumen, ... }:
 
 let
   darwinSystem = "aarch64-darwin"; # or "x86_64-darwin" for Intel Macs
@@ -170,9 +170,9 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
-        home-manager.extraSpecialArgs = { inherit worktrunk darwinSystem lazyjira hunk; };
+        home-manager.extraSpecialArgs = { inherit worktrunk darwinSystem lazyjira hunk lumen; };
 
-        home-manager.users.kamil = { pkgs, config, lib, worktrunk, darwinSystem, ... }:
+        home-manager.users.kamil = { pkgs, config, lib, worktrunk, darwinSystem, lumen, ... }:
           let
             repo = "${config.home.homeDirectory}/.dotfiles";
             link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";
@@ -239,6 +239,8 @@ in
             sqlit.packages.${darwinSystem}.default
             # Git worktree CLI from flake
             worktrunk.packages.${darwinSystem}.default
+            # Git diff/review TUI from flake
+            lumen.packages.${darwinSystem}.default
           ];
 
           # macOS-specific zsh additions
