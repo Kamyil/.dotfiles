@@ -8,6 +8,7 @@ let
   # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
   codex-overlay = import ./overlays/codex.nix;
+  pi-overlay = import ./overlays/pi.nix;
 
   # Helper function to create packages for a given system
   mkPkgs = system: import nixpkgs {
@@ -16,6 +17,7 @@ let
       rust-overlay.overlays.default
       opencode-overlay
       codex-overlay
+      pi-overlay
     ];
     config.allowUnfree = true;
   };
@@ -124,6 +126,7 @@ in
             # Unstable-only packages
             pkgs.opencode
             pkgs.codex
+            pkgs.pi
             # SQL TUI from flake
             sqlit.packages.${system}.default
             # Git worktree CLI from flake

@@ -399,6 +399,7 @@ in
   };
 
   home.file = {
+    ".pi/agent".source = link "config/pi/agent";
     ".config/starship.toml".source = link "starship/starship.toml";
     ".config/superfile".source = link "config/superfile";
   };

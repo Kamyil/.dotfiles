@@ -7,6 +7,7 @@ let
   # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
   codex-overlay = import ./overlays/codex.nix;
+  pi-overlay = import ./overlays/pi.nix;
 
   darwinPkgs = import nixpkgs {
     system = darwinSystem;
@@ -14,6 +15,7 @@ let
       rust-overlay.overlays.default
       opencode-overlay
       codex-overlay
+      pi-overlay
     ];
     config.allowUnfree = true;
   };
@@ -206,6 +208,7 @@ in
 
             # AI coding tools
             opencode
+            pi
 
             # Text editors and viewers
             helix
