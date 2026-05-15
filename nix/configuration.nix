@@ -6,6 +6,8 @@
 
 let
   opencode-overlay = import ./overlays/opencode.nix;
+  codex-overlay = import ./overlays/codex.nix;
+  pi-overlay = import ./overlays/pi.nix;
 in
 {
   imports = [ # Include the results of the hardware scan.
@@ -139,7 +141,7 @@ in
   nixpkgs.config.allowUnfree = true;
 
   # Apply custom overlays
-  nixpkgs.overlays = [ opencode-overlay ];
+  nixpkgs.overlays = [ opencode-overlay codex-overlay pi-overlay ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -209,6 +211,7 @@ in
 
      # opencode from unstable (pkgs already is unstable via flake)
      opencode
+     pi
   ];
 
   system.activationScripts.dotfilesSymlinks = {
