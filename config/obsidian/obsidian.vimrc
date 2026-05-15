@@ -94,5 +94,11 @@ map s] :surround_square_brackets<CR>
 map s{ :surround_curly_brackets<CR>
 map s} :surround_curly_brackets<CR>
 
+" Move selected lines up/down with J/K (matching Neovim muscle memory).
+exmap moveSelectionDown jscommand { const from = editor.getCursor('from'); const to = editor.getCursor('to'); const start = from.line; let end = to.line; if (to.ch === 0 && to.line > start) end = to.line - 1; if (end >= editor.lineCount() - 1) return; const block = editor.getRange({ line: start, ch: 0 }, { line: end, ch: editor.getLine(end).length }); const next = editor.getLine(end + 1); editor.replaceRange(next + '\n' + block, { line: start, ch: 0 }, { line: end + 1, ch: next.length }); const new_start = start + 1; editor.setSelection({ line: new_start, ch: 0 }, { line: end + 1, ch: editor.getLine(end + 1).length }); }
+exmap moveSelectionUp jscommand { const from = editor.getCursor('from'); const to = editor.getCursor('to'); const start = from.line; let end = to.line; if (to.ch === 0 && to.line > start) end = to.line - 1; if (start === 0) return; const block = editor.getRange({ line: start, ch: 0 }, { line: end, ch: editor.getLine(end).length }); const prev = editor.getLine(start - 1); editor.replaceRange(block + '\n' + prev, { line: start - 1, ch: 0 }, { line: end, ch: editor.getLine(end).length }); const new_start = start - 1; editor.setSelection({ line: new_start, ch: 0 }, { line: end - 1, ch: editor.getLine(end - 1).length }); }
+vmap J :moveSelectionDown<CR>
+vmap K :moveSelectionUp<CR>
+
 " Paste clipboard into selected text/word, useful for Markdown links.
 map <A-p> :pasteinto
