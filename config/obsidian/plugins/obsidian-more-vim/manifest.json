@@ -1,0 +1,10 @@
+{
+	"id": "more-vim",
+	"name": "More Vim",
+	"version": "0.2.0",
+	"minAppVersion": "1.12.7",
+	"description": "Adds missing Vim features such as surround, multi-cursor, scrolloff, gd, gx, and more.",
+	"author": "Colin Lienard",
+	"authorUrl": "https://github.com/colinlienard",
+	"isDesktopOnly": true
+}
