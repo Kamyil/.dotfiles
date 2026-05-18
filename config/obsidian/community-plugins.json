@@ -1,7 +1,6 @@
 [
   "dataview",
   "chord-lyrics",
-  "external-links",
   "obsidian-excalidraw-plugin",
   "vim-yank-highlight",
   "obsidian-linter",
@@ -15,5 +14,10 @@
   "remember-cursor-position",
   "copy-url-in-preview",
   "quick-explorer",
-  "obsidian-vimrc-support"
+  "obsidian-vimrc-support",
+  "obsidian-relative-line-numbers",
+  "more-vim",
+  "table-editor-obsidian",
+  "svelte-syntax-highlighter",
+  "editing-toolbar"
 ]

@@ -77,6 +77,7 @@ exmap surround_wiki surround [[ ]]
 exmap surround_double_quotes surround " "
 exmap surround_single_quotes surround ' '
 exmap surround_backticks surround ` `
+exmap surround_code_block jscommand { let from = selection.anchor; let to = selection.head; if (editor.posToOffset(from) > editor.posToOffset(to)) [from, to] = [to, from]; const text = editor.getRange(from, to); editor.replaceRange('```\n' + text + '\n```', from, to); editor.setSelection({ line: from.line + 1, ch: from.ch }, { line: to.line + 1, ch: to.ch }); }
 exmap surround_brackets surround ( )
 exmap surround_square_brackets surround [ ]
 exmap surround_curly_brackets surround { }
@@ -87,6 +88,7 @@ map s[ :surround_wiki<CR>
 map s" :surround_double_quotes<CR>
 map s' :surround_single_quotes<CR>
 map s` :surround_backticks<CR>
+vmap s` :surround_code_block<CR>
 map sb :surround_brackets<CR>
 map s( :surround_brackets<CR>
 map s) :surround_brackets<CR>
