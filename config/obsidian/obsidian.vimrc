@@ -68,9 +68,17 @@ nmap <C-i> :forward<CR>
 
 exmap tabnext obcommand workspace:next-tab
 nmap gt :tabnext<CR>
+nmap ]] :tabnext<CR>
 
 exmap tabprev obcommand workspace:previous-tab
 nmap gT :tabprev<CR>
+nmap [[ :tabprev<CR>
+
+exmap tab1 obcommand workspace:goto-tab-1
+exmap tab2 obcommand workspace:goto-tab-2
+exmap tab3 obcommand workspace:goto-tab-3
+exmap tab4 obcommand workspace:goto-tab-4
+exmap tab5 obcommand workspace:goto-tab-5
 
 " Lightweight surround/link helpers from Vimrc Support.
 exmap surround_wiki surround [[ ]]
