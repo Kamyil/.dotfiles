@@ -1,0 +1,12 @@
+body {
+  --file-line-width: 820px;
+}
+
+.markdown-source-view.mod-cm6.is-readable-line-width .cm-sizer,
+.markdown-source-view.mod-cm6.is-readable-line-width .cm-content,
+.markdown-source-view.mod-cm6.is-readable-line-width .cm-line,
+.markdown-preview-view.is-readable-line-width .markdown-preview-sizer,
+.release-notes-view .is-readable-line-width,
+.webviewer-content .reader-mode-content.is-readable-line-width .markdown-preview-sizer {
+  max-width: var(--file-line-width) !important;
+}

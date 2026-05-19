@@ -8,7 +8,9 @@
   "showViewHeader": true,
   "nativeMenus": false,
   "baseFontSizeAction": false,
-  "enabledCssSnippets": [],
+  "enabledCssSnippets": [
+    "readable-line-width"
+  ],
   "showRibbon": false,
   "baseFontSize": 17
 }
