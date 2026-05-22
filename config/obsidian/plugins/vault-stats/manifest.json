@@ -1,0 +1,10 @@
+{
+	"id": "vault-stats",
+	"name": "Vault Stats",
+	"version": "1.0.0",
+	"minAppVersion": "1.18.0",
+	"description": "Provides methods to retrieve statistics about the vault, such as the number of notes, total word count, recently modified notes, and more.",
+	"author": "Obsidian",
+	"authorUrl": "https://github.com/blueheron786",
+	"isDesktopOnly": false
+}

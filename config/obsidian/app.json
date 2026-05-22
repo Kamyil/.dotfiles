@@ -2,7 +2,8 @@
   "showLineNumber": true,
   "vimMode": true,
   "spellcheck": false,
-  "readableLineLength": true,
+  "readableLineLength": false,
   "showInlineTitle": true,
-  "strictLineBreaks": false
+  "strictLineBreaks": false,
+  "defaultViewMode": "source"
 }

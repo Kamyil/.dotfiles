@@ -1,6 +1,6 @@
 {
-  "aestheticStyle": "default",
-  "positionStyle": "top",
+  "aestheticStyle": "tiny",
+  "positionStyle": "fixed",
   "menuCommands": [
     {
       "id": "editing-toolbar:editor-undo",
@@ -280,14 +280,14 @@
       "icon": "exit-fullscreen"
     }
   ],
-  "appendMethod": "workspace",
+  "appendMethod": "body",
   "shouldShowMenuOnSelect": false,
   "cMenuVisibility": true,
   "cMenuBottomValue": 4.25,
   "cMenuNumRows": 12,
   "cMenuWidth": 610,
   "cMenuFontColor": "#92cddc",
-  "cMenuBackgroundColor": "#fff88f",
+  "cMenuBackgroundColor": "#ff4d4f",
   "autohide": false,
   "custom_bg1": "#FFB78B8C",
   "custom_bg2": "#CDF4698C",
