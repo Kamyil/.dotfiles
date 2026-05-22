@@ -19,5 +19,8 @@
   "more-vim",
   "table-editor-obsidian",
   "svelte-syntax-highlighter",
-  "editing-toolbar"
+  "editing-toolbar",
+  "floating-highlights",
+  "obsidian-daily-stats",
+  "vault-stats"
 ]

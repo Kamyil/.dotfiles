@@ -1,0 +1,61 @@
+/*
+
+This CSS file will be included with your plugin, and
+available in the app when your plugin is enabled.
+
+If your plugin does not need CSS, delete this file.
+
+*/
+
+.float-highlights {
+    transition: transform var(--float-duration, 150ms) ease;
+    margin: 1em 0 1em 0 !important;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 12px 28px 2px;
+    border: 1px solid white;
+    padding: 1em !important;
+    border-radius: 0.5em;
+    list-style-type: none;
+}
+
+/* Ultra-smooth mode: remove expensive shadows while actively scrolling */
+body.float-scroll-active .float-highlights {
+    box-shadow: none;
+}
+
+.float-highlights[data-float-tag="mark"] {
+    transform: scale(var(--float-mark-scale, 1.1));
+}
+
+.float-highlights[data-float-tag="strong"] {
+    transform: scale(var(--float-strong-scale, 1.08));
+}
+
+.float-highlights[data-float-tag="em"] {
+    transform: scale(var(--float-em-scale, 1.05));
+}
+
+/* Word-level animation: inline elements need inline-block for transforms */
+mark.float-highlights,
+strong.float-highlights,
+em.float-highlights {
+    display: inline-block;
+    margin: 0.2em 0 !important;
+    padding: 0.3em 0.5em !important;
+}
+
+/* Highlights keep their background color, no border */
+mark.float-highlights {
+    border: none;
+}
+
+/* Bold/italic get transparent background */
+strong.float-highlights,
+em.float-highlights {
+    background: transparent;
+}
+
+/* Dim non-highlighted content when highlights are active */
+body.float-highlights-active :is(p, li, blockquote, td, th, h1, h2, h3, h4, h5, h6, pre):not(.float-highlights):not(:has(.float-highlights)) {
+    opacity: var(--float-bg-opacity, 1);
+    transition: opacity var(--float-duration, 150ms) ease;
+}
