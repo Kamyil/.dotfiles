@@ -1527,3 +1527,31 @@ vim.api.nvim_create_user_command('Cppath', function()
 	vim.fn.setreg('+', path)
 	vim.notify('Copied "' .. path .. '" to the clipboard!')
 end, {})
+
+require('ember').setup({
+  variant = 'ember', -- 'ember', 'ember-soft', 'ember-light', 'ember-auto'
+  styles = {
+    variables = { italic = false, bold = false },
+    comments = { italic = false, bold = false },
+    keywords = { italic = false, bold = false },
+    functions = { italic = false, bold = false },
+    types = { italic = false, bold = false },
+  },
+  transparent = false, -- transparent editor background
+  transparent_floats = nil, -- follows `transparent` by default; set explicitly to override
+  dark_variant = 'ember', -- used by `ember-auto` when background = 'dark'
+  light_variant = 'ember-light', -- used by `ember-auto` when background = 'light'
+  on_colors = nil, -- function(palette) - modify palette before theme builds
+  on_highlights = function(highlights)
+    for _, highlight in pairs(highlights) do
+      if type(highlight) == 'table' then
+        highlight.italic = false
+        highlight.bold = false
+      end
+    end
+  end,
+})
+
+vim.cmd('colorscheme ember')
+vim.cmd(':hi statusline guibg=NONE')
+apply_terminal_theme_highlights()
