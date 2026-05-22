@@ -60,7 +60,11 @@
 		},
 		"chrome-devtools": {
 			"type": "local",
-			"command": [ "npx", "-y", "chrome-devtools-mcp@latest" ]
+			"command": [
+				"npx",
+				"-y",
+				"chrome-devtools-mcp@latest"
+			]
 		},
 		"websearch_exa": {
 			"type": "remote",
@@ -69,8 +73,5 @@
 	},
 	"instructions": [
 		"beads.md"
-  ],
-  "plugin": [
-    "@mohak34/opencode-notifier"
-  ]
+	]
 }
