@@ -938,60 +938,54 @@ vim.cmd('colorscheme kanagawa-paper-ink')
 -- vim.cmd('colorscheme vague')
 vim.cmd(':hi statusline guibg=NONE')
 
--- MHFU border highlight - warm wood tones matching Kitty tab bar
--- vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#b89060', bg = 'NONE' })
--- vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#1a1816' })
--- vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#8caaee', bg = 'NONE' })
--- vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#303446' })
--- vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#6c7086', bg = 'NONE' })
--- vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#1e1e2e' })
-vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#5a637e', bg = 'NONE' })
-vim.api.nvim_set_hl(0, 'NormalFloat', { bg = '#1a1a28' })
+require('modes').setup()
 
-require("modes").setup()
-
-local function set_fyler_kanagawa_ink_highlights()
-	local fyler_hl = {
-		FylerNormal = { fg = '#dcd7ba', bg = '#100F18' },
-		FylerNormalNC = { fg = '#dcd7ba', bg = '#100F18' },
-
-		FylerBlue = { fg = '#859fac', bg = '#100F18' },
-		FylerGreen = { fg = '#8a9a7b', bg = '#100F18' },
-		FylerGrey = { fg = '#7a8382', bg = '#100F18' },
-		FylerRed = { fg = '#c4746e', bg = '#100F18' },
-		FylerYellow = { fg = '#c4b28a', bg = '#100F18' },
-
-		FylerFSDirectoryIcon = { fg = '#8ea49e', bg = '#100F18' },
-		FylerFSDirectoryName = { fg = '#c5c9c5', bg = '#100F18' },
-		FylerFSFile = { fg = '#dcd7ba', bg = '#100F18' },
-		FylerFSLink = { fg = '#9e9b93', bg = '#100F18' },
-
-		FylerGitAdded = { fg = '#699469', bg = '#100F18' },
-		FylerGitConflict = { fg = '#c4746e', bg = '#100F18' },
-		FylerGitDeleted = { fg = '#c4746e', bg = '#100F18' },
-		FylerGitIgnored = { fg = '#737c73', bg = '#100F18' },
-		FylerGitModified = { fg = '#c4b28a', bg = '#100F18' },
-		FylerGitRenamed = { fg = '#b6927b', bg = '#100F18' },
-		FylerGitStaged = { fg = '#8a9a7b', bg = '#100F18' },
-		FylerGitUnstaged = { fg = '#b6927b', bg = '#100F18' },
-		FylerGitUntracked = { fg = '#8ea49e', bg = '#100F18' },
-		FylerGitCopied = { fg = '#859fac', bg = '#100F18' },
-
-		FylerIndentMarker = { fg = '#54546d', bg = '#100F18' },
-		FylerWinPick = { fg = '#1d1c19', bg = '#859fac' },
-	}
-
-	for group, spec in pairs(fyler_hl) do
-		vim.api.nvim_set_hl(0, group, spec)
-	end
+local function set_hl_link(group, target)
+  vim.api.nvim_set_hl(0, group, { link = target })
 end
 
-set_fyler_kanagawa_ink_highlights()
+local function apply_terminal_theme_highlights()
+  set_hl_link('NormalFloat', 'Normal')
+  set_hl_link('FloatBorder', 'Comment')
+
+  set_hl_link('BlinkCmpMenu', 'Pmenu')
+  set_hl_link('BlinkCmpMenuBorder', 'FloatBorder')
+  set_hl_link('BlinkCmpMenuSelection', 'PmenuSel')
+  set_hl_link('BlinkCmpDoc', 'NormalFloat')
+  set_hl_link('BlinkCmpDocBorder', 'FloatBorder')
+  set_hl_link('BlinkCmpSignatureHelp', 'NormalFloat')
+  set_hl_link('BlinkCmpSignatureHelpBorder', 'FloatBorder')
+
+  set_hl_link('FylerNormal', 'Normal')
+  set_hl_link('FylerNormalNC', 'NormalNC')
+  set_hl_link('FylerBlue', 'DiagnosticInfo')
+  set_hl_link('FylerGreen', 'DiagnosticOk')
+  set_hl_link('FylerGrey', 'Comment')
+  set_hl_link('FylerRed', 'DiagnosticError')
+  set_hl_link('FylerYellow', 'DiagnosticWarn')
+  set_hl_link('FylerFSDirectoryIcon', 'Directory')
+  set_hl_link('FylerFSDirectoryName', 'Directory')
+  set_hl_link('FylerFSFile', 'Normal')
+  set_hl_link('FylerFSLink', 'Underlined')
+  set_hl_link('FylerGitAdded', 'DiffAdd')
+  set_hl_link('FylerGitConflict', 'DiagnosticError')
+  set_hl_link('FylerGitDeleted', 'DiffDelete')
+  set_hl_link('FylerGitIgnored', 'Comment')
+  set_hl_link('FylerGitModified', 'DiffChange')
+  set_hl_link('FylerGitRenamed', 'DiagnosticHint')
+  set_hl_link('FylerGitStaged', 'DiffAdd')
+  set_hl_link('FylerGitUnstaged', 'DiffChange')
+  set_hl_link('FylerGitUntracked', 'Directory')
+  set_hl_link('FylerGitCopied', 'DiagnosticInfo')
+  set_hl_link('FylerIndentMarker', 'NonText')
+  set_hl_link('FylerWinPick', 'IncSearch')
+end
+
+apply_terminal_theme_highlights()
 
 vim.api.nvim_create_autocmd('ColorScheme', {
-	group = vim.api.nvim_create_augroup('fyler-kanagawa-ink-highlights', { clear = true }),
-	pattern = 'kanagawa-paper*',
-	callback = set_fyler_kanagawa_ink_highlights,
+  group = vim.api.nvim_create_augroup('terminal-theme-highlights', { clear = true }),
+  callback = apply_terminal_theme_highlights,
 })
 
 -- Set global window border (after colorscheme loads)
