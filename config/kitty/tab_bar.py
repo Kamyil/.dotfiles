@@ -6,15 +6,15 @@ from kitty.tab_bar import TabAccessor, as_rgb
 
 
 COLORS = {
-  'bar_bg': 0x1D1C19,  # dragonBlack2
-  'session_bg': 0x3A515E,  # canvasBlue5
+  'bar_bg': 0x2A2A37,  # sumiInk4
+  'session_bg': 0xAE6966,
   'session_fg': 0xE6E6E3,  # canvasWhite5
-  'active_bg': 0xDCD7BA,  # fujiWhite / lotusGray
+  'active_bg': 0x9E7E98,  # canvasPink1
   'active_fg': 0x1D1C19,  # dragonBlack2
-  'inactive_bg': 0x282727,  # dragonBlack4
+  'inactive_bg': 0x1D1C19,  # dragonBlack2
   'inactive_fg': 0xCBC8BC,  # canvasWhite1
   'muted_fg': 0x8E8A80,  # canvasGray2
-  'attention_fg': 0xC34043,  # autumnRed
+  'attention_fg': 0xAE6966,
 }
 
 ICONS = {
@@ -36,8 +36,7 @@ ICONS = {
 }
 
 SHELLS = {'bash', 'fish', 'nu', 'sh', 'zsh'}
-LEFT_SEP = ''
-RIGHT_SEP = ''
+RIGHT_SEP = ''
 
 
 def _set_colors(screen, fg, bg):
@@ -45,10 +44,7 @@ def _set_colors(screen, fg, bg):
   screen.cursor.bg = as_rgb(bg)
 
 
-def _draw_pill(screen, text, fg, bg, left=True, right=True):
-  if left:
-    _set_colors(screen, bg, COLORS['bar_bg'])
-    screen.draw(LEFT_SEP)
+def _draw_segment(screen, text, fg, bg, right=True):
   _set_colors(screen, fg, bg)
   screen.draw(text)
   if right:
@@ -102,6 +98,9 @@ def _title(tab):
 
 def _icon(tab):
   exe = _active_exe(tab)
+  title = (tab.title or '').lower()
+  if 'opencode' in title:
+    return ICONS['opencode']
   if exe in ICONS:
     return ICONS[exe]
   if exe.endswith('git'):
@@ -121,7 +120,7 @@ def draw_tab(draw_data, screen, tab, before, max_tab_length, index, is_last, ext
 
   if index == 1:
     session = _trim(_active_session_name(tab), 22)
-    _draw_pill(screen, f' 󰆍 {session} ', COLORS['session_fg'], COLORS['session_bg'])
+    _draw_segment(screen, f' 󰆍 {session} ', COLORS['session_fg'], COLORS['session_bg'])
     screen.draw(' ')
 
   bg = COLORS['active_bg'] if tab.is_active else COLORS['inactive_bg']
@@ -138,7 +137,7 @@ def draw_tab(draw_data, screen, tab, before, max_tab_length, index, is_last, ext
     text = f' !{text.lstrip()}'
     fg = COLORS['attention_fg']
 
-  _draw_pill(screen, text, fg, bg)
+  _draw_segment(screen, text, fg, bg)
 
   if not is_last:
     screen.draw(' ')
