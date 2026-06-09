@@ -6,16 +6,14 @@ from kitty.tab_bar import TabAccessor, as_rgb
 
 
 COLORS = {
-  'bar_bg': 0x2A2A37,  # sumiInk4
-  'session_bg': 0xAE6966,
-  'session_fg': 0xE6E6E3,  # canvasWhite5
-  'active_bg': 0x9E7E98,  # canvasPink1
-  'active_fg': 0x1D1C19,  # dragonBlack2
-  'inactive_bg': 0x1D1C19,  # dragonBlack2
-  'inactive_fg': 0xCBC8BC,  # canvasWhite1
+  'bar_bg': 0x141416,
+  'active_fg': 0xC4B28A,
+  'inactive_fg': 0x9E9B93,
   'muted_fg': 0x8E8A80,  # canvasGray2
-  'attention_fg': 0xAE6966,
+  'attention_fg': 0xC4746E,
 }
+
+SHELLS = {'bash', 'fish', 'nu', 'sh', 'zsh'}
 
 ICONS = {
   'bash': '',
@@ -35,21 +33,10 @@ ICONS = {
   'zsh': '',
 }
 
-SHELLS = {'bash', 'fish', 'nu', 'sh', 'zsh'}
-RIGHT_SEP = ''
-
 
 def _set_colors(screen, fg, bg):
   screen.cursor.fg = as_rgb(fg)
   screen.cursor.bg = as_rgb(bg)
-
-
-def _draw_segment(screen, text, fg, bg, right=True):
-  _set_colors(screen, fg, bg)
-  screen.draw(text)
-  if right:
-    _set_colors(screen, bg, COLORS['bar_bg'])
-    screen.draw(RIGHT_SEP)
 
 
 def _trim(text, width):
@@ -96,6 +83,10 @@ def _title(tab):
   return title
 
 
+def _active_session_name(tab):
+  return tab.active_session_name or tab.session_name or 'default'
+
+
 def _icon(tab):
   exe = _active_exe(tab)
   title = (tab.title or '').lower()
@@ -110,34 +101,30 @@ def _icon(tab):
   return '󰆍'
 
 
-def _active_session_name(tab):
-  return tab.active_session_name or tab.session_name or 'default'
-
-
 def draw_tab(draw_data, screen, tab, before, max_tab_length, index, is_last, extra_data):
   screen.cursor.bold = False
   screen.cursor.italic = False
+  screen.cursor.bg = as_rgb(COLORS['bar_bg'])
 
   if index == 1:
     session = _trim(_active_session_name(tab), 22)
-    _draw_segment(screen, f' 󰆍 {session} ', COLORS['session_fg'], COLORS['session_bg'])
-    screen.draw(' ')
+    _set_colors(screen, COLORS['inactive_fg'], COLORS['bar_bg'])
+    screen.draw(f'[{session}] ')
 
-  bg = COLORS['active_bg'] if tab.is_active else COLORS['inactive_bg']
   fg = COLORS['active_fg'] if tab.is_active else COLORS['inactive_fg']
 
-  icon = _icon(tab)
   title = _title(tab)
-  prefix = f' {index}:{icon} '
-  suffix = ' '
-  available = max(1, max_tab_length - (screen.cursor.x - before) - wcswidth(prefix) - wcswidth(suffix) - 2)
+  prefix = f'{index}:{_icon(tab)} '
+  suffix = '*' if tab.is_active else ''
+  available = max(1, max_tab_length - (screen.cursor.x - before) - wcswidth(prefix) - wcswidth(suffix) - 1)
   text = prefix + _trim(title, available) + suffix
 
   if tab.needs_attention:
-    text = f' !{text.lstrip()}'
+    text = f'!{text}'
     fg = COLORS['attention_fg']
 
-  _draw_segment(screen, text, fg, bg)
+  _set_colors(screen, fg, COLORS['bar_bg'])
+  screen.draw(text)
 
   if not is_last:
     screen.draw(' ')
