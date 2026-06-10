@@ -22,7 +22,7 @@
 
     lazyjira.url = "github:textfuel/lazyjira";
 
-    hunk.url = "github:modem-dev/hunk/v0.12.0";
+    hunk.url = "github:modem-dev/hunk/v0.14.0";
     hunk.inputs.nixpkgs.follows = "nixpkgs";
 
     lumen.url = "github:jnsahaj/lumen";
