@@ -81,7 +81,7 @@ in
             docker-buildx docker-compose podman podman-compose
 
             # Media and graphics
-            ffmpeg imagemagick flameshot swappy chromium thunderbird
+            ffmpeg imagemagick flameshot swappy chromium thunderbird signal-desktop
 
             # Database and data tools
             postgresql
