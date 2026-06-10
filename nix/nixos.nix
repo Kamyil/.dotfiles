@@ -193,6 +193,7 @@ in
             ".config/omarchy/current/theme/waybar.css".source = link "config/omarchy/current/theme/waybar.css";
             ".config/omarchy/current/background".source = link "Downloads/2-Pawel-Czerwinski-Abstract-Purple-Blue.jpg";
             ".config/tmux".source = link "config/tmux";
+            ".config/lsd".source = link "config/lsd";
             ".config/alacritty".source = link "config/alacritty";
             ".config/walker/config.toml".source = link "config/walker/config.toml";
             ".config/walker/themes/kanagawa.css".source = link "config/walker/themes/kanagawa.css";
