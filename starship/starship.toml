@@ -29,7 +29,7 @@ palette = "kanagawa"
 # symbol = "'"
 
 [directory]
-style = "sapphire"
+style = "pink"
 format = "[ $path ]($style)"
 truncation_length = 4
 
@@ -89,7 +89,7 @@ ignore_timeout = true
 
 [git_branch] 
 symbol = "[](base) "
-style = "fg:lavender bg:base"
+style = "fg:branch_fg bg:base"
 format =  "  [$symbol$branch]($style)[](base)"
 
 # [git_status] 
@@ -103,16 +103,16 @@ format =  "  [$symbol$branch]($style)[](base)"
 format = "[$staged$modified$renamed$conflicted$ahead_behind]($style)"
 # options available for format
 staged     = "[+${count} ](green)"
-modified   = "[!${count} ](yellow)"
+modified   = "[!${count} ](orange)"
 renamed    = "[»${count} ](blue)"
 deleted    = "[-${count} ](red)"
-untracked  = "[?${count} ](sapphire)"
-stashed    = "[≡${count} ](lavender)"
+untracked  = "[?${count} ](teal)"
+stashed    = "[≡${count} ](violet)"
 conflicted = "[✖${count} ](red bold)"
 
 ahead      = "[⇡${count} ](teal)"
-behind     = "[⇣${count} ](peach)"
-diverged   = "[⇕⇡${ahead_count}⇣${behind_count} ](mauve)"
+behind     = "[⇣${count} ](orange)"
+diverged   = "[⇕⇡${ahead_count}⇣${behind_count} ](violet)"
 
 [custom.git_worktree]
 description = "Show indicator when inside a git worktree"
@@ -462,15 +462,18 @@ subtext1 = "#C8C3A6"
 # --- accents ---
 rosewater = "#DCD7BA"
 flamingo = "#C34043"
-pink = "#D27E99"
-mauve = "#957FB8"
+pink = "#a292a3"      # dragonPink; dir fg
+mauve = "#8992a7"
 red = "#C34043"
 maroon = "#E82424"
-peach = "#FF9E3B"
-yellow = "#E6C384"
+peach = "#b6927b"
+orange = "#b6927b"
+yellow = "#c4b28a"
 green = "#76946A"
 teal = "#6A9589"
-sky = "#7E9CD8"
-sapphire = "#D27E99" # dir fg
-blue = "#7E9CD8"
-lavender = "#E6C384"   # git branch fg
+sky = "#809ba7"
+sapphire = "#809ba7"
+blue = "#809ba7"
+violet = "#8992a7"
+lavender = "#8992a7"
+branch_fg = "#DCD7BA"

@@ -16,8 +16,12 @@ size:
   small: "#c4b28a"      # yellow
   medium: "#96ada7"     # cyan
   large: "#c4746e"      # red for large files
+file-type:
+  dir:
+    uid: "#809ba7"       # readable kanagawa canvas blue
+    no-uid: "#809ba7"    # readable kanagawa canvas blue
 inode:
-  valid: "#435965"      # blue
+  valid: "#809ba7"      # readable kanagawa canvas blue
   invalid: "#393836"    # dark gray
 links:
   valid: "#8ea49e"      # kanagawa cyan

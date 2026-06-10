@@ -91,6 +91,9 @@ in
       # XDG config directory
       export XDG_CONFIG_HOME="$HOME/.config"
 
+      # eza powers the ls alias; keep directories readable on dark Kanagawa Paper.
+      export EZA_COLORS="''${EZA_COLORS:+$EZA_COLORS:}di=38;2;128;155;167"
+
       # FZF configuration
       export FZF_DEFAULT_OPTS=" \
       --multi \
@@ -401,6 +404,7 @@ in
 
   home.file = {
     ".pi/agent".source = link "config/pi/agent";
+    ".config/hunk".source = link "config/hunk";
     ".config/starship.toml".source = link "starship/starship.toml";
     ".config/superfile".source = link "config/superfile";
   };

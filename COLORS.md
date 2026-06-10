@@ -19,7 +19,7 @@ This file defines the consistent color palette used across all dotfiles configur
 | 1 | Red | `#c4746e` | Errors, deletions | Muted red |
 | 2 | Green | `#699469` | Success, additions | Muted green |
 | 3 | Yellow | `#c4b28a` | Warnings, highlights | Warm gold |
-| 4 | Blue | `#435965` | Info, directories | Dark blue-gray |
+| 4 | Blue | `#5d7a88` | Info, directories | Muted readable blue-gray |
 | 5 | Magenta | `#a292a3` | Special items | Muted purple |
 | 6 | Cyan | `#8ea49e` | Links, git info | Muted teal |
 | 7 | White | `#C8C093` | Light text | Cream white |
@@ -32,7 +32,7 @@ This file defines the consistent color palette used across all dotfiles configur
 | 9 | Bright Red | `#cc928e` | Bright errors | Lighter red |
 | 10 | Bright Green | `#72a072` | Bright success | Lighter green |
 | 11 | Bright Yellow | `#d4c196` | Bright warnings | Lighter gold |
-| 12 | Bright Blue | `#698a9b` | Bright info | Lighter blue |
+| 12 | Bright Blue | `#809ba7` | Bright info | Lighter blue |
 | 13 | Bright Magenta | `#b4a7b5` | Bright special | Lighter purple |
 | 14 | Bright Cyan | `#96ada7` | Bright links | Lighter teal |
 | 15 | Bright White | `#d5cd9d` | Bright text | Light cream |
@@ -71,9 +71,15 @@ This file defines the consistent color palette used across all dotfiles configur
 - Permissions: Green/Yellow/Red based on type
 - File ages: Green (recent) → Cyan (day old) → Gray (older)
 
+### eza (`nix/shared.nix`)
+- Directory: `#809ba7` via `EZA_COLORS` because the `ls` alias uses eza, not lsd
+
+### Hunk (`config/hunk/config.toml`)
+- Custom theme based on `graphite` with Kanagawa Paper backgrounds, diff colors, file badges, notes, and syntax overrides
+
 ### Starship (`starship/starship.toml`)
-- Directory: `#c4b28a` (Yellow)
-- Git branch: `#8ea49e` (Cyan)
+- Directory: `#a292a3` (dragonPink)
+- Git branch: `#DCD7BA` on `#2A2A37` (Cream on muted ink)
 - Success symbol: `#699469` (Green)
 - Error symbol: `#c4746e` (Red)
 
@@ -96,7 +102,7 @@ Foreground:  ████ #DCD7BA
 Red:         ████ #c4746e  
 Green:       ████ #699469
 Yellow:      ████ #c4b28a
-Blue:        ████ #435965
+Blue:        ████ #5d7a88
 Magenta:     ████ #a292a3
 Cyan:        ████ #8ea49e
 ```
