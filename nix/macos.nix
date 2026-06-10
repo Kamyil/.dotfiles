@@ -155,6 +155,7 @@ in
             "ytmdesktop-youtube-music"
             "aerospace"
             "raycast"
+            "signal"
             "obsidian"
             "font-sketchybar-app-font"
             "eqmac"
@@ -162,6 +163,7 @@ in
             "postman"
 			"opencode-desktop"
 			"emacs-app"
+			"sweet-home3d"
 	          ];
         };
       })

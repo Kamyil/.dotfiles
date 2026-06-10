@@ -31,6 +31,7 @@ in
       hf = "his";
       x = "exit";
       q = "exit";
+      o = "opencode";
       lg = "lazygit";
       ldk = "lazydocker";
       ls = "eza --no-filesize --long --color=always --icons=always --no-user";
@@ -491,6 +492,8 @@ in
     tldr watchexec
 
 	qutebrowser
+  ] ++ lib.optionals pkgs.stdenv.isLinux [
+    sweethome3d.application
   ] ++ [
     hunk.packages.${pkgs.stdenv.hostPlatform.system}.default
     lazyjira.packages.${pkgs.stdenv.hostPlatform.system}.default
