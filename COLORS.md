@@ -19,7 +19,7 @@ This file defines the consistent color palette used across all dotfiles configur
 | 1 | Red | `#c4746e` | Errors, deletions | Muted red |
 | 2 | Green | `#699469` | Success, additions | Muted green |
 | 3 | Yellow | `#c4b28a` | Warnings, highlights | Warm gold |
-| 4 | Blue | `#5d7a88` | Info, directories | Muted readable blue-gray |
+| 4 | Blue | `#809ba7` | Info, directories, Docker logs | Readable muted blue-gray |
 | 5 | Magenta | `#a292a3` | Special items | Muted purple |
 | 6 | Cyan | `#8ea49e` | Links, git info | Muted teal |
 | 7 | White | `#C8C093` | Light text | Cream white |
@@ -32,7 +32,7 @@ This file defines the consistent color palette used across all dotfiles configur
 | 9 | Bright Red | `#cc928e` | Bright errors | Lighter red |
 | 10 | Bright Green | `#72a072` | Bright success | Lighter green |
 | 11 | Bright Yellow | `#d4c196` | Bright warnings | Lighter gold |
-| 12 | Bright Blue | `#809ba7` | Bright info | Lighter blue |
+| 12 | Bright Blue | `#9fb5c9` | Bright info | Lighter blue |
 | 13 | Bright Magenta | `#b4a7b5` | Bright special | Lighter purple |
 | 14 | Bright Cyan | `#96ada7` | Bright links | Lighter teal |
 | 15 | Bright White | `#d5cd9d` | Bright text | Light cream |
@@ -102,7 +102,7 @@ Foreground:  ████ #DCD7BA
 Red:         ████ #c4746e  
 Green:       ████ #699469
 Yellow:      ████ #c4b28a
-Blue:        ████ #5d7a88
+Blue:        ████ #809ba7
 Magenta:     ████ #a292a3
 Cyan:        ████ #8ea49e
 ```
