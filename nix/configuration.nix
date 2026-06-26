@@ -2,12 +2,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running 'nixos-help').
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   opencode-overlay = import ./overlays/opencode.nix;
   codex-overlay = import ./overlays/codex.nix;
   pi-overlay = import ./overlays/pi.nix;
+  dotfileSymlinks = import ./symlinks.nix { inherit lib; };
 in
 {
   imports = [ # Include the results of the hardware scan.
@@ -216,27 +217,8 @@ in
 
   system.activationScripts.dotfilesSymlinks = {
     text = ''
-      # Remove existing paths that may block symlinks
-      rm -rf /home/kamil/.config/nvim /home/kamil/.config/wezterm /home/kamil/.config/lazygit /home/kamil/.config/lazydocker /home/kamil/.config/btop /home/kamil/.config/bat /home/kamil/.config/hypr /home/kamil/.config/waybar /home/kamil/.config/sketchybar /home/kamil/.config/aerospace /home/kamil/.config/yabai /home/kamil/.config/skhd /home/kamil/.config/ghostty /home/kamil/.config/tmux /home/kamil/.config/opencode /home/kamil/.config/kitty /home/kamil/.hammerspoon
-
-      # Create direct symlinks
-      ln -sfn /home/kamil/.dotfiles/nvim /home/kamil/.config/nvim
-      ln -sfn /home/kamil/.dotfiles/wezterm /home/kamil/.config/wezterm
-      ln -sfn /home/kamil/.dotfiles/config/lazygit /home/kamil/.config/lazygit
-      ln -sfn /home/kamil/.dotfiles/config/lazydocker /home/kamil/.config/lazydocker
-      ln -sfn /home/kamil/.dotfiles/config/btop /home/kamil/.config/btop
-      ln -sfn /home/kamil/.dotfiles/bat /home/kamil/.config/bat
-      ln -sfn /home/kamil/.dotfiles/config/hypr /home/kamil/.config/hypr
-      ln -sfn /home/kamil/.dotfiles/config/waybar /home/kamil/.config/waybar
-      ln -sfn /home/kamil/.dotfiles/sketchybar /home/kamil/.config/sketchybar
-      ln -sfn /home/kamil/.dotfiles/config/aerospace /home/kamil/.config/aerospace
-      ln -sfn /home/kamil/.dotfiles/yabai /home/kamil/.config/yabai
-      ln -sfn /home/kamil/.dotfiles/skhd /home/kamil/.config/skhd
-      ln -sfn /home/kamil/.dotfiles/config/ghostty /home/kamil/.config/ghostty
-      ln -sfn /home/kamil/.dotfiles/config/tmux /home/kamil/.config/tmux
-      ln -sfn /home/kamil/.dotfiles/config/opencode /home/kamil/.config/opencode
-      ln -sfn /home/kamil/.dotfiles/config/kitty /home/kamil/.config/kitty
-      ln -sfn /home/kamil/.dotfiles/hammerspoon /home/kamil/.hammerspoon
+      # Live-editable dotfile symlinks: Nix owns link topology, Git owns contents.
+      ${dotfileSymlinks.mkLinuxActivation { }}
     '';
   };
 
