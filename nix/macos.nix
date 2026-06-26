@@ -8,6 +8,7 @@ let
   opencode-overlay = import ./overlays/opencode.nix;
   codex-overlay = import ./overlays/codex.nix;
   pi-overlay = import ./overlays/pi.nix;
+  dotfileSymlinks = import ./symlinks.nix { inherit lib; };
 
   darwinPkgs = import nixpkgs {
     system = darwinSystem;
@@ -35,7 +36,7 @@ in
     modules = [
       # nix-darwin system configuration
       ({ config, pkgs, lib, ... }: {
-        nix.enable = false;
+        nix.enable = true;
         nixpkgs.pkgs = darwinPkgs;
 
         # List packages installed in system profile
@@ -54,10 +55,8 @@ in
           pathsToLink = [ "/Applications" ];
         });
 
-        # Nix configuration (nix-daemon is enabled by default when nix.enable = true)
+        # Let nix-darwin manage Nix and enable flakes explicitly.
         nix.package = pkgs.nix;
-
-        # Enable flakes
         nix.settings.experimental-features = "nix-command flakes";
 
         # Disable darwin-uninstaller to avoid broken buildEnv pathsToLink
@@ -272,31 +271,10 @@ in
             eval "$(fnm env --use-on-cd)"
           '';
 
-          # Direct symlinks using activation scripts (macOS)
+          # Live-editable dotfile symlinks: Nix owns link topology, Git owns contents.
           home.activation.directSymlinks = config.lib.dag.entryAfter ["writeBoundary"] ''
-            # Remove any existing nix-managed symlinks
-            rm -f ~/.config/nvim ~/.config/wezterm ~/.config/lazygit ~/.config/lazydocker ~/.config/lsd ~/.config/btop ~/.config/bat ~/.config/sketchybar ~/.config/aerospace ~/.config/yabai ~/.config/skhd ~/.config/ghostty ~/.config/tmux ~/.config/opencode ~/.config/kitty ~/.hammerspoon
-            
-            # Create direct symlinks
-            ln -sf /Users/kamil/.dotfiles/nvim ~/.config/nvim
-            ln -sf /Users/kamil/.dotfiles/wezterm ~/.config/wezterm
-            ln -sf /Users/kamil/.dotfiles/config/lazygit ~/.config/lazygit
-            ln -sf /Users/kamil/.dotfiles/config/lazydocker ~/.config/lazydocker
-            ln -sf /Users/kamil/.dotfiles/config/lsd ~/.config/lsd
-            ln -sf /Users/kamil/.dotfiles/config/btop ~/.config/btop
-            ln -sf /Users/kamil/.dotfiles/bat ~/.config/bat
-            ln -sf /Users/kamil/.dotfiles/sketchybar ~/.config/sketchybar
-            ln -sf /Users/kamil/.dotfiles/config/aerospace ~/.config/aerospace
-            ln -sf /Users/kamil/.dotfiles/yabai ~/.config/yabai
-            ln -sf /Users/kamil/.dotfiles/skhd ~/.config/skhd
-            ln -sf /Users/kamil/.dotfiles/config/ghostty ~/.config/ghostty
-            ln -sf /Users/kamil/.dotfiles/config/tmux ~/.config/tmux
-            ln -sf /Users/kamil/.dotfiles/config/opencode ~/.config/opencode
-            ln -sf /Users/kamil/.dotfiles/config/kitty ~/.config/kitty
-            ln -sf /Users/kamil/.dotfiles/config/alacritty ~/.config/alacritty
-            ln -sf /Users/kamil/.dotfiles/config/alacritty/alacritty.toml ~/.alacritty.toml
-            ln -sf /Users/kamil/.dotfiles/hammerspoon ~/.hammerspoon
-            
+            ${dotfileSymlinks.mkDarwinActivation { }}
+
             echo "Created direct symlinks to dotfiles"
           '';
 
