@@ -36,7 +36,7 @@ in
     modules = [
       # nix-darwin system configuration
       ({ config, pkgs, lib, ... }: {
-        nix.enable = true;
+        nix.enable = false;
         nixpkgs.pkgs = darwinPkgs;
 
         # List packages installed in system profile
@@ -55,9 +55,8 @@ in
           pathsToLink = [ "/Applications" ];
         });
 
-        # Let nix-darwin manage Nix and enable flakes explicitly.
-        nix.package = pkgs.nix;
-        nix.settings.experimental-features = "nix-command flakes";
+        # Determinate Nix manages the daemon and nix.conf on this machine.
+        # Keep nix-darwin from managing Nix itself; otherwise activation aborts.
 
         # Disable darwin-uninstaller to avoid broken buildEnv pathsToLink
         system.tools.darwin-uninstaller.enable = false;
