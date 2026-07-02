@@ -30,16 +30,19 @@ Select `oc-sdk-go/...` for OpenCode Go models or `oc-sdk-zen/...` for Zen models
 /agents
 /mcp
 /usage
+/thinking [off|minimal|low|medium|high|xhigh]
 /reload-runtime
 ```
+
+`Ctrl+T` cycles thinking level. `Ctrl+Shift+T` keeps the built-in collapse/expand thinking-block toggle.
 
 ## Local Resources
 
 - `AGENTS.md`: global Pi behavior instructions.
-- `extensions/`: local safety, status, and reload extensions.
-- `skills/`: reusable workflow instructions.
+- `extensions/`: local safety, status, reload, and thinking-level extensions.
+- `skills/`: reusable workflow instructions, including the ported OpenCode `beads.md` workflow.
 - `prompts/`: prompt templates.
-- `themes/`: custom themes.
+- `themes/`: custom themes, including `kanagawa-paper-ink`.
 - `memory/`: tracked starter memory files; generated daily logs and notes are ignored.
 
 ## Secrets

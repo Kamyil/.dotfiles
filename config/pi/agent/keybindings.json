@@ -1,0 +1,4 @@
+{
+  "app.thinking.toggle": ["ctrl+shift+t"],
+  "app.clipboard.pasteImage": ["alt+v", "ctrl+alt+v", "f9"]
+}

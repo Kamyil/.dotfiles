@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "entries": {
+    "[\"npx\",\"-y\",\"chrome-devtools-mcp@latest\"]": {
+      "resolvedBin": "/Users/kamil/.npm/_npx/15c61037b1978c83/node_modules/chrome-devtools-mcp/build/src/bin/chrome-devtools-mcp.js",
+      "resolvedAt": 1778847522601,
+      "packageVersion": "0.26.0",
+      "isJs": true
+    },
+    "[\"npx\",\"@playwright/mcp@latest\"]": {
+      "resolvedBin": "/Users/kamil/.npm/_npx/9833c18b2d85bc59/node_modules/@playwright/mcp/cli.js",
+      "resolvedAt": 1778847522602,
+      "packageVersion": "0.0.75",
+      "isJs": true
+    }
+  }
+}
