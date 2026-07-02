@@ -19,11 +19,11 @@
 
 ## Architecture Patterns
 - **Modular approach**: Separate configs per tool in respective directories
-- **NixOS integration**: Flake-based with home-manager for user configs
-- **Symlink structure**: Config files linked via NixOS home-manager or manual setup
+- **NixOS integration**: Flake-based with home-manager for packages and user activation, but not for store-owned dotfile contents
+- **Live-editable dotfile links**: Config directories are intentionally out-of-store symlinks; Nix declares link topology, Git checkout provides mutable contents for app hot reloads without rebuilds
+- **Symlink implementation**: Keep symlink targets in `nix/symlinks.nix`; do not add one-off `ln -s` blocks or unconditional `rm -rf` cleanup
 - **Cross-platform**: Some configs are macOS-specific (yabai, skhd, sketchybar)
 - **Environment files**: Use .env files for sensitive data (see config/scripts/.env)
-- **Home Manager preference**: NEVER create symlinks manually - always use NixOS home-manager configuration
 
 ## Omarchy-Based NixOS Setup (Hyprland/Walker/Waybar)
 - **Walker (Nixpkgs)**: Uses v0.13 config at `config/walker/config.toml` with theme `config/walker/themes/kanagawa.css` (`theme = "kanagawa"`).
