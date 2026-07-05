@@ -1,0 +1,9 @@
+[theme]
+name = "kanagawa"
+auto_switch = false
+
+[experimental]
+pane_history = true
+
+[ui]
+show_agent_labels_on_pane_borders = true
