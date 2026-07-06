@@ -1337,28 +1337,51 @@ require('barbecue').setup({
 })
 
 -- Lualine setup
-local mhfu_theme = {
+local kanagawa_paper = {
+  bg = '#1F1F28',
+  bg_dark = '#16161D',
+  bg_alt = '#2A2A37',
+  fg = '#DCD7BA',
+  fg_dim = '#C8C093',
+  muted = '#aca9a4',
+  red = '#c4746e',
+  green = '#699469',
+  yellow = '#c4b28a',
+  blue = '#809ba7',
+  magenta = '#a292a3',
+  cyan = '#8ea49e',
+}
+
+local kanagawa_paper_theme = {
   normal = {
-    a = { fg = '#1a1816', bg = '#9a7050', gui = 'bold' },
-    b = { fg = '#d4c8b0', bg = '#2a2520' },
-    c = { fg = '#9a8a70', bg = '#1a1816' },
+    a = { fg = kanagawa_paper.bg_dark, bg = kanagawa_paper.cyan, gui = 'bold' },
+    b = { fg = kanagawa_paper.fg, bg = kanagawa_paper.bg_alt },
+    c = { fg = kanagawa_paper.fg_dim, bg = kanagawa_paper.bg },
   },
   insert = {
-    a = { fg = '#1a1816', bg = '#7a9a6a', gui = 'bold' },
+    a = { fg = kanagawa_paper.bg_dark, bg = kanagawa_paper.green, gui = 'bold' },
+    b = { fg = kanagawa_paper.fg, bg = kanagawa_paper.bg_alt },
+    c = { fg = kanagawa_paper.fg_dim, bg = kanagawa_paper.bg },
   },
   visual = {
-    a = { fg = '#1a1816', bg = '#c4a860', gui = 'bold' },
+    a = { fg = kanagawa_paper.bg_dark, bg = kanagawa_paper.magenta, gui = 'bold' },
+    b = { fg = kanagawa_paper.fg, bg = kanagawa_paper.bg_alt },
+    c = { fg = kanagawa_paper.fg_dim, bg = kanagawa_paper.bg },
   },
   replace = {
-    a = { fg = '#1a1816', bg = '#a85a5a', gui = 'bold' },
+    a = { fg = kanagawa_paper.bg_dark, bg = kanagawa_paper.red, gui = 'bold' },
+    b = { fg = kanagawa_paper.fg, bg = kanagawa_paper.bg_alt },
+    c = { fg = kanagawa_paper.fg_dim, bg = kanagawa_paper.bg },
   },
   command = {
-    a = { fg = '#1a1816', bg = '#b89060', gui = 'bold' },
+    a = { fg = kanagawa_paper.bg_dark, bg = kanagawa_paper.yellow, gui = 'bold' },
+    b = { fg = kanagawa_paper.fg, bg = kanagawa_paper.bg_alt },
+    c = { fg = kanagawa_paper.fg_dim, bg = kanagawa_paper.bg },
   },
   inactive = {
-    a = { fg = '#6a5040', bg = '#1a1816' },
-    b = { fg = '#6a5040', bg = '#1a1816' },
-    c = { fg = '#6a5040', bg = '#1a1816' },
+    a = { fg = kanagawa_paper.muted, bg = kanagawa_paper.bg_dark },
+    b = { fg = kanagawa_paper.muted, bg = kanagawa_paper.bg_dark },
+    c = { fg = kanagawa_paper.muted, bg = kanagawa_paper.bg_dark },
   },
 }
 
@@ -1447,7 +1470,7 @@ end
 
 require('lualine').setup({
   options = {
-    theme = mhfu_theme,
+    theme = kanagawa_paper_theme,
     component_separators = { left = '│', right = '│' },
     section_separators = { left = '', right = '' },
     globalstatus = true,
