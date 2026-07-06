@@ -1,5 +1,5 @@
 # Shared configuration between macOS and NixOS systems
-{ pkgs, config, lib, lazyjira, hunk, ... }:
+{ pkgs, config, lib, lazyjira, hunk, herdr, ... }:
 
 let
   repo = "${config.home.homeDirectory}/.dotfiles";
@@ -27,11 +27,9 @@ in
     shellAliases = {
       n = "nvim .";
       y = "yazi .";
-      b = "browser";
-      hf = "his";
       x = "exit";
-      q = "exit";
-      o = "opencode";
+      o = "omp";
+      oc = "opencode";
       lg = "lazygit";
       ldk = "lazydocker";
       ls = "eza --no-filesize --long --color=always --icons=always --no-user";
@@ -43,10 +41,7 @@ in
       cat = "bat";
       jira = "~/bin/jira";
       serpl = "~/bin/serpl";
-      json = "fx";
       doom = "~/.config/emacs/bin/doom";
-      chsh = "~/.local/scripts/tmux-cht/tmux-cht.sh";
-      setup = "~/.dotfiles/config/scripts/tmux-setup-session";
       private_gitignore = "nvim .git/info/exclude";
       git_log = "serie";
       spf = "command spf --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
@@ -501,6 +496,7 @@ in
   ] ++ [
     hunk.packages.${pkgs.stdenv.hostPlatform.system}.default
     lazyjira.packages.${pkgs.stdenv.hostPlatform.system}.default
+    herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   programs.home-manager.enable = true;
