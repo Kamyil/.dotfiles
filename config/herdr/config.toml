@@ -57,15 +57,15 @@ goto = "prefix+g"
 new_workspace = "prefix+shift+n"
 rename_workspace = "prefix+shift+w"
 close_workspace = "prefix+shift+d"
-previous_workspace = "prefix+shift+left"
-next_workspace = "prefix+shift+right"
+previous_workspace = ["prefix+shift+left", "ctrl+shift+k"]
+next_workspace = ["prefix+shift+right", "ctrl+shift+j"]
 switch_workspace = ["prefix+shift+1..9", "ctrl+alt+1..9", "ctrl+shift+1..9", "alt+shift+1..9"]
 
 new_worktree = "prefix+shift+g"
 open_worktree = "prefix+shift+o"
 remove_worktree = "prefix+alt+d"
 
-new_tab = "prefix+c"
+new_tab = ["prefix+c", "ctrl+n"]
 rename_tab = ["prefix+shift+t", "ctrl+r"]
 previous_tab = "prefix+p"
 next_tab = "prefix+n"
@@ -88,13 +88,13 @@ last_pane = "prefix+backtick"
 
 split_vertical = ["prefix+v", "ctrl+alt+d", "ctrl+/"]
 split_horizontal = ["prefix+minus", "ctrl+alt+shift+d", "ctrl+shift+/"]
-close_pane = "prefix+x"
-zoom = ["prefix+z", "ctrl+alt+z"]
+close_pane = ["prefix+x", "ctrl+x"]
+zoom = ["prefix+z", "ctrl+alt+z", "ctrl+z"]
 resize_mode = "prefix+r"
 copy_mode = "prefix+["
 
 rename_pane = "prefix+shift+p"
-edit_scrollback = "prefix+e"
+edit_scrollback = ["prefix+e", "ctrl+f"]
 toggle_sidebar = "prefix+b"
 
 previous_agent = "prefix+alt+p"
@@ -125,3 +125,27 @@ key = "prefix+alt+s"
 type = "shell"
 command = "herdr server reload-config"
 description = "reload herdr config"
+
+[[keys.command]]
+key = "alt+shift+h"
+type = "shell"
+command = "herdr pane resize --current --direction left --amount 0.05"
+description = "resize pane left"
+
+[[keys.command]]
+key = "alt+shift+j"
+type = "shell"
+command = "herdr pane resize --current --direction down --amount 0.05"
+description = "resize pane down"
+
+[[keys.command]]
+key = "alt+shift+k"
+type = "shell"
+command = "herdr pane resize --current --direction up --amount 0.05"
+description = "resize pane up"
+
+[[keys.command]]
+key = "alt+shift+l"
+type = "shell"
+command = "herdr pane resize --current --direction right --amount 0.05"
+description = "resize pane right"
