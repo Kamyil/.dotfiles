@@ -1,9 +1,127 @@
+onboarding = false
+
 [theme]
 name = "kanagawa"
 auto_switch = false
 
-[experimental]
-pane_history = true
+[terminal]
+shell_mode = "auto"
+new_cwd = "follow"
+
+[worktrees]
+directory = "~/.herdr/worktrees"
 
 [ui]
 show_agent_labels_on_pane_borders = true
+agent_panel_sort = "priority"
+prompt_new_tab_name = false
+confirm_close = true
+pane_borders = true
+pane_gaps = true
+mouse_capture = true
+right_click_passthrough_modifier = "ctrl"
+redraw_on_focus_gained = false
+mouse_scroll_lines = 5
+
+[ui.toast]
+delivery = "terminal"
+delay_seconds = 2
+
+[ui.toast.clipboard]
+enabled = true
+position = "bottom-center"
+
+[ui.sound]
+enabled = true
+
+[session]
+resume_agents_on_restore = true
+
+[advanced]
+scrollback_limit_bytes = 50000000
+
+[experimental]
+pane_history = false
+kitty_graphics = false
+
+[keys]
+prefix = "alt+space"
+
+detach = "prefix+q"
+help = "prefix+?"
+reload_config = "prefix+shift+r"
+settings = "prefix+s"
+
+workspace_picker = "prefix+w"
+goto = "prefix+g"
+new_workspace = "prefix+shift+n"
+rename_workspace = "prefix+shift+w"
+close_workspace = "prefix+shift+d"
+previous_workspace = "prefix+shift+left"
+next_workspace = "prefix+shift+right"
+switch_workspace = "prefix+shift+1..9"
+
+new_worktree = "prefix+shift+g"
+open_worktree = "prefix+shift+o"
+remove_worktree = "prefix+alt+d"
+
+new_tab = "prefix+c"
+rename_tab = ["prefix+shift+t", "ctrl+r"]
+previous_tab = "prefix+p"
+next_tab = "prefix+n"
+switch_tab = ["prefix+1..9", "ctrl+1..9"]
+close_tab = "prefix+shift+x"
+
+focus_pane_left = ["prefix+h", "ctrl+alt+h", "ctrl+h"]
+focus_pane_down = ["prefix+j", "ctrl+alt+j", "ctrl+j"]
+focus_pane_up = ["prefix+k", "ctrl+alt+k", "ctrl+k"]
+focus_pane_right = ["prefix+l", "ctrl+alt+l", "ctrl+l"]
+
+swap_pane_left = "prefix+shift+h"
+swap_pane_down = "prefix+shift+j"
+swap_pane_up = "prefix+shift+k"
+swap_pane_right = "prefix+shift+l"
+
+cycle_pane_next = "prefix+tab"
+cycle_pane_previous = "prefix+shift+tab"
+last_pane = "prefix+backtick"
+
+split_vertical = ["prefix+v", "ctrl+alt+d", "ctrl+/"]
+split_horizontal = ["prefix+minus", "ctrl+alt+shift+d", "ctrl+shift+/"]
+close_pane = "prefix+x"
+zoom = ["prefix+z", "ctrl+alt+z"]
+resize_mode = "prefix+r"
+copy_mode = "prefix+["
+
+rename_pane = "prefix+shift+p"
+edit_scrollback = "prefix+e"
+toggle_sidebar = "prefix+b"
+
+previous_agent = "prefix+alt+p"
+next_agent = "prefix+alt+n"
+focus_agent = "prefix+alt+1..9"
+
+navigate_pane_left = "h"
+navigate_pane_down = "j"
+navigate_pane_up = "k"
+navigate_pane_right = "l"
+navigate_workspace_up = "up"
+navigate_workspace_down = "down"
+
+[[keys.command]]
+key = "prefix+alt+g"
+type = "pane"
+command = "lazygit"
+description = "open lazygit"
+
+[[keys.command]]
+key = "prefix+alt+e"
+type = "pane"
+command = "nvim"
+description = "open nvim"
+
+[[keys.command]]
+key = "prefix+alt+s"
+type = "shell"
+command = "herdr server reload-config"
+description = "reload herdr config"

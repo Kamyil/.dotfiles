@@ -20,6 +20,7 @@ let
     ".config/opencode" = "config/opencode";
     ".config/kitty" = "config/kitty";
     ".hammerspoon" = "hammerspoon";
+    ".config/herdr" = "config/herdr";
   };
 
   darwinLinks = commonLinks // {
