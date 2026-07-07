@@ -1,5 +1,5 @@
 # NixOS-specific configuration
-{ self, nixpkgs, nixpkgs-stable, home-manager, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, hunk, lumen, ... }:
+{ self, nixpkgs, nixpkgs-stable, home-manager, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, hunk, lumen, herdr, ... }:
 
 let
   system = builtins.currentSystem or "x86_64-linux";
@@ -41,7 +41,7 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
-        home-manager.extraSpecialArgs = { inherit pkgsStable system worktrunk lazyjira hunk lumen; };
+        home-manager.extraSpecialArgs = { inherit pkgsStable system worktrunk lazyjira hunk lumen herdr; };
 
         # --- your user ---
         home-manager.users.kamil = { pkgs, config, pkgsStable, system, worktrunk, lumen, ... }:

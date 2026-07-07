@@ -28,6 +28,9 @@
     lumen.url = "github:jnsahaj/lumen";
     lumen.inputs.nixpkgs.follows = "nixpkgs";
 
+    herdr.url = "github:ogulcancelik/herdr/v0.7.1";
+    herdr.inputs.nixpkgs.follows = "nixpkgs";
+
     # Add private fonts
     # berkeley-font = {
     #   url = "path:///home/kamil/.local/share/fonts";
@@ -35,7 +38,7 @@
     # };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, dotfiles, rust-overlay, sqlit, worktrunk, lazyjira, hunk, lumen, ... }:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-darwin, dotfiles, rust-overlay, sqlit, worktrunk, lazyjira, hunk, lumen, herdr, ... }:
     let
       # Define supported systems
       systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
@@ -43,11 +46,11 @@
 
       # Import platform-specific configurations
       nixosConfig = import ./nixos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager dotfiles rust-overlay lib sqlit worktrunk lazyjira hunk lumen;
+        inherit self nixpkgs nixpkgs-stable home-manager dotfiles rust-overlay lib sqlit worktrunk lazyjira hunk lumen herdr;
       };
 
       macosConfig = import ./macos.nix {
-        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin dotfiles rust-overlay lib sqlit worktrunk lazyjira hunk lumen;
+        inherit self nixpkgs nixpkgs-stable home-manager nix-darwin dotfiles rust-overlay lib sqlit worktrunk lazyjira hunk lumen herdr;
       };
 
     in
