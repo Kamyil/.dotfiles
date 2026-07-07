@@ -5,7 +5,7 @@
 final: prev: {
   omp = prev.stdenv.mkDerivation rec {
     pname = "omp";
-    version = "16.3.0";
+    version = "16.3.6";
 
     src = let
       platform = if prev.stdenv.isDarwin then
