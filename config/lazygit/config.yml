@@ -19,9 +19,10 @@ gui:
   language: en
   theme:
     activeBorderColor:
-      - '#698a9b'
+      - '#c4b28a'
+      - bold
     inactiveBorderColor:
-      - '#2A2A37'
+      - '#727169'
     optionsTextColor:
       - '#c4b28a'
     selectedLineBgColor:
@@ -37,7 +38,8 @@ gui:
     defaultFgColor:
       - '#DCD7BA'
     searchingActiveBorderColor:
-      - '#8ea49e'
+      - '#c4b28a'
+      - bold
     stagedChangesColor:
       - '#699469'
     markedBaseCommitFgColor:

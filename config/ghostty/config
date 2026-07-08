@@ -18,9 +18,9 @@ theme = Kanagawa Dragon
 # theme = Kanagawa Dragon
 # # theme = Kanagawa Dragon
 # # theme = Kanagawa Dragon
-background-opacity = 0.90
+background-opacity = 1
 
-background-blur = true
+background-blur = false
 
 # Remove padding to let tmux status sit at bottom
 window-padding-y = 0
