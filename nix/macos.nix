@@ -46,6 +46,8 @@ in
           curl
           wget
           codex
+          harlequin
+          rainfrog
         ];
 
         # Work around nix-darwin applications buildEnv pathsToLink type

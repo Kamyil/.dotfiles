@@ -46,6 +46,8 @@
     git
     vim
     firefox # fallback browser
+    harlequin
+    rainfrog
     wl-clipboard
   ];
 

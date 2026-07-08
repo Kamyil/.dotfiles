@@ -473,7 +473,7 @@ in
     nmap socat wireguard-tools wireguard-go
 
     # Database tools
-    sqlite
+    sqlite harlequin rainfrog
 
     # Version control
     git-extras tig
