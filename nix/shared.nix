@@ -4,6 +4,31 @@
 let
   repo = "${config.home.homeDirectory}/.dotfiles";
   link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";
+
+  # Home Manager adds zsh plugin dirs to fpath before compinit.
+  # Use this for CLIs that can generate completions but do not install a _cmd file themselves.
+  #
+  # Example:
+  #   mkGeneratedZshCompletionPlugin {
+  #     name = "foo";
+  #     package = pkgs.foo;
+  #     args = [ "completion" "zsh" ];
+  #   }
+  mkGeneratedZshCompletionPlugin = {
+    name,
+    package,
+    bin ? lib.getExe package,
+    args ? [ "completion" "zsh" ],
+  }: {
+    name = "${name}-completions";
+    src = pkgs.runCommand "${name}-zsh-completions" { } ''
+      mkdir -p "$out"
+      ${lib.escapeShellArgs ([ bin ] ++ args)} > "$out/_${name}"
+    '';
+    file = "_${name}";
+  };
+
+  herdrPackage = herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   home.username = "kamil";
@@ -22,6 +47,10 @@ in
         src = pkgs.zsh-vi-mode;
         file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
       }
+      (mkGeneratedZshCompletionPlugin {
+        name = "herdr";
+        package = herdrPackage;
+      })
     ];
 
     shellAliases = {
@@ -378,8 +407,19 @@ in
       autoload -U colors && colors
       setopt PROMPT_SUBST
 
+
       # Set up fzf key bindings and fuzzy completion
       eval "$(fzf --zsh)"
+
+      # herdr completions are installed via programs.zsh.plugins so _herdr is on fpath before compinit.
+
+      # Completion UX
+      zstyle ':completion:*' menu select
+      zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+      zstyle ':completion:*' squeeze-slashes true
+      if [[ -n "''${LS_COLORS:-}" ]]; then
+        zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
+      fi
 
       # Optional machine-local overrides (not tracked in git)
       [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
@@ -457,7 +497,7 @@ in
     ripgrep btop yazi tmux
 
     # Shell and CLI utilities
-    gh railway curl wget tree fd openspec omp
+    gh railway curl wget tree fd openspec omp zsh-completions
     eza difftastic just jq yq lazygit lazydocker
 
     # Text processing and search

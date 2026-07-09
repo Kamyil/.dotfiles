@@ -263,6 +263,15 @@ in
               . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
             fi
 
+            # nix-darwin installs Home Manager user packages in /etc/profiles/per-user.
+            # Include that profile before Home Manager builds fpath from NIX_PROFILES.
+            if [[ -d "/etc/profiles/per-user/$USER" ]]; then
+              case " $NIX_PROFILES " in
+                *" /etc/profiles/per-user/$USER "*) ;;
+                *) export NIX_PROFILES="/etc/profiles/per-user/$USER $NIX_PROFILES" ;;
+              esac
+            fi
+
             # macOS-specific paths
             export PATH="/opt/homebrew/bin:$PATH"
             export PNPM_HOME="/Users/kamil/Library/pnpm"
