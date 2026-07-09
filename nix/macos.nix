@@ -158,6 +158,7 @@ in
             "signal"
             "obsidian"
             "font-sketchybar-app-font"
+            "cmux"
             "eqmac"
             "ghostty"
             "postman"

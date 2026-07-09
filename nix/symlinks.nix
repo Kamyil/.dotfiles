@@ -21,6 +21,7 @@ let
     ".config/kitty" = "config/kitty";
     ".hammerspoon" = "hammerspoon";
     ".config/herdr" = "config/herdr";
+    ".config/cmux" = "config/cmux";
   };
 
   darwinLinks = commonLinks // {

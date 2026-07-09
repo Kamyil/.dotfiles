@@ -1,0 +1,112 @@
+{
+  "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json",
+  "schemaVersion": 1,
+  "app": {
+    "appearance": "dark",
+    "newWorkspacePlacement": "afterCurrent",
+    "workspaceInheritWorkingDirectory": true,
+    "confirmQuit": "always",
+    "warnBeforeClosingTab": true,
+    "minimalMode": false,
+    "focusPaneOnFirstClick": true,
+    "preferredEditor": "nvim"
+  },
+  "terminal": {
+    "showScrollBar": false,
+    "scrollSpeed": 1.0,
+    "copyOnSelect": false,
+    "autoResumeAgentSessions": true,
+    "showTextBoxOnNewTerminals": false,
+    "focusTextBoxOnNewTerminals": false,
+    "agentHibernation": {
+      "enabled": false,
+      "idleSeconds": 5,
+      "maxLiveTerminals": 12
+    }
+  },
+  "automation": {
+    "suppressSubagentNotifications": false
+  },
+  "browser": {
+    "openTerminalLinksInCmuxBrowser": true,
+    "hostsToOpenInEmbeddedBrowser": ["localhost", "127.0.0.1", "*.local"]
+  },
+  "fileExplorer": {
+    "doubleClickAction": "preferredEditor"
+  },
+  "shortcuts": {
+    "showModifierHoldHints": false,
+    "bindings": {
+      "openSettings": ["alt+space", "s"],
+      "reloadConfiguration": ["alt+space", "shift+r"],
+      "toggleSidebar": ["alt+space", "b"],
+      "newWindow": "cmd+shift+n",
+      "newTab": ["alt+space", "shift+n"],
+      "goToWorkspace": ["alt+space", "w"],
+      "renameWorkspace": ["alt+space", "shift+w"],
+      "closeWorkspace": ["alt+space", "shift+d"],
+      "selectWorkspaceByNumber": "ctrl+alt+1",
+      "newSurface": ["alt+space", "c"],
+      "renameTab": ["alt+space", "shift+t"],
+      "prevSurface": ["alt+space", "p"],
+      "nextSurface": ["alt+space", "n"],
+      "selectSurfaceByNumber": "ctrl+1",
+      "closeTab": ["alt+space", "shift+x"],
+      "focusLeft": ["alt+space", "h"],
+      "focusDown": ["alt+space", "j"],
+      "focusUp": ["alt+space", "k"],
+      "focusRight": ["alt+space", "l"],
+      "splitRight": ["alt+space", "v"],
+      "splitDown": ["alt+space", "minus"],
+      "toggleSplitZoom": ["alt+space", "z"],
+      "toggleTerminalCopyMode": ["alt+space", "["],
+      "commandPalette": ["alt+space", "space"],
+      "clearScreenKeepScrollback": ["alt+space", "shift+k"],
+      "openBrowser": ["alt+space", "shift+l"],
+      "focusBrowserAddressBar": "cmd+l",
+      "browserBack": "cmd+[",
+      "browserForward": "cmd+]",
+      "browserReload": "cmd+r",
+      "browserHardReload": "cmd+shift+r",
+      "toggleBrowserDeveloperTools": "alt+cmd+i"
+    }
+  },
+  "actions": {
+    "dotfiles.lazygit": {
+      "type": "command",
+      "title": "Lazygit",
+      "subtitle": "Open lazygit in a new terminal tab",
+      "command": "lazygit",
+      "target": "newTabInCurrentPane",
+      "shortcut": ["alt+space", "alt+g"]
+    },
+    "dotfiles.nvim": {
+      "type": "command",
+      "title": "Neovim",
+      "subtitle": "Open nvim in a new terminal tab",
+      "command": "nvim",
+      "target": "newTabInCurrentPane",
+      "shortcut": ["alt+space", "alt+e"]
+    },
+    "dotfiles.reloadCmuxConfig": {
+      "type": "command",
+      "title": "Reload cmux config",
+      "subtitle": "Run cmux reload-config",
+      "command": "cmux reload-config",
+      "target": "currentTerminal",
+      "shortcut": ["alt+space", "alt+s"]
+    }
+  },
+  "ui": {
+    "surfaceTabBar": {
+      "buttons": [
+        "cmux.newTerminal",
+        "cmux.newBrowser",
+        "cmux.splitRight",
+        "cmux.splitDown",
+        "dotfiles.lazygit",
+        "dotfiles.nvim"
+      ]
+    }
+  }
+}
