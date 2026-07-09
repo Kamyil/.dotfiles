@@ -95,7 +95,7 @@ copy_mode = "prefix+["
 
 rename_pane = "prefix+shift+p"
 edit_scrollback = ["prefix+e", "ctrl+f"]
-toggle_sidebar = "prefix+b"
+toggle_sidebar = ["prefix+b", "ctrl+shift+e"]
 
 previous_agent = "prefix+alt+p"
 next_agent = "prefix+alt+n"
