@@ -433,6 +433,23 @@ in
     ".config/starship.toml".source = link "starship/starship.toml";
     ".config/superfile".source = link "superfile";
   };
+  # Home Manager cannot replace an existing config directory with a symlink.
+  # Move it aside once, then keep ZenNotes linked for live reloads.
+  home.activation.zennotesConfigSymlink = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+    zennotes_target="$HOME/.config/zennotes"
+    zennotes_source="$HOME/.dotfiles/zennotes"
+    if [ -d "$zennotes_target" ] && [ ! -L "$zennotes_target" ]; then
+      backup="$HOME/.config/zennotes.backup-before-dotfiles"
+      if [ ! -e "$backup" ]; then
+        mv "$zennotes_target" "$backup"
+      else
+        echo "Skipping ZenNotes symlink: $zennotes_target exists and $backup already exists"
+        exit 0
+      fi
+    fi
+    ln -sfn "$zennotes_source" "$zennotes_target"
+  '';
+
 
   home.activation.obsidianConfigSymlink = config.lib.dag.entryAfter [ "writeBoundary" ] ''
     obsidian_target="$HOME/second-brain/.obsidian"
