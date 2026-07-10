@@ -137,7 +137,7 @@ local function start_workspace_selector(window, pane)
 	local tmp_dir = os.getenv("TMPDIR") or "/tmp"
 	local token = tostring(os.time()) .. "-" .. tostring(math.random(1000, 9999))
 	local output_file = tmp_dir .. "/wezterm-session-" .. token .. ".out"
-	local script_path = wezterm.home_dir .. "/.dotfiles/config/scripts/wezterm-session"
+	local script_path = wezterm.home_dir .. "/.dotfiles/scripts/wezterm-session"
 
 	pending_workspace_file = output_file
 

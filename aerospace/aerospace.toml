@@ -20,7 +20,7 @@ after-startup-command = [
 exec-on-workspace-change = [
     '/bin/bash',
     '-lc',
-    '/Users/kamil/.dotfiles/sketchybar/plugins/aerospace_trigger.sh; /Users/kamil/.dotfiles/config/scripts/aerospace-follow-pip.sh'
+    '/Users/kamil/.dotfiles/sketchybar/plugins/aerospace_trigger.sh; /Users/kamil/.dotfiles/scripts/aerospace-follow-pip.sh'
 ]
 
 # Start AeroSpace at login
@@ -110,7 +110,7 @@ PATH = '/etc/profiles/per-user/kamil/bin:/opt/homebrew/bin:/opt/homebrew/sbin:${
 # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 
 # Quick capture to weekly note (second-brain)
-cmd-shift-n = 'exec-and-forget ~/.dotfiles/config/scripts/open-weekly-note.sh'
+cmd-shift-n = 'exec-and-forget ~/.dotfiles/scripts/open-weekly-note.sh'
 
 # You can uncomment this line to open up terminal with alt + enter shortcut
 # See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget

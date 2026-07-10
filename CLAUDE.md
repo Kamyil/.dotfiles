@@ -27,7 +27,7 @@
 - **nix-darwin integration**: For macOS system management via Nix
 - **Symlink structure**: Config files linked via NixOS home-manager or manual setup
 - **Cross-platform**: Some configs are macOS-specific (yabai, skhd, sketchybar)
-- **Environment files**: Use .env files for sensitive data (see config/scripts/.env)
+- **Environment files**: Use .env files for sensitive data (see scripts/.env)
 - **Home Manager preference**: NEVER create symlinks manually - always use NixOS/nix-darwin home-manager configuration
 
 ## Important Notes

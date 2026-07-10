@@ -1698,7 +1698,7 @@ vim.api.nvim_create_user_command('MarkdownPreview', function()
     local tmp = vim.fn.tempname() .. '.md'
     local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
     vim.fn.writefile(lines, tmp)
-    local script = vim.fn.expand('~/.dotfiles/config/scripts/kitty-markdown-live.py')
+    local script = vim.fn.expand('~/.dotfiles/scripts/kitty-markdown-live.py')
     local src_win = vim.api.nvim_get_current_win()
 
     -- Open terminal running the live preview watcher

@@ -7,32 +7,32 @@ let
   commonLinks = {
     ".config/nvim" = "nvim";
     ".config/wezterm" = "wezterm";
-    ".config/lazygit" = "config/lazygit";
-    ".config/lazydocker" = "config/lazydocker";
-    ".config/btop" = "config/btop";
+    ".config/lazygit" = "lazygit";
+    ".config/lazydocker" = "lazydocker";
+    ".config/btop" = "btop";
     ".config/bat" = "bat";
     ".config/sketchybar" = "sketchybar";
-    ".config/aerospace" = "config/aerospace";
+    ".config/aerospace" = "aerospace";
     ".config/yabai" = "yabai";
     ".config/skhd" = "skhd";
-    ".config/ghostty" = "config/ghostty";
-    ".config/tmux" = "config/tmux";
-    ".config/opencode" = "config/opencode";
-    ".config/kitty" = "config/kitty";
+    ".config/ghostty" = "ghostty";
+    ".config/tmux" = "tmux";
+    ".config/opencode" = "opencode";
+    ".config/kitty" = "kitty";
     ".hammerspoon" = "hammerspoon";
-    ".config/herdr" = "config/herdr";
-    ".config/cmux" = "config/cmux";
+    ".config/herdr" = "herdr";
+    ".config/cmux" = "cmux";
   };
 
   darwinLinks = commonLinks // {
-    ".config/lsd" = "config/lsd";
-    ".config/alacritty" = "config/alacritty";
-    ".alacritty.toml" = "config/alacritty/alacritty.toml";
+    ".config/lsd" = "lsd";
+    ".config/alacritty" = "alacritty";
+    ".alacritty.toml" = "alacritty/alacritty.toml";
   };
 
   linuxLinks = commonLinks // {
-    ".config/hypr" = "config/hypr";
-    ".config/waybar" = "config/waybar";
+    ".config/hypr" = "hypr";
+    ".config/waybar" = "waybar";
   };
 
   mkLinkCommand = home: repo: target: source: ''

@@ -233,7 +233,6 @@ in
 
       # Config search base dirs
       C_BASE_DIRS=(
-        "$HOME/.dotfiles/config"
         "$HOME/.dotfiles"
       )
       # Max depth for config traversal (1 = immediate children only)
@@ -394,7 +393,7 @@ in
 
       # Source external files if they exist
       [ -f "$HOME/.config/broot/launcher/bash/br" ] && source "$HOME/.config/broot/launcher/bash/br"
-      [ -f "$HOME/.dotfiles/config/scripts/fzf-git.sh" ] && source "$HOME/.dotfiles/config/scripts/fzf-git.sh"
+      [ -f "$HOME/.dotfiles/scripts/fzf-git.sh" ] && source "$HOME/.dotfiles/scripts/fzf-git.sh"
 
       # Enable colors and prompt substitution
       autoload -U colors && colors
@@ -429,17 +428,17 @@ in
   };
 
   home.file = {
-    ".pi/agent".source = link "config/pi/agent";
-    ".config/hunk".source = link "config/hunk";
+    ".pi/agent".source = link "pi/agent";
+    ".config/hunk".source = link "hunk";
     ".config/starship.toml".source = link "starship/starship.toml";
-    ".config/superfile".source = link "config/superfile";
+    ".config/superfile".source = link "superfile";
   };
 
   home.activation.obsidianConfigSymlink = config.lib.dag.entryAfter [ "writeBoundary" ] ''
     obsidian_target="$HOME/second-brain/.obsidian"
-    obsidian_source="$HOME/.dotfiles/config/obsidian"
+    obsidian_source="$HOME/.dotfiles/obsidian"
     obsidian_vimrc_target="$HOME/second-brain/.obsidian.vimrc"
-    obsidian_vimrc_source="$HOME/.dotfiles/config/obsidian/obsidian.vimrc"
+    obsidian_vimrc_source="$HOME/.dotfiles/obsidian/obsidian.vimrc"
 
     if [ -d "$HOME/second-brain" ] && [ -d "$obsidian_source" ]; then
       if [ -e "$obsidian_target" ] && [ ! -L "$obsidian_target" ]; then

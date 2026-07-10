@@ -66,7 +66,7 @@ This file defines the consistent color palette used across all dotfiles configur
 - Background: `#1F1F28`
 - Foreground: `#DCD7BA`
 
-### lsd (`config/lsd/colors.yaml`)
+### lsd (`lsd/colors.yaml`)
 - User/Group: `#c4b28a` (Yellow)
 - Permissions: Green/Yellow/Red based on type
 - File ages: Green (recent) → Cyan (day old) → Gray (older)
@@ -74,7 +74,7 @@ This file defines the consistent color palette used across all dotfiles configur
 ### eza (`nix/shared.nix`)
 - Directory: `#809ba7` via `EZA_COLORS` because the `ls` alias uses eza, not lsd
 
-### Hunk (`config/hunk/config.toml`)
+### Hunk (`hunk/config.toml`)
 - Custom theme based on `graphite` with Kanagawa Paper backgrounds, diff colors, file badges, notes, and syntax overrides
 
 ### Starship (`starship/starship.toml`)
@@ -83,13 +83,13 @@ This file defines the consistent color palette used across all dotfiles configur
 - Success symbol: `#699469` (Green)
 - Error symbol: `#c4746e` (Red)
 
-### Lazygit (`config/lazygit/config.yml`)
+### Lazygit (`lazygit/config.yml`)
 - Active border: `#8ea49e` (Cyan)
 - Unstaged changes: `#c4746e` (Red)
 - Staged changes: `#699469` (Green)
 - Default text: `#DCD7BA` (Foreground)
 
-### Lazydocker (`config/lazydocker/config.yml`)
+### Lazydocker (`lazydocker/config.yml`)
 - Active border: `#8ea49e` (Cyan)
 - Inactive border: `#393836` (Black)
 - Default text: `#DCD7BA` (Foreground)
