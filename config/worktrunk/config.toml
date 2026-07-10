@@ -1,0 +1,9 @@
+# Keep Worktrunk-created checkouts in Herdr's worktree root so both tools see
+# the same per-repo/per-branch layout.
+worktree-path = "~/.herdr/worktrees/{{ repo }}/{{ branch | sanitize }}"
+
+[list]
+json-schema = 1
+
+[switch.picker]
+pager = "delta --paging=never --width=$COLUMNS"
