@@ -97,11 +97,14 @@ The package sets are intentionally split into common, macOS, and NixOS layers. â
 | Files and text | ripgrep, fd, eza, bat, jq, yq, yazi, tree | mostly command-line defaults; [`bat/`](bat) |
 | Git and review | Git, Git Extras, tig, lazygit, difftastic, hunk, lumen | [`lazygit/`](lazygit), [`hunk/`](hunk) |
 | Agentic coding | oh-my-pi (`omp`) primary; OpenCode fallback | [`pi/`](pi), [`opencode/`](opencode) |
-| Databases | SQLite, Harlequin, Rainfrog | [`hunk/`](hunk) and shell configuration |
+| SQL workflow | vim-dadbod, vim-dadbod-ui, vim-dadbod-completion in Neovim | [`nvim/init.lua`](nvim/init.lua) |
+
 | Networking and transfer | curl, wget, OpenSSH, rsync, socat, WireGuard | shell configuration |
 | Terminal UI and utilities | btop, htop, fastfetch, superfile, lazydocker, tldr | [`btop/`](btop), [`superfile/`](superfile) |
 | Terminal/workflow CLIs | herdr, worktrunk, lazyjira | [`herdr/`](herdr), [`worktrunk/`](worktrunk) |
 | Browser tooling | qutebrowser (available fallback) | [`qutebrowser/`](qutebrowser) |
+
+SQL work is intentionally handled inside Neovim with the Dadbod plugins. Harlequin and Rainfrog were tried and removed from the package sets.
 
 For agentic work, **oh-my-pi (`omp`) is the primary harness** and **OpenCode is the fallback**. No other agentic harnesses are part of the intended workflow; their presence in the repository should not be interpreted as active tooling.
 

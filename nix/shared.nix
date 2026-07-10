@@ -502,8 +502,6 @@ in
     # Network tools
     nmap socat wireguard-tools wireguard-go
 
-    # Database tools
-    sqlite harlequin rainfrog
 
     # Version control
     git-extras tig
