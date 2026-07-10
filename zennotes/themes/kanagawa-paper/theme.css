@@ -1,0 +1,60 @@
+/* Kanagawa Paper Ink theme for ZenNotes. Values follow the upstream muted
+ * dragon palette, with the canvas background matched to kitty: #14131B. */
+
+:root {
+  color-scheme: dark;
+  --z-bg: 20 19 27;
+  --z-bg-softer: 31 31 40;
+  --z-bg-1: 42 42 55;
+  --z-bg-2: 54 54 70;
+  --z-bg-3: 57 56 54;
+  --z-bg-4: 84 84 109;
+  --z-fg: 220 215 186;
+  --z-fg-1: 200 192 147;
+  --z-fg-2: 158 155 147;
+  --z-grey-2: 166 166 156;
+  --z-grey-1: 122 131 130;
+  --z-grey-0: 115 124 115;
+  --z-grey-dim: 57 56 54;
+  --z-accent: 142 164 158;
+  --z-accent-soft: 112 142 158;
+  --z-accent-muted: 93 122 136;
+  --z-red: 196 116 110;
+  --z-green: 105 148 105;
+  --z-yellow: 196 178 138;
+  --z-blue: 67 89 101;
+  --z-purple: 162 146 163;
+  --z-aqua: 142 164 158;
+  --z-shadow: 13 12 12;
+  --z-glass-a1: 0.58;
+  --z-glass-a2: 0.46;
+  --z-glass-a3: 0.32;
+  --z-glass-a4: 0.22;
+}
+
+:root[data-theme-mode="dark"] {
+  color-scheme: dark;
+  --z-bg: 20 19 27;
+  --z-bg-softer: 31 31 40;
+  --z-bg-1: 42 42 55;
+  --z-bg-2: 54 54 70;
+  --z-bg-3: 57 56 54;
+  --z-bg-4: 84 84 109;
+  --z-fg: 220 215 186;
+  --z-fg-1: 200 192 147;
+  --z-fg-2: 158 155 147;
+  --z-grey-2: 166 166 156;
+  --z-grey-1: 122 131 130;
+  --z-grey-0: 115 124 115;
+  --z-grey-dim: 57 56 54;
+  --z-accent: 142 164 158;
+  --z-accent-soft: 112 142 158;
+  --z-accent-muted: 93 122 136;
+  --z-red: 196 116 110;
+  --z-green: 105 148 105;
+  --z-yellow: 196 178 138;
+  --z-blue: 67 89 101;
+  --z-purple: 162 146 163;
+  --z-aqua: 142 164 158;
+  --z-shadow: 13 12 12;
+}

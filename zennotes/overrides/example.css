@@ -1,0 +1,44 @@
+/* ZenNotes override — a cookbook. Toggle it on in Settings → Appearance →
+ * Overrides, then uncomment a recipe below to use it. As shipped, this file
+ * changes nothing — every recipe is commented out.
+ *
+ * Overrides layer on top of whichever theme is active. Target :root[data-theme]
+ * so your rule wins over both a built-in theme's :root[data-theme="…"] block and
+ * a custom theme's :root {}.
+ *
+ * Colors are space-separated RGB triplets:  --z-accent: 255 59 48;  (= #ff3b30)
+ */
+
+/* ----- Theme color tokens you can override -------------------------------
+ *  Backgrounds   --z-bg (canvas)  --z-bg-softer (sidebar)  --z-bg-1..4 (panels)
+ *  Text          --z-fg-1 (body)  --z-fg-2 (secondary)  --z-grey-0..2 (muted)
+ *  Accent        --z-accent  --z-accent-soft  --z-accent-muted
+ *  Syntax hues   --z-red  --z-green  --z-yellow  --z-blue  --z-purple  --z-aqua
+ *  Shadow        --z-shadow
+ * ----------------------------------------------------------------------- */
+
+/* Punchier accent on every theme */
+/*
+:root[data-theme] {
+  --z-accent: 255 59 48;
+}
+*/
+
+/* Dark mode only: a deeper, OLED-friendly background */
+/*
+:root[data-theme-mode="dark"] {
+  --z-bg: 0 0 0;
+  --z-bg-softer: 12 12 12;
+}
+*/
+
+/* Recolor a syntax / diagnostic hue (shows up in code + diagrams) */
+/*
+:root[data-theme] {
+  --z-blue: 130 170 255;
+}
+*/
+
+/* Any other CSS works too — use the "Developer tools" button in Settings →
+ * Appearance → Overrides to inspect an element, find its class, then style it.
+ * Fonts and text size live in Settings → Typography, so set those there. */

@@ -1,0 +1,10 @@
+{
+  "name": "Kanagawa Paper Ink",
+  "author": "",
+  "version": "1.0.0",
+  "description": "Kanagawa Paper Ink matched to the dotfiles kitty background.",
+  "modes": "dark",
+  "preview": {
+    "dark": "#14131B"
+  }
+}

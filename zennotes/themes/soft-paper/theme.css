@@ -1,0 +1,72 @@
+/* Soft Paper — a ZenNotes theme.
+ *
+ * Only this file's CSS is active while the theme is selected, so :root is safe
+ * to use unscoped. Put dark-mode overrides under [data-theme-mode="dark"].
+ * Tokens are space-separated RGB triplets, e.g. --z-bg: 255 255 255;
+ *
+ * Ship fonts/images beside this file and reference them theme-relative, e.g.
+ *   @font-face { font-family: "My Font";
+ *     src: url(zen-theme://soft-paper/my-font.woff2) format("woff2"); }
+ */
+
+:root {
+  color-scheme: light;
+  --z-bg: 238 230 221;
+  --z-bg-softer: 230 219 209;
+  --z-bg-1: 220 211 203;
+  --z-bg-2: 211 202 194;
+  --z-bg-3: 202 193 185;
+  --z-bg-4: 180 172 176;
+  --z-fg: 91 86 124;
+  --z-fg-1: 87 82 121;
+  --z-fg-2: 121 117 147;
+  --z-grey-2: 121 117 147;
+  --z-grey-1: 137 132 156;
+  --z-grey-0: 152 147 165;
+  --z-grey-dim: 177 170 175;
+  --z-accent: 26 125 164;
+  --z-accent-soft: 26 156 170;
+  --z-accent-muted: 86 148 159;
+  --z-red: 186 113 132;
+  --z-green: 91 165 123;
+  --z-yellow: 209 149 74;
+  --z-blue: 40 105 131;
+  --z-purple: 144 122 169;
+  --z-aqua: 102 158 166;
+  --z-shadow: 52 49 73;
+  --z-glass-a1: 0.62;
+  --z-glass-a2: 0.5;
+  --z-glass-a3: 0.35;
+  --z-glass-a4: 0.25;
+}
+
+:root[data-theme-mode="dark"] {
+  color-scheme: dark;
+  --z-bg: 48 52 70;
+  --z-bg-softer: 41 44 60;
+  --z-bg-1: 65 69 89;
+  --z-bg-2: 73 78 99;
+  --z-bg-3: 81 87 109;
+  --z-bg-4: 104 110 135;
+  --z-fg: 196 204 237;
+  --z-fg-1: 198 206 239;
+  --z-fg-2: 181 189 220;
+  --z-grey-2: 181 189 220;
+  --z-grey-1: 156 164 194;
+  --z-grey-0: 131 139 167;
+  --z-grey-dim: 106 113 138;
+  --z-accent: 133 193 220;
+  --z-accent-soft: 140 170 238;
+  --z-accent-muted: 129 200 190;
+  --z-red: 231 130 132;
+  --z-green: 166 209 137;
+  --z-yellow: 229 200 144;
+  --z-blue: 140 170 238;
+  --z-purple: 202 158 230;
+  --z-aqua: 129 200 190;
+  --z-shadow: 0 0 0;
+  --z-glass-a1: 0.58;
+  --z-glass-a2: 0.46;
+  --z-glass-a3: 0.32;
+  --z-glass-a4: 0.22;
+}

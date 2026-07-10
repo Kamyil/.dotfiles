@@ -1,0 +1,11 @@
+{
+  "name": "Soft Paper",
+  "author": "Nick Milo (port)",
+  "version": "1.0.0",
+  "description": "A warm, paper-like theme — light + dark.",
+  "modes": "both",
+  "preview": {
+    "light": "#1a7da4",
+    "dark": "#85c1dc"
+  }
+}
