@@ -1,0 +1,282 @@
+#!/usr/bin/env python3
+"""Create a standard Herdr project workspace.
+
+Flow:
+- choose a project path with fzf when no path is passed;
+- infer workspace name from the directory basename;
+- create/focus a Herdr workspace;
+- open tabs: nvim, omp, stuff;
+- run nvim in the nvim tab and omp in the omp tab.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+
+SKIP_DIRS = {
+    ".cache",
+    ".direnv",
+    ".git",
+    ".herdr",
+    ".local",
+    ".nix-profile",
+    ".npm",
+    ".pnpm-store",
+    ".rustup",
+    ".Trash",
+    "Library",
+    "node_modules",
+    "target",
+    "vendor",
+}
+
+SEARCH_ROOTS = [
+    "~/Work/Projects",
+    "~/Work",
+    "~/Projects",
+    "~/Code",
+    "~/Developer",
+    "~/.herdr/worktrees",
+    "~/.dotfiles",
+]
+
+
+def run(args: list[str], *, cwd: Path | None = None, check: bool = True) -> subprocess.CompletedProcess[str]:
+    if os.environ.get("HERDR_PROJECT_WORKSPACE_DRY_RUN") == "1":
+        print("+", " ".join(args))
+        if args[:3] == ["herdr", "workspace", "create"]:
+            return subprocess.CompletedProcess(
+                args,
+                0,
+                stdout=json.dumps({
+                    "result": {
+                        "workspace": {"workspace_id": "dry:w"},
+                        "tab": {"tab_id": "dry:t1"},
+                        "root_pane": {"pane_id": "dry:p1"},
+                    }
+                }),
+                stderr="",
+            )
+        if args[:3] == ["herdr", "tab", "create"]:
+            label = args[args.index("--label") + 1] if "--label" in args else "tab"
+            suffix = "2" if label == "omp" else "3"
+            return subprocess.CompletedProcess(
+                args,
+                0,
+                stdout=json.dumps({
+                    "result": {
+                        "tab": {"tab_id": f"dry:t{suffix}"},
+                        "root_pane": {"pane_id": f"dry:p{suffix}"},
+                    }
+                }),
+                stderr="",
+            )
+        return subprocess.CompletedProcess(args, 0, stdout='{"result":{}}', stderr="")
+
+    proc = subprocess.run(args, cwd=cwd, text=True, capture_output=True)
+    if check and proc.returncode != 0:
+        sys.stderr.write(proc.stderr)
+        sys.stderr.write(proc.stdout)
+        raise SystemExit(proc.returncode)
+    return proc
+
+
+def run_json(args: list[str], *, cwd: Path | None = None) -> dict:
+    proc = run(args, cwd=cwd)
+    try:
+        return json.loads(proc.stdout)
+    except json.JSONDecodeError as exc:
+        sys.stderr.write(proc.stdout)
+        sys.stderr.write(proc.stderr)
+        raise SystemExit(f"Expected JSON from {' '.join(args)}: {exc}") from exc
+
+
+def existing_roots() -> list[Path]:
+    roots: list[Path] = []
+    seen: set[Path] = set()
+    for raw in SEARCH_ROOTS:
+        root = Path(raw).expanduser()
+        if not root.exists():
+            continue
+        resolved = root.resolve()
+        if resolved in seen:
+            continue
+        roots.append(resolved)
+        seen.add(resolved)
+    return roots
+
+
+def candidate_projects(max_depth: int = 4) -> list[Path]:
+    projects: set[Path] = set()
+
+    for root in existing_roots():
+        if (root / ".git").exists():
+            projects.add(root)
+            continue
+
+        root_parts = len(root.parts)
+        for current, dirs, _files in os.walk(root):
+            path = Path(current)
+            depth = len(path.parts) - root_parts
+            dirs[:] = [d for d in dirs if d not in SKIP_DIRS and not d.startswith(".")]
+            if depth >= max_depth:
+                dirs[:] = []
+            if (path / ".git").exists():
+                projects.add(path)
+                dirs[:] = []
+
+    return sorted(projects, key=lambda p: str(p).lower())
+
+
+def choose_project() -> Path:
+    projects = candidate_projects()
+    if not projects:
+        raise SystemExit("No git project directories found. Pass a path explicitly.")
+
+    fzf = subprocess.run(
+        ["fzf", "--prompt", "Herdr workspace> ", "--height", "80%", "--reverse"],
+        input="\n".join(str(p) for p in projects),
+        text=True,
+        capture_output=True,
+    )
+    if fzf.returncode != 0:
+        raise SystemExit(fzf.returncode)
+
+    selected = fzf.stdout.strip()
+    if not selected:
+        raise SystemExit(1)
+    return Path(selected).expanduser().resolve()
+
+
+def infer_label(path: Path) -> str:
+    return path.name or path.resolve().name
+
+
+def result_field(payload: dict, *keys: str) -> object:
+    value: object = payload.get("result", {})
+    for key in keys:
+        if not isinstance(value, dict) or key not in value:
+            raise SystemExit(f"Missing result field: {'.'.join(keys)} in {payload}")
+        value = value[key]
+    return value
+
+
+def existing_workspace_for_path(path: Path) -> str | None:
+    if os.environ.get("HERDR_PROJECT_WORKSPACE_DRY_RUN") == "1":
+        return None
+
+    proc = run(["herdr", "pane", "list"], check=False)
+    if proc.returncode != 0:
+        return None
+
+    try:
+        payload = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        return None
+
+    target = str(path)
+    for pane in payload.get("result", {}).get("panes", []):
+        if pane.get("cwd") == target or pane.get("foreground_cwd") == target:
+            workspace_id = pane.get("workspace_id")
+            if workspace_id:
+                return str(workspace_id)
+    return None
+
+
+def create_workspace(path: Path, label: str) -> tuple[str, str, str]:
+    payload = run_json([
+        "herdr",
+        "workspace",
+        "create",
+        "--cwd",
+        str(path),
+        "--label",
+        label,
+        "--focus",
+    ])
+    workspace = result_field(payload, "workspace")
+    tab = result_field(payload, "tab")
+    pane = result_field(payload, "root_pane")
+
+    return (
+        str(workspace["workspace_id"]),
+        str(tab["tab_id"]),
+        str(pane["pane_id"]),
+    )
+
+
+def create_tab(workspace_id: str, path: Path, label: str, *, focus: bool = False) -> tuple[str, str]:
+    payload = run_json([
+        "herdr",
+        "tab",
+        "create",
+        "--workspace",
+        workspace_id,
+        "--cwd",
+        str(path),
+        "--label",
+        label,
+        "--focus" if focus else "--no-focus",
+    ])
+    tab = result_field(payload, "tab")
+    pane = result_field(payload, "root_pane")
+    return str(tab["tab_id"]), str(pane["pane_id"])
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Open a standard Herdr project workspace")
+    parser.add_argument("path", nargs="?", help="Project path. If omitted, choose with fzf.")
+    parser.add_argument("--label", help="Workspace label. Defaults to the project directory name.")
+    parser.add_argument("--reuse", dest="reuse", action="store_true", default=True, help="Focus an existing Herdr workspace for the path when one is already open.")
+    parser.add_argument("--no-reuse", dest="reuse", action="store_false", help="Always create a new Herdr workspace.")
+    args = parser.parse_args()
+
+    path = Path(args.path).expanduser().resolve() if args.path else choose_project()
+    if not path.is_dir():
+        raise SystemExit(f"Not a directory: {path}")
+
+    label = args.label or infer_label(path)
+    if args.reuse:
+        existing_workspace_id = existing_workspace_for_path(path)
+        if existing_workspace_id:
+            run(["herdr", "workspace", "focus", existing_workspace_id])
+            print(json.dumps({
+                "workspace_id": existing_workspace_id,
+                "label": label,
+                "path": str(path),
+                "reused": True,
+            }, indent=2))
+            return 0
+
+
+    workspace_id, nvim_tab_id, nvim_pane_id = create_workspace(path, label)
+    run(["herdr", "tab", "rename", nvim_tab_id, "nvim"])
+
+    omp_tab_id, omp_pane_id = create_tab(workspace_id, path, "omp")
+    stuff_tab_id, _stuff_pane_id = create_tab(workspace_id, path, "stuff")
+
+    run(["herdr", "pane", "run", nvim_pane_id, "nvim"])
+    run(["herdr", "pane", "run", omp_pane_id, "omp"])
+    run(["herdr", "tab", "focus", nvim_tab_id])
+
+    print(json.dumps({
+        "workspace_id": workspace_id,
+        "label": label,
+        "path": str(path),
+        "tabs": {
+            "nvim": nvim_tab_id,
+            "omp": omp_tab_id,
+            "stuff": stuff_tab_id,
+        },
+    }, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
