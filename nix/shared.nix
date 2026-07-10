@@ -5,15 +5,6 @@ let
   repo = "${config.home.homeDirectory}/.dotfiles";
   link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";
 
-  # Home Manager adds zsh plugin dirs to fpath before compinit.
-  # Use this for CLIs that can generate completions but do not install a _cmd file themselves.
-  #
-  # Example:
-  #   mkGeneratedZshCompletionPlugin {
-  #     name = "foo";
-  #     package = pkgs.foo;
-  #     args = [ "completion" "zsh" ];
-  #   }
   mkGeneratedZshCompletionPlugin = {
     name,
     package,
@@ -29,6 +20,8 @@ let
   };
 
   herdrPackage = herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
+
 in
 {
   home.username = "kamil";
@@ -410,8 +403,6 @@ in
 
       # Set up fzf key bindings and fuzzy completion
       eval "$(fzf --zsh)"
-
-      # herdr completions are installed via programs.zsh.plugins so _herdr is on fpath before compinit.
 
       # Completion UX
       zstyle ':completion:*' menu select

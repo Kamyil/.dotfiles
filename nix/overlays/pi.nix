@@ -90,7 +90,7 @@ final: prev: {
       description = "Minimal terminal coding agent";
       homepage = "https://github.com/earendil-works/pi";
       license = licenses.asl20;
-      platforms = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      platforms = [ "x86_64-linux" "aarch64-darwin" ];
       mainProgram = "pi";
     };
   };

@@ -38,6 +38,10 @@ let
   mkLinkCommand = home: repo: target: source: ''
     target=${lib.escapeShellArg "${home}/${target}"}
     source=${lib.escapeShellArg "${repo}/${source}"}
+    if [ ! -e "$source" ]; then
+      echo "Missing dotfile source: $source" >&2
+      exit 1
+    fi
 
     if [ -e "$target" ] && [ ! -L "$target" ]; then
       echo "Refusing to overwrite non-symlink: $target" >&2

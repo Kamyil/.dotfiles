@@ -2,8 +2,9 @@
 { self, nixpkgs, nixpkgs-stable, home-manager, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, hunk, lumen, herdr, ... }:
 
 let
-  system = builtins.currentSystem or "x86_64-linux";
-  isLinux = builtins.match ".*linux.*" system != null;
+  system = "x86_64-linux";
+  
+  # NixOS is a fixed x86_64 Linux host; do not derive the target from the evaluator.
   
   # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
@@ -123,10 +124,7 @@ in
             # Keyboard remapping
             kmonad
           ]) ++ [
-            # Unstable-only packages
             pkgs.opencode
-            pkgs.codex
-            pkgs.pi
             # SQL TUI from flake
             sqlit.packages.${system}.default
             # Git worktree CLI from flake

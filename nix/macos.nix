@@ -158,7 +158,6 @@ in
             "signal"
             "obsidian"
             "font-sketchybar-app-font"
-            "cmux"
             "eqmac"
             "ghostty"
             "postman"
@@ -296,16 +295,10 @@ in
     ];
   };
 
-  # Add required outputs for nix-darwin compatibility
+  # Compatibility outputs for the supported Apple Silicon host.
   packages.aarch64-darwin.default = self.darwinConfigurations."MacBook-Pro-Kamil".system;
-  packages.x86_64-darwin.default = self.darwinConfigurations."MacBook-Pro-Kamil".system;
 
   apps.aarch64-darwin.default = {
-    type = "app";
-    program = "${self.darwinConfigurations."MacBook-Pro-Kamil".system}/sw/bin/darwin-rebuild";
-  };
-
-  apps.x86_64-darwin.default = {
     type = "app";
     program = "${self.darwinConfigurations."MacBook-Pro-Kamil".system}/sw/bin/darwin-rebuild";
   };

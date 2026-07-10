@@ -19,16 +19,7 @@ final: prev: {
         url = "https://github.com/openai/codex/releases/download/rust-v${version}/codex-${platform}.tar.gz";
         # Platform-specific SHA256 hashes
         # To update: set to prev.lib.fakeHash, build, then copy the actual hash from the error
-        sha256 = if prev.stdenv.isDarwin then
-          (if prev.stdenv.isAarch64 then
-            "sha256-PMdXcogDruDEyZTFaCENmQCrxs7GC+Aj57LApuMBglU="
-          else
-            prev.lib.fakeHash)  # x86_64-darwin
-        else
-          (if prev.stdenv.isAarch64 then
-            prev.lib.fakeHash   # aarch64-linux
-          else
-            prev.lib.fakeHash); # x86_64-linux
+        sha256 = "sha256-PMdXcogDruDEyZTFaCENmQCrxs7GC+Aj57LApuMBglU=";
       };
     
     nativeBuildInputs = [ prev.gzip ];
@@ -61,7 +52,7 @@ final: prev: {
       description = "Lightweight coding agent that runs in your terminal";
       homepage = "https://github.com/openai/codex";
       license = licenses.asl20;
-      platforms = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      platforms = [ "aarch64-darwin" ];
       mainProgram = "codex";
     };
   };
