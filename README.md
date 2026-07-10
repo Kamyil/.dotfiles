@@ -93,15 +93,17 @@ The package sets are intentionally split into common, macOS, and NixOS layers. â
 | Role | Tool(s) | Configuration |
 | --- | --- | --- |
 | Shell and prompt | zsh, Starship, Atuin | [`zsh`](nix/shared.nix), [`starship/`](starship), [`atuin/`](atuin) |
-| Editor and terminal workflow | Neovim, tmux, fzf | [`nvim/`](nvim), [`tmux/`](tmux) |
+| Editor and terminal workflow | Neovim, Kitty, herdr | [`nvim/`](nvim), [`kitty/`](kitty), [`herdr/`](herdr) |
 | Files and text | ripgrep, fd, eza, bat, jq, yq, yazi, tree | mostly command-line defaults; [`bat/`](bat) |
 | Git and review | Git, Git Extras, tig, lazygit, difftastic, hunk, lumen | [`lazygit/`](lazygit), [`hunk/`](hunk) |
-| Containers and development | Docker CLI tools, Podman, language/tooling packages | [`opencode/`](opencode), [`pi/`](pi) |
+| Agentic coding | oh-my-pi (`omp`) primary; OpenCode fallback | [`pi/`](pi), [`opencode/`](opencode) |
 | Databases | SQLite, Harlequin, Rainfrog | [`hunk/`](hunk) and shell configuration |
 | Networking and transfer | curl, wget, OpenSSH, rsync, socat, WireGuard | shell configuration |
 | Terminal UI and utilities | btop, htop, fastfetch, superfile, lazydocker, tldr | [`btop/`](btop), [`superfile/`](superfile) |
-| AI/workflow CLIs | herdr, worktrunk, lazyjira | [`herdr/`](herdr), [`worktrunk/`](worktrunk) |
-| Browser | qutebrowser | [`qutebrowser/`](qutebrowser) |
+| Terminal/workflow CLIs | herdr, worktrunk, lazyjira | [`herdr/`](herdr), [`worktrunk/`](worktrunk) |
+| Browser tooling | qutebrowser (available fallback) | [`qutebrowser/`](qutebrowser) |
+
+For agentic work, **oh-my-pi (`omp`) is the primary harness** and **OpenCode is the fallback**. No other agentic harnesses are part of the intended workflow; their presence in the repository should not be interpreted as active tooling.
 
 ### macOS-specific
 
@@ -115,6 +117,8 @@ The package sets are intentionally split into common, macOS, and NixOS layers. â
 | GUI application delivery | Homebrew brews and casks | Nix packages and NixOS modules |
 | macOS automation | Hammerspoon | Hyprland scripts / systemd user services |
 | Desktop applications | Chromium, Firefox, Vivaldi, Signal, Obsidian, Postman, Raycast | Chromium, Firefox, Signal, Obsidian, qutebrowser (package availability differs) |
+
+The primary macOS browser is **Helium**. The Chromium, Firefox, Vivaldi, and qutebrowser configurations are retained as fallback/returning-browser setups, not as the daily browser workflow.
 
 macOS Homebrew is used for GUI applications and tools that are unavailable or inconvenient in the current Nix package set. The authoritative list is in [`nix/macos.nix`](nix/macos.nix).
 
