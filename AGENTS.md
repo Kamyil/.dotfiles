@@ -23,8 +23,14 @@
 - **Live-editable dotfile links**: Config directories are intentionally out-of-store symlinks; Nix declares link topology, Git checkout provides mutable contents for app hot reloads without rebuilds
 - **New config symlinks**: Add the source configuration under a root-level tool directory (never under `config/`), then declare its live symlink in `nix/symlinks.nix` to the actual destination, preferably under `$XDG_CONFIG_HOME` (`~/.config`) when the application supports it.
 - **Symlink implementation**: Keep symlink targets in `nix/symlinks.nix`; do not add one-off `ln -s` blocks or unconditional `rm -rf` cleanup
-- **Cross-platform**: Some configs are macOS-specific (yabai, skhd, sketchybar)
+- **Cross-platform**: macOS uses Aerospace for tiling and SketchyBar for the status bar; NixOS uses Hyprland and Waybar
 - **Environment files**: Use .env files for sensitive data (see scripts/.env)
+ 
+## README Architecture Documentation
+- **Keep `README.md` current**: When changing Nix entrypoints, platform branches, package roles, symlink topology, root-level config layout, or rebuild workflow, update the corresponding README prose, tool matrix, and Mermaid diagrams in the same change.
+- **Make it useful**: Diagrams and descriptions must reflect the actual repository, distinguish shared/macOS/NixOS behavior, and explain live-reload symlink flow for both humans and agents. Do not leave generic or aspirational architecture documentation.
+- **Verify documentation**: Check every README path link and ensure diagrams name real files, outputs, hosts, and relationships. Remove stale claims when configuration moves or behavior changes.
+- **Document new tools by role**: When adding or removing a platform package, Homebrew item, overlay, or major configured application, update the relevant platform matrix and equivalent tool entry if one exists.
 
 ## Omarchy-Based NixOS Setup (Hyprland/Walker/Waybar)
 - **Walker (Nixpkgs)**: Uses v0.13 config at `walker/config.toml` with theme `walker/themes/kanagawa.css` (`theme = "kanagawa"`).
@@ -40,7 +46,7 @@
 - Never commit secrets or API keys to .env files
 - Test changes on non-production systems first
 - Maintain backward compatibility for existing tool configurations
-- **Focus on NixOS configs**: Rely entirely on nixos/ folder and files referenced there - ignore legacy configs like i3/
+- **Focus on NixOS configs**: Rely entirely on nixos/ folder and files referenced there; do not reintroduce retired window-manager configurations
 
 ## System Operation Guidelines
 - **NEVER run sudo commands** - Always let the user run them and provide output when requested

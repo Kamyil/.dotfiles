@@ -13,8 +13,6 @@ let
     ".config/bat" = "bat";
     ".config/sketchybar" = "sketchybar";
     ".config/aerospace" = "aerospace";
-    ".config/yabai" = "yabai";
-    ".config/skhd" = "skhd";
     ".config/ghostty" = "ghostty";
     ".config/tmux" = "tmux";
     ".config/opencode" = "opencode";

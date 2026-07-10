@@ -26,7 +26,7 @@
 - **NixOS integration**: Flake-based with home-manager for user configs
 - **nix-darwin integration**: For macOS system management via Nix
 - **Symlink structure**: Config files linked via NixOS home-manager or manual setup
-- **Cross-platform**: Some configs are macOS-specific (yabai, skhd, sketchybar)
+- **Cross-platform**: macOS uses Aerospace for tiling and SketchyBar for the status bar; NixOS uses Hyprland and Waybar
 - **Environment files**: Use .env files for sensitive data (see scripts/.env)
 - **Home Manager preference**: NEVER create symlinks manually - always use NixOS/nix-darwin home-manager configuration
 
@@ -34,6 +34,6 @@
 - Never commit secrets or API keys to .env files
 - Test changes on non-production systems first
 - Maintain backward compatibility for existing tool configurations
-- **Focus on Nix configs**: Rely entirely on nix/ folder and files referenced there - ignore legacy configs like i3/
+- **Focus on Nix configs**: Rely entirely on nix/ folder and files referenced there; do not reintroduce retired window-manager configurations
 - **Homebrew integration**: Only suggest adding/removing packages from nix-darwin homebrew configuration
 - **User safety**: Always prioritize user system stability and control
