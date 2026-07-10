@@ -54,9 +54,9 @@ settings = "prefix+s"
 
 workspace_picker = "prefix+w"
 goto = "prefix+g"
-new_workspace = "prefix+shift+n"
+new_workspace = ["prefix+shift+n", "ctrl+shift+n"]
 rename_workspace = "prefix+shift+w"
-close_workspace = "prefix+shift+d"
+close_workspace = ["prefix+shift+d", "ctrl+shift+x"]
 previous_workspace = ["prefix+shift+left", "ctrl+shift+k"]
 next_workspace = ["prefix+shift+right", "ctrl+shift+j"]
 switch_workspace = ["prefix+shift+1..9", "ctrl+alt+1..9", "ctrl+shift+1..9", "alt+shift+1..9"]
