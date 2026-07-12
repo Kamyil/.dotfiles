@@ -39,10 +39,8 @@ cursor-style-blink = true
 shell-integration-features = no-cursor
 #
 # # Font configuration
-font-family = "Berkeley Mono Bold SemiCondensed"
+font-family = "Berkeley Mono SemiBold SemiCondensed"
 # font-family = "Iosevka Term Slab"
-# font-weight = 500
-font-size = 21
 
 
 notify-on-command-finish = unfocused
@@ -70,3 +68,7 @@ split-inherit-working-directory = true
 # keybind = cmd+t=new_tab
 # keybind = cmd+w=close_surface
 # keybind = cmd+shift+t=new_window
+
+# Custom shader — cursor trail effect (similar to Kitty's cursor_trail 3)
+custom-shader = ~/.dotfiles/ghostty/cursor-trail.glsl
+custom-shader-animation = true
