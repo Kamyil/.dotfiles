@@ -532,10 +532,13 @@ in
     # File sync
     rsync openssh
 
+    # Image processing
+    imagemagick
+
     # Other
     tldr watchexec
 
-	qutebrowser
+    qutebrowser
   ] ++ lib.optionals pkgs.stdenv.isLinux [
     sweethome3d.application
   ] ++ [
