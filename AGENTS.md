@@ -1,5 +1,8 @@
 # Dotfiles Agent Guidelines
 
+- When doing commits, pls write them in following pattern: 
+(topic) - (feature/change) ex. `(nix) (opencode) updated opencode overlay to use opencode v2`
+
 ## Build/Test Commands
 - **No build system** - This is a configuration repository
 - **Test configs**: Restart applications or source files (e.g., `source ~/.zshrc`)
