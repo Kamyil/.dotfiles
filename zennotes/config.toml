@@ -32,12 +32,12 @@ markdown_snippets = true  # auto-close markdown delimiters while typing
 hide_builtin_templates = false  # hide the shipped templates from the pickers
 tabs_enabled = true  # enable tab-based editing
 wrap_tabs = false  # wrap the tab strip instead of scrolling it
-font_size = 16  # editor + preview font size (px)
-line_height = 1.55  # line-height multiplier
-scroll_off = 0  # vim scrolloff — lines kept above/below the cursor (0 = off)
-time_format = "24h"  # clock format for the @time macro (12h or 24h)
-preview_max_width = 920  # max reading width for the preview (px)
-editor_max_width = 1160  # max width of the editor column (px)
+font_size = 14  # editor + preview font size (px)
+line_height = 1.35  # line-height multiplier
+scroll_off = 8  # vim scrolloff — lines kept above/below the cursor (0 = off)
+time_format = "12h"  # clock format for the @time macro (12h or 24h)
+preview_max_width = 680  # max reading width for the preview (px)
+editor_max_width = 700  # max width of the editor column (px)
 line_number_mode = "relative"  # off | absolute | relative
 line_number_position = "text"  # text | edge
 word_wrap = true  # wrap long lines vs. scroll horizontally
@@ -55,15 +55,15 @@ content_align = "center"  # center | left
 unified_sidebar = true  # merge the note list into the sidebar tree
 
 [typography]
-interface_font = "Futura"  # app chrome font; empty = system default
-text_font = "Berkeley Mono"  # editor + preview font; empty = system default
+interface_font = "GeistMono Nerd Font Mono"  # app chrome font; empty = system default
+text_font = "PT Serif"  # editor + preview font; empty = system default
 mono_font = "Berkeley Mono"  # code / monospace font; empty = system default
 
 [view]
 note_sort_order = "none"  # none | manual | updated-desc | updated-asc | created-desc | created-asc | name-asc | name-desc
 group_by_kind = true  # group notes by kind in the list
 view_settings_scope = "global"  # apply note/list view settings globally or per vault (global | vault)
-auto_reveal = false  # auto-expand the sidebar to the active note
+auto_reveal = true  # auto-expand the sidebar to the active note
 quick_note_date_title = false  # title quick notes by date instead of a timestamp
 quick_note_title_prefix = "Quick Note"  # prefix for new quick-note titles; empty = bare timestamp
 auto_calendar_panel = true  # auto-show the calendar for daily / weekly notes
@@ -77,7 +77,13 @@ kanban_statuses = []  # custom-status Kanban columns, in order — e.g. ["backlo
 # Binding syntax: "Mod+P" = Cmd/Ctrl+P, "Shift+Mod+K", "Ctrl+W", "Space",
 # or a two-key sequence like "g g". Uncomment a reference line to remap it.
 [keymaps]
-"global.toggleSidebar" = "Mod+S"
+"global.toggleSidebar" = "Mod+E"
+"vim.leaderWeeklyNote" = "Meta+W"
+"vim.leaderCalendar" = "Meta+C"
+"vim.paneSplitRight" = "Ctrl+/"
+"vim.paneSplitDown" = "Ctrl+Shift+/"
+"vim.tabPrevious" = "[["
+"vim.tabNext" = "]]"
 
 # --- All actions (defaults shown; uncomment + edit to override) ---
 # Global
@@ -124,22 +130,16 @@ kanban_statuses = []  # custom-status Kanban columns, in order — e.g. ["backlo
 # "vim.leaderTemplatePicker" = "t"  # Leader: new from template
 # "vim.leaderInsertTemplate" = "i"  # Leader: insert template into note
 # "vim.leaderDailyNote" = "d"  # Leader: today's daily note
-# "vim.leaderWeeklyNote" = "w"  # Leader: this week's note
 # "vim.leaderMonthlyNote" = "m"  # Leader: this month's note
-# "vim.leaderCalendar" = "c"  # Leader: toggle calendar
 # "vim.panePrefix" = "Ctrl+W"  # Pane command prefix
 # "vim.paneFocusLeft" = "h"  # Pane: focus left
 # "vim.paneFocusDown" = "j"  # Pane: focus down
 # "vim.paneFocusUp" = "k"  # Pane: focus up
 # "vim.paneFocusRight" = "l"  # Pane: focus right
-# "vim.paneSplitRight" = "v"  # Pane: split right
-# "vim.paneSplitDown" = "s"  # Pane: split down
 # "vim.historyBack" = "Ctrl+O"  # Go back in note history
 # "vim.historyForward" = "Ctrl+I"  # Go forward in note history
 # "vim.bufferPrevious" = "[ b"  # Previous buffer
 # "vim.bufferNext" = "] b"  # Next buffer
-# "vim.tabPrevious" = "g T"  # Previous tab
-# "vim.tabNext" = "g t"  # Next tab
 # "vim.hintMode" = "h"  # Leader: hint mode
 # "vim.goToDefinition" = "g d"  # Follow link at cursor
 # "vim.foldCurrent" = "z c"  # Fold heading at cursor
@@ -185,9 +185,10 @@ kanban_statuses = []  # custom-status Kanban columns, in order — e.g. ["backlo
 # Enabled CSS overrides — list the filenames you want active.
 # Example: "focus.css" = "on"
 [overrides]
+"example.css" = "on"
 
 # Visual color tweaks from Settings → Appearance (token slug = color).
 # Example: "accent" = "#ff3b30"
 [tweaks]
-cornerRadius = "square"
 density = "compact"
+cornerRadius = "square"
