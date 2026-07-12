@@ -36,6 +36,41 @@ require('lazy').setup({
 	'smithbm2316/centerpad.nvim',
 	'mvllow/modes.nvim',
 	{
+		'folke/zen-mode.nvim',
+		keys = {
+			{ '<leader>z', '<cmd>ZenMode<cr>', desc = 'Toggle Zen Mode' },
+			{ '<C-.>', '<cmd>ZenMode<cr>', desc = 'Toggle Zen Mode' },
+		},
+		opts = {
+			window = {
+				backdrop = 0.95,
+				width = 0.60,
+				height = 1,
+				options = {
+					number = false,
+					relativenumber = false,
+					signcolumn = 'no',
+					foldcolumn = '0',
+					cursorline = false,
+					cursorcolumn = false,
+					list = false,
+				},
+			},
+			plugins = {
+				options = {
+					enabled = true,
+					ruler = false,
+					showcmd = false,
+					laststatus = 0,
+				},
+				twilight = { enabled = false },
+				gitsigns = { enabled = false },
+				tmux = { enabled = false },
+				todo = { enabled = false },
+			},
+		},
+	},
+	{
 		'lmilojevicc/herdr-splits.nvim',
 		cond = vim.env.HERDR_ENV == '1',
 		event = 'VeryLazy',
