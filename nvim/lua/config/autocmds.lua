@@ -97,7 +97,7 @@ require('comfy-line-numbers').setup({
 
 	-- Line numbers will be completely hidden for the following file/buffer types
 	hidden_file_types = { 'help', 'TelescopePrompt', 'undotree' },
-	hidden_buffer_types = { 'terminal', 'blink', 'cmp' },
+	hidden_buffer_types = { 'terminal', 'nofile' },
 })
 require('todo-comments').setup()
 require('nvim-highlight-colors').setup({})
