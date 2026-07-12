@@ -149,3 +149,9 @@ key = "alt+shift+l"
 type = "shell"
 command = "herdr pane resize --current --direction right --amount 0.05"
 description = "resize pane right"
+
+[[keys.command]]
+key = "ctrl+s"
+type = "shell"
+command = "~/.dotfiles/scripts/herdr-second-brain-toggle.sh"
+description = "toggle second-brain workspace"
