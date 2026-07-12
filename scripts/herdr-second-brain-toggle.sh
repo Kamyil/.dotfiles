@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export PATH="/etc/profiles/per-user/${USER:-$(id -un)}/bin:$PATH"
+
 LABEL="second-brain"
 DIR="$HOME/second-brain"
 STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/herdr"
@@ -14,7 +16,7 @@ if [[ -f "$STATE_FILE" ]]; then
 fi
 
 # Read the focused workspace and the current second-brain workspace in one query.
-mapfile -t WS_INFO < <(
+WS_INFO=$(
     herdr workspace list | jq -r '
         ([.result.workspaces[] | select(.focused)][0] // {}) as $focused |
         ([.result.workspaces[] | select(.label == "second-brain").workspace_id][0] // "") as $second_brain |
@@ -23,9 +25,9 @@ mapfile -t WS_INFO < <(
         $second_brain
     '
 )
-CUR_ID="${WS_INFO[0]-}"
-CUR_LABEL="${WS_INFO[1]-}"
-SB_ID="${WS_INFO[2]-}"
+CUR_ID=$(printf '%s\n' "$WS_INFO" | sed -n '1p')
+CUR_LABEL=$(printf '%s\n' "$WS_INFO" | sed -n '2p')
+SB_ID=$(printf '%s\n' "$WS_INFO" | sed -n '3p')
 
 # Already in second-brain → go back to the previous workspace.
 if [[ "$CUR_LABEL" == "$LABEL" ]]; then
