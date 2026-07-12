@@ -151,7 +151,7 @@ require('lazy').setup({
 		'nvim-treesitter/nvim-treesitter', -- Tresitter (for coloring syntax and doing AST-based operations)
 		lazy = false,
 		config = function()
-			local languages = { 'svelte', 'typescript', 'tsx', 'javascript', 'html', 'css', 'php', 'sql', 'rust' }
+			local languages = { 'svelte', 'typescript', 'tsx', 'javascript', 'html', 'css', 'php', 'sql', 'rust', 'markdown', 'markdown_inline' }
 			vim.opt.runtimepath:prepend(ts_parser_install_dir)
 
 			local ok_new, ts = pcall(require, 'nvim-treesitter')
@@ -228,6 +228,32 @@ require('lazy').setup({
 	'epwalsh/obsidian.nvim',
 	'bullets-vim/bullets.vim',
 	'MeanderingProgrammer/render-markdown.nvim',
+	{
+		'3rd/image.nvim',
+		lazy = true,
+		build = false, -- ImageMagick is provided by Nix
+		ft = { 'markdown', 'quarto' },
+		opts = {
+			backend = 'kitty',
+			processor = 'magick_cli',
+			integrations = {
+				markdown = {
+					enabled = true,
+					download_remote_images = true,
+					only_render_image_at_cursor = true,
+					only_render_image_at_cursor_mode = 'popup',
+					filetypes = { 'markdown', 'quarto' },
+				},
+				obsidian = {
+					enabled = true,
+					download_remote_images = true,
+					only_render_image_at_cursor = true,
+					only_render_image_at_cursor_mode = 'popup',
+					filetypes = { 'markdown', 'quarto' },
+				},
+			},
+		},
+	},
 	'bngarren/checkmate.nvim',
 	-- {
 	--   'Kamyil/markdown-agenda.nvim',
