@@ -1,70 +1,54 @@
-#!/usr/bin/env python3
-"""Toggle between the current herdr workspace and the second-brain workspace.
+#!/usr/bin/env bash
+set -euo pipefail
 
-- If already in second-brain → focus the workspace saved in the state file.
-- Otherwise → save current workspace, focus second-brain (create + launch nvim if absent).
-"""
-import json
-import os
-import pathlib
-import subprocess
+LABEL="second-brain"
+DIR="$HOME/second-brain"
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/herdr"
+STATE_FILE="$STATE_DIR/second-brain-prev"
+mkdir -p "${STATE_FILE%/*}"
 
-LABEL = "second-brain"
-DIR = os.path.expanduser("~/second-brain")
-STATE = pathlib.Path(
-    os.environ.get("XDG_STATE_HOME", os.path.expanduser("~/.local/state"))
-) / "herdr" / "second-brain-prev"
-STATE.parent.mkdir(parents=True, exist_ok=True)
-STATE_PREV = 0  # line index for previous workspace ID
-STATE_SB = 1    # line index for cached sb workspace ID
+# Read state: line 1 = prev WS ID, line 2 = cached sb WS ID
+STATE_PREV=""
+STATE_SB=""
+if [[ -f "$STATE_FILE" ]]; then
+    { read -r STATE_PREV; read -r STATE_SB; } < "$STATE_FILE"
+fi
 
+# One workspace list call: find focused WS and (if cache stale) sb WS
+eval "$(
+  herdr workspace list | jq -r '
+    [.result.workspaces[] | select(.focused)] as $focused |
+    $focused[0].workspace_id as $cur_id |
+    $focused[0].label as $cur_label |
+    (
+      if $ARGS.positional[0] == "" then
+        ([.result.workspaces[] | select(.label == $ARGS.positional[1]).workspace_id][0] // "")
+      else
+        $ARGS.positional[0]
+      end
+    ) as $sb_id |
+    "CUR_ID=\($cur_id)\nCUR_LABEL=\($cur_label)\nSB_ID=\($sb_id)"
+  ' --args "$STATE_SB" "$LABEL"
+)"
 
-def herdr(*args: str) -> dict:
-    raw = subprocess.check_output(["herdr", *args]).decode()
-    return json.loads(raw)
+# Already in second-brain → go back to previous workspace
+if [[ "$CUR_LABEL" == "$LABEL" ]]; then
+    [[ -n "$STATE_PREV" ]] && herdr workspace focus "$STATE_PREV" >/dev/null
+    exit 0
+fi
 
+# Save current and cached sb_id, then focus second-brain
+printf '%s\n%s\n' "$CUR_ID" "$SB_ID" > "$STATE_FILE"
 
-def run(*args: str) -> None:
-    subprocess.run(["herdr", *args], check=True)
+if [[ -n "$SB_ID" ]]; then
+    herdr workspace focus "$SB_ID" >/dev/null
+    exit 0
+fi
 
-
-def main() -> None:
-    data = herdr("workspace", "list")
-    workspaces = data["result"]["workspaces"]
-
-    cur_id = cur_label = sb_id = ""
-    for ws in workspaces:
-        label = ws.get("label", "")
-        if ws.get("focused"):
-            cur_id = ws["workspace_id"]
-            cur_label = label
-        if label == LABEL:
-            sb_id = ws["workspace_id"]
-
-    state = STATE.read_text().splitlines() if STATE.exists() else ["", ""]
-
-    # Already in second-brain → go back to previous workspace
-    if cur_label == LABEL:
-        prev = state[STATE_PREV] if len(state) > STATE_PREV else ""
-        if prev:
-            run("workspace", "focus", prev)
-        return
-
-    # Save current workspace and cached sb_id, then focus second-brain
-    STATE.write_text(f"{cur_id}\n{sb_id}\n")
-
-    if sb_id:
-        run("workspace", "focus", sb_id)
-        return
-
-    # Create workspace and launch nvim
-    created = herdr("workspace", "create", "--cwd", DIR, "--label", LABEL, "--no-focus")
-    new_id = created["result"]["workspace"]["workspace_id"]
-    root_pane = created["result"]["root_pane"]["pane_id"]
-    STATE.write_text(f"{cur_id}\n{new_id}\n")
-    run("pane", "run", root_pane, "nvim .")
-    run("workspace", "focus", new_id)
-
-
-if __name__ == "__main__":
-    main()
+# One-time create
+CREATED=$(herdr workspace create --cwd "$DIR" --label "$LABEL" --no-focus)
+SB_ID=$(echo "$CREATED" | jq -r '.result.workspace.workspace_id')
+ROOT=$(echo "$CREATED" | jq -r '.result.root_pane.pane_id')
+printf '%s\n%s\n' "$CUR_ID" "$SB_ID" > "$STATE_FILE"
+herdr pane run "$ROOT" "nvim ." >/dev/null
+herdr workspace focus "$SB_ID" >/dev/null
