@@ -38,6 +38,9 @@
   --z-blue: 130 170 255;
 }
 */
+.glass-titlebar {
+	display: none;
+}
 
 /* Any other CSS works too — use the "Developer tools" button in Settings →
  * Appearance → Overrides to inspect an element, find its class, then style it.
