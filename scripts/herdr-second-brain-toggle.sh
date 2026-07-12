@@ -8,7 +8,6 @@ import json
 import os
 import pathlib
 import subprocess
-import sys
 
 LABEL = "second-brain"
 DIR = os.path.expanduser("~/second-brain")
@@ -16,6 +15,8 @@ STATE = pathlib.Path(
     os.environ.get("XDG_STATE_HOME", os.path.expanduser("~/.local/state"))
 ) / "herdr" / "second-brain-prev"
 STATE.parent.mkdir(parents=True, exist_ok=True)
+STATE_PREV = 0  # line index for previous workspace ID
+STATE_SB = 1    # line index for cached sb workspace ID
 
 
 def herdr(*args: str) -> dict:
@@ -31,10 +32,7 @@ def main() -> None:
     data = herdr("workspace", "list")
     workspaces = data["result"]["workspaces"]
 
-    cur_id = ""
-    cur_label = ""
-    sb_id = ""
-
+    cur_id = cur_label = sb_id = ""
     for ws in workspaces:
         label = ws.get("label", "")
         if ws.get("focused"):
@@ -43,15 +41,17 @@ def main() -> None:
         if label == LABEL:
             sb_id = ws["workspace_id"]
 
+    state = STATE.read_text().splitlines() if STATE.exists() else ["", ""]
+
     # Already in second-brain → go back to previous workspace
     if cur_label == LABEL:
-        if STATE.exists() and STATE.stat().st_size > 0:
-            prev = STATE.read_text().strip()
+        prev = state[STATE_PREV] if len(state) > STATE_PREV else ""
+        if prev:
             run("workspace", "focus", prev)
         return
 
-    # Save current workspace for the return trip, then focus second-brain
-    STATE.write_text(cur_id)
+    # Save current workspace and cached sb_id, then focus second-brain
+    STATE.write_text(f"{cur_id}\n{sb_id}\n")
 
     if sb_id:
         run("workspace", "focus", sb_id)
@@ -61,6 +61,7 @@ def main() -> None:
     created = herdr("workspace", "create", "--cwd", DIR, "--label", LABEL, "--no-focus")
     new_id = created["result"]["workspace"]["workspace_id"]
     root_pane = created["result"]["root_pane"]["pane_id"]
+    STATE.write_text(f"{cur_id}\n{new_id}\n")
     run("pane", "run", root_pane, "nvim .")
     run("workspace", "focus", new_id)
 
