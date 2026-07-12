@@ -48,5 +48,6 @@ CREATED=$(herdr workspace create --cwd "$DIR" --label "$LABEL" --no-focus)
 SB_ID=$(echo "$CREATED" | jq -r '.result.workspace.workspace_id')
 ROOT=$(echo "$CREATED" | jq -r '.result.root_pane.pane_id')
 herdr pane run "$ROOT" "nvim ." >/dev/null
+herdr pane rename "$ROOT" "nvim" >/dev/null
 herdr workspace focus "$SB_ID" >/dev/null
 
