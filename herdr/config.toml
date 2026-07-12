@@ -42,7 +42,7 @@ scrollback_limit_bytes = 50000000
 
 [experimental]
 pane_history = false
-kitty_graphics = false
+kitty_graphics = true
 
 [keys]
 prefix = "alt+space"
