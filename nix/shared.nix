@@ -27,6 +27,9 @@ in
   home.username = "kamil";
   home.stateVersion = "24.11";
 
+  # Use FFF as Pi's native file and content search implementation.
+  home.sessionVariables.PI_FFF_MODE = "override";
+
   # Common shell aliases across both systems
   programs.zsh = {
     enable = true;
@@ -144,8 +147,9 @@ in
        # Docker BuildKit
        export DOCKER_BUILDKIT=1
 
-      # Bat theme
-      export BAT_THEME="Kanagawa"
+      # Use terminal ANSI colors so bat follows the active Kanagawa Paper palette.
+      # "Kanagawa" is not a built-in bat theme and produces an unknown-theme warning.
+      export BAT_THEME="ansi"
 
       # Vi mode and key bindings
       export KEYTIMEOUT=1
