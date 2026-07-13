@@ -9,6 +9,7 @@ This directory is linked by Home Manager to `~/.pi/agent`.
 - `pi-mcp-adapter`: token-efficient MCP proxy and `/mcp` UI.
 - `pi-usage`: `/usage` for token and quota visibility.
 - `pi-opencode-bridge`: OpenCode Go/Zen providers for Pi.
+- `@ff-labs/pi-fff`: FFF-backed file and content search, configured in `override` mode.
 
 ## First Run
 
@@ -31,8 +32,11 @@ Select `oc-sdk-go/...` for OpenCode Go models or `oc-sdk-zen/...` for Zen models
 /mcp
 /usage
 /thinking [off|minimal|low|medium|high|xhigh]
+/fff-health
 /reload-runtime
 ```
+
+`fffind` and `ffgrep` replace Pi's built-in `find` and `grep` tools. `/fff-health` reports the local FFF index status.
 
 `Ctrl+T` cycles thinking level. `Ctrl+Shift+T` keeps the built-in collapse/expand thinking-block toggle.
 

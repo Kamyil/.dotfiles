@@ -4,7 +4,8 @@
     "git:github.com/nicobailon/pi-subagents@v0.24.0",
     "git:github.com/nicobailon/pi-mcp-adapter",
     "git:github.com/aporcelli/pi-usage",
-    "npm:pi-opencode-bridge@0.2.0"
+    "npm:pi-opencode-bridge@0.2.0",
+    "npm:@ff-labs/pi-fff"
   ],
   "lastChangelogVersion": "0.73.1",
   "defaultProvider": "opencode-go",
