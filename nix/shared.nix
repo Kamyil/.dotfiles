@@ -235,8 +235,6 @@ in
       C_BASE_DIRS=(
         "$HOME/.dotfiles"
       )
-      # Max depth for config traversal (1 = immediate children only)
-      C_DEPTH=1
 
       unalias c 2>/dev/null
 
@@ -267,22 +265,39 @@ in
         [ -n "$selected" ] && cd "$selected"
       }
 
-      # Search config directory and open nvim
-      c() {
-        local dirs=()
+      # Search config files with a cached file list for instant startup
+      C_CACHE_FILE="$HOME/.cache/dotfiles-config-files"
 
-        for base in "''${C_BASE_DIRS[@]}"; do
-          if [ -d "$base" ]; then
-            dirs+=("$base")
-            while IFS= read -r dir; do
-              dirs+=("$dir")
-            done < <(find "$base" -mindepth 1 -maxdepth "$C_DEPTH" -type d ! -name ".git" ! -path "*/.git/*" 2>/dev/null)
-          fi
-        done
+      c() {
+        local cache="''${C_CACHE_FILE}"
+        local cache_dir="''${cache:h}"
+        mkdir -p "$cache_dir"
+
+        refresh_cache() {
+          local tmp="''${cache}.tmp.$$"
+          : > "$tmp" || return 1
+          for base in "''${C_BASE_DIRS[@]}"; do
+            [ -d "$base" ] || continue
+            find "$base" -type f ! -path '*/.git/*' ! -path '*/target/*' >> "$tmp" 2>/dev/null
+          done
+          mv "$tmp" "$cache"
+        }
+
+        if [[ ! -s "$cache" ]]; then
+          refresh_cache || return 1
+        else
+          refresh_cache &
+        fi
 
         local selected
-        selected=$(printf '%s\n' "''${dirs[@]}" | fzf)
-        [ -n "$selected" ] && nvim "$selected"
+        selected=$(fzf < "$cache")
+        [ -n "$selected" ] || return 0
+        [ -f "$selected" ] || {
+          echo "Selected file no longer exists: $selected" >&2
+          return 1
+        }
+        cd "$(dirname "$selected")" || return
+        nvim "$(basename "$selected")"
       }
 
       # SSH fuzzy search

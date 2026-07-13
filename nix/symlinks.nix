@@ -42,12 +42,11 @@ let
     fi
 
     if [ -e "$target" ] && [ ! -L "$target" ]; then
-      echo "Refusing to overwrite non-symlink: $target" >&2
-      exit 1
+      echo "Skipping non-symlink target: $target" >&2
+    else
+      mkdir -p "$(dirname "$target")"
+      ln -sfn "$source" "$target"
     fi
-
-    mkdir -p "$(dirname "$target")"
-    ln -sfn "$source" "$target"
   '';
 
   mkActivationScript = links: { home, repo }:
