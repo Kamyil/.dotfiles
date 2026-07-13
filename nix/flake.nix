@@ -28,7 +28,7 @@
     lumen.url = "github:jnsahaj/lumen";
     lumen.inputs.nixpkgs.follows = "nixpkgs";
 
-    herdr.url = "github:ogulcancelik/herdr/v0.7.3";
+    herdr.url = "github:ogulcancelik/herdr/master";
     herdr.inputs.nixpkgs.follows = "nixpkgs";
 
     # Add private fonts
