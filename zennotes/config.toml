@@ -32,12 +32,12 @@ markdown_snippets = true  # auto-close markdown delimiters while typing
 hide_builtin_templates = false  # hide the shipped templates from the pickers
 tabs_enabled = true  # enable tab-based editing
 wrap_tabs = false  # wrap the tab strip instead of scrolling it
-font_size = 14  # editor + preview font size (px)
+font_size = 18  # editor + preview font size (px)
 line_height = 1.35  # line-height multiplier
 scroll_off = 8  # vim scrolloff — lines kept above/below the cursor (0 = off)
-time_format = "12h"  # clock format for the @time macro (12h or 24h)
-preview_max_width = 680  # max reading width for the preview (px)
-editor_max_width = 700  # max width of the editor column (px)
+time_format = "24h"  # clock format for the @time macro (12h or 24h)
+preview_max_width = 800  # max reading width for the preview (px)
+editor_max_width = 1040  # max width of the editor column (px)
 line_number_mode = "relative"  # off | absolute | relative
 line_number_position = "text"  # text | edge
 word_wrap = true  # wrap long lines vs. scroll horizontally
@@ -55,8 +55,8 @@ content_align = "center"  # center | left
 unified_sidebar = true  # merge the note list into the sidebar tree
 
 [typography]
-interface_font = "GeistMono Nerd Font Mono"  # app chrome font; empty = system default
-text_font = "PT Serif"  # editor + preview font; empty = system default
+interface_font = "Berkeley Mono"  # app chrome font; empty = system default
+text_font = "ComicMonoNF"  # editor + preview font; empty = system default
 mono_font = "Berkeley Mono"  # code / monospace font; empty = system default
 
 [view]
@@ -78,6 +78,7 @@ kanban_statuses = []  # custom-status Kanban columns, in order — e.g. ["backlo
 # or a two-key sequence like "g g". Uncomment a reference line to remap it.
 [keymaps]
 "global.toggleSidebar" = "Mod+E"
+"global.toggleZenMode" = "Ctrl+."
 "vim.leaderWeeklyNote" = "Meta+W"
 "vim.leaderCalendar" = "Meta+C"
 "vim.paneSplitRight" = "Ctrl+/"
@@ -103,7 +104,6 @@ kanban_statuses = []  # custom-status Kanban columns, in order — e.g. ["backlo
 # "global.modeEdit" = "Mod+4"  # Switch to editor mode
 # "global.modeSplit" = "Mod+5"  # Switch to split mode
 # "global.modePreview" = "Mod+6"  # Switch to preview mode
-# "global.toggleZenMode" = "Mod+."  # Toggle Zen mode
 # "global.closeActiveTab" = "Mod+W"  # Close active tab
 # "global.reopenClosedTab" = "Shift+Mod+T"  # Reopen closed tab
 # "global.toggleWordWrap" = "Alt+Z"  # Toggle word wrap
