@@ -141,6 +141,85 @@ macOS Homebrew is used for GUI applications and tools that are unavailable or in
 | Keyboard remapping | kmonad | macOS keyboard shortcuts / QMK Toolbox |
 | Linux fonts/cursors | JetBrains Mono, Lexend, Capitaine cursors | Nerd fonts and macOS font management |
 
+## Installing NixOS from scratch
+
+The NixOS host supports a mostly one-command bare-metal installation through
+[Disko](https://github.com/nix-community/disko) and
+[nixos-anywhere](https://github.com/nix-community/nixos-anywhere). The only
+manual choices left are the target over SSH, the disk to erase, and the two
+passwords that must not be committed.
+
+The declared layout in [`nixos/disk-config.nix`](nixos/disk-config.nix) creates:
+
+- a 1 GiB UEFI system partition mounted at `/boot`;
+- a LUKS2-encrypted partition using the remaining space;
+- an ext4 root filesystem inside LUKS.
+
+### 1. Boot the target laptop
+
+Boot the official NixOS installer, connect it to the network, and run:
+
+```sh
+sudo passwd nixos
+ip -brief address
+ls -l /dev/disk/by-id/
+```
+
+The temporary `nixos` password only grants the installer SSH access. Prefer the
+stable whole-disk path under `/dev/disk/by-id/`; do not select a partition path.
+
+### 2. Run the installer from this checkout
+
+Commit the configuration you want to install, then run from macOS or Linux:
+
+```sh
+./scripts/install-nixos-anywhere.sh \
+  --target nixos@192.168.1.50 \
+  --disk /dev/disk/by-id/nvme-YOUR_DRIVE
+```
+
+The script shows the exact disk and requires typing it back before anything is
+destroyed. It then prompts locally for:
+
+1. the LUKS passphrase used at boot;
+2. the `kamil` login password.
+
+Plaintext passwords are held only in temporary mode-0600 files and removed when
+the command exits. The login password is stored on the target as a yescrypt
+hash. The first available local public key (`id_ed25519.pub`, `id_ecdsa.pub`, or
+`id_rsa.pub`) is authorized for `kamil`; override it with `--public-key PATH`.
+
+The installation:
+
+1. stages committed `HEAD`, excluding ignored files and untracked secrets;
+2. persists that checkout as `/home/kamil/.dotfiles` with UID/GID 1000;
+3. replaces [`nixos/install-disk`](nixos/install-disk) in the staged checkout;
+4. generates target hardware settings with `--no-filesystems`, leaving Disko
+   as the single owner of partitions and mounts;
+5. partitions, formats, installs, and reboots through nixos-anywhere.
+
+Preview argument validation and the generated command without connecting to or
+changing a target:
+
+```sh
+./scripts/install-nixos-anywhere.sh \
+  --target nixos@192.168.1.50 \
+  --disk /dev/nvme0n1 \
+  --dry-run
+```
+
+`--yes` skips only the disk-name confirmation; password prompts remain. Use
+`--identity PATH` when the installer requires a specific SSH private key.
+
+After the first login, inspect and commit the generated
+`nixos/hardware-configuration.nix`, `nixos/install-disk`, and
+`nixos/bootstrap.nix` changes if this machine should become the repository's
+canonical NixOS host.
+
+> **Destructive boundary:** Disko erases the entire value passed to `--disk`.
+> Target/disk selection cannot safely be inferred when more than one drive is
+> present, so the installer deliberately requires both.
+
 ## Applying the configurations
 
 From the repository root:

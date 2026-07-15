@@ -5,6 +5,15 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixos-anywhere = {
+      url = "github:nix-community/nixos-anywhere";
+      inputs.disko.follows = "disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     rust-overlay.url = "github:oxalica/rust-overlay";
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
@@ -39,6 +48,8 @@
       nixpkgs,
       home-manager,
       nix-darwin,
+      disko,
+      nixos-anywhere,
       rust-overlay,
       sqlit,
       worktrunk,
@@ -57,6 +68,7 @@
           home-manager
           rust-overlay
           lib
+          disko
           sqlit
           worktrunk
           lazyjira
@@ -83,5 +95,18 @@
           ;
       };
     in
-    nixosConfig // macosConfig;
+    nixosConfig
+    // macosConfig
+    // {
+      packages =
+        lib.genAttrs
+          [
+            "aarch64-darwin"
+            "x86_64-darwin"
+            "x86_64-linux"
+          ]
+          (system: {
+            nixos-anywhere = nixos-anywhere.packages.${system}.default;
+          });
+    };
 }

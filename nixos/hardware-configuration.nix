@@ -45,6 +45,11 @@
 
   swapDevices = [ ];
 
+  # Preserve the existing machine's UUID-based mounts until it is reinstalled.
+  # nixos-anywhere replaces this file with a --no-filesystems hardware scan;
+  # that generated file omits this opt-out and lets Disko own the new layout.
+  disko.enableConfig = false;
+
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

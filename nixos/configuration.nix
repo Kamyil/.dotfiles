@@ -12,6 +12,7 @@ in
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./bootstrap.nix
   ];
 
   programs.hyprland.enable = true; # ships Hyprland + Xwayland
@@ -19,9 +20,12 @@ in
   # Enable nix-ld for running dynamically linked binaries (like opencode)
   programs.nix-ld.enable = true;
 
-  users.groups.kamil = { };
+  users.groups.kamil = {
+    gid = 1000;
+  };
   programs.zsh.enable = true;
   users.users.kamil = {
+    uid = 1000;
     shell = pkgs.zsh;
     isNormalUser = true;
     group = "kamil"; # Add this line

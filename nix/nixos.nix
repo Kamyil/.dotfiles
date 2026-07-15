@@ -2,6 +2,7 @@
 {
   nixpkgs,
   home-manager,
+  disko,
   rust-overlay,
   lib,
   sqlit,
@@ -23,6 +24,8 @@ in
       {
         nixpkgs.overlays = [ rust-overlay.overlays.default ];
       }
+      disko.nixosModules.disko
+      ../nixos/disk-config.nix
       ../nixos/configuration.nix
       home-manager.nixosModules.home-manager
       {
