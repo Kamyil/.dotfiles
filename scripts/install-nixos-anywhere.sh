@@ -166,7 +166,8 @@ chmod 600 "$luks_key"
 checkout="$staging_root/home/kamil/.dotfiles"
 mkdir -p "$(dirname "$checkout")" "$staging_root/etc/nixos"
 git clone --quiet --no-local --branch "$branch" "$repo_root" "$checkout"
-git -C "$checkout" checkout --quiet "$source_head"
+[[ $(git -C "$checkout" rev-parse HEAD) == "$source_head" ]] \
+  || fail "source branch changed while staging; rerun the installer"
 if [[ -n $origin_url ]]; then
   git -C "$checkout" remote set-url origin "$origin_url"
 fi
