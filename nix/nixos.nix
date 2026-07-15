@@ -1,168 +1,103 @@
-# NixOS-specific configuration
-{ self, nixpkgs, nixpkgs-stable, home-manager, dotfiles, rust-overlay, lib, sqlit, worktrunk, lazyjira, hunk, lumen, herdr, ... }:
+# NixOS-specific configuration.
+{
+  nixpkgs,
+  home-manager,
+  rust-overlay,
+  lib,
+  sqlit,
+  worktrunk,
+  lazyjira,
+  hunk,
+  lumen,
+  herdr,
+  ...
+}:
 
 let
   system = "x86_64-linux";
-  
-  # NixOS is a fixed x86_64 Linux host; do not derive the target from the evaluator.
-  
-  # Local overlays
-  opencode-overlay = import ./overlays/opencode.nix;
-  codex-overlay = import ./overlays/codex.nix;
-  pi-overlay = import ./overlays/pi.nix;
-
-  # Helper function to create packages for a given system
-  mkPkgs = system: import nixpkgs {
-    inherit system;
-    overlays = [
-      rust-overlay.overlays.default
-      opencode-overlay
-      codex-overlay
-      pi-overlay
-    ];
-    config.allowUnfree = true;
-  };
-
-  pkgs = mkPkgs system;
-  pkgsStable = import nixpkgs-stable {
-    inherit system;
-    overlays = [ rust-overlay.overlays.default ];
-    config.allowUnfree = true;
-  };
 in
 {
   nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
     inherit system;
     modules = [
-      ./configuration.nix
-
-      # enable HM as a NixOS module
+      {
+        nixpkgs.overlays = [ rust-overlay.overlays.default ];
+      }
+      ../nixos/configuration.nix
       home-manager.nixosModules.home-manager
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.backupFileExtension = "backup";
-        home-manager.extraSpecialArgs = { inherit pkgsStable system worktrunk lazyjira hunk lumen herdr; };
+        home-manager.extraSpecialArgs = {
+          inherit
+            system
+            worktrunk
+            lazyjira
+            hunk
+            lumen
+            herdr
+            ;
+        };
 
-        # --- your user ---
-        home-manager.users.kamil = { pkgs, config, pkgsStable, system, worktrunk, lumen, ... }:
-          let
-            repo = "${config.home.homeDirectory}/.dotfiles";
-            link = p: config.lib.file.mkOutOfStoreSymlink "${repo}/${p}";
-          in
-        {
+        home-manager.users.kamil = { pkgs, ... }: {
           imports = [ ./shared.nix ];
-          
+
           home.homeDirectory = lib.mkForce "/home/kamil";
-          
-          # Disable version mismatch warning between HM and nixpkgs
           home.enableNixpkgsReleaseCheck = false;
 
-          # NixOS-specific packages (shared packages are in shared.nix)
-          home.packages = (with pkgs; [
-            # Development tools
-            gcc docker
-            go yarn pnpm fnm wrangler
-            lua luarocks python3 php
-            zig stylua lua-language-server
-            (pkgsStable.rust-bin.nightly.latest.default.override {
-              extensions = [ "rust-src" "cargo" "rustc" ];
-            })
+          home.packages =
+            (with pkgs; [
+              gcc
+              nixd
+              trash-cli
+              docker-buildx
+              docker-compose
+              flameshot
+              swappy
+              chromium
+              thunderbird
+              signal-desktop
+              obsidian
+              sshfs
+              impala
+              bluetuith
+              hyprlock
+              capitaine-cursors
+              nerd-fonts.jetbrains-mono
+              lexend
+              kmonad
+              opencode
+              (rust-bin.nightly.latest.default.override {
+                extensions = [
+                  "rust-src"
+                  "cargo"
+                  "rustc"
+                ];
+              })
+            ])
+            ++ [
+              sqlit.packages.${system}.default
+              worktrunk.packages.${system}.default
+              lumen.packages.${system}.default
+            ];
 
-            # Nix LSP (not available on macOS)
-            nixd
+          programs.zsh.shellAliases = {
+            finder = "xdg-open";
+            nrs = "sudo nixos-rebuild switch --flake ~/.dotfiles/nix";
+          };
 
-            # System utilities
-            trash-cli
-
-            # Network and system tools
-            wireshark-cli
-
-            # Container tools
-            docker-buildx docker-compose podman podman-compose
-
-            # Media and graphics
-            ffmpeg imagemagick flameshot swappy chromium thunderbird signal-desktop
-
-            # Database and data tools
-            postgresql
-
-            # Text editors and viewers
-            helix
-            superfile
-            obsidian
-
-             # Terminal emulators
-             alacritty
-
-            # Virtualization and containers
-            qemu
-
-            # Libraries
-            libssh2
-
-             # File synchronization and transfer
-             sshfs
-
-             # Browsers
-             qutebrowser
-
-             # Network tools
-             impala # TUI for managing WiFi
-            bluetuith
-
-            # Hyprland lock screen
-            hyprlock
-
-            # Cursor themes - minimal macOS-like style
-            capitaine-cursors
-
-            # Fonts for waybar and terminal
-            nerd-fonts.jetbrains-mono
-            lexend
-
-            # Keyboard remapping
-            kmonad
-          ]) ++ [
-            pkgs.opencode
-            # SQL TUI from flake
-            sqlit.packages.${system}.default
-            # Git worktree CLI from flake
-            worktrunk.packages.${system}.default
-            # Git diff/review TUI from flake
-            lumen.packages.${system}.default
-          ];
-
-          # NixOS-specific zsh additions
-          programs.zsh.shellAliases = lib.mkMerge [
-            {
-              # Override nrs alias for NixOS
-              nrs = "sudo nixos-rebuild switch --flake ~/.dotfiles/nix";
-            }
-          ];
-
-          # NixOS-specific zsh init content - add PNPM path for Linux
           programs.zsh.initContent = lib.mkAfter ''
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-              export PNPM_HOME="/Users/kamil/Library/pnpm"
-            else
-              export PNPM_HOME="$HOME/.local/share/pnpm"
-            fi
-            case ":$PATH:" in
-              *":$PNPM_HOME:"*) ;;
-              *) export PATH="$PNPM_HOME:$PATH" ;;
-            esac
+            open_url() {
+              xdg-open "$@"
+            }
+
+            unmount_sshfs() {
+              fusermount -u "$1"
+            }
           '';
 
-          # Linux-specific configs (always applies on NixOS)
-          home.file."second-brain/.keep".text = "";
-
-           fonts.fontconfig = {
-              enable = true;
-            };
-
-          # Set cursor theme environment variables for better compatibility
           home.sessionVariables = {
+            PNPM_HOME = "$HOME/.local/share/pnpm";
             XCURSOR_THEME = "capitaine-cursors";
             XCURSOR_SIZE = "24";
             HYPRCURSOR_THEME = "capitaine-cursors";
@@ -170,41 +105,29 @@ in
             OMARCHY_PATH = "$HOME/.local/share/omarchy";
           };
 
-          # GTK cursor theme - minimal macOS-like style
-          gtk.enable = true;
-          gtk.cursorTheme = {
-            package = pkgs.capitaine-cursors;
-            name = "capitaine-cursors";
-            size = 24;
-          };
-
-          # Nice defaults
-          xdg.enable = true;
-
-          home.sessionPath = [ "$HOME/.local/share/omarchy/bin" ];
+          home.sessionPath = [
+            "$HOME/.local/share/pnpm"
+            "$HOME/.local/share/omarchy/bin"
+          ];
 
           home.file = {
-            ".config/autostart/walker.desktop".source = link "autostart/walker.desktop";
-            ".config/elephant/calc.toml".source = link "elephant/calc.toml";
-            ".config/elephant/desktopapplications.toml".source = link "elephant/desktopapplications.toml";
-            ".config/omarchy/current/theme/walker.css".source = link "omarchy/current/theme/walker.css";
-            ".config/omarchy/current/theme/waybar.css".source = link "omarchy/current/theme/waybar.css";
-            ".config/omarchy/current/background".source = link "Downloads/2-Pawel-Czerwinski-Abstract-Purple-Blue.jpg";
-            ".config/tmux".source = link "tmux";
-            ".config/lsd".source = link "lsd";
-            ".config/alacritty".source = link "alacritty";
-            ".config/walker/config.toml".source = link "walker/config.toml";
-            ".config/walker/themes/kanagawa.css".source = link "walker/themes/kanagawa.css";
-            ".config/kmonad/config.kbd".source = link "kmonad/config.kbd";
-            ".local/share/omarchy/bin".source = link "omarchy/bin";
-            ".local/share/omarchy/default/walker/themes/omarchy-default/layout.xml".source = link "omarchy/default/walker/themes/omarchy-default/layout.xml";
-            ".local/share/omarchy/default/walker/themes/omarchy-default/style.css".source = link "omarchy/default/walker/themes/omarchy-default/style.css";
-            ".local/share/omarchy/default/waybar/indicators".source = link "omarchy/default/waybar/indicators";
-            ".config/atuin/config.toml".source = link "atuin/config.toml";
-            # Docker CLI plugins - symlink buildx and compose
+            "second-brain/.keep".text = "";
             ".docker/cli-plugins/docker-buildx".source = "${pkgs.docker-buildx}/bin/docker-buildx";
             ".docker/cli-plugins/docker-compose".source = "${pkgs.docker-compose}/bin/docker-compose";
           };
+
+          fonts.fontconfig.enable = true;
+
+          gtk = {
+            enable = true;
+            cursorTheme = {
+              package = pkgs.capitaine-cursors;
+              name = "capitaine-cursors";
+              size = 24;
+            };
+          };
+
+          xdg.enable = true;
 
           systemd.user.services.kmonad = {
             Unit = {
@@ -216,9 +139,7 @@ in
               ExecStart = "${pkgs.kmonad}/bin/kmonad %h/.config/kmonad/config.kbd";
               Restart = "on-failure";
             };
-            Install = {
-              WantedBy = [ "graphical-session.target" ];
-            };
+            Install.WantedBy = [ "graphical-session.target" ];
           };
         };
       }

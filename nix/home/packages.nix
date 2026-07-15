@@ -1,0 +1,98 @@
+# Packages used by the interactive user on both macOS and NixOS.
+{
+  pkgs,
+  lib,
+  lazyjira,
+  hunk,
+  herdr,
+  ...
+}:
+
+{
+  home.packages =
+    with pkgs;
+    [
+      ripgrep
+      btop
+      yazi
+      tmux
+      gh
+      railway
+      curl
+      wget
+      tree
+      fd
+      openspec
+      omp
+      zsh-completions
+      eza
+      difftastic
+      just
+      jq
+      yq
+      lazygit
+      lazydocker
+      (oxker.overrideAttrs (_: {
+        doCheck = false;
+      }))
+      gnugrep
+      gnused
+      coreutils
+      bat
+      delta
+      fzf
+      htop
+      fastfetch
+      pfetch
+      unzip
+      p7zip
+      nmap
+      socat
+      wireguard-tools
+      wireguard-go
+      git-extras
+      tig
+      stow
+      neovim
+      zig
+      stylua
+      tree-sitter
+      go
+      yarn
+      pnpm
+      fnm
+      wrangler
+      lua
+      luarocks
+      lua-language-server
+      python3
+      php
+      bun
+      wireshark-cli
+      podman
+      podman-compose
+      ffmpeg
+      postgresql
+      helix
+      superfile
+      qemu
+      libssh2
+      alacritty
+      wezterm
+      kitty
+      rsync
+      openssh
+      imagemagick
+      tldr
+      watchexec
+      qutebrowser
+    ]
+    ++ lib.optionals pkgs.stdenv.isLinux [
+      sweethome3d.application
+    ]
+    ++ [
+      hunk.packages.${pkgs.stdenv.hostPlatform.system}.default
+      lazyjira.packages.${pkgs.stdenv.hostPlatform.system}.default
+      herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
+    ];
+}

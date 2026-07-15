@@ -1,13 +1,25 @@
+# OS and editor metadata
+.DS_Store
+**/.DS_Store
+*.bak
+*.backup
+
+# Generated Python and application runtime state
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.log
+
 lazygit/state.yml
-lazygit/state.yml
+hunk/state.json
+wezterm/workspaces.mru
 nvim/startup.log
-tmux/plugins
-pynvim
+tmux/plugins/
+pynvim/
+
+# Obsidian workspace state
 obsidian/workspace*.json
 obsidian/plugins/obsidian-jira-issue/data.json
 obsidian/plugins/remember-cursor-position/cursor-positions.json
 obsidian/.trash/
-obsidian/.DS_Store
-obsidian/**/.DS_Store
-obsidian/._*
 obsidian/**/._*

@@ -1,59 +1,88 @@
 # Dotfiles Agent Guidelines
 
-- When doing commits, pls write them in following pattern: 
-(topic) - (feature/change) ex. `(nix) (opencode) updated opencode overlay to use opencode v2`
+## Repository Contract
 
-## Build/Test Commands
-- **No build system** - This is a configuration repository
-- **Test configs**: Restart applications or source files (e.g., `source ~/.zshrc`)
-- **NixOS**: Suggest changes but let user run `sudo nixos-rebuild switch` manually
-- **Manual testing**: Check individual configs by loading them in respective applications
-- **Hyprland config errors**: Use `hyprctl configerrors` to check config issues
-- **Waybar restart**: `pkill -x waybar; waybar`
-- **Walker restart**: `pkill -x walker` then trigger launcher (Super+Space)
-- **Wallpaper restart**: `pkill -x swaybg; swaybg -i ~/.config/omarchy/current/background -m fill`
+- Root-level tool directories contain live configuration: `nvim/`, `kitty/`, `hypr/`, etc. Never add a second `config/` tree.
+- Nix owns packages and symlink topology. Git owns mutable config contents.
+- Repository configs must remain live-editable without a rebuild.
+- Never replace out-of-store links with store-copied Home Manager files.
+- Never run `sudo`, rebuild a system, modify files outside this repository, or remove installed applications.
 
-## Code Style Guidelines
-- **Lua (WezTerm/Hammerspoon)**: Use `local` variables, snake_case, tabs for indentation
-- **Shell scripts**: Use `#!/usr/bin/env bash`, proper quoting, shellcheck compliance
-- **Config files**: Follow existing indentation patterns (2 spaces for YAML/TOML, 4 for others)
-- **Git**: Use delta pager configured in .gitconfig
-- **Stylua**: 2 spaces, 160 column width, single quotes preferred (see nvim/.stylua.toml)
+## Nix Architecture
 
-## Architecture Patterns
-- **Modular approach**: Separate configs per tool in respective directories
-- **NixOS integration**: Flake-based with home-manager for packages and user activation, but not for store-owned dotfile contents
-- **Live-editable dotfile links**: Config directories are intentionally out-of-store symlinks; Nix declares link topology, Git checkout provides mutable contents for app hot reloads without rebuilds
-- **New config symlinks**: Add the source configuration under a root-level tool directory (never under `config/`), then declare its live symlink in `nix/symlinks.nix` to the actual destination, preferably under `$XDG_CONFIG_HOME` (`~/.config`) when the application supports it.
-- **Symlink implementation**: Keep symlink targets in `nix/symlinks.nix`; do not add one-off `ln -s` blocks or unconditional `rm -rf` cleanup
-- **Cross-platform**: macOS uses Aerospace for tiling and SketchyBar for the status bar; NixOS uses Hyprland and Waybar
-- **Environment files**: Use .env files for sensitive data (see scripts/.env)
- 
-## README Architecture Documentation
-- **Keep `README.md` current**: When changing Nix entrypoints, platform branches, package roles, symlink topology, root-level config layout, or rebuild workflow, update the corresponding README prose, tool matrix, and Mermaid diagrams in the same change.
-- **Make it useful**: Diagrams and descriptions must reflect the actual repository, distinguish shared/macOS/NixOS behavior, and explain live-reload symlink flow for both humans and agents. Do not leave generic or aspirational architecture documentation.
-- **Verify documentation**: Check every README path link and ensure diagrams name real files, outputs, hosts, and relationships. Remove stale claims when configuration moves or behavior changes.
-- **Document new tools by role**: When adding or removing a platform package, Homebrew item, overlay, or major configured application, update the relevant platform matrix and equivalent tool entry if one exists.
+- `nix/flake.nix`: composition root and pinned inputs.
+- `nix/macos.nix`: `MacBook-Pro-Kamil`, nix-darwin, Homebrew, Darwin packages/helpers.
+- `nix/nixos.nix`: NixOS composition and Linux Home Manager settings.
+- `nixos/configuration.nix`: active NixOS host configuration.
+- `nixos/hardware-configuration.nix`: generated hardware configuration.
+- `nix/shared.nix`: shared Home Manager entrypoint.
+- `nix/home/links.nix`: out-of-store Home Manager links and collision checks.
+- `nix/home/packages.nix`: shared user packages.
+- `nix/home/shell.nix`: shared Zsh, prompt, history, and Git configuration.
+- `nix/symlinks.nix`: authoritative common/Darwin/Linux repository link maps.
+- `nix/overlays/`: active local overlays only. `omp` and OpenCode are the supported coding harnesses; do not restore the separate `pi` or Codex packages.
 
-## Omarchy-Based NixOS Setup (Hyprland/Walker/Waybar)
-- **Walker (Nixpkgs)**: Uses v0.13 config at `walker/config.toml` with theme `walker/themes/kanagawa.css` (`theme = "kanagawa"`).
-- **Launcher keybinds**: `Super+Space` runs `/home/kamil/.local/share/omarchy/bin/omarchy-launch-walker`, `Super+Escape` runs emoji picker (`-m emojis`), `Super+Ctrl+E` runs symbols (`-m symbols`).
-- **Emoji auto-paste**: `omarchy/bin/omarchy-emoji-insert` (wl-copy + wtype). Requires `wtype` + `wl-clipboard`.
-- **Omarchy scripts**: Stored in `omarchy/bin`, linked to `~/.local/share/omarchy/bin`. Keep scripts executable; Waybar uses absolute paths for reliability.
-- **Waybar**: Config in `waybar/config`, style in `waybar/style.css` (JetBrainsMono Nerd Font, NixOS logo glyph). Indicator script at `omarchy/default/waybar/indicators/screen-recording.sh`.
-- **Env + links**: `OMARCHY_PATH` set in `nix/nixos.nix`, assets linked via home-manager (e.g., `~/.config/omarchy/current/theme/waybar.css`, `~/.config/omarchy/current/background`, `~/.local/share/omarchy/bin`).
-- **Wallpaper**: Hyprpaper is unreliable here; use `swaybg` autostart in `hypr/hyprland.conf` with `~/.config/omarchy/current/background`.
-- **Required packages**: `waybar`, `walker`, `uwsm`, `swaybg`, `pulsemixer`, `pamixer`, `rfkill_udev` (not `rfkill`), `impala`, `bluetui*`, `wtype`.
+## Live Symlink Rules
 
-## Important Notes
-- Never commit secrets or API keys to .env files
-- Test changes on non-production systems first
-- Maintain backward compatibility for existing tool configurations
-- **Focus on NixOS configs**: Rely entirely on nixos/ folder and files referenced there; do not reintroduce retired window-manager configurations
+- Add repository-backed links only in `nix/symlinks.nix`.
+- Use `commonLinks` only when the app/config is valid on both systems.
+- Darwin-only examples: Aerospace, SketchyBar, Hammerspoon, cmux.
+- Linux-only examples: Hyprland, Waybar, Walker, Omarchy.
+- `nix/home/links.nix` must use `mkOutOfStoreSymlink`; never use `force = true`.
+- Missing sources, real targets, and unrelated symlinks must abort activation without modifying the target.
+- Existing links already pointing into `~/.dotfiles` may be adopted.
+- Rebuild only after changing packages or link topology. Normal config edits require no rebuild.
 
-## System Operation Guidelines
-- **NEVER run sudo commands** - Always let the user run them and provide output when requested
-- **NEVER modify system files** outside of the dotfiles directory (e.g., /Applications, /System, /Library)
-- **NEVER remove applications** - Let user handle manual app removals
-- **Focus on configuration**: Edit config files and provide guidance, not execute system changes
-- **User autonomy**: Respect user's desire to maintain full control over their system
+## Package and Shell Ownership
+
+- Put cross-platform user tools in `nix/home/packages.nix`.
+- Put platform user tools in `nix/macos.nix` or `nix/nixos.nix`.
+- Keep NixOS system packages for recovery, services, and desktop/session integration.
+- Before moving a package, confirm it remains installed in exactly one intended layer. Never silently drop capabilities while deduplicating.
+- `fnm` owns interactive Node versions. Do not restore NVM initialization or a competing global `nodejs`.
+- Bun is Nix-managed; do not add mutable `$HOME/.bun` PATH setup.
+- Keep `programs.zsh.dotDir = config.home.homeDirectory`.
+- Put `open`, `pbcopy`, and `defaults` helpers on Darwin; put `xdg-open` and `fusermount` helpers on Linux.
+- Quote shell paths, hosts, and user-selected values.
+
+## Nix Editing Checks
+
+- Flakes ignore untracked imported files. Add new Nix files to the Git index, or use `git add -N <path>`, before evaluation.
+- Format changed Nix files with `nixfmt`.
+- Required final check:
+
+```sh
+nix flake check --no-build ./nix
+```
+
+- Validate generated Zsh content when shell configuration changes:
+
+```sh
+nix eval --raw ./nix#darwinConfigurations.MacBook-Pro-Kamil.config.home-manager.users.kamil.programs.zsh.initContent | zsh -n
+nix eval --raw ./nix#nixosConfigurations.nixos.config.home-manager.users.kamil.programs.zsh.initContent | zsh -n
+```
+
+- Let the user apply changes with `nrs`; never run it for them.
+
+## NixOS Desktop Invariants
+
+- NixOS uses Hyprland, Waybar, Walker, Elephant, and `swaybg`; do not restore retired window-manager configs.
+- `Super+Space` launches Walker; `Super+Escape` selects emoji; `Super+Ctrl+E` selects symbols.
+- Omarchy scripts live in `omarchy/bin` and must remain executable.
+- `OMARCHY_PATH` and Omarchy links are declared in `nix/nixos.nix` and `nix/symlinks.nix`.
+- Keep required desktop packages: `waybar`, `walker`, `uwsm`, `swaybg`, `pulsemixer`, `pamixer`, `rfkill_udev`, `impala`, `bluetuith`, `wtype`, and `wl-clipboard`.
+- Check Hyprland changes with `hyprctl configerrors`; let the user perform disruptive restarts.
+
+## Documentation and Hygiene
+
+- Update `README.md` when changing entrypoints, package roles, link maps, platforms, overlays, or rebuild behavior.
+- Verify every local README link and Mermaid path exists.
+- Keep generated state ignored: `.DS_Store`, logs, Python bytecode, caches, backups, MRU files, and application state.
+- Never commit secrets, API keys, or `.env` contents.
+
+## Style and Commits
+
+- Shell: `#!/usr/bin/env bash`, quoted expansions, ShellCheck-compatible.
+- Lua: local variables, `snake_case`; use repository Stylua settings.
+- Preserve the surrounding config style; use `nixfmt` for Nix.
+- Commit format: `(topic) - (feature/change)`, e.g. `(nix) - update omp overlay`.

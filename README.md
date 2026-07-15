@@ -10,17 +10,17 @@ The top-level Nix flake is the composition root. It imports one system definitio
 
 ```mermaid
 flowchart TD
-    F["nix/flake.nix<br/>inputs + outputs"] --> S["nix/shared.nix<br/>Home Manager: common shell, packages, links"]
-    F --> D["nix/macos.nix<br/>nix-darwin host"]
-    F --> L["nix/nixos.nix<br/>NixOS host"]
+    F["nix/flake.nix<br/>inputs + outputs"] --> D["nix/macos.nix<br/>nix-darwin host"]
+    F --> L["nix/nixos.nix<br/>NixOS composition"]
+    L --> NH["nixos/configuration.nix<br/>NixOS host"]
     D --> HM1["Home Manager"]
     L --> HM2["Home Manager"]
-    D --> DS["nix/symlinks.nix<br/>macOS link set"]
-    L --> LS["nix/symlinks.nix<br/>Linux link set"]
+    HM1 --> S["nix/shared.nix<br/>shared Home Manager entry"]
+    HM2 --> S
+    S --> M["nix/home/<br/>shell + packages + live links"]
+    M --> SYM["nix/symlinks.nix<br/>common + platform link maps"]
     HM1 --> MAC["MacBook-Pro-Kamil<br/>aarch64-darwin"]
     HM2 --> NIX["nixos<br/>x86_64-linux"]
-    DS --> MAC
-    LS --> NIX
 ```
 
 ### Platform branches
@@ -36,11 +36,12 @@ flowchart LR
 ```
 
 - **`nix/flake.nix`** pins inputs and exposes the `darwinConfigurations` and `nixosConfigurations` outputs.
-- **`nix/shared.nix`** is the common Home Manager layer: zsh, Starship, Git, common CLI tools, and links for shared applications.
-- **`nix/macos.nix`** builds the `MacBook-Pro-Kamil` nix-darwin system, adds macOS packages, macOS defaults, Homebrew, and the Darwin-specific links.
-- **`nix/nixos.nix`** builds the `nixos` system, adds Linux packages, fonts, cursor/GTK settings, systemd user services, and the Linux-specific links.
+- **`nix/shared.nix`** imports the common Home Manager modules in `nix/home/`.
+- **`nix/home/`** contains shared shell, package, and live-link modules.
+- **`nix/macos.nix`** builds the `MacBook-Pro-Kamil` nix-darwin system and adds macOS packages, defaults, Homebrew, and shell helpers.
+- **`nix/nixos.nix`** composes the `nixos` host with Home Manager and Linux-specific user settings.
 - **`nixos/configuration.nix`** contains machine-level NixOS settings such as boot, networking, graphics, audio, and Hyprland.
-- **`nix/overlays/`** packages tools that need a local overlay (`opencode`, `codex`, and `pi`).
+- **`nix/overlays/`** packages tools that need a local overlay (`opencode` and `omp`).
 
 ## How live configuration reload works
 
@@ -64,11 +65,12 @@ sequenceDiagram
 The link policy lives in [`nix/symlinks.nix`](nix/symlinks.nix):
 
 - `commonLinks` applies to both operating systems.
-- `darwinLinks` adds macOS desktop/config paths such as SketchyBar, Aerospace, and Alacritty.
-- `linuxLinks` adds Hyprland and Waybar.
-- Activation refuses to overwrite a real, non-symlink target and fails if a source is missing.
+- `darwinLinks` adds macOS-only paths such as SketchyBar, Aerospace, Hammerspoon, and cmux.
+- `linuxLinks` adds Hyprland, Waybar, Walker, Omarchy, and other Linux desktop paths.
+- Home Manager creates every repository link with `mkOutOfStoreSymlink`.
+- Activation adopts only legacy symlinks already pointing into this checkout. Missing sources, real targets, and unrelated symlinks abort without overwriting them.
 
-Some files use Home Manager's `mkOutOfStoreSymlink` in [`nix/shared.nix`](nix/shared.nix), while the Darwin activation explicitly runs the link generator from `symlinks.nix`. NixOS also declares Linux-only links and files in its Home Manager module. This keeps links live while still allowing Nix to manage their locations.
+Editing linked files remains immediate and requires no rebuild. Rebuild only after changing packages or link topology.
 
 ## Repository layout
 
@@ -98,15 +100,14 @@ The package sets are intentionally split into common, macOS, and NixOS layers. â
 | Git and review | Git, Git Extras, tig, lazygit, difftastic, hunk, lumen | [`lazygit/`](lazygit), [`hunk/`](hunk) |
 | Agentic coding | oh-my-pi (`omp`) primary; OpenCode fallback | [`pi/`](pi), [`opencode/`](opencode) |
 | SQL workflow | vim-dadbod, vim-dadbod-ui, vim-dadbod-completion in Neovim | [`nvim/init.lua`](nvim/init.lua) |
-
 | Networking and transfer | curl, wget, OpenSSH, rsync, socat, WireGuard | shell configuration |
 | Terminal UI and utilities | btop, htop, fastfetch, superfile, lazydocker, tldr | [`btop/`](btop), [`superfile/`](superfile) |
 | Terminal/workflow CLIs | herdr, worktrunk, lazyjira | [`herdr/`](herdr), [`worktrunk/`](worktrunk) |
-| Browser tooling | qutebrowser (available fallback) | [`qutebrowser/`](qutebrowser) |
+| Browser tooling | qutebrowser (available fallback) | Nix package; no repository-specific configuration |
 
 SQL work is intentionally handled inside Neovim with the Dadbod plugins. Harlequin and Rainfrog were tried and removed from the package sets.
 
-For agentic work, **oh-my-pi (`omp`) is the primary harness** and **OpenCode is the fallback**. No other agentic harnesses are part of the intended workflow; their presence in the repository should not be interpreted as active tooling.
+For agentic work, **oh-my-pi (`omp`) is the primary harness** and **OpenCode is the fallback**. No other agentic harness is installed by this flake.
 
 ### macOS-specific
 
@@ -121,7 +122,7 @@ For agentic work, **oh-my-pi (`omp`) is the primary harness** and **OpenCode is 
 | macOS automation | Hammerspoon | Hyprland scripts / systemd user services |
 | Desktop applications | Chromium, Firefox, Vivaldi, Signal, Obsidian, Postman, Raycast | Chromium, Firefox, Signal, Obsidian, qutebrowser (package availability differs) |
 
-The primary macOS browser is **Helium**. The Chromium, Firefox, Vivaldi, and qutebrowser configurations are retained as fallback/returning-browser setups, not as the daily browser workflow.
+The primary macOS browser is **Helium**, installed outside this flake. Chromium, Firefox, Vivaldi, and qutebrowser remain declaratively installed fallbacks.
 
 macOS Homebrew is used for GUI applications and tools that are unavailable or inconvenient in the current Nix package set. The authoritative list is in [`nix/macos.nix`](nix/macos.nix).
 
@@ -152,12 +153,12 @@ sudo darwin-rebuild switch --flake ./nix # or `nrs` alias
 sudo nixos-rebuild switch --flake ./nix # or `nrs` alias
 ```
 
-The shared zsh aliases expose these as `nrs`; each platform overrides it with the correct rebuild command. A rebuild installs or updates packages and recreates the declared symlink topology. Editing a linked root-level configuration afterward should normally be picked up by the application without another rebuild.
+Each platform defines `nrs` with the correct rebuild command. A rebuild installs or updates packages and recreates the declared symlink topology. Editing a linked root-level configuration afterward is immediately visible without another rebuild.
 
 ## Adding a new configuration
 
 1. Create a root-level directory or file named after the application.
-2. Add the desired `$HOME` target to the appropriate set in [`nix/symlinks.nix`](nix/symlinks.nix), or add a Home Manager `home.file` entry when the target needs a special path.
+2. Add the desired `$HOME` target to the appropriate set in [`nix/symlinks.nix`](nix/symlinks.nix). Reserve direct `home.file` declarations for Nix-store-owned files rather than repository dotfiles.
 3. Use `commonLinks` for both platforms; use `darwinLinks` or `linuxLinks` when the application is platform-specific.
 4. Rebuild once to create the link, then edit the root-level source directly.
 
