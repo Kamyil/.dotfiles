@@ -23,6 +23,13 @@ right_click_passthrough_modifier = "ctrl"
 redraw_on_focus_gained = false
 mouse_scroll_lines = 5
 
+[ui.sidebar.spaces]
+rows = [
+  ["state_icon", "$icon", "workspace"],
+  ["branch", "git_status"],
+  ["$pr", "$diff"],
+]
+
 [ui.toast]
 delivery = "terminal"
 delay_seconds = 2
