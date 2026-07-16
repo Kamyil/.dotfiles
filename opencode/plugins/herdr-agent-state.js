@@ -2,7 +2,7 @@
 // managed by herdr; reinstalling or updating the integration overwrites this file.
 // add custom hooks/plugins beside this file instead of editing it.
 // HERDR_INTEGRATION_ID=opencode
-// HERDR_INTEGRATION_VERSION=7
+// HERDR_INTEGRATION_VERSION=8
 
 import net from "node:net";
 
@@ -27,10 +27,10 @@ function sessionIDFromProperties(properties) {
 }
 
 function stateFromSessionStatus(status) {
-  if (typeof status !== "string") {
-    return undefined;
-  }
-  switch (status.toLowerCase()) {
+  // session.status carries { type: "idle" | "busy" | "retry" }; older builds used a bare string.
+  const kind = typeof status === "string" ? status : status?.type;
+  if (typeof kind !== "string") return undefined;
+  switch (kind.toLowerCase()) {
     case "idle":
       return "idle";
     case "active":
@@ -39,6 +39,7 @@ function stateFromSessionStatus(status) {
     case "running":
     case "streaming":
     case "working":
+    case "retry":
       return "working";
     default:
       return undefined;
@@ -131,6 +132,23 @@ export const HerdrAgentStatePlugin = async () => {
         childSessions.add(info.id);
       }
       if (sessionID && childSessions.has(sessionID)) {
+        // Child session events are dropped so they cannot clobber the pane's
+        // root-agent state, but a subagent waiting on the user must still
+        // surface as blocked (and clear once answered). Report state only,
+        // without an agent_session_id, so the pane keeps the root session.
+        switch (type) {
+          case "permission.asked":
+          case "question.asked":
+            await reportState("blocked");
+            break;
+          case "permission.replied":
+          case "question.replied":
+          case "question.rejected":
+            await reportState("working");
+            break;
+          default:
+            break;
+        }
         return;
       }
 

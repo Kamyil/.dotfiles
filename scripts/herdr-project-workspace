@@ -12,6 +12,7 @@ Flow:
 from __future__ import annotations
 
 import argparse
+import shlex
 import json
 import os
 import subprocess
@@ -229,6 +230,49 @@ def create_tab(workspace_id: str, path: Path, label: str, *, focus: bool = False
     return str(tab["tab_id"]), str(pane["pane_id"])
 
 
+def existing_status_pane(workspace_id: str) -> str | None:
+    tabs = run_json(["herdr", "tab", "list", "--workspace", workspace_id])
+    status_tab = next(
+        (
+            tab
+            for tab in tabs.get("result", {}).get("tabs", [])
+            if tab.get("label") == "status"
+        ),
+        None,
+    )
+    if not status_tab:
+        return None
+
+    panes = run_json(["herdr", "pane", "list", "--workspace", workspace_id])
+    return next(
+        (
+            str(pane["pane_id"])
+            for pane in panes.get("result", {}).get("panes", [])
+            if pane.get("tab_id") == status_tab.get("tab_id")
+        ),
+        None,
+    )
+
+
+def ensure_status_pane(workspace_id: str, path: Path) -> str:
+    existing = existing_status_pane(workspace_id)
+    if existing:
+        return existing
+    _status_tab_id, status_pane_id = create_tab(workspace_id, path, "status")
+    return status_pane_id
+
+
+def start_status_updater(workspace_id: str, path: Path, pane_id: str) -> None:
+    status_script = Path(__file__).with_name("herdr-project-status.py")
+    status_command = (
+        f"nohup python3 {shlex.quote(str(status_script))} "
+        f"--workspace-id {shlex.quote(workspace_id)} "
+        f"--path {shlex.quote(str(path))} "
+        f">/tmp/herdr-status-{shlex.quote(workspace_id)}.log 2>&1 </dev/null &"
+    )
+    run(["herdr", "pane", "run", pane_id, status_command])
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Open a standard Herdr project workspace")
     parser.add_argument("path", nargs="?", help="Project path. If omitted, choose with fzf.")
@@ -246,6 +290,8 @@ def main() -> int:
         existing_workspace_id = existing_workspace_for_path(path)
         if existing_workspace_id:
             run(["herdr", "workspace", "focus", existing_workspace_id])
+            status_pane_id = ensure_status_pane(existing_workspace_id, path)
+            start_status_updater(existing_workspace_id, path, status_pane_id)
             print(json.dumps({
                 "workspace_id": existing_workspace_id,
                 "label": label,
@@ -254,15 +300,15 @@ def main() -> int:
             }, indent=2))
             return 0
 
-
     workspace_id, nvim_tab_id, nvim_pane_id = create_workspace(path, label)
     run(["herdr", "tab", "rename", nvim_tab_id, "nvim"])
 
     omp_tab_id, omp_pane_id = create_tab(workspace_id, path, "omp")
-    stuff_tab_id, _stuff_pane_id = create_tab(workspace_id, path, "stuff")
+    status_tab_id, status_pane_id = create_tab(workspace_id, path, "status")
 
     run(["herdr", "pane", "run", nvim_pane_id, "nvim"])
     run(["herdr", "pane", "run", omp_pane_id, "omp"])
+    start_status_updater(workspace_id, path, status_pane_id)
     run(["herdr", "tab", "focus", nvim_tab_id])
 
     print(json.dumps({
@@ -272,7 +318,7 @@ def main() -> int:
         "tabs": {
             "nvim": nvim_tab_id,
             "omp": omp_tab_id,
-            "stuff": stuff_tab_id,
+            "status": status_tab_id,
         },
     }, indent=2))
     return 0
@@ -280,3 +326,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
