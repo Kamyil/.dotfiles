@@ -135,6 +135,21 @@ vim.cmd('colorscheme kanagawa-paper-ink')
 -- vim.cmd('colorscheme vague')
 vim.cmd(':hi statusline guibg=NONE')
 
+-- Keep every Neovim highlight upright, including groups added by plugins.
+local function disable_italics()
+  for name, highlight in pairs(vim.api.nvim_get_hl(0, {})) do
+    if highlight.italic then
+      highlight.italic = false
+      vim.api.nvim_set_hl(0, name, highlight)
+    end
+  end
+end
+
+disable_italics()
+vim.api.nvim_create_autocmd('ColorScheme', {
+	callback = disable_italics,
+})
+
 -- =============================================================================
 -- MARKDOWN HEADING HIGHLIGHTS (render-markdown.nvim)
 -- =============================================================================

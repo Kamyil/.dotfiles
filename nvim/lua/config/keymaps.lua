@@ -6,6 +6,13 @@
 -- @field options - some extra options as Lua table
 -- @field options.desc - Description of a keymap, that will be displayed in which-key
 local keymap = vim.keymap.set
+-- Move by visual lines when text wrapping is enabled.
+keymap({ 'n', 'x' }, 'j', function()
+	return vim.wo.wrap and 'gj' or 'j'
+end, { expr = true, desc = 'Move down by display line' })
+keymap({ 'n', 'x' }, 'k', function()
+	return vim.wo.wrap and 'gk' or 'k'
+end, { expr = true, desc = 'Move up by display line' })
 
 local function run_current_sql_block()
 	local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
