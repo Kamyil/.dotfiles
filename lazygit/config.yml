@@ -1,7 +1,7 @@
 git:
   pagers:
     - colorArg: always
-      pager: hunk pager
+      pager: hunk pager --theme custom
       # pager: delta --dark --paging=never --syntax-theme=gruvmax-fang
       # pager: difft
       # externalDiffCommand: difft --color=always
@@ -10,7 +10,7 @@ git:
 customCommands:
   - key: '<c-g>'
     context: 'global'
-    command: 'hunk diff'
+    command: 'hunk diff --theme custom'
     description: 'Open Hunk diff viewer'
     output: terminal
 
