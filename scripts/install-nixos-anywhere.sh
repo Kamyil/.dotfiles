@@ -13,7 +13,8 @@ Required:
 
 Options:
   --identity PATH          SSH private key used to reach the installer
-  --public-key PATH        Public key installed for kamil (default: id_ed25519.pub)
+  --public-key PATH        Public key installed for kamil
+  --vault PATH             Passphrase-encrypted home-directory archive
   --yes                    Skip the destructive disk-name confirmation
   --dry-run                Stage the committed checkout and print the command only
   -h, --help               Show this help
@@ -54,6 +55,7 @@ target=
 disk=
 identity=
 public_key=
+vault=
 yes=false
 dry_run=false
 
@@ -77,6 +79,11 @@ while (( $# > 0 )); do
     --public-key)
       (( $# >= 2 )) || fail "--public-key requires a value"
       public_key=$2
+      shift 2
+      ;;
+    --vault)
+      (( $# >= 2 )) || fail "--vault requires a value"
+      vault=$2
       shift 2
       ;;
     --yes)
@@ -130,22 +137,6 @@ if ! git -C "$repo_root" diff --quiet || ! git -C "$repo_root" diff --cached --q
   printf 'note: the installer uses committed HEAD %s; uncommitted tracked changes are omitted.\n' "$source_head" >&2
 fi
 
-if [[ -z $public_key ]]; then
-  for candidate in "$HOME/.ssh/id_ed25519.pub" "$HOME/.ssh/id_ecdsa.pub" "$HOME/.ssh/id_rsa.pub"; do
-    if [[ -f $candidate ]]; then
-      public_key=$candidate
-      break
-    fi
-  done
-fi
-
-if [[ $dry_run == false ]]; then
-  [[ -n $public_key ]] || fail "no SSH public key found; pass --public-key PATH"
-  [[ -f $public_key ]] || fail "public key does not exist: $public_key"
-  if [[ -n $identity ]]; then
-    [[ -f $identity ]] || fail "SSH identity does not exist: $identity"
-  fi
-fi
 
 if [[ $yes == false && $dry_run == false ]]; then
   printf '\nTARGET: %s\nDISK:   %s\n\n' "$target" "$disk" >&2
@@ -154,8 +145,10 @@ if [[ $yes == false && $dry_run == false ]]; then
   [[ $confirmation == "$disk" ]] || fail "confirmation did not match; nothing was changed"
 fi
 
-staging_root=$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-install.XXXXXX")
-luks_key=$(mktemp "${TMPDIR:-/tmp}/dotfiles-luks.XXXXXX")
+staging_base=${NIXOS_INSTALLER_TMPDIR:-${TMPDIR:-/tmp}}
+mkdir -p "$staging_base"
+staging_root=$(mktemp -d "$staging_base/dotfiles-install.XXXXXX")
+luks_key=$(mktemp "$staging_base/dotfiles-luks.XXXXXX")
 cleanup() {
   rm -rf "$staging_root"
   rm -f "$luks_key"
@@ -170,6 +163,61 @@ git clone --quiet --no-local --branch "$branch" "$repo_root" "$checkout"
   || fail "source branch changed while staging; rerun the installer"
 if [[ -n $origin_url ]]; then
   git -C "$checkout" remote set-url origin "$origin_url"
+fi
+
+if [[ -n $vault ]]; then
+  [[ -f $vault ]] || fail "vault does not exist: $vault"
+  command -v age >/dev/null 2>&1 || fail "age is required to decrypt --vault"
+  command -v python3 >/dev/null 2>&1 || fail "python3 is required to validate --vault"
+  command -v tar >/dev/null 2>&1 || fail "tar is required to extract --vault"
+  vault_archive=$staging_root/private-vault.tar.gz
+  age --decrypt --output "$vault_archive" "$vault"
+  chmod 600 "$vault_archive"
+  python3 - "$vault_archive" <<'PY'
+import pathlib
+import sys
+import tarfile
+
+with tarfile.open(sys.argv[1], "r:gz") as archive:
+    for member in archive.getmembers():
+        path = pathlib.PurePosixPath(member.name)
+        if path.is_absolute() or ".." in path.parts:
+            raise SystemExit(f"unsafe vault path: {member.name}")
+        if not (member.isfile() or member.isdir()):
+            raise SystemExit(f"unsupported vault member: {member.name}")
+PY
+  mkdir -p "$staging_root/home/kamil"
+  tar -xzf "$vault_archive" --no-same-owner --no-same-permissions \
+    -C "$staging_root/home/kamil"
+  rm -f "$vault_archive"
+  if [[ -d $staging_root/home/kamil/.ssh ]]; then
+    find "$staging_root/home/kamil/.ssh" -type d -exec chmod 700 {} +
+    find "$staging_root/home/kamil/.ssh" -type f -exec chmod 600 {} +
+    find "$staging_root/home/kamil/.ssh" -type f -name '*.pub' -exec chmod 644 {} +
+  fi
+fi
+
+if [[ -z $public_key ]]; then
+  for candidate in \
+    "$staging_root/home/kamil/.ssh/id_ed25519.pub" \
+    "$staging_root/home/kamil/.ssh/id_ecdsa.pub" \
+    "$staging_root/home/kamil/.ssh/id_rsa.pub" \
+    "$HOME/.ssh/id_ed25519.pub" \
+    "$HOME/.ssh/id_ecdsa.pub" \
+    "$HOME/.ssh/id_rsa.pub"; do
+    if [[ -f $candidate ]]; then
+      public_key=$candidate
+      break
+    fi
+  done
+fi
+
+if [[ $dry_run == false ]]; then
+  [[ -n $public_key ]] || fail "no SSH public key found; add one to the vault or pass --public-key PATH"
+  [[ -f $public_key ]] || fail "public key does not exist: $public_key"
+  if [[ -n $identity ]]; then
+    [[ -f $identity ]] || fail "SSH identity does not exist: $identity"
+  fi
 fi
 printf '%s\n' "$disk" >"$checkout/nixos/install-disk"
 
