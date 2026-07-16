@@ -219,6 +219,44 @@ After the first login, inspect and commit the generated
 `nixos/bootstrap.nix` changes if this machine should become the repository's
 canonical NixOS host.
 
+### Bootable USB workflow
+
+The custom USB image embeds committed `HEAD` and a passphrase-encrypted private
+home-directory payload. Create a staging directory whose contents should become
+`/home/kamil`; symlinks and special files are rejected:
+
+```sh
+mkdir -p ~/installer-private/.ssh ~/installer-private/.local/share/fonts
+cp ~/.ssh/id_ed25519{,.pub} ~/installer-private/.ssh/
+cp -R ~/.local/share/fonts/PAID-FONT ~/installer-private/.local/share/fonts/
+./scripts/create-installer-vault.sh \
+  --source ~/installer-private \
+  --output ~/nixos-installer-vault.age
+```
+
+Build the ISO from a clean, committed checkout:
+
+```sh
+./scripts/build-nixos-installer.sh \
+  --vault ~/nixos-installer-vault.age \
+  --out-link result-installer
+```
+
+The image is under `result-installer/iso/`. Building an x86_64 NixOS ISO
+requires an x86_64-linux builder; an aarch64-darwin machine needs a configured
+Linux remote/VM builder.
+
+After boot, the installer starts on tty1, checks network access, offers `nmtui`
+when necessary, asks which fixed disk to erase, and retains the exact disk-name
+confirmation. It then prompts for the vault, LUKS, and login passphrases before
+installing and rebooting. The current image is **online**: the repository and
+encrypted vault are embedded, but target package closures are downloaded from
+the configured Nix caches.
+
+The decrypted vault archive exists only below `/run` in the live installer.
+Archive paths and member types are validated before extraction; SSH directories
+are installed as mode 0700, private files as 0600, and public keys as 0644.
+
 > **Destructive boundary:** Disko erases the entire value passed to `--disk`.
 > Target/disk selection cannot safely be inferred when more than one drive is
 > present, so the installer deliberately requires both.
