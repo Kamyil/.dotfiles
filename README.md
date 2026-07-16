@@ -38,10 +38,11 @@ flowchart LR
 - **`nix/flake.nix`** pins inputs and exposes the `darwinConfigurations` and `nixosConfigurations` outputs.
 - **`nix/shared.nix`** imports the common Home Manager modules in `nix/home/`.
 - **`nix/home/`** contains shared shell, package, and live-link modules.
-- **`nix/macos.nix`** builds the `MacBook-Pro-Kamil` nix-darwin system and adds macOS packages, defaults, Homebrew, and shell helpers.
-- **`nix/nixos.nix`** composes the `nixos` host with Home Manager and Linux-specific user settings.
-- **`nixos/configuration.nix`** contains machine-level NixOS settings such as boot, networking, graphics, audio, and Hyprland.
+- **`nix/macos.nix`** builds the `MacBook-Pro-Kamil` nix-darwin system, bootstraps Homebrew through nix-homebrew, and adds macOS packages, defaults, and shell helpers.
+- **`nix/nixos.nix`** composes the `nixos` host with Home Manager, Linux-specific user settings, and sops-nix.
+- **`nixos/configuration.nix`** contains machine-level NixOS settings such as boot, networking, firmware updates, power/thermal management, graphics, audio, and Hyprland.
 - **`nix/overlays/`** packages tools that need a local overlay (`opencode` and `omp`).
+- **`nix-index-database`** supplies `nix-locate` and `comma` on both platforms; **sops-nix** is imported for future encrypted secrets, but no secrets or recipients are declared yet.
 
 ## How live configuration reload works
 
@@ -104,6 +105,7 @@ The package sets are intentionally split into common, macOS, and NixOS layers. â
 | Terminal UI and utilities | btop, htop, fastfetch, superfile, lazydocker, tldr | [`btop/`](btop), [`superfile/`](superfile) |
 | Terminal/workflow CLIs | herdr, worktrunk, lazyjira | [`herdr/`](herdr), [`worktrunk/`](worktrunk) |
 | Browser tooling | qutebrowser (available fallback) | Nix package; no repository-specific configuration |
+| Nix package discovery | nix-index, comma | Weekly prebuilt nix-index database |
 
 SQL work is intentionally handled inside Neovim with the Dadbod plugins. Harlequin and Rainfrog were tried and removed from the package sets.
 
@@ -140,6 +142,7 @@ macOS Homebrew is used for GUI applications and tools that are unavailable or in
 | Screenshot and clipboard | flameshot, swappy, wl-clipboard | macOS screenshot and clipboard tools |
 | Keyboard remapping | kmonad | macOS keyboard shortcuts / QMK Toolbox |
 | Linux fonts/cursors | JetBrains Mono, Lexend, Capitaine cursors | Nerd fonts and macOS font management |
+| Laptop firmware and power | fwupd, thermald, power-profiles-daemon | Vendor firmware tools and macOS power management |
 
 ## Installing NixOS from scratch
 
@@ -221,18 +224,29 @@ canonical NixOS host.
 > present, so the installer deliberately requires both.
 
 ## Applying the configurations
+On macOS, nix-homebrew installs or adopts the Apple Silicon Homebrew prefix before nix-darwin applies the declared formulae, casks, and taps.
 
 From the repository root:
 
 ```sh
 # macOS
-sudo darwin-rebuild switch --flake ./nix # or `nrs` alias
+nh darwin switch ./nix # or `nrs` alias
 
 # NixOS
-sudo nixos-rebuild switch --flake ./nix # or `nrs` alias
+nh os switch ./nix # or `nrs` alias
 ```
 
-Each platform defines `nrs` with the correct rebuild command. A rebuild installs or updates packages and recreates the declared symlink topology. Editing a linked root-level configuration afterward is immediately visible without another rebuild.
+For the first rebuild on a machine where `nh` is not installed yet, bootstrap with the native command:
+
+```sh
+# macOS
+sudo darwin-rebuild switch --flake ./nix
+
+# NixOS
+sudo nixos-rebuild switch --flake ./nix
+```
+
+Each platform uses the matching `nh` rebuild command: `nh darwin switch` on macOS and `nh os switch` on NixOS. A rebuild installs or updates packages and recreates the declared symlink topology. Editing a linked root-level configuration afterward is immediately visible without another rebuild.
 
 ## Adding a new configuration
 
