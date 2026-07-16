@@ -146,16 +146,13 @@ in
           homebrew = {
             enable = true;
             onActivation.cleanup = "uninstall";
-            taps = [
-              "nikitabobko/tap"
-              "steveyegge/beads"
-              "steipete/tap"
-            ];
+            # Homebrew requires explicit trust for third-party Ruby code. Keep every
+            # declared tap here so `brew bundle cleanup` also preserves its trust.
             extraConfig = ''
-              tap "FelixKratz/formulae", trusted: {
-                formula: "sketchybar",
-                cask: "font-sketchybar-app-font"
-              }
+              tap "nikitabobko/tap", trusted: true
+              tap "FelixKratz/formulae", trusted: true
+              tap "steveyegge/beads", trusted: true
+              tap "steipete/tap", trusted: true
             '';
             brews = [
               "sketchybar"
