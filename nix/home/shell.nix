@@ -27,6 +27,42 @@ let
       file = "_${name}";
     };
 
+  mkZshInitScript =
+    {
+      name,
+      package,
+      args,
+    }:
+    pkgs.runCommand "${name}-zsh-init" { } ''
+      export HOME="$TMPDIR"
+      export XDG_CONFIG_HOME="$TMPDIR/.config"
+      ${lib.escapeShellArgs ([ (lib.getExe package) ] ++ args)} > "$out"
+    '';
+
+  fzfZshInit = mkZshInitScript {
+    name = "fzf";
+    package = pkgs.fzf;
+    args = [ "--zsh" ];
+  };
+
+  starshipZshInit = mkZshInitScript {
+    name = "starship";
+    package = pkgs.starship;
+    args = [
+      "init"
+      "zsh"
+    ];
+  };
+
+  atuinZshInit = mkZshInitScript {
+    name = "atuin";
+    package = pkgs.atuin;
+    args = [
+      "init"
+      "zsh"
+    ];
+  };
+
   herdrPackage = herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
 in
@@ -38,6 +74,18 @@ in
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     enableCompletion = true;
+    completionInit = ''
+      autoload -U compinit
+      _zcompdump="''${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-$ZSH_VERSION"
+      if [[ -s "$_zcompdump" && "$_zcompdump" -nt "$HOME/.zshrc" ]]; then
+        compinit -C -d "$_zcompdump"
+      else
+        [[ -d "''${_zcompdump:h}" ]] || mkdir -p "''${_zcompdump:h}"
+        compinit -d "$_zcompdump"
+        zcompile "$_zcompdump"
+      fi
+      unset _zcompdump
+    '';
     dotDir = config.home.homeDirectory;
 
     plugins = [
@@ -410,7 +458,7 @@ in
 
 
       # Set up fzf key bindings and fuzzy completion
-      eval "$(fzf --zsh)"
+      source ${fzfZshInit}
 
       # Completion UX
       zstyle ':completion:*' menu select
@@ -420,6 +468,15 @@ in
         zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
       fi
 
+      # Static init output is generated once by Nix instead of forking on every shell.
+      if [[ $TERM != dumb ]]; then
+        source ${starshipZshInit}
+      fi
+
+      if [[ -o zle ]]; then
+        source ${atuinZshInit}
+      fi
+
       # Optional machine-local overrides (not tracked in git)
       [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
     '';
@@ -427,13 +484,13 @@ in
 
   programs.atuin = {
     enable = true;
-    enableZshIntegration = true;
+    enableZshIntegration = false;
   };
 
   # Starship prompt configuration
   programs.starship = {
     enable = true;
-    enableZshIntegration = true;
+    enableZshIntegration = false;
   };
 
   # Git configuration

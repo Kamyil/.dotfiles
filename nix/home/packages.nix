@@ -28,6 +28,8 @@
       eza
       difftastic
       just
+      nh
+      nix-output-monitor
       jq
       yq
       lazygit

@@ -5,6 +5,15 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -32,7 +41,7 @@
     lumen.url = "github:jnsahaj/lumen";
     lumen.inputs.nixpkgs.follows = "nixpkgs";
 
-    herdr.url = "github:ogulcancelik/herdr/master";
+    herdr.url = "github:ogulcancelik/herdr/v0.7.4";
     herdr.inputs.nixpkgs.follows = "nixpkgs";
 
     # Add private fonts
@@ -48,6 +57,9 @@
       nixpkgs,
       home-manager,
       nix-darwin,
+      nix-homebrew,
+      nix-index-database,
+      sops-nix,
       disko,
       nixos-anywhere,
       rust-overlay,
@@ -69,6 +81,8 @@
           rust-overlay
           lib
           disko
+          nix-index-database
+          sops-nix
           sqlit
           worktrunk
           lazyjira
@@ -86,6 +100,9 @@
           nix-darwin
           rust-overlay
           lib
+          nix-homebrew
+          nix-index-database
+          sops-nix
           sqlit
           worktrunk
           lazyjira

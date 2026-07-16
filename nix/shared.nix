@@ -13,4 +13,5 @@
   home.sessionVariables.PI_FFF_MODE = "override";
 
   programs.home-manager.enable = true;
+  programs.nix-index-database.comma.enable = true;
 }

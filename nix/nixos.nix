@@ -4,6 +4,8 @@
   home-manager,
   disko,
   rust-overlay,
+  nix-index-database,
+  sops-nix,
   lib,
   sqlit,
   worktrunk,
@@ -27,10 +29,15 @@ in
       disko.nixosModules.disko
       ../nixos/disk-config.nix
       ../nixos/configuration.nix
+      sops-nix.nixosModules.sops
       home-manager.nixosModules.home-manager
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
+        home-manager.sharedModules = [
+          nix-index-database.homeModules.default
+          sops-nix.homeManagerModules.sops
+        ];
         home-manager.extraSpecialArgs = {
           inherit
             system
@@ -86,7 +93,7 @@ in
 
           programs.zsh.shellAliases = {
             finder = "xdg-open";
-            nrs = "sudo nixos-rebuild switch --flake ~/.dotfiles/nix";
+            nrs = "nh os switch ~/.dotfiles/nix";
           };
 
           programs.zsh.initContent = lib.mkAfter ''

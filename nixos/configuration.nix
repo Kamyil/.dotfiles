@@ -73,6 +73,11 @@ in
   # Enable OpenGL GPU acceleration
   hardware.graphics.enable = true;
   hardware.bluetooth.enable = true;
+  hardware.enableRedistributableFirmware = true;
+
+  services.fwupd.enable = true;
+  services.thermald.enable = true;
+  services.power-profiles-daemon.enable = true;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;

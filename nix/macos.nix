@@ -4,6 +4,9 @@
   nixpkgs,
   home-manager,
   nix-darwin,
+  nix-homebrew,
+  nix-index-database,
+  sops-nix,
   rust-overlay,
   lib,
   sqlit,
@@ -145,10 +148,15 @@ in
             onActivation.cleanup = "uninstall";
             taps = [
               "nikitabobko/tap"
-              "FelixKratz/formulae"
               "steveyegge/beads"
               "steipete/tap"
             ];
+            extraConfig = ''
+              tap "FelixKratz/formulae", trusted: {
+                formula: "sketchybar",
+                cask: "font-sketchybar-app-font"
+              }
+            '';
             brews = [
               "sketchybar"
               "vercel-cli"
@@ -185,12 +193,25 @@ in
           };
         }
       )
+      sops-nix.darwinModules.sops
+      nix-homebrew.darwinModules.nix-homebrew
+      {
+        nix-homebrew = {
+          enable = true;
+          user = "kamil";
+          autoMigrate = true;
+        };
+      }
 
       # Home Manager for Darwin
       home-manager.darwinModules.home-manager
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
+        home-manager.sharedModules = [
+          nix-index-database.homeModules.default
+          sops-nix.homeManagerModules.sops
+        ];
         home-manager.extraSpecialArgs = {
           inherit
             worktrunk
@@ -245,7 +266,7 @@ in
 
             programs.zsh.shellAliases = {
               finder = "open";
-              nrs = "sudo darwin-rebuild switch --flake ~/.dotfiles/nix";
+              nrs = "nh darwin switch ~/.dotfiles/nix";
             };
 
             programs.zsh.initContent = lib.mkMerge [
