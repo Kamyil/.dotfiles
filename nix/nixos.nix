@@ -13,6 +13,7 @@
   hunk,
   lumen,
   herdr,
+  helium,
   ...
 }:
 
@@ -27,10 +28,14 @@ in
         nixpkgs.overlays = [ rust-overlay.overlays.default ];
       }
       disko.nixosModules.disko
+      helium.nixosModules.default
       ../nixos/disk-config.nix
       ../nixos/configuration.nix
       sops-nix.nixosModules.sops
       home-manager.nixosModules.home-manager
+      {
+        programs.helium.enable = true;
+      }
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
