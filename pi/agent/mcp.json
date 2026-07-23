@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "fff": {
-      "command": "fff-mcp",
-      "args": []
+      "command": "/bin/sh",
+      "args": ["-c", "exec /etc/profiles/per-user/$USER/bin/fff-mcp"]
     },
     "context7": {
       "url": "https://mcp.context7.com/mcp"

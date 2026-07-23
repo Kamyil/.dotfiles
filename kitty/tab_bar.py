@@ -1,4 +1,6 @@
-from os.path import basename
+import json
+from os import stat
+from os.path import basename, expanduser
 
 from kitty.fast_data_types import wcswidth
 from kitty.rgb import color_as_int
@@ -12,6 +14,29 @@ COLORS = {
   'muted_fg': 0x8E8A80,  # canvasGray2
   'attention_fg': 0xC4746E,
 }
+
+THEME_FILE = expanduser('~/.local/state/dotfiles-theme/current/theme.json')
+_theme_mtime = None
+
+
+def _refresh_colors():
+  global _theme_mtime
+  try:
+    mtime = stat(THEME_FILE).st_mtime_ns
+    if mtime == _theme_mtime:
+      return
+    with open(THEME_FILE, encoding='utf-8') as theme_file:
+      palette = json.load(theme_file)
+    COLORS.update({
+      'bar_bg': int(palette['tab_bar'][1:], 16),
+      'active_fg': int(palette['yellow'][1:], 16),
+      'inactive_fg': int(palette['muted'][1:], 16),
+      'muted_fg': int(palette['muted'][1:], 16),
+      'attention_fg': int(palette['red'][1:], 16),
+    })
+    _theme_mtime = mtime
+  except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError):
+    pass
 
 SHELLS = {'bash', 'fish', 'nu', 'sh', 'zsh'}
 
@@ -102,6 +127,7 @@ def _icon(tab):
 
 
 def draw_tab(draw_data, screen, tab, before, max_tab_length, index, is_last, extra_data):
+  _refresh_colors()
   screen.cursor.bold = False
   screen.cursor.italic = False
   screen.cursor.bg = as_rgb(COLORS['bar_bg'])

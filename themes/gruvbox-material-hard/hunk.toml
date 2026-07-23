@@ -1,0 +1,55 @@
+theme = "custom"
+mode = "auto"
+vcs = "git"
+watch = false
+exclude_untracked = false
+line_numbers = true
+wrap_lines = false
+agent_notes = false
+transparent_background = false
+
+[custom_theme]
+base = "graphite"
+label = "Gruvbox Material Hard"
+background = "#1d2021"
+panel = "#282828"
+panelAlt = "#32302f"
+border = "#504945"
+accent = "#d8a657"
+accentMuted = "#a89984"
+text = "#d4be98"
+muted = "#928374"
+addedBg = "#263325"
+removedBg = "#3c2626"
+contextBg = "#282828"
+addedContentBg = "#303b2d"
+removedContentBg = "#4a2d2d"
+contextContentBg = "#32302f"
+addedSignColor = "#a9b665"
+removedSignColor = "#ea6962"
+lineNumberBg = "#1d2021"
+lineNumberFg = "#928374"
+selectedHunk = "#3c3836"
+badgeAdded = "#a9b665"
+badgeRemoved = "#ea6962"
+badgeNeutral = "#7daea3"
+fileNew = "#a9b665"
+fileDeleted = "#ea6962"
+fileRenamed = "#89b482"
+fileModified = "#d8a657"
+fileUntracked = "#d3869b"
+noteBorder = "#7daea3"
+noteBackground = "#282828"
+noteTitleBackground = "#32302f"
+noteTitleText = "#d4be98"
+
+[custom_theme.syntax]
+default = "#d4be98"
+keyword = "#d3869b"
+string = "#a9b665"
+comment = "#928374"
+number = "#d8a657"
+function = "#89b482"
+property = "#d4be98"
+type = "#7daea3"
+punctuation = "#d4be98"

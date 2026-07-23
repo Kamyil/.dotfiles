@@ -4,6 +4,7 @@
   home-manager,
   disko,
   rust-overlay,
+  fff,
   nix-index-database,
   sops-nix,
   lib,
@@ -46,6 +47,7 @@ in
         home-manager.extraSpecialArgs = {
           inherit
             system
+            fff
             worktrunk
             lazyjira
             hunk
@@ -64,6 +66,7 @@ in
             (with pkgs; [
               gcc
               nixd
+              nodejs_22
               trash-cli
               docker-buildx
               docker-compose
@@ -77,6 +80,7 @@ in
               impala
               bluetuith
               hyprlock
+              fuzzel
               capitaine-cursors
               nerd-fonts.jetbrains-mono
               lexend

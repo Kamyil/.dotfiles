@@ -26,6 +26,8 @@
 
     rust-overlay.url = "github:oxalica/rust-overlay";
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
+    fff.url = "github:dmtrKovalenko/fff.nvim";
+    fff.inputs.nixpkgs.follows = "nixpkgs";
     sqlit.url = "github:Maxteabag/sqlit";
     sqlit.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -66,6 +68,7 @@
       disko,
       nixos-anywhere,
       rust-overlay,
+      fff,
       sqlit,
       worktrunk,
       lazyjira,
@@ -107,6 +110,7 @@
           rust-overlay
           lib
           disko
+          fff
           nix-index-database
           sops-nix
           sqlit
@@ -126,6 +130,7 @@
           home-manager
           nix-darwin
           rust-overlay
+          fff
           lib
           nix-homebrew
           nix-index-database

@@ -161,26 +161,34 @@ in
       # XDG config directory
       export XDG_CONFIG_HOME="$HOME/.config"
 
-      # eza powers the ls alias; keep directories readable on dark Kanagawa Paper.
-      export EZA_COLORS="''${EZA_COLORS:+$EZA_COLORS:}di=38;2;128;155;167"
-
-      # FZF configuration
-      export FZF_DEFAULT_OPTS=" \
-      --multi \
-      --height=50% \
-      --margin=5%,2%,2%,5% \
-      --layout=reverse-list \
-      --border=double \
-      --info=inline \
-      --prompt='$>' \
-      --pointer='→' \
-      --marker='♡' \
-      --color=bg:-1,bg:-1,spinner:#f5e0dc,hl:#7AA89F \
-      --color=fg:-1,bg:-1,header:#DCD7BA,info:#7AA89F,pointer:#f5e0dc \
-      --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#7AA89F,hl+:#7AA89F \
-      --header='CTRL-c or ESC to quit' \
-      --preview 'bat --style=numbers --color=always --line-range :500 {}' \
-      --height 70% --layout reverse --border top"
+      # Cross-tool theme state. `theme toggle` updates this shell immediately;
+      # other open shells can run `theme current` to reload their environment.
+      _dotfiles_theme_load() {
+        local state_dir="''${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles-theme"
+        if [[ ! -r "$state_dir/current/theme.zsh" ]]; then
+          command "$HOME/.dotfiles/scripts/theme" kanagawa-paper >/dev/null
+        fi
+        source "$state_dir/current/theme.zsh"
+        export FZF_DEFAULT_OPTS=" \
+        --multi \
+        --height=70% \
+        --margin=5%,2%,2%,5% \
+        --layout=reverse \
+        --border=top \
+        --info=inline \
+        --prompt='$>' \
+        --pointer='→' \
+        --marker='♡' \
+        --header='CTRL-c or ESC to quit' \
+        --preview 'bat --style=numbers --color=always --line-range :500 {}' \
+        $FZF_THEME_OPTS"
+        export FZF_POKKE_OPTS="$FZF_THEME_OPTS"
+      }
+      theme() {
+        command "$HOME/.dotfiles/scripts/theme" "''${1:-toggle}" || return
+        _dotfiles_theme_load
+      }
+      _dotfiles_theme_load
       export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
 
       # fnm owns interactive Node.js versions on both platforms.
@@ -191,8 +199,7 @@ in
        # Docker BuildKit
        export DOCKER_BUILDKIT=1
 
-      # Use terminal ANSI colors so bat follows the active Kanagawa Paper palette.
-      # "Kanagawa" is not a built-in bat theme and produces an unknown-theme warning.
+      # ANSI output follows the active terminal palette.
       export BAT_THEME="ansi"
 
       # Vi mode and key bindings

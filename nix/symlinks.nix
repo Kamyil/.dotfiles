@@ -21,11 +21,13 @@ let
     ".alacritty.toml" = "alacritty/alacritty.toml";
     ".config/hunk" = "hunk";
     ".config/starship.toml" = "starship/starship.toml";
+    ".config/fontconfig/fonts.conf" = "fontconfig/fonts.conf";
     ".config/superfile" = "superfile";
     ".config/atuin/config.toml" = "atuin/config.toml";
     ".config/zennotes" = "zennotes";
     ".pi/agent" = "pi/agent";
     "second-brain/.obsidian" = "obsidian";
+    ".omp/agent/themes" = "pi/agent/themes";
     "second-brain/.obsidian.vimrc" = "obsidian/obsidian.vimrc";
   };
 

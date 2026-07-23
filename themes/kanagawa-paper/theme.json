@@ -1,0 +1,15 @@
+{
+  "name": "kanagawa-paper",
+  "nvim_colorscheme": "kanagawa-paper-ink",
+  "background": "#14141a",
+  "foreground": "#DCD7BA",
+  "selection": "#363646",
+  "muted": "#9e9b93",
+  "red": "#c4746e",
+  "green": "#699469",
+  "yellow": "#c4b28a",
+  "blue": "#809ba7",
+  "purple": "#a292a3",
+  "aqua": "#8ea49e",
+  "tab_bar": "#141416"
+}

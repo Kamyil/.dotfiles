@@ -175,9 +175,11 @@ require('lazy').setup({
 	'ibhagwan/fzf-lua',     -- Other very fast picker for other things than files
 	{
 		'dmtrKovalenko/fff.nvim', -- Fast fuzzy file finder with pre-built Rust binary
-		build = function()
-			require('fff.download').download_or_build_binary()
-		end,
+		build = vim.fn.filereadable('/etc/NIXOS') == 1
+				and 'nix run .#release'
+			or function()
+				require('fff.download').download_or_build_binary()
+			end,
 		lazy = false,
 	},
 	'echasnovski/mini.surround',        -- Allows to surround selected text with brackets, quotes, tags etc.
@@ -382,5 +384,9 @@ require('lazy').setup({
 }, {
 	defaults = {
 		lazy = true,
+	},
+	git = {
+		-- Rust-backed plugins can take much longer than Lazy's two-minute default on a cold Nix build.
+		timeout = 3600,
 	},
 })

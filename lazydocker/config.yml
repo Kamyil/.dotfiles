@@ -1,12 +1,13 @@
 gui:
+  # Semantic ANSI colors follow the active terminal palette.
   theme:
     activeBorderColor:
-      - '#698a9b'
+      - yellow
     inactiveBorderColor:
-      - '#2A2A37'
+      - default
     optionsTextColor:
-      - '#c4b28a'
+      - yellow
     selectedLineBgColor:
-      - '#363646'
+      - reverse
     defaultFgColor:
-      - '#DCD7BA'
+      - default

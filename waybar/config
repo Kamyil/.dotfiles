@@ -11,6 +11,7 @@
     "bluetooth",
     "network",
     "pulseaudio",
+    "custom/night-light",
     "cpu",
     "memory",
     "battery"
@@ -44,6 +45,17 @@
     "tooltip-format": "Omarchy update available",
     "signal": 7,
     "interval": 21600
+  },
+
+  "custom/night-light": {
+    "exec": "$HOME/.config/hypr/hyprsunset-control.sh status",
+    "return-type": "json",
+    "interval": 5,
+    "signal": 9,
+    "on-click": "$HOME/.config/hypr/hyprsunset-control.sh toggle",
+    "on-click-middle": "$HOME/.config/hypr/hyprsunset-control.sh reset",
+    "on-scroll-up": "$HOME/.config/hypr/hyprsunset-control.sh cooler",
+    "on-scroll-down": "$HOME/.config/hypr/hyprsunset-control.sh warmer"
   },
 
   "cpu": {

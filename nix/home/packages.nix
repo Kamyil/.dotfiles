@@ -2,6 +2,7 @@
 {
   pkgs,
   lib,
+  fff,
   lazyjira,
   hunk,
   herdr,
@@ -93,6 +94,7 @@
       sweethome3d.application
     ]
     ++ [
+      fff.packages.${pkgs.stdenv.hostPlatform.system}.fff-mcp
       hunk.packages.${pkgs.stdenv.hostPlatform.system}.default
       lazyjira.packages.${pkgs.stdenv.hostPlatform.system}.default
       herdr.packages.${pkgs.stdenv.hostPlatform.system}.default

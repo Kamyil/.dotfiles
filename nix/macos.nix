@@ -4,6 +4,7 @@
   nixpkgs,
   home-manager,
   nix-darwin,
+  fff,
   nix-homebrew,
   nix-index-database,
   sops-nix,
@@ -212,6 +213,7 @@ in
         home-manager.extraSpecialArgs = {
           inherit
             worktrunk
+            fff
             darwinSystem
             lazyjira
             hunk

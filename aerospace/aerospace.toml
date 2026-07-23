@@ -81,7 +81,6 @@ inner.vertical = 10
 # outer.bottom = [{monitor."PL2483H" = 15}, { monitor."LG HDR 4K" = 25 }, { monitor."Built-in Retina Display" = 5 }, 0]
 # outer.left = [{monitor."PL2483H" = 35}, { monitor."LG HDR 4K" = 25 }, { monitor."Built-in Retina Display" = 5 }, 0]
 
-
 # See https://nikitabobko.github.io/AeroSpace/guide#exec-env-vars
 [exec] # Again, you don't need to copy all config sections to your config.
 inherit-env-vars = true # If you don't touch "exec" section,

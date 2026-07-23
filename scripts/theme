@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+themes_dir="$repo_root/themes"
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles-theme"
+current_link="$state_dir/current"
+
+theme_name() {
+  if [[ -L "$current_link" ]]; then
+    basename -- "$(readlink -- "$current_link")"
+  else
+    printf '%s\n' 'kanagawa-paper'
+  fi
+}
+
+usage() {
+  printf 'Usage: theme <kanagawa-paper|gruvbox-material-hard|toggle|current|list>\n' >&2
+}
+
+command=${1:-toggle}
+case "$command" in
+  current)
+    theme_name
+    exit 0
+    ;;
+  list)
+    printf '%s\n' kanagawa-paper gruvbox-material-hard
+    exit 0
+    ;;
+  toggle)
+    if [[ $(theme_name) == kanagawa-paper ]]; then
+      command=gruvbox-material-hard
+    else
+      command=kanagawa-paper
+    fi
+    ;;
+  kanagawa-paper|gruvbox-material-hard)
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac
+
+bundle="$themes_dir/$command"
+[[ -f "$bundle/theme.json" && -f "$bundle/kitty.conf" && -f "$bundle/theme.zsh" && -f "$bundle/hunk.toml" ]] || {
+  printf 'Incomplete theme bundle: %s\n' "$bundle" >&2
+  exit 1
+}
+
+mkdir -p -- "$state_dir"
+ln -sfn -- "$bundle" "$current_link"
+
+if command -v kitty >/dev/null 2>&1; then
+  kitty @ --to "${KITTY_LISTEN_ON:-unix:/tmp/kitty}" set-colors --all "$bundle/kitty.conf" >/dev/null 2>&1 || true
+fi
+if command -v omp >/dev/null 2>&1; then
+  if [[ "$command" == kanagawa-paper ]]; then
+    omp_theme=kanagawa-paper-ink
+  else
+    omp_theme=gruvbox-material-hard
+  fi
+  omp config set theme.dark "$omp_theme" >/dev/null
+  omp config set theme.light "$omp_theme" >/dev/null
+fi
+if command -v herdr >/dev/null 2>&1; then
+  herdr server reload-config >/dev/null 2>&1 || true
+fi
+
+printf '%s\n' "$command"
