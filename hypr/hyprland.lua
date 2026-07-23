@@ -80,11 +80,10 @@ hl.window_rule({
 local mainMod = "SUPER"
 
 -- Core applications
-hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("wezterm"))
-hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("vivaldi"))
+hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("kitty"))
 hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("fuzzel"))
-hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("foot --app-id=tui-float nmtui"))
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("foot --app-id=tui-float bluetuith"))
+-- hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("foot --app-id=tui-float nmtui"))
+-- hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("foot --app-id=tui-float bluetuith"))
 
 -- Window management
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
@@ -142,9 +141,10 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Lock screen
-hl.bind(mainMod .. " + CTRL + SHIFT + L", hl.dsp.exec_cmd("hyprlock"))
+hl.bind(mainMod .. " + CTRL + Q", hl.dsp.exec_cmd("hyprlock"))
 
 -- Screenshots
-hl.bind("Print", hl.dsp.exec_cmd([[grim -g "$(slurp)" - | wl-copy]]))
-hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("grim - | wl-copy"))
-hl.bind(mainMod .. " + SHIFT + 4", hl.dsp.exec_cmd("~/.config/hypr/screenshot-area.sh"))
+local screenshot = hl.dsp.exec_cmd([[env QT_QPA_PLATFORM=wayland QT_SCREEN_SCALE_FACTORS="1;1" flameshot gui]])
+hl.bind("Print", screenshot)
+hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("flameshot gui"))
+hl.bind(mainMod .. " + SHIFT + 4", screenshot)
