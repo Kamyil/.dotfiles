@@ -67,7 +67,7 @@ The link policy lives in [`nix/symlinks.nix`](nix/symlinks.nix):
 
 - `commonLinks` applies to both operating systems.
 - `darwinLinks` adds macOS-only paths such as SketchyBar, Aerospace, Hammerspoon, and cmux.
-- `linuxLinks` adds Hyprland, Quickshell, Waybar, Walker, Omarchy, and other Linux desktop paths.
+- `linuxLinks` adds Hyprland, Quickshell, Dunst, Waybar, Walker, Omarchy, and other Linux desktop paths.
 - Home Manager creates every repository link with `mkOutOfStoreSymlink`.
 - Activation adopts only legacy symlinks already pointing into this checkout. Missing sources, real targets, and unrelated symlinks abort without overwriting them.
 
@@ -134,12 +134,13 @@ macOS Homebrew is used for GUI applications and tools that are unavailable or in
 | --- | --- | --- |
 | Desktop compositor | Hyprland | Aerospace |
 | Desktop shell and launcher | Quickshell, Walker, Elephant | SketchyBar, Raycast |
+| Desktop notifications | Dunst | macOS Notification Center |
 | Lock screen and idle desktop | Hyprlock, Hypridle | macOS screen lock / system behavior |
-| Audio and graphics | PipeWire, Pulse compatibility, XWayland | CoreAudio and native macOS display stack |
+| Audio and graphics | PipeWire, Pulse compatibility, EasyEffects global processing, XWayland | CoreAudio and native macOS display stack |
 | Network and Bluetooth controls | Quickshell panels; impala and bluetuith as fallbacks | macOS system UI or third-party GUI tools |
 | Container stack | Docker, Podman, Compose, buildx | Docker/Podman plus Colima/Lima |
 | Linux development | gcc, nixd, nightly Rust, Zig, PHP, Go | clang/Xcode toolchain, rustup, same language tools |
-| Screenshot and clipboard | flameshot, swappy, wl-clipboard | macOS screenshot and clipboard tools |
+| Screenshot and clipboard | Satty, grim, slurp, wl-clipboard | macOS screenshot and clipboard tools |
 | Keyboard remapping | kmonad | macOS keyboard shortcuts / QMK Toolbox |
 | Linux fonts/cursors | JetBrains Mono, Lexend, Capitaine cursors | Nerd fonts and macOS font management |
 | Laptop firmware and power | fwupd, thermald, power-profiles-daemon | Vendor firmware tools and macOS power management |
