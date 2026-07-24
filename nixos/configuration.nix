@@ -85,6 +85,8 @@ in
   boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.timeout = 5;
   boot.loader.efi.canTouchEfiVariables = true;
+  # Disable the damaged internal Intel AX210 Wi-Fi adapter.
+  boot.blacklistedKernelModules = [ "iwlwifi" ];
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -141,8 +143,7 @@ in
       serif = [ "Liberation Sans" ];
       sansSerif = [ "Liberation Sans" ];
       monospace = [
-        "Berkeley Mono"
-        "BerkeleyMono"
+        "Berkeley Mono SemiBold SemiCondensed"
         "Ubuntu Mono"
       ];
       emoji = [ "Noto Color Emoji" ];
@@ -200,6 +201,8 @@ in
     waybar
     quickshell
     pulseaudio
+    dunst
+    libnotify
     pulsemixer
     netcat-openbsd
     pamixer

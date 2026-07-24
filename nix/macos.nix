@@ -167,6 +167,7 @@ in
               # Keep these that aren't available in nixpkgs or ARM macOS
               "chromium"
               "firefox"
+              "spotify"
               "vivaldi"
               "libreoffice"
               "love"

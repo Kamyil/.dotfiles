@@ -43,7 +43,7 @@
     lumen.url = "github:jnsahaj/lumen";
     lumen.inputs.nixpkgs.follows = "nixpkgs";
 
-    herdr.url = "github:ogulcancelik/herdr/v0.7.4";
+    herdr.url = "github:ogulcancelik/herdr/v0.7.5";
     herdr.inputs.nixpkgs.follows = "nixpkgs";
 
     helium.url = "github:oxcl/nix-flake-helium-browser";

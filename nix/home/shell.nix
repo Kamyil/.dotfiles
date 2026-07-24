@@ -119,8 +119,8 @@ in
       doom = "~/.config/emacs/bin/doom";
       private_gitignore = "nvim .git/info/exclude";
       git_log = "serie";
-      spf = "command spf --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
-      superfile = "command spf --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
+      spf = "command superfile --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
+      superfile = "command superfile --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
 
       # Git aliases
       gpom = "git pull origin master";

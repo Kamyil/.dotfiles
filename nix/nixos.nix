@@ -70,13 +70,14 @@ in
               trash-cli
               docker-buildx
               docker-compose
-              flameshot
-              swappy
+              satty
               chromium
               thunderbird
               signal-desktop
+              spotify
               obsidian
               sshfs
+              easyeffects
               impala
               bluetuith
               hyprlock
@@ -147,6 +148,19 @@ in
           };
 
           xdg.enable = true;
+
+          systemd.user.services.easyeffects = {
+            Unit = {
+              Description = "EasyEffects global audio processing";
+              After = [ "graphical-session.target" ];
+              PartOf = [ "graphical-session.target" ];
+            };
+            Service = {
+              ExecStart = "${pkgs.easyeffects}/bin/easyeffects --gapplication-service";
+              Restart = "on-failure";
+            };
+            Install.WantedBy = [ "graphical-session.target" ];
+          };
 
           systemd.user.services.kmonad = {
             Unit = {
