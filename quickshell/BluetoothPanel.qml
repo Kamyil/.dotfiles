@@ -120,7 +120,7 @@ Item {
 
                         Text {
                             Layout.fillWidth: true
-                            text: adapterSection.modelData.name + " · " + adapterSection.modelData.adapterId
+                            text: adapterSection.modelData.name
                             color: adapterSection.modelData.enabled ? Theme.muted : Theme.danger
                             font.family: Theme.fontFamily
                             font.pixelSize: 9
@@ -134,12 +134,11 @@ Item {
                                 required property var modelData
                                 property bool connectAfterPair: false
 
-                                title: modelData.name || modelData.deviceName || modelData.address
-                                subtitle: adapterSection.modelData.adapterId + " · "
-                                    + (modelData.connected ? "connected"
-                                        : modelData.pairing ? "pairing"
-                                        : modelData.paired ? "paired"
-                                        : "nearby")
+                                title: modelData.deviceName || modelData.name || modelData.address
+                                subtitle: modelData.connected ? "connected"
+                                    : modelData.pairing ? "pairing"
+                                    : modelData.paired ? "paired"
+                                    : "nearby"
                                 icon: modelData.connected ? "󰂱" : modelData.paired ? "󰂯" : ""
                                 trailing: modelData.connected ? "Disconnect"
                                     : modelData.pairing ? "Pairing…"

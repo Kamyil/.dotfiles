@@ -14,5 +14,5 @@ QtObject {
     readonly property color good: "#9ece6a"
     readonly property color warning: "#e0af68"
     readonly property color danger: "#f7768e"
-    readonly property string fontFamily: "JetBrainsMono Nerd Font"
+    readonly property string fontFamily: "Berkeley Mono SemiBold SemiCondensed"
 }

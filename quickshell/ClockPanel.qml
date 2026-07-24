@@ -12,6 +12,14 @@ Item {
     readonly property var monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     readonly property var dayNames: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
 
+    function isoWeek(date) {
+        const day = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+        const weekday = day.getUTCDay() || 7
+        day.setUTCDate(day.getUTCDate() + 4 - weekday)
+        const yearStart = new Date(Date.UTC(day.getUTCFullYear(), 0, 1))
+        return Math.ceil((((day - yearStart) / 86400000) + 1) / 7)
+    }
+
     function cellDate(index) {
         const firstWeekday = (shownMonth.getDay() + 6) % 7
         return new Date(shownMonth.getFullYear(), shownMonth.getMonth(), index - firstWeekday + 1)
@@ -41,7 +49,7 @@ Item {
             Layout.alignment: Qt.AlignHCenter
         }
         Text {
-            text: Qt.formatDate(root.now, "dddd, d MMMM yyyy")
+            text: Qt.formatDate(root.now, "dddd, d MMMM yyyy") + " · W" + root.isoWeek(root.now)
             color: Theme.muted
             font.family: Theme.fontFamily
             font.pixelSize: 11

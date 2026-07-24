@@ -36,6 +36,21 @@ ShellRoot {
                 property int batteryPercent: 0
                 property string batteryState: ""
                 property date now: new Date()
+                property string nightLightState: "unavailable"
+                property string nightLightTemperature: ""
+                property int resourceCpu: 0
+                property string resourceMemoryUsed: "0.0"
+                property string resourceMemoryTotal: "0.0"
+                property int resourceMemory: 0
+                property int resourceGpu: -1
+
+                function isoWeek(date) {
+                    const day = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+                    const weekday = day.getUTCDay() || 7
+                    day.setUTCDate(day.getUTCDate() + 4 - weekday)
+                    const yearStart = new Date(Date.UTC(day.getUTCFullYear(), 0, 1))
+                    return Math.ceil((((day - yearStart) / 86400000) + 1) / 7)
+                }
 
                 function togglePanel(name, item) {
                     if (activePanel === name) {
@@ -71,6 +86,9 @@ ShellRoot {
                     onTriggered: {
                         audioStatus.running = true
                         batteryStatus.running = true
+                        nightLightStatus.running = true
+                        if (!resourceStatus.running)
+                            resourceStatus.running = true
                     }
                 }
 
@@ -100,6 +118,43 @@ ShellRoot {
                     }
                 }
 
+                Process {
+                    id: resourceStatus
+                    command: [Quickshell.env("HOME") + "/.config/quickshell/resource-status.sh"]
+                    stdout: StdioCollector {
+                        onStreamFinished: {
+                            try {
+                                const value = JSON.parse(text)
+                                bar.resourceCpu = value.cpu
+                                bar.resourceMemory = value.memory
+                                bar.resourceGpu = value.gpu
+                                bar.resourceMemoryUsed = value.memoryUsedGiB
+                                bar.resourceMemoryTotal = value.memoryTotalGiB
+                            } catch (exception) {
+                                // Keep the last valid sample when a transient read fails.
+                            }
+                        }
+                    }
+                }
+
+                Process {
+                    id: nightLightStatus
+                    command: [Quickshell.env("HOME") + "/.config/hypr/hyprsunset-control.sh", "status"]
+                    stdout: StdioCollector {
+                        onStreamFinished: {
+                            try {
+                                const status = JSON.parse(text)
+                                bar.nightLightState = status.class || "unavailable"
+                                const match = status.text.match(/([0-9]+)K/)
+                                bar.nightLightTemperature = match ? match[1] : ""
+                            } catch (error) {
+                                bar.nightLightState = "unavailable"
+                                bar.nightLightTemperature = ""
+                            }
+                        }
+                    }
+                }
+
                 Rectangle {
                     anchors.fill: parent
                     color: Theme.background
@@ -112,16 +167,9 @@ ShellRoot {
 
                         BarButton {
                             icon: ""
-                            accessibleName: "Application menu"
-                            onClicked: {
-                                menuProc.running = true
-                                bar.activePanel = ""
-                                panel.visible = false
-                            }
-                            Process {
-                                id: menuProc
-                                command: [Quickshell.env("HOME") + "/.local/share/omarchy/bin/omarchy-menu"]
-                            }
+                            active: bar.activePanel === "system"
+                            accessibleName: "System controls"
+                            onClicked: anchor => bar.togglePanel("system", anchor)
                         }
 
                         RowLayout {
@@ -153,7 +201,7 @@ ShellRoot {
                                     }
                                     Process {
                                         id: workspaceAction
-                                        command: ["hyprctl", "dispatch", "workspace", String(parent.workspaceId)]
+                                        command: ["hyprctl", "dispatch", "hl.dsp.focus({ workspace = " + parent.workspaceId + " })"]
                                     }
                                 }
                             }
@@ -163,7 +211,7 @@ ShellRoot {
 
                         BarButton {
                             icon: ""
-                            label: Qt.formatDateTime(bar.now, "ddd HH:mm")
+                            label: "W" + bar.isoWeek(bar.now) + " · " + Qt.formatDateTime(bar.now, "ddd HH:mm")
                             active: bar.activePanel === "clock"
                             accessibleName: "Calendar"
                             onClicked: anchor => bar.togglePanel("clock", anchor)
@@ -198,6 +246,46 @@ ShellRoot {
                             Process { id: volumeAction; onExited: audioStatus.running = true }
                         }
 
+                        BarButton {
+                            icon: bar.nightLightState === "unavailable" ? "󰖨 ?" : "󰖨"
+                            active: bar.nightLightState === "enabled"
+                            accessibleName: bar.nightLightState === "unavailable"
+                                ? "Start night light"
+                                : "Night light " + (bar.nightLightState === "enabled" ? "on" : "off")
+                                    + (bar.nightLightTemperature ? " at " + bar.nightLightTemperature + "K" : "")
+                            onClicked: {
+                                nightLightAction.command = bar.nightLightState === "unavailable"
+                                    ? ["systemd-run", "--user", "--unit=quickshell-hyprsunset", "--collect", "hyprsunset"]
+                                    : [Quickshell.env("HOME") + "/.config/hypr/hyprsunset-control.sh", "toggle"]
+                                nightLightAction.running = true
+                            }
+                            onWheel: delta => {
+                                if (bar.nightLightState !== "unavailable") {
+                                    nightLightAction.command = [
+                                        Quickshell.env("HOME") + "/.config/hypr/hyprsunset-control.sh",
+                                        delta > 0 ? "cooler" : "warmer"
+                                    ]
+                                    nightLightAction.running = true
+                                }
+                            }
+                            Process {
+                                id: nightLightAction
+                                onExited: nightLightRefreshDelay.restart()
+                            }
+                            Timer {
+                                id: nightLightRefreshDelay
+                                interval: 800
+                                onTriggered: nightLightStatus.running = true
+                            }
+                        }
+
+                        BarButton {
+                            icon: "󰍛"
+                            active: bar.activePanel === "resources"
+                            label: "CPU " + bar.resourceCpu + "%  RAM " + bar.resourceMemoryUsed + "/" + bar.resourceMemoryTotal + " GB"
+                            accessibleName: "System resources: CPU " + bar.resourceCpu + " percent, memory " + bar.resourceMemoryUsed + " of " + bar.resourceMemoryTotal + " gibibytes"
+                            onClicked: anchor => bar.togglePanel("resources", anchor)
+                        }
                         BarButton {
                             visible: bar.batteryPercent > 0
                             icon: bar.batteryState === "charging" ? "󰂄" : bar.batteryPercent > 75 ? "󰁹" : bar.batteryPercent > 40 ? "󰁾" : bar.batteryPercent > 15 ? "󰁻" : "󰂃"
@@ -241,6 +329,8 @@ ShellRoot {
                                 : bar.activePanel === "audio" ? audioComponent
                                 : bar.activePanel === "power" ? powerComponent
                                 : bar.activePanel === "clock" ? clockComponent
+                                : bar.activePanel === "system" ? systemComponent
+                                : bar.activePanel === "resources" ? resourcesComponent
                                 : null
                         }
                     }
@@ -269,6 +359,26 @@ ShellRoot {
                 Component { id: audioComponent; AudioPanel {} }
                 Component { id: powerComponent; PowerPanel {} }
                 Component { id: clockComponent; ClockPanel {} }
+                Component {
+                    id: resourcesComponent
+                    ResourcesPanel {
+                        externalMetrics: true
+                        cpu: bar.resourceCpu
+                        memory: bar.resourceMemory
+                        gpu: bar.resourceGpu
+                        memoryUsedGiB: bar.resourceMemoryUsed
+                        memoryTotalGiB: bar.resourceMemoryTotal
+                    }
+                }
+                Component {
+                    id: systemComponent
+                    SystemPanel {
+                        onCloseRequested: {
+                            panel.visible = false
+                            bar.activePanel = ""
+                        }
+                    }
+                }
             }
         }
     }

@@ -8,3 +8,5 @@ BluetoothPanel 1.0 BluetoothPanel.qml
 AudioPanel 1.0 AudioPanel.qml
 PowerPanel 1.0 PowerPanel.qml
 ClockPanel 1.0 ClockPanel.qml
+SystemPanel 1.0 SystemPanel.qml
+ResourcesPanel 1.0 ResourcesPanel.qml
