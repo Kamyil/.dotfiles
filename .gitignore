@@ -18,6 +18,7 @@ tmux/plugins/
 pynvim/
 herdr/session.json
 pi/agent/auth.json
+scripts/.env
 
 # Obsidian workspace state
 obsidian/workspace*.json

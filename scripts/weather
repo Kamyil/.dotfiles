@@ -1,7 +1,7 @@
 #!/bin/bash
 # Based on http://openweathermap.org/current
 
-API_KEY="REVOKED_SECRET_REMOVED"
+API_KEY="${OPENWEATHER_API_KEY:?OPENWEATHER_API_KEY is required}"
 
 # Check on http://openweathermap.org/find
 CITY_ID="3085128"
