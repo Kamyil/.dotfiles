@@ -1,0 +1,8 @@
+[general]
+fullscreen = "current-screen"
+resize = { mode = "smart" }
+floating-hack = true
+initial-tool = "brush"
+copy-command = "wl-copy"
+actions-on-enter = ["save-to-clipboard", "exit"]
+actions-on-escape = ["exit"]
