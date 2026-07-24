@@ -41,6 +41,7 @@ let
   linuxLinks = {
     ".config/hypr" = "hypr";
     ".config/waybar" = "waybar";
+    ".config/quickshell" = "quickshell";
     ".config/autostart/walker.desktop" = "autostart/walker.desktop";
     ".config/elephant/calc.toml" = "elephant/calc.toml";
     ".config/elephant/desktopapplications.toml" = "elephant/desktopapplications.toml";

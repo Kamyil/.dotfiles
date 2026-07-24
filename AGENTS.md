@@ -66,11 +66,11 @@ nix eval --raw ./nix#nixosConfigurations.nixos.config.home-manager.users.kamil.p
 
 ## NixOS Desktop Invariants
 
-- NixOS uses Hyprland, Waybar, Walker, Elephant, and `swaybg`; do not restore retired window-manager configs.
+- NixOS uses Hyprland, Quickshell, Walker, Elephant, and `swaybg`; Waybar remains an installed fallback. Do not restore retired window-manager configs.
 - `Super+Space` launches Walker; `Super+Escape` selects emoji; `Super+Ctrl+E` selects symbols.
 - Omarchy scripts live in `omarchy/bin` and must remain executable.
 - `OMARCHY_PATH` and Omarchy links are declared in `nix/nixos.nix` and `nix/symlinks.nix`.
-- Keep required desktop packages: `waybar`, `walker`, `uwsm`, `swaybg`, `pulsemixer`, `pamixer`, `rfkill_udev`, `impala`, `bluetuith`, `wtype`, and `wl-clipboard`.
+- Keep required desktop packages: `quickshell`, `waybar`, `walker`, `uwsm`, `swaybg`, `pulsemixer`, `pamixer`, `rfkill_udev`, `impala`, `bluetuith`, `wtype`, and `wl-clipboard`.
 - Check Hyprland changes with `hyprctl configerrors`; let the user perform disruptive restarts.
 
 ## Documentation and Hygiene

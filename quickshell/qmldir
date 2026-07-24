@@ -1,0 +1,10 @@
+singleton Theme 1.0 Theme.qml
+BarButton 1.0 BarButton.qml
+Heading 1.0 Heading.qml
+SwitchRow 1.0 SwitchRow.qml
+ActionRow 1.0 ActionRow.qml
+NetworkPanel 1.0 NetworkPanel.qml
+BluetoothPanel 1.0 BluetoothPanel.qml
+AudioPanel 1.0 AudioPanel.qml
+PowerPanel 1.0 PowerPanel.qml
+ClockPanel 1.0 ClockPanel.qml

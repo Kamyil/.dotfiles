@@ -67,7 +67,7 @@ The link policy lives in [`nix/symlinks.nix`](nix/symlinks.nix):
 
 - `commonLinks` applies to both operating systems.
 - `darwinLinks` adds macOS-only paths such as SketchyBar, Aerospace, Hammerspoon, and cmux.
-- `linuxLinks` adds Hyprland, Waybar, Walker, Omarchy, and other Linux desktop paths.
+- `linuxLinks` adds Hyprland, Quickshell, Waybar, Walker, Omarchy, and other Linux desktop paths.
 - Home Manager creates every repository link with `mkOutOfStoreSymlink`.
 - Activation adopts only legacy symlinks already pointing into this checkout. Missing sources, real targets, and unrelated symlinks abort without overwriting them.
 
@@ -117,7 +117,7 @@ For agentic work, **oh-my-pi (`omp`) is the primary harness** and **OpenCode is 
 | --- | --- | --- |
 | System integration | nix-darwin | NixOS modules (`nix/nixos.nix`, `nixos/configuration.nix`) |
 | Window manager / compositor | Aerospace | Hyprland |
-| Status bar | SketchyBar | Waybar |
+| Desktop shell / status bar | SketchyBar | Quickshell |
 | Terminal apps | Kitty, WezTerm, Ghostty, Alacritty | Alacritty, Kitty, WezTerm (shared where enabled) |
 | Virtualization | Lima, Colima, QEMU, UTM | QEMU, Podman, Docker |
 | GUI application delivery | Homebrew brews and casks | Nix packages and NixOS modules |
@@ -133,10 +133,10 @@ macOS Homebrew is used for GUI applications and tools that are unavailable or in
 | Role | Tool(s) | macOS counterpart |
 | --- | --- | --- |
 | Desktop compositor | Hyprland | Aerospace |
-| Status bar and launcher | Waybar, Walker, Elephant | SketchyBar, Raycast |
+| Desktop shell and launcher | Quickshell, Walker, Elephant | SketchyBar, Raycast |
 | Lock screen and idle desktop | Hyprlock, Hypridle | macOS screen lock / system behavior |
 | Audio and graphics | PipeWire, Pulse compatibility, XWayland | CoreAudio and native macOS display stack |
-| Wi-Fi/Bluetooth TUIs | impala, bluetuith | macOS system UI or third-party GUI tools |
+| Network and Bluetooth controls | Quickshell panels; impala and bluetuith as fallbacks | macOS system UI or third-party GUI tools |
 | Container stack | Docker, Podman, Compose, buildx | Docker/Podman plus Colima/Lima |
 | Linux development | gcc, nixd, nightly Rust, Zig, PHP, Go | clang/Xcode toolchain, rustup, same language tools |
 | Screenshot and clipboard | flameshot, swappy, wl-clipboard | macOS screenshot and clipboard tools |

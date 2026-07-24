@@ -78,6 +78,7 @@ in
   services.fwupd.enable = true;
   services.thermald.enable = true;
   services.power-profiles-daemon.enable = true;
+  services.upower.enable = true;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -197,6 +198,8 @@ in
     hyprsunset
     swaylock
     waybar
+    quickshell
+    pulseaudio
     pulsemixer
     netcat-openbsd
     pamixer

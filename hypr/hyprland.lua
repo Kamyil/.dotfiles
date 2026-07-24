@@ -7,7 +7,7 @@ hl.env("MOZ_ENABLE_WAYLAND", "1")
 
 -- Autostart
 hl.on("hyprland.start", function()
-	hl.exec_cmd("waybar")
+	hl.exec_cmd("quickshell")
 	hl.exec_cmd("dunst")
 	hl.exec_cmd("swaybg -c '#000000'")
 	hl.exec_cmd("bash ~/.config/hypr/exec-cursor.sh")
