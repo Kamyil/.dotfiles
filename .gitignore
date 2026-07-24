@@ -16,6 +16,8 @@ wezterm/workspaces.mru
 nvim/startup.log
 tmux/plugins/
 pynvim/
+herdr/session.json
+pi/agent/auth.json
 
 # Obsidian workspace state
 obsidian/workspace*.json
