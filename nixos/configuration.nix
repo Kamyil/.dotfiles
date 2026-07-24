@@ -197,6 +197,8 @@ in
     hypridle
     nwg-displays
     hyprsunset
+    brightnessctl
+    jq
     swaylock
     waybar
     quickshell
@@ -208,6 +210,7 @@ in
     pamixer
     rfkill_udev
     wl-clipboard
+    cliphist
     wtype
     grim
     slurp

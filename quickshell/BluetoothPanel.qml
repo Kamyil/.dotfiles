@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Bluetooth
+import Quickshell.Services.Pipewire
 import "."
 
 Item {
@@ -23,6 +24,27 @@ Item {
         }
         return false
     }
+    readonly property var audioSinks: (Pipewire.nodes ? Pipewire.nodes.values : []).filter(node => node && node.isSink && !node.isStream)
+
+
+    function switchAudioOutput(device) {
+        if (!device || !device.address)
+            return false
+        const address = String(device.address).toLowerCase()
+        const underscored = address.replace(/:/g, "_")
+        for (const node of audioSinks) {
+            const props = node && node.properties ? node.properties : ({})
+            const blob = String(node.name || "") + " " + String(node.description || "") + " " + JSON.stringify(props)
+            const normalized = blob.toLowerCase()
+            if (normalized.includes(address) || normalized.includes(underscored)) {
+                Pipewire.preferredDefaultAudioSink = node
+                return true
+            }
+        }
+        return false
+    }
+
+    PwObjectTracker { objects: root.audioSinks }
 
     function setPowered(value) {
         for (const adapter of Bluetooth.adapters.values)
@@ -135,9 +157,10 @@ Item {
                                 property bool connectAfterPair: false
 
                                 title: modelData.deviceName || modelData.name || modelData.address
-                                subtitle: modelData.connected ? "connected"
+                                subtitle: modelData.connected
+                                    ? (modelData.batteryAvailable ? "connected · " + Math.round(modelData.battery * 100) + "% battery" : "connected")
                                     : modelData.pairing ? "pairing"
-                                    : modelData.paired ? "paired"
+                                    : modelData.paired ? (modelData.trusted ? "remembered · right-click to forget" : "paired · right-click to forget")
                                     : "nearby"
                                 icon: modelData.connected ? "󰂱" : modelData.paired ? "󰂯" : ""
                                 trailing: modelData.connected ? "Disconnect"
@@ -156,6 +179,25 @@ Item {
                                     }
                                 }
 
+                                TapHandler {
+                                    acceptedButtons: Qt.RightButton
+                                    onTapped: if (deviceRow.modelData.paired && !deviceRow.modelData.connected) deviceRow.modelData.forget()
+                                }
+
+                                Timer {
+                                    id: audioSwitchRetry
+                                    interval: 500
+                                    repeat: true
+                                    property int attempts: 0
+                                    onTriggered: {
+                                        attempts++
+                                        if (!deviceRow.modelData.connected
+                                                || root.switchAudioOutput(deviceRow.modelData)
+                                                || attempts >= 10)
+                                            stop()
+                                    }
+                                }
+
                                 Connections {
                                     target: deviceRow.modelData
                                     function onPairedChanged() {
@@ -163,6 +205,14 @@ Item {
                                             deviceRow.connectAfterPair = false
                                             deviceRow.modelData.trusted = true
                                             deviceRow.modelData.connect()
+                                        }
+                                    }
+                                    function onConnectedChanged() {
+                                        if (deviceRow.modelData.connected) {
+                                            audioSwitchRetry.attempts = 0
+                                            audioSwitchRetry.restart()
+                                        } else {
+                                            audioSwitchRetry.stop()
                                         }
                                     }
                                 }

@@ -8,10 +8,9 @@ hl.env("MOZ_ENABLE_WAYLAND", "1")
 -- Autostart
 hl.on("hyprland.start", function()
 	hl.exec_cmd("quickshell")
-	hl.exec_cmd("dunst")
 	hl.exec_cmd("swaybg -c '#000000'")
 	hl.exec_cmd("bash ~/.config/hypr/exec-cursor.sh")
-	hl.exec_cmd("hypridle -c ~/.config/hypr/hypridle.conf")
+	hl.exec_cmd("wl-paste --watch cliphist store")
 end)
 
 hl.config({
@@ -81,7 +80,10 @@ local mainMod = "SUPER"
 
 -- Core applications
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("kitty"))
-hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("fuzzel"))
+hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("quickshell ipc call launcher toggle"))
+hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd("quickshell ipc call picker emoji"))
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("quickshell ipc call picker clipboard"))
+hl.bind(mainMod .. " + SHIFT + I", hl.dsp.exec_cmd("quickshell ipc call picker image"))
 -- hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("foot --app-id=tui-float nmtui"))
 -- hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("foot --app-id=tui-float bluetuith"))
 
@@ -141,7 +143,7 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Lock screen
-hl.bind(mainMod .. " + CTRL + Q", hl.dsp.exec_cmd("hyprlock"))
+hl.bind(mainMod .. " + CTRL + Q", hl.dsp.exec_cmd("quickshell ipc call session lock"))
 
 -- Screenshots
 local screenshot = hl.dsp.exec_cmd("/home/kamil/.config/hypr/screenshot-area.sh")

@@ -10,3 +10,8 @@ PowerPanel 1.0 PowerPanel.qml
 ClockPanel 1.0 ClockPanel.qml
 SystemPanel 1.0 SystemPanel.qml
 ResourcesPanel 1.0 ResourcesPanel.qml
+MonitorPanel 1.0 MonitorPanel.qml
+WeatherPanel 1.0 WeatherPanel.qml
+NotificationCenter 1.0 NotificationCenter.qml
+ApplicationLauncher 1.0 ApplicationLauncher.qml
+PickerPanel 1.0 PickerPanel.qml

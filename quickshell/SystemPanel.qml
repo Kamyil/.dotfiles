@@ -11,6 +11,7 @@ Item {
 
     property bool canHibernate: false
     signal closeRequested()
+    signal lockRequested()
     function execute(command) {
         action.command = command
         action.running = true
@@ -48,7 +49,7 @@ Item {
             subtitle: "Keep applications running and require authentication"
             icon: "󰌾"
             trailing: "Lock"
-            onClicked: root.execute(["hyprlock"])
+            onClicked: root.lockRequested()
         }
 
         ActionRow {

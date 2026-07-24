@@ -44,7 +44,6 @@ let
     ".config/quickshell" = "quickshell";
     ".config/dunst" = "dunst";
     ".config/satty/config.toml" = "satty/config.toml";
-    ".config/autostart/walker.desktop" = "autostart/walker.desktop";
     ".config/elephant/calc.toml" = "elephant/calc.toml";
     ".config/elephant/desktopapplications.toml" = "elephant/desktopapplications.toml";
     ".config/omarchy/current/theme/walker.css" = "omarchy/current/theme/walker.css";
