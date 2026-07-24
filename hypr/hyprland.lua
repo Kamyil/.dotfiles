@@ -21,7 +21,7 @@ hl.config({
 
 	input = {
 		kb_layout = "pl",
-		kb_options = "lv3:lalt_switch,caps:escape",
+		kb_options = "altwin:swap_lalt_lwin,caps:escape",
 		follow_mouse = 1,
 		repeat_rate = 50,
 		repeat_delay = 300,
@@ -144,7 +144,7 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind(mainMod .. " + CTRL + Q", hl.dsp.exec_cmd("hyprlock"))
 
 -- Screenshots
-local screenshot = hl.dsp.exec_cmd([[env QT_QPA_PLATFORM=wayland QT_SCREEN_SCALE_FACTORS="1;1" flameshot gui]])
+local screenshot = hl.dsp.exec_cmd("/home/kamil/.config/hypr/screenshot-area.sh")
 hl.bind("Print", screenshot)
-hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("flameshot gui"))
+hl.bind(mainMod .. " + Print", screenshot)
 hl.bind(mainMod .. " + SHIFT + 4", screenshot)
