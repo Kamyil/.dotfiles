@@ -1,2 +1,5 @@
+# Kanagawa Paper theme with Vim-style bindings from hotkeys.toml.
+theme = 'kanagawa-paper'
+
 editor = 'nvim'
 dir_editor = 'nvim'

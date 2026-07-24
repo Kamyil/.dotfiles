@@ -1,4 +1,4 @@
-confirm = ['enter', '']
+confirm = ['enter', 'right', 'l']
 quit = ['ctrl+c', '']
 cd_quit = ['Q', '']
 
@@ -17,7 +17,7 @@ open_sort_options_menu = ['o', '']
 toggle_reverse_sort = ['R', '']
 
 focus_on_process_bar = ['ctrl+p', '']
-focus_on_sidebar = ['ctrl+s', '']
+focus_on_sidebar = ['s', '']
 focus_on_metadata = ['ctrl+d', '']
 
 file_panel_item_create = ['a', '']
@@ -49,7 +49,7 @@ toggle_footer = ['ctrl+f', '']
 confirm_typing = ['enter', '']
 cancel_typing = ['esc', '']
 
-parent_directory = ['-', '']
+parent_directory = ['h', 'left', 'backspace']
 search_bar = ['/', '']
 
 file_panel_select_mode_items_select_down = ['J', '']

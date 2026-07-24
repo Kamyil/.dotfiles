@@ -1,0 +1,49 @@
+# Kanagawa Paper palette shared with themes/kanagawa-paper/theme.json.
+
+code_syntax_highlight = "monokai"
+
+full_screen_fg = "#DCD7BA"
+full_screen_bg = "#14141a"
+
+gradient_color = ["#809ba7", "#a292a3"]
+directory_icon_color = "#c4b28a"
+
+file_panel_fg = "#DCD7BA"
+file_panel_bg = "#14141a"
+file_panel_border = "#363646"
+file_panel_border_active = "#809ba7"
+file_panel_top_directory_icon = "#c4b28a"
+file_panel_top_path = "#8ea49e"
+file_panel_item_selected_fg = "#DCD7BA"
+file_panel_item_selected_bg = "#363646"
+
+footer_fg = "#9e9b93"
+footer_bg = "#14141a"
+footer_border = "#363646"
+footer_border_active = "#699469"
+
+sidebar_fg = "#DCD7BA"
+sidebar_bg = "#14141a"
+sidebar_title = "#809ba7"
+sidebar_border = "#363646"
+sidebar_border_active = "#a292a3"
+sidebar_item_selected_fg = "#DCD7BA"
+sidebar_item_selected_bg = "#363646"
+sidebar_divider = "#363646"
+
+modal_fg = "#DCD7BA"
+modal_bg = "#14141a"
+modal_border_active = "#809ba7"
+modal_cancel_fg = "#14141a"
+modal_cancel_bg = "#c4746e"
+modal_confirm_fg = "#14141a"
+modal_confirm_bg = "#699469"
+
+help_menu_hotkey = "#8ea49e"
+help_menu_title = "#c4b28a"
+
+cursor = "#DCD7BA"
+correct = "#699469"
+error = "#c4746e"
+hint = "#809ba7"
+cancel = "#c4746e"
