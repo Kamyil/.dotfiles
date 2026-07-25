@@ -34,9 +34,18 @@ if ACTION == "list":
                     continue
                 emit(char, name.title())
     elif MODE == "image":
-        root = pathlib.Path.home() / "Pictures"
+        roots = [
+            pathlib.Path.home() / "Pictures",
+            pathlib.Path.home() / "Downloads",
+            pathlib.Path.home() / ".dotfiles" / "wallpapers",
+        ]
         suffixes = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
-        files = [path for path in root.rglob("*") if path.is_file() and path.suffix.lower() in suffixes] if root.exists() else []
+        files = {
+            path
+            for root in roots if root.exists()
+            for path in root.rglob("*")
+            if path.is_file() and path.suffix.lower() in suffixes
+        }
         for path in sorted(files, key=lambda item: item.stat().st_mtime, reverse=True)[:500]:
             emit(str(path), path.name)
 elif ACTION == "select":

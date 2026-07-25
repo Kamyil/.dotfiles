@@ -10,7 +10,6 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("quickshell")
 	hl.exec_cmd("swaybg -c '#000000'")
 	hl.exec_cmd("bash ~/.config/hypr/exec-cursor.sh")
-	hl.exec_cmd("wl-paste --watch cliphist store")
 end)
 
 hl.config({

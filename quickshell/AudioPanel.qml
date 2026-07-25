@@ -76,7 +76,7 @@ Item {
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
-                Slider {
+                ThemeSlider {
                     Layout.fillWidth: true
                     from: 0
                     to: 150

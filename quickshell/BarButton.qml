@@ -6,6 +6,7 @@ Rectangle {
     id: root
 
     required property string icon
+    property string iconFontFamily: Theme.fontFamily
     property string label: ""
     property bool active: false
     property string accessibleName: label
@@ -25,7 +26,7 @@ Rectangle {
         Text {
             text: root.icon
             color: root.active ? Theme.accent : Theme.foreground
-            font.family: Theme.fontFamily
+            font.family: root.iconFontFamily
             font.pixelSize: 14
         }
 

@@ -3,6 +3,10 @@ BarButton 1.0 BarButton.qml
 Heading 1.0 Heading.qml
 SwitchRow 1.0 SwitchRow.qml
 ActionRow 1.0 ActionRow.qml
+ThemeButton 1.0 ThemeButton.qml
+ThemeTextField 1.0 ThemeTextField.qml
+ThemeSlider 1.0 ThemeSlider.qml
+ThemeDialog 1.0 ThemeDialog.qml
 NetworkPanel 1.0 NetworkPanel.qml
 BluetoothPanel 1.0 BluetoothPanel.qml
 AudioPanel 1.0 AudioPanel.qml

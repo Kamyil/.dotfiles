@@ -88,7 +88,7 @@ Item {
         Item { Layout.fillHeight: true }
     }
 
-    Dialog {
+    ThemeDialog {
         id: shutdownConfirmation
         anchors.centerIn: parent
         modal: true
@@ -96,11 +96,6 @@ Item {
         standardButtons: Dialog.Yes | Dialog.Cancel
         onAccepted: root.execute(["systemctl", "poweroff"])
 
-        background: Rectangle {
-            color: Theme.elevated
-            border.color: Theme.border
-            radius: 10
-        }
 
         Text {
             width: 250
@@ -112,7 +107,7 @@ Item {
         }
     }
 
-    Dialog {
+    ThemeDialog {
         id: hibernateConfirmation
         anchors.centerIn: parent
         modal: true
@@ -120,11 +115,6 @@ Item {
         standardButtons: Dialog.Yes | Dialog.Cancel
         onAccepted: root.execute(["systemctl", "hibernate"])
 
-        background: Rectangle {
-            color: Theme.elevated
-            border.color: Theme.border
-            radius: 10
-        }
 
         Text {
             width: 250

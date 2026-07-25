@@ -28,7 +28,7 @@ Item {
         RowLayout {
             Layout.fillWidth: true
             Text { text: "RECENT"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: 9; font.weight: Font.DemiBold; Layout.fillWidth: true }
-            Button { visible: root.notifications.length > 0; text: "Clear"; onClicked: root.clearRequested() }
+            ThemeButton { visible: root.notifications.length > 0; text: "Clear"; onClicked: root.clearRequested() }
         }
         ScrollView {
             Layout.fillWidth: true
@@ -66,7 +66,7 @@ Item {
                                     visible: card.modelData.actions && card.modelData.actions.length > 0
                                     Repeater {
                                         model: card.modelData.actions
-                                        delegate: Button {
+                                        delegate: ThemeButton {
                                             required property var modelData
                                             text: modelData.text || modelData.identifier || "Open"
                                             onClicked: modelData.invoke()
@@ -74,7 +74,7 @@ Item {
                                     }
                                 }
                             }
-                            Button { text: "×"; onClicked: card.modelData.tracked = false }
+                            ThemeButton { text: "×"; onClicked: card.modelData.tracked = false }
                         }
                     }
                 }

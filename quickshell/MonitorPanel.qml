@@ -57,7 +57,7 @@ Item {
             RowLayout {
                 anchors.fill: parent; anchors.margins: 10; spacing: 10
                 Text { text: "󰃟"; color: Theme.foreground; font.family: Theme.fontFamily; font.pixelSize: 16 }
-                Slider {
+                ThemeSlider {
                     Layout.fillWidth: true; from: 1; to: 100; value: root.brightness
                     onMoved: {
                         root.brightness = Math.round(value)
@@ -105,12 +105,12 @@ Item {
                                 Layout.fillWidth: true
                                 Text { text: "Scale"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: 9 }
                                 Item { Layout.fillWidth: true }
-                                Button {
+                                ThemeButton {
                                     text: "−"; enabled: scale > 0.75
                                     onClicked: { action.command = ["hyprctl", "keyword", "monitor", name + "," + widthPx + "x" + heightPx + "@" + refreshRate + "," + xPos + "x" + yPos + "," + Math.max(0.75, scale - 0.25)]; action.running = true }
                                 }
                                 Text { text: Math.round(scale * 100) + "%"; color: Theme.foreground; font.family: Theme.fontFamily; font.pixelSize: 9; Layout.preferredWidth: 36; horizontalAlignment: Text.AlignHCenter }
-                                Button {
+                                ThemeButton {
                                     text: "+"; enabled: scale < 3
                                     onClicked: { action.command = ["hyprctl", "keyword", "monitor", name + "," + widthPx + "x" + heightPx + "@" + refreshRate + "," + xPos + "x" + yPos + "," + Math.min(3, scale + 0.25)]; action.running = true }
                                 }

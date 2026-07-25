@@ -223,41 +223,6 @@ Item {
     }
     Timer { id: refreshDelay; interval: 1200; onTriggered: root.refreshNetworks() }
 
-    component PanelButton: Button {
-        id: control
-        property bool selected: false
-
-        implicitHeight: 30
-        leftPadding: 12
-        rightPadding: 12
-        topPadding: 6
-        bottomPadding: 6
-        opacity: enabled ? 1 : 0.45
-
-        contentItem: Text {
-            text: control.text
-            color: control.selected ? Theme.background : Theme.foreground
-            font.family: Theme.fontFamily
-            font.pixelSize: 10
-            font.weight: control.selected ? Font.DemiBold : Font.Medium
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            elide: Text.ElideRight
-        }
-
-        background: Rectangle {
-            radius: 7
-            color: control.selected ? Theme.accent
-                : control.down ? Theme.hover
-                : control.hovered ? Theme.elevated
-                : "transparent"
-            border.color: control.selected ? Theme.accent : control.hovered ? Theme.muted : Theme.border
-            border.width: 1
-
-            Behavior on color { ColorAnimation { duration: 100 } }
-            Behavior on border.color { ColorAnimation { duration: 100 } }
-        }
-    }
 
     component MetricLabel: Text { color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: 10 }
     component MetricValue: Text { color: Theme.foreground; font.family: Theme.fontFamily; font.pixelSize: 10; horizontalAlignment: Text.AlignRight }
@@ -299,7 +264,7 @@ Item {
         RowLayout {
             Layout.fillWidth: true
             Text { text: "SPEED TEST"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true }
-            PanelButton { text: root.speedRunning ? "Running…" : "Run"; enabled: !root.speedRunning && !!root.info.iface; onClicked: root.runSpeedTest() }
+            ThemeButton { text: root.speedRunning ? "Running…" : "Run"; enabled: !root.speedRunning && !!root.info.iface; onClicked: root.runSpeedTest() }
         }
         GridLayout {
             visible: root.downloadMbps !== "—" || root.uploadMbps !== "—"
@@ -314,7 +279,7 @@ Item {
             Layout.fillWidth: true; spacing: 6
             Repeater {
                 model: ["DHCP", "Cloudflare", "Google", "Custom"]
-                delegate: PanelButton {
+                delegate: ThemeButton {
                     required property string modelData
                     text: modelData
                     Layout.fillWidth: true
@@ -356,18 +321,16 @@ Item {
         Text { visible: root.feedback.length > 0; text: root.feedback; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: 9; elide: Text.ElideRight; Layout.fillWidth: true }
     }
 
-    Dialog {
+    ThemeDialog {
         id: credentials; anchors.centerIn: parent; modal: true; title: "Connect to " + root.selectedSsid; standardButtons: Dialog.Ok | Dialog.Cancel
         onAccepted: root.connectNetwork(root.selectedSsid, root.selectedInterface, password.text)
-        background: Rectangle { color: Theme.elevated; border.color: Theme.border; radius: 10 }
-        TextField { id: password; width: 260; placeholderText: "Password (blank for saved network)"; echoMode: TextInput.Password; color: Theme.foreground; selectByMouse: true; onAccepted: credentials.accept() }
+        ThemeTextField { id: password; width: 260; placeholderText: "Password (blank for saved network)"; echoMode: TextInput.Password; onAccepted: credentials.accept() }
     }
-    Dialog {
+    ThemeDialog {
         id: customDns; anchors.centerIn: parent; modal: true; title: "Custom DNS servers"; standardButtons: Dialog.Ok | Dialog.Cancel
         onOpened: dnsServers.forceActiveFocus()
         onAccepted: root.setDns("Custom", dnsServers.text)
-        background: Rectangle { color: Theme.elevated; border.color: Theme.border; radius: 10 }
-        TextField { id: dnsServers; width: 280; placeholderText: "1.1.1.1 2606:4700:4700::1111"; color: Theme.foreground; selectByMouse: true; onAccepted: customDns.accept() }
+        ThemeTextField { id: dnsServers; width: 280; placeholderText: "1.1.1.1 2606:4700:4700::1111"; onAccepted: customDns.accept() }
     }
 
     Component.onCompleted: refreshNetworks()

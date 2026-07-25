@@ -211,6 +211,7 @@ in
     rfkill_udev
     wl-clipboard
     cliphist
+    python3
     wtype
     grim
     slurp

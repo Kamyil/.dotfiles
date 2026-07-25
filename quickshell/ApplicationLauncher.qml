@@ -57,7 +57,7 @@ Item {
             anchors.fill: parent
             anchors.margins: 16
             spacing: 10
-            TextField {
+            ThemeTextField {
                 id: search
                 Layout.fillWidth: true
                 placeholderText: "Search applications…"

@@ -16,15 +16,12 @@ import "."
 
 ShellRoot {
     id: root
-    property int updateCount: -1
     property string weatherTemperature: ""
     property string weatherCondition: ""
     property string nightLightState: "unavailable"
     property string nightLightTemperature: ""
     property bool nightLightStartupAttempted: false
     property string pickerMode: "clipboard"
-    property string keyboardDevice: ""
-    property string keyboardLayout: ""
 
 
     function ensureNightLight(): void {
@@ -99,13 +96,6 @@ ShellRoot {
 
 
 
-    Timer {
-        interval: 21600000
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: if (!globalUpdateStatus.running) globalUpdateStatus.running = true
-    }
 
     Timer {
         interval: 900000
@@ -115,13 +105,6 @@ ShellRoot {
         onTriggered: if (!globalWeatherStatus.running) globalWeatherStatus.running = true
     }
 
-    Timer {
-        interval: 2000
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: if (!keyboardStatus.running) keyboardStatus.running = true
-    }
 
     Timer {
         interval: 4000
@@ -131,16 +114,6 @@ ShellRoot {
         onTriggered: if (!globalNightLightStatus.running) globalNightLightStatus.running = true
     }
 
-    Process {
-        id: globalUpdateStatus
-        command: [Quickshell.env("HOME") + "/.config/quickshell/nix-update-status.sh"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const fields = text.trim().split("\t")
-                root.updateCount = fields[0] === "updates" ? Number(fields[1]) : -1
-            }
-        }
-    }
 
     Process {
         id: globalWeatherStatus
@@ -156,20 +129,11 @@ ShellRoot {
         }
     }
 
+
     Process {
-        id: keyboardStatus
-        command: [Quickshell.env("HOME") + "/.config/quickshell/keyboard-layout.sh"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const fields = text.trim().split("\t")
-                root.keyboardDevice = fields.length > 1 ? fields[0] : ""
-                root.keyboardLayout = fields.length > 1 ? fields[1] : ""
-            }
-        }
-    }
-    Process {
-        id: keyboardSwitch
-        onExited: keyboardStatus.running = true
+        id: clipboardWatcher
+        command: ["wl-paste", "--watch", "cliphist", "store"]
+        running: true
     }
 
     Process {
@@ -247,11 +211,9 @@ ShellRoot {
     }
 
     function showPicker(mode: string): void {
-        const alreadyVisible = pickerWindow.visible
         pickerMode = mode
         pickerWindow.visible = true
-        if (alreadyVisible)
-            pickerContent.reset()
+        Qt.callLater(() => pickerContent.reset())
     }
 
     IpcHandler {
@@ -298,8 +260,6 @@ ShellRoot {
                 property int resourceMemory: 0
                 property int resourceGpu: -1
                 readonly property var microphone: Pipewire.defaultAudioSource
-                readonly property string activeWindowTitle: Hyprland.activeToplevel ? Hyprland.activeToplevel.title : ""
-                readonly property int updateCount: root.updateCount
                 readonly property string weatherTemperature: root.weatherTemperature
                 readonly property string weatherCondition: root.weatherCondition
 
@@ -419,13 +379,6 @@ ShellRoot {
                             onClicked: launcherWindow.visible = !launcherWindow.visible
                         }
 
-                        BarButton {
-                            visible: bar.updateCount > 0
-                            icon: "󰏔"
-                            label: bar.updateCount
-                            active: true
-                            accessibleName: bar.updateCount + " Nix flake updates available"
-                        }
 
 
                         RowLayout {
@@ -475,13 +428,6 @@ ShellRoot {
                             }
                         }
 
-                        BarButton {
-                            visible: bar.activeWindowTitle.length > 0
-                            icon: "󰣆"
-                            label: bar.activeWindowTitle
-                            accessibleName: "Active window: " + bar.activeWindowTitle
-                            Layout.maximumWidth: 280
-                        }
                         RowLayout {
                             visible: !!root.activeMediaPlayer
                             spacing: 0
@@ -533,16 +479,6 @@ ShellRoot {
 
                         Item { Layout.fillWidth: true }
 
-                        BarButton {
-                            visible: root.keyboardLayout.length > 0
-                            icon: "󰌌"
-                            label: root.keyboardLayout.replace("English (US)", "EN").replace("Polish", "PL")
-                            accessibleName: "Keyboard layout: " + root.keyboardLayout
-                            onClicked: {
-                                keyboardSwitch.command = ["hyprctl", "switchxkblayout", root.keyboardDevice, "next"]
-                                keyboardSwitch.running = true
-                            }
-                        }
 
                         Repeater {
                             model: SystemTray.items
@@ -620,7 +556,8 @@ ShellRoot {
                         }
 
                         BarButton {
-                            icon: bar.audioMuted ? "" : bar.volume < 35 ? "" : bar.volume < 70 ? "" : ""
+                            icon: bar.audioMuted ? "" : bar.volume < 50 ? "" : ""
+                            iconFontFamily: "JetBrainsMono Nerd Font"
                             label: bar.volume + "%"
                             active: bar.activePanel === "audio"
                             accessibleName: "Sound"
@@ -842,7 +779,6 @@ ShellRoot {
             mode: root.pickerMode
             onCloseRequested: pickerWindow.visible = false
         }
-        onVisibleChanged: if (visible) pickerContent.reset()
     }
     HyprlandFocusGrab {
         windows: [pickerWindow]
@@ -904,7 +840,7 @@ ShellRoot {
                             Text { text: toastCard.summary; color: Theme.foreground; font.family: Theme.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold; wrapMode: Text.Wrap; Layout.fillWidth: true }
                             Text { visible: text.length > 0; text: toastCard.body; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: 9; wrapMode: Text.Wrap; textFormat: Text.PlainText; Layout.fillWidth: true }
                         }
-                        Button { text: "×"; onClicked: root.removeToast(toastCard.notificationId) }
+                        ThemeButton { text: "×"; onClicked: root.removeToast(toastCard.notificationId) }
                     }
                     Timer {
                         interval: 8000
