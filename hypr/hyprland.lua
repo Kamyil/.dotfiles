@@ -8,7 +8,7 @@ hl.env("MOZ_ENABLE_WAYLAND", "1")
 -- Autostart
 hl.on("hyprland.start", function()
 	hl.exec_cmd("quickshell")
-	hl.exec_cmd("swaybg -c '#000000'")
+	hl.exec_cmd("swaybg -i ~/.dotfiles/wallpapers/kanagawa-paper-night.webp -m fill")
 	hl.exec_cmd("bash ~/.config/hypr/exec-cursor.sh")
 end)
 
@@ -48,7 +48,14 @@ hl.config({
 	decoration = {
 		rounding = 0,
 		blur = {
-			enabled = false,
+			enabled = true,
+			size = 3,
+			passes = 1,
+			new_optimizations = true,
+			xray = false,
+			special = false,
+			popups = false,
+			input_methods = false,
 		},
 		shadow = {
 			enabled = false,
@@ -56,7 +63,7 @@ hl.config({
 	},
 
 	animations = {
-		enabled = false,
+		enabled = true,
 	},
 
 	misc = {
@@ -64,6 +71,12 @@ hl.config({
 		disable_hyprland_logo = true,
 	},
 })
+
+-- Short 120–140ms transitions: enough motion to orient without sustained rendering.
+hl.animation({ leaf = "windows", enabled = true, speed = 1.2, bezier = "default", style = "popin 98%" })
+hl.animation({ leaf = "layers", enabled = true, speed = 1.2, bezier = "default", style = "fade" })
+hl.animation({ leaf = "fade", enabled = true, speed = 1.2, bezier = "default" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 1.4, bezier = "default", style = "slidefade 8%" })
 
 hl.window_rule({
 	name = "tui-float-windows",
