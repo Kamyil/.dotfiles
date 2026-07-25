@@ -630,6 +630,11 @@ ShellRoot {
                 PopupWindow {
                     id: panel
                     visible: false
+                    grabFocus: true
+                    onVisibleChanged: if (!visible) Qt.callLater(() => {
+                        if (!panel.visible)
+                            bar.activePanel = ""
+                    })
                     implicitWidth: 372
                     implicitHeight: contentLoader.item ? contentLoader.item.implicitHeight + 32 : 100
                     color: "transparent"
@@ -677,15 +682,6 @@ ShellRoot {
                     }
                 }
 
-                HyprlandFocusGrab {
-                    id: focusGrab
-                    windows: [panel]
-                    active: panel.visible
-                    onCleared: {
-                        panel.visible = false
-                        bar.activePanel = ""
-                    }
-                }
 
                 Component { id: networkComponent; NetworkPanel {} }
                 Component { id: bluetoothComponent; BluetoothPanel {} }
