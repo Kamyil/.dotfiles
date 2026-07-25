@@ -40,20 +40,56 @@ in
 
   services.xserver.enable = false;
 
-  # FIX: Improved greetd configuration with start-hyprland wrapper
-  # start-hyprland is the official Hyprland wrapper that properly sets up session management
+  # Run the graphical greeter in a small, isolated Hyprland session. ReGreet
+  # hands the selected session back to greetd; this compositor exits with it.
   services.greetd = {
     enable = true;
+    settings.default_session = {
+      command = "${pkgs.dbus}/bin/dbus-run-session ${pkgs.hyprland}/bin/Hyprland --config /etc/greetd/hyprland.conf";
+      user = "greeter";
+    };
+  };
+
+  programs.regreet = {
+    enable = true;
+    font = {
+      package = pkgs.nerd-fonts.jetbrains-mono;
+      name = "Berkeley Mono SemiBold SemiCondensed";
+      size = 14;
+    };
+    cursorTheme = {
+      package = pkgs.capitaine-cursors;
+      name = "capitaine-cursors";
+    };
     settings = {
-      default_session = {
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd start-hyprland";
-        user = "greeter";
+      background = {
+        path = ../wallpapers/kanagawa-black-and-white-wallpaper.jpg;
+        fit = "Cover";
+      };
+      GTK.application_prefer_dark_theme = true;
+      appearance.greeting_msg = "Welcome back";
+      widget.clock = {
+        format = "%A · %H:%M";
+        resolution = "1s";
       };
     };
   };
 
-  # Ensure displayManager knows about Hyprland session
-  services.displayManager.sessionPackages = [ pkgs.hyprland ];
+  environment.etc."greetd/hyprland.conf".text = ''
+    monitor = , preferred, auto, 1
+
+    misc {
+      disable_hyprland_logo = true
+      disable_splash_rendering = true
+      force_default_wallpaper = 0
+    }
+
+    animations {
+      enabled = false
+    }
+
+    exec-once = ${pkgs.regreet}/bin/regreet; ${pkgs.hyprland}/bin/hyprctl dispatch exit
+  '';
 
   # Sreenshare, filepickers etc. (desktop portals)
   xdg.portal.enable = true;
@@ -180,7 +216,6 @@ in
     pkg-config
     openssl
     gnumake
-    tuigreet
 
     # Desktop applications
     vivaldi
@@ -199,7 +234,6 @@ in
     hyprsunset
     brightnessctl
     jq
-    swaylock
     waybar
     quickshell
     pulseaudio
