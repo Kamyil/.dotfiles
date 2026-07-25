@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Quickshell",
+  "version": "1.0.0",
+  "description": "Helium theme matching the Quickshell bar palette.",
+  "theme": {
+    "colors": {
+      "frame": [17, 19, 24],
+      "frame_inactive": [17, 19, 24],
+      "frame_incognito": [17, 19, 24],
+      "frame_incognito_inactive": [17, 19, 24],
+      "toolbar": [17, 19, 24],
+      "toolbar_text": [203, 200, 188],
+      "toolbar_button_icon": [203, 200, 188],
+      "tab_text": [203, 200, 188],
+      "tab_background_text": [142, 138, 128],
+      "tab_background_text_inactive": [142, 138, 128],
+      "bookmark_text": [203, 200, 188],
+      "button_background": [31, 31, 40],
+      "omnibox_background": [24, 24, 32],
+      "omnibox_text": [203, 200, 188],
+      "ntp_background": [17, 19, 24],
+      "ntp_text": [203, 200, 188],
+      "ntp_link": [128, 155, 167],
+      "ntp_header": [24, 24, 32]
+    }
+  }
+}

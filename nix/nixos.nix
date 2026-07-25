@@ -35,7 +35,24 @@ in
       sops-nix.nixosModules.sops
       home-manager.nixosModules.home-manager
       {
-        programs.helium.enable = true;
+        programs.helium = {
+          enable = true;
+
+          flags = [
+            "--start-maximized"
+            "--load-extension=${../helium-theme}"
+          ];
+
+          policies = {
+            ExtensionInstallForcelist = [
+              "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
+              "gfbliohnnapiefjpjlpjnehglfpaknnc" # Surfingkeys
+              "oboonakemofpalcgghocfoadofidjkkk" # KeePassXC-Browser
+            ];
+            SpellcheckEnabled = true;
+            SpellcheckLanguage = [ "en-US" ];
+          };
+        };
       }
       {
         home-manager.useGlobalPkgs = true;
