@@ -19,6 +19,7 @@ pynvim/
 herdr/session.json
 pi/agent/auth.json
 scripts/.env
+quickshell/weather-location
 
 # Obsidian workspace state
 obsidian/workspace*.json

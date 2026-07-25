@@ -6,7 +6,7 @@ import "."
 Item {
     id: root
     implicitWidth: 340
-    implicitHeight: 440
+    implicitHeight: 520
     property string location: "Locating…"
     property string temperature: "—"
     property string feelsLike: "—"
@@ -27,18 +27,29 @@ Item {
 
     function parse(text) {
         forecast.clear()
+        secondaryConditions.clear()
+        let sawPrimary = false
         error = ""
         for (const line of text.trim().split("\n")) {
             const f = line.split("\t")
             if (f[0] === "error") error = f[1]
-            if (f[0] === "current") {
+            if (f[0] === "current" && !sawPrimary) {
                 location = f[1]; temperature = f[2]; feelsLike = f[3]
                 condition = f[4]; humidity = f[5]; wind = f[6] + " km/h " + f[7]
+                sawPrimary = true
+            } else if (f[0] === "current") {
+                secondaryConditions.append({
+                    locationName: f[1],
+                    temperatureValue: f[2],
+                    conditionValue: f[4],
+                    feelsLikeValue: f[3]
+                })
             }
             if (f[0] === "day") forecast.append({ dateValue: f[1], low: f[2], high: f[3], summary: f[4], rain: f[5] })
         }
     }
 
+    ListModel { id: secondaryConditions }
     ListModel { id: forecast }
     Process {
         id: weather
@@ -64,6 +75,32 @@ Item {
                     Text { text: root.condition; color: Theme.foreground; font.family: Theme.fontFamily; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
                     Text { text: "Feels like " + root.feelsLike + "° · Humidity " + root.humidity + "%"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: 9 }
                     Text { text: "Wind " + root.wind; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: 9 }
+                }
+            }
+        }
+        Repeater {
+            model: secondaryConditions
+            delegate: Rectangle {
+                required property string locationName
+                required property string temperatureValue
+                required property string conditionValue
+                required property string feelsLikeValue
+                Layout.fillWidth: true
+                implicitHeight: 64
+                radius: 10
+                color: Theme.elevated
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 12
+                    spacing: 10
+                    Text { text: root.iconFor(conditionValue); color: Theme.accent; font.family: Theme.fontFamily; font.pixelSize: 28 }
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 1
+                        Text { text: locationName; color: Theme.foreground; font.family: Theme.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold }
+                        Text { text: conditionValue + " · Feels like " + feelsLikeValue + "°"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: 9; elide: Text.ElideRight; Layout.fillWidth: true }
+                    }
+                    Text { text: temperatureValue + "°"; color: Theme.foreground; font.family: Theme.fontFamily; font.pixelSize: 24; font.weight: Font.DemiBold }
                 }
             }
         }
