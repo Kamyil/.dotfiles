@@ -94,7 +94,7 @@ Item {
                             property var entry: modelData
                             title: modelData.name || modelData.id
                             subtitle: modelData.genericName || modelData.comment || "Application"
-                            icon: "󰣆"
+                            iconSource: Quickshell.iconPath(modelData.icon, "application-x-executable")
                             trailing: index === root.selectedIndex ? "Enter" : ""
                             selected: index === root.selectedIndex
                             onClicked: root.launch(modelData)

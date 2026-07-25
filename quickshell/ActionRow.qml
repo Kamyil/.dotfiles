@@ -1,5 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
+import Quickshell.Widgets
 import "."
 
 Rectangle {
@@ -7,6 +9,7 @@ Rectangle {
     required property string title
     property string subtitle: ""
     property string icon: ""
+    property string iconSource: ""
     property string trailing: ""
     property bool selected: false
     signal clicked()
@@ -16,19 +19,31 @@ Rectangle {
     radius: 8
     color: selected ? Theme.elevated : mouse.containsMouse ? Theme.hover : "transparent"
 
-    Text {
-        id: glyph
+    Item {
+        id: iconSlot
         anchors.left: parent.left
         anchors.leftMargin: 10
         anchors.verticalCenter: parent.verticalCenter
-        text: row.icon
-        color: row.selected ? Theme.accent : Theme.foreground
-        font.family: Theme.fontFamily
-        font.pixelSize: 14
+        width: row.iconSource.length > 0 || row.icon.length > 0 ? 18 : 0
+        height: 18
+
+        IconImage {
+            anchors.fill: parent
+            source: row.iconSource
+            visible: row.iconSource.length > 0
+        }
+        Text {
+            anchors.centerIn: parent
+            text: row.icon
+            visible: row.iconSource.length === 0
+            color: row.selected ? Theme.accent : Theme.foreground
+            font.family: Theme.fontFamily
+            font.pixelSize: 14
+        }
     }
     Column {
-        anchors.left: glyph.right
-        anchors.leftMargin: row.icon.length > 0 ? 10 : 0
+        anchors.left: iconSlot.right
+        anchors.leftMargin: iconSlot.width > 0 ? 10 : 0
         anchors.right: tail.left
         anchors.rightMargin: 8
         anchors.verticalCenter: parent.verticalCenter
