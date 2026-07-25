@@ -165,7 +165,7 @@ in
             ];
             casks = [
               # Keep these that aren't available in nixpkgs or ARM macOS
-              "chromium"
+              "helium-browser"
               "firefox"
               "spotify"
               "vivaldi"
@@ -232,6 +232,41 @@ in
             lumen,
             ...
           }:
+          let
+            heliumLauncher = pkgs.writeShellScript "helium-themed" ''
+              exec "/Applications/Helium.app/Contents/MacOS/Helium" \
+                --start-maximized \
+                --load-extension="${../helium-theme}" \
+                "$@"
+            '';
+            heliumLauncherInfo = pkgs.writeText "helium-themed-Info.plist" ''
+              <?xml version="1.0" encoding="UTF-8"?>
+              <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+              <plist version="1.0">
+              <dict>
+                <key>CFBundleDisplayName</key>
+                <string>Helium Themed</string>
+                <key>CFBundleExecutable</key>
+                <string>helium-themed</string>
+                <key>CFBundleIdentifier</key>
+                <string>net.imput.helium-themed-launcher</string>
+                <key>CFBundleName</key>
+                <string>Helium Themed</string>
+                <key>CFBundlePackageType</key>
+                <string>APPL</string>
+                <key>CFBundleShortVersionString</key>
+                <string>1.0.0</string>
+                <key>LSMinimumSystemVersion</key>
+                <string>12.0</string>
+              </dict>
+              </plist>
+            '';
+            heliumLauncherApp = pkgs.runCommand "helium-themed-app" { } ''
+              mkdir -p "$out/Contents/MacOS"
+              cp ${heliumLauncherInfo} "$out/Contents/Info.plist"
+              cp ${heliumLauncher} "$out/Contents/MacOS/helium-themed"
+            '';
+          in
           {
             imports = [ ./shared.nix ];
 
@@ -310,6 +345,8 @@ in
               HOMEBREW_NO_AUTO_UPDATE = "1";
             };
             home.sessionPath = [ "/Users/kamil/Library/pnpm" ];
+
+            home.file."Applications/Helium Themed.app".source = heliumLauncherApp;
 
             # Enable XDG for proper config management
 
