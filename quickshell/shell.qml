@@ -386,6 +386,7 @@ ShellRoot {
                     anchors.fill: parent
                     color: Theme.background
 
+
                     RowLayout {
                         anchors.fill: parent
                         anchors.leftMargin: 7
@@ -417,6 +418,7 @@ ShellRoot {
                                     readonly property bool focused: Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.id === workspaceId
                                     readonly property var workspace: bar.workspaceById(workspaceId)
                                     readonly property var apps: bar.workspaceApps(workspace)
+                                    visible: apps.length > 0
                                     implicitWidth: Math.max(24, workspaceContent.implicitWidth + 10)
                                     implicitHeight: 24
                                     radius: 7
@@ -515,6 +517,43 @@ ShellRoot {
 
                         Item { Layout.fillWidth: true }
 
+
+                        Item {
+                            id: controlsReveal
+                            Layout.alignment: Qt.AlignVCenter
+                            implicitWidth: controlsRevealRow.implicitWidth
+                            implicitHeight: 26
+
+                            HoverHandler {
+                                id: controlsHover
+                            }
+
+                            RowLayout {
+                                id: controlsRevealRow
+                                anchors.fill: parent
+                                spacing: 4
+
+                        Item {
+                            id: extraControls
+                            Layout.alignment: Qt.AlignVCenter
+                            implicitWidth: controlsHover.hovered ? extraControlsRow.implicitWidth : 0
+                            implicitHeight: 26
+                            opacity: controlsHover.hovered ? 1 : 0
+                            enabled: controlsHover.hovered
+                            clip: true
+
+                            Behavior on implicitWidth {
+                                NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
+                            }
+                            Behavior on opacity {
+                                NumberAnimation { duration: 140 }
+                            }
+
+                            RowLayout {
+                                id: extraControlsRow
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 4
 
                         Repeater {
                             model: SystemTray.items
@@ -649,6 +688,18 @@ ShellRoot {
                                 id: nightLightRefreshDelay
                                 interval: 800
                                 onTriggered: globalNightLightStatus.running = true
+                            }
+                        }
+                            }
+                        }
+
+                        Text {
+                            text: controlsHover.hovered ? "󰅁" : "󰅂"
+                            color: Theme.muted
+                            font.family: Theme.fontFamily
+                            font.pixelSize: 14
+                            Accessible.name: controlsHover.hovered ? "Hide additional controls" : "Additional controls"
+                        }
                             }
                         }
 
