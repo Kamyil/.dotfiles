@@ -556,6 +556,13 @@ ShellRoot {
                             }
                         }
                         BarButton {
+                            icon: "󰑋"
+                            active: bar.activePanel === "recorder"
+                            accessibleName: "Screen recording"
+                            onClicked: anchor => bar.togglePanel("recorder", anchor)
+                        }
+
+                        BarButton {
                             icon: notificationPreferences.doNotDisturb ? "󰂛" : root.notifications.length > 0 ? "󰂚" : "󰂜"
                             label: root.notifications.length > 0 ? root.notifications.length : ""
                             active: bar.activePanel === "notifications" || root.notifications.length > 0
@@ -705,6 +712,7 @@ ShellRoot {
                                 : bar.activePanel === "clock" ? clockComponent
                                 : bar.activePanel === "system" ? systemComponent
                                 : bar.activePanel === "resources" ? resourcesComponent
+                                : bar.activePanel === "recorder" ? recorderComponent
                                 : null
                         }
                     }
@@ -735,6 +743,15 @@ ShellRoot {
                 }
                 Component { id: powerComponent; PowerPanel {} }
                 Component { id: clockComponent; ClockPanel {} }
+                Component {
+                    id: recorderComponent
+                    RecorderPanel {
+                        onCloseRequested: {
+                            panel.visible = false
+                            bar.activePanel = ""
+                        }
+                    }
+                }
                 Component {
                     id: resourcesComponent
                     ResourcesPanel {

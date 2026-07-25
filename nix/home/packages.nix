@@ -92,6 +92,8 @@
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       sweethome3d.application
+      kooha
+      gpu-screen-recorder-gtk
     ]
     ++ [
       fff.packages.${pkgs.stdenv.hostPlatform.system}.fff-mcp
