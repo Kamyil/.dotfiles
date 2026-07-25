@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
@@ -12,6 +13,7 @@ import Quickshell.Services.SystemTray
 import Quickshell.Services.Mpris
 import Quickshell.Services.Notifications
 import Quickshell.Services.UPower
+import Quickshell.Widgets
 import "."
 
 ShellRoot {
@@ -283,6 +285,30 @@ ShellRoot {
                     return null
                 }
 
+                function workspaceApps(workspace) {
+                    if (!workspace)
+                        return []
+
+                    const apps = []
+                    const seen = ({})
+                    for (const toplevel of workspace.toplevels.values) {
+                        const appId = toplevel.wayland ? toplevel.wayland.appId : ""
+                        const key = appId.toLowerCase()
+                        if (!key || seen[key])
+                            continue
+
+                        const entry = DesktopEntries.heuristicLookup(appId)
+                        apps.push({
+                            appId: appId,
+                            icon: entry && entry.icon ? entry.icon : appId
+                        })
+                        seen[key] = true
+                        if (apps.length === 3)
+                            break
+                    }
+                    return apps
+                }
+
                 function togglePanel(name, item) {
                     if (activePanel === name) {
                         activePanel = ""
@@ -390,28 +416,38 @@ ShellRoot {
                                     readonly property int workspaceId: index + 1
                                     readonly property bool focused: Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.id === workspaceId
                                     readonly property var workspace: bar.workspaceById(workspaceId)
-                                    readonly property bool occupied: !!workspace
-                                    implicitWidth: 24
+                                    readonly property var apps: bar.workspaceApps(workspace)
+                                    implicitWidth: Math.max(24, workspaceContent.implicitWidth + 10)
                                     implicitHeight: 24
                                     radius: 7
-                                    color: focused ? Theme.elevated : occupied || workspaceMouse.containsMouse ? Theme.hover : "transparent"
-                                    Text {
+                                    color: focused ? Theme.elevated : workspaceMouse.containsMouse ? Theme.hover : "transparent"
+                                    Row {
+                                        id: workspaceContent
                                         anchors.centerIn: parent
-                                        text: parent.workspaceId
-                                        color: parent.focused ? Theme.accent : Theme.muted
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: 10
-                                        font.weight: parent.focused ? Font.DemiBold : Font.Normal
-                                    }
-                                    Rectangle {
-                                        visible: parent.occupied && !parent.focused
-                                        anchors.horizontalCenter: parent.horizontalCenter
-                                        anchors.bottom: parent.bottom
-                                        anchors.bottomMargin: 2
-                                        width: 3
-                                        height: 3
-                                        radius: 2
-                                        color: Theme.accent
+                                        spacing: 3
+
+                                        Text {
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            text: workspaceId
+                                            color: focused ? Theme.accent : Theme.muted
+                                            font.family: Theme.fontFamily
+                                            font.pixelSize: 10
+                                            font.weight: focused ? Font.DemiBold : Font.Normal
+                                        }
+                                        Repeater {
+                                            model: apps
+                                            delegate: IconImage {
+                                                required property var modelData
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                implicitSize: 13
+                                                source: Quickshell.iconPath(modelData.icon, "application-x-executable")
+                                                layer.enabled: true
+                                                layer.effect: MultiEffect {
+                                                    colorization: 1
+                                                    colorizationColor: focused ? Theme.accent : Theme.muted
+                                                }
+                                            }
+                                        }
                                     }
                                     MouseArea {
                                         id: workspaceMouse
