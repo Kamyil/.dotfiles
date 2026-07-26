@@ -15,7 +15,10 @@ in
     ./bootstrap.nix
   ];
 
-  programs.hyprland.enable = true; # ships Hyprland + Xwayland
+  programs.hyprland = {
+    enable = true; # ships Hyprland + Xwayland
+    withUWSM = true;
+  };
 
   # Enable nix-ld for running dynamically linked binaries (like opencode)
   programs.nix-ld.enable = true;
@@ -62,10 +65,6 @@ in
       name = "capitaine-cursors";
     };
     settings = {
-      background = {
-        path = ../wallpapers/kanagawa-black-and-white-wallpaper.jpg;
-        fit = "Cover";
-      };
       GTK.application_prefer_dark_theme = true;
       appearance.greeting_msg = "Welcome back";
       widget.clock = {
@@ -82,6 +81,7 @@ in
       disable_hyprland_logo = true
       disable_splash_rendering = true
       force_default_wallpaper = 0
+      disable_watchdog_warning = true
     }
 
     animations {
