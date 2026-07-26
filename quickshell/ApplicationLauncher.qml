@@ -79,11 +79,12 @@ Item {
                 font.weight: Font.DemiBold
             }
             ScrollView {
+                id: resultsScroll
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 clip: true
                 ColumnLayout {
-                    width: parent.width
+                    width: resultsScroll.availableWidth
                     spacing: 3
                     Repeater {
                         id: resultsRepeater
