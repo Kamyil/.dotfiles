@@ -16,8 +16,12 @@ case "$panel" in
         app_class='chrome-www.messenger.com__-Default'
         launch_command='helium --app=https://www.messenger.com'
         ;;
+    todoist)
+        app_class='chrome-app.todoist.com__-Default'
+        launch_command='helium --app=https://app.todoist.com'
+        ;;
     *)
-        printf 'usage: %s {spotify|chatgpt|messenger}\n' "$0" >&2
+        printf 'usage: %s {spotify|chatgpt|messenger|todoist}\n' "$0" >&2
         exit 2
         ;;
 esac

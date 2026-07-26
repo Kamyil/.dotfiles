@@ -94,6 +94,7 @@ hl.animation({ leaf = "workspaces", enabled = true, speed = 1.4, bezier = "defau
 hl.workspace_rule({ workspace = "special:spotify", animation = "fade" })
 hl.workspace_rule({ workspace = "special:chatgpt", animation = "slidefade 8%" })
 hl.workspace_rule({ workspace = "special:messenger", animation = "slidefade 8%" })
+hl.workspace_rule({ workspace = "special:todoist", animation = "slidefade 8%" })
 
 hl.window_rule({
 	name = "tui-float-windows",
@@ -139,6 +140,17 @@ hl.window_rule({
 	move = { "monitor_w - 632", "monitor_h * 0.03" },
 })
 
+hl.window_rule({
+	name = "todoist-side-panel",
+	match = {
+		class = "^(chrome-app.todoist.com__-Default)$",
+	},
+	workspace = "special:todoist",
+	float = true,
+	size = { 620, "monitor_h * 0.94" },
+	move = { "monitor_w - 632", "monitor_h * 0.03" },
+})
+
 local mainMod = "SUPER"
 
 -- Core applications
@@ -148,7 +160,7 @@ hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd("quickshell ipc call picker emoj
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("quickshell ipc call picker clipboard"))
 hl.bind(mainMod .. " + SHIFT + I", hl.dsp.exec_cmd("quickshell ipc call picker image"))
 -- hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("foot --app-id=tui-float nmtui"))
--- hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("foot --app-id=tui-float bluetuith"))
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh todoist"))
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh spotify"))
 hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh chatgpt"))
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh messenger"))
@@ -237,5 +249,5 @@ hl.bind(mainMod .. " + SHIFT + 4", screenshot)
 
 -- Keep newly-added bindings at the end: Hyprland preserves Lua callback IDs
 -- across config reloads, so inserting between existing binds can remap actions.
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("quickshell ipc call tools toggle"))
+hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("quickshell ipc call tools toggle"))
 hl.bind(mainMod .. " + F", hl.dsp.exec_cmd("quickshell ipc call focus toggle"))
