@@ -161,6 +161,24 @@ for key, delta in pairs(resize) do
 	)
 end
 
+-- Resize along each axis with Alt+Shift.
+local axis_resize = {
+	H = { x = 50, y = 0 },
+	L = { x = -50, y = 0 },
+	J = { x = 0, y = 50 },
+	K = { x = 0, y = -50 },
+}
+for key, delta in pairs(axis_resize) do
+	hl.bind(
+		"ALT + SHIFT + " .. key,
+		hl.dsp.window.resize({
+			x = delta.x,
+			y = delta.y,
+			relative = true,
+		})
+	)
+end
+
 -- Move windows (matching aerospace cmd-shift-hjkl)
 for key, direction in pairs({ H = "l", J = "d", K = "u", L = "r" }) do
 	hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ direction = direction }))
