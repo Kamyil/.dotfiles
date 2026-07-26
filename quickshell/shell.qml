@@ -324,6 +324,13 @@ ShellRoot {
                     return apps
                 }
 
+                function appIconColor(appId) {
+                    let hash = 0
+                    for (let index = 0; index < appId.length; ++index)
+                        hash = ((hash << 5) - hash + appId.charCodeAt(index)) | 0
+                    return Theme.appIconPalette[(hash >>> 0) % Theme.appIconPalette.length]
+                }
+
                 function togglePanel(name, item) {
                     if (activePanel === name) {
                         activePanel = ""
@@ -491,7 +498,7 @@ ShellRoot {
                                                 layer.enabled: true
                                                 layer.effect: MultiEffect {
                                                     colorization: 1
-                                                    colorizationColor: focused ? Theme.accent : Theme.muted
+                                                    colorizationColor: bar.appIconColor(modelData.appId)
                                                 }
                                             }
                                         }
