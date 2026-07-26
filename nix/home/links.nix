@@ -46,7 +46,17 @@ let
         esac
       fi
     elif [ -e "$target" ]; then
-      if [ -f "$target" ] && [ -f "$source" ] && ${pkgs.diffutils}/bin/cmp -s "$target" "$source"; then
+      files_match=false
+      if [ -f "$target" ] && [ -f "$source" ]; then
+        if ${pkgs.diffutils}/bin/cmp -s "$target" "$source"; then
+          files_match=true
+        elif [[ "$target" = *.json ]] \
+          && [ "$(${pkgs.jq}/bin/jq -S -c . "$target" 2>/dev/null)" = "$(${pkgs.jq}/bin/jq -S -c . "$source" 2>/dev/null)" ]; then
+          files_match=true
+        fi
+      fi
+
+      if $files_match; then
         # Adopt an app-generated file once it matches the declared dotfile.
         rm "$target"
       else

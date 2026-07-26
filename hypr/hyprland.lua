@@ -93,6 +93,7 @@ hl.animation({ leaf = "fade", enabled = true, speed = 1.2, bezier = "default" })
 hl.animation({ leaf = "workspaces", enabled = true, speed = 1.4, bezier = "default", style = "slidefade 8%" })
 hl.workspace_rule({ workspace = "special:spotify", animation = "fade" })
 hl.workspace_rule({ workspace = "special:chatgpt", animation = "slidefade 8%" })
+hl.workspace_rule({ workspace = "special:messenger", animation = "slidefade 8%" })
 
 hl.window_rule({
 	name = "tui-float-windows",
@@ -127,6 +128,17 @@ hl.window_rule({
 	move = { "monitor_w - 632", "monitor_h * 0.03" },
 })
 
+hl.window_rule({
+	name = "messenger-side-panel",
+	match = {
+		class = "^(chrome-www.messenger.com__-Default)$",
+	},
+	workspace = "special:messenger",
+	float = true,
+	size = { 620, "monitor_h * 0.94" },
+	move = { "monitor_w - 632", "monitor_h * 0.03" },
+})
+
 local mainMod = "SUPER"
 
 -- Core applications
@@ -139,10 +151,11 @@ hl.bind(mainMod .. " + SHIFT + I", hl.dsp.exec_cmd("quickshell ipc call picker i
 -- hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("foot --app-id=tui-float bluetuith"))
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh spotify"))
 hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh chatgpt"))
+hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh messenger"))
 
 -- Window management
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
-hl.bind(mainMod .. " + M", hl.dsp.exit())
+hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh messenger"))
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.float({ action = "toggle" }))
 
 -- Focus movement (matching aerospace cmd-hjkl)

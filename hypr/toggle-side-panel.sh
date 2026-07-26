@@ -12,8 +12,12 @@ case "$panel" in
         app_class='chrome-chatgpt.com__-Default'
         launch_command='helium --app=https://chatgpt.com'
         ;;
+    messenger)
+        app_class='chrome-www.messenger.com__-Default'
+        launch_command='helium --app=https://www.messenger.com'
+        ;;
     *)
-        printf 'usage: %s {spotify|chatgpt}\n' "$0" >&2
+        printf 'usage: %s {spotify|chatgpt|messenger}\n' "$0" >&2
         exit 2
         ;;
 esac

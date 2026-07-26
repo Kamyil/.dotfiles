@@ -49,6 +49,18 @@ in
               "gfbliohnnapiefjpjlpjnehglfpaknnc" # Surfingkeys
               "oboonakemofpalcgghocfoadofidjkkk" # KeePassXC-Browser
             ];
+            WebAppInstallForceList = [
+              {
+                url = "https://chatgpt.com/";
+                default_launch_container = "window";
+                create_desktop_shortcut = true;
+              }
+              {
+                url = "https://app.todoist.com/";
+                default_launch_container = "window";
+                create_desktop_shortcut = true;
+              }
+            ];
             SpellcheckEnabled = true;
             SpellcheckLanguage = [ "en-US" ];
           };
@@ -190,6 +202,20 @@ in
             Service = {
               ExecStart = "${pkgs.easyeffects}/bin/easyeffects --gapplication-service";
               Restart = "on-failure";
+            };
+            Install.WantedBy = [ "graphical-session.target" ];
+          };
+
+          systemd.user.services.wifi-notifications = {
+            Unit = {
+              Description = "Wi-Fi state notifications";
+              After = [ "graphical-session.target" ];
+              PartOf = [ "graphical-session.target" ];
+            };
+            Service = {
+              ExecStart = "%h/.config/quickshell/wifi-notify.sh";
+              Restart = "always";
+              RestartSec = 2;
             };
             Install.WantedBy = [ "graphical-session.target" ];
           };
