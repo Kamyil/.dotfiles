@@ -214,3 +214,7 @@ local screenshot = hl.dsp.exec_cmd("/home/kamil/.config/hypr/screenshot-area.sh"
 hl.bind("Print", screenshot)
 hl.bind(mainMod .. " + Print", screenshot)
 hl.bind(mainMod .. " + SHIFT + 4", screenshot)
+
+-- Keep newly-added bindings at the end: Hyprland preserves Lua callback IDs
+-- across config reloads, so inserting between existing binds can remap actions.
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("quickshell ipc call tools toggle"))

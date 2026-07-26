@@ -226,6 +226,21 @@ ShellRoot {
         function hide(): void { pickerWindow.visible = false }
     }
 
+    IpcHandler {
+        target: "tools"
+        function toggle(): void {
+            toolsWindow.visible = !toolsWindow.visible
+            if (toolsWindow.visible)
+                Qt.callLater(() => toolsContent.reset())
+        }
+        function show(): void {
+            toolsWindow.visible = true
+            Qt.callLater(() => toolsContent.reset())
+        }
+        function hide(): void { toolsWindow.visible = false }
+    }
+
+
 
     Variants {
         model: Quickshell.screens
@@ -1124,6 +1139,32 @@ ShellRoot {
         windows: [pickerWindow]
         active: pickerWindow.visible
         onCleared: pickerWindow.visible = false
+    }
+
+    PanelWindow {
+        id: toolsWindow
+        visible: false
+        screen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
+        anchors { top: true; bottom: true; left: true; right: true }
+        exclusiveZone: 0
+        color: Qt.rgba(0, 0, 0, 0.45)
+        WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+        MouseArea { anchors.fill: parent; onClicked: toolsWindow.visible = false }
+        ToolsPanel {
+            id: toolsContent
+            anchors.centerIn: parent
+            width: 620
+            height: Math.min(520, toolsWindow.height - 80)
+            onShowRequested: toolsWindow.visible = true
+            onCloseRequested: toolsWindow.visible = false
+            onHideRequested: toolsWindow.visible = false
+        }
+    }
+    HyprlandFocusGrab {
+        windows: [toolsWindow]
+        active: toolsWindow.visible
+        onCleared: toolsWindow.visible = false
     }
 
     PanelWindow {

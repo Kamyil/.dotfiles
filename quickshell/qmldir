@@ -19,5 +19,6 @@ WeatherPanel 1.0 WeatherPanel.qml
 NotificationCenter 1.0 NotificationCenter.qml
 ApplicationLauncher 1.0 ApplicationLauncher.qml
 PickerPanel 1.0 PickerPanel.qml
+ToolsPanel 1.0 ToolsPanel.qml
 RecorderPanel 1.0 RecorderPanel.qml
 WallpaperPanel 1.0 WallpaperPanel.qml

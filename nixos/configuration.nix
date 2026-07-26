@@ -93,8 +93,12 @@ in
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Enable networking
-  networking.networkmanager.enable = true;
+  # Retry saved Wi-Fi profiles indefinitely, including after the USB adapter
+  # disappears and is plugged back in.
+  networking.networkmanager = {
+    enable = true;
+    settings.connection.autoconnect-retries-default = 0;
+  };
 
   services.dnsmasq = {
     enable = true;
@@ -198,6 +202,7 @@ in
     jq
     waybar
     quickshell
+    hyprpicker
     pulseaudio
     dunst
     libnotify
