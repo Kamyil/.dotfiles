@@ -6,3 +6,18 @@ initial-tool = "brush"
 copy-command = "wl-copy"
 actions-on-enter = ["save-to-clipboard", "exit"]
 actions-on-escape = ["exit"]
+
+[font]
+family = "JetBrains Mono"
+style = "Regular"
+
+[color-palette]
+palette = [
+    "#f38ba8ff",
+    "#fab387ff",
+    "#f9e2afff",
+    "#a6e3a1ff",
+    "#89dcebff",
+    "#89b4faff",
+    "#cba6f7ff",
+]
