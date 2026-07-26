@@ -163,8 +163,8 @@ end
 
 -- Resize along each axis with Alt+Shift.
 local axis_resize = {
-	H = { x = 50, y = 0 },
-	L = { x = -50, y = 0 },
+	H = { x = -50, y = 0 },
+	L = { x = 50, y = 0 },
 	J = { x = 0, y = 50 },
 	K = { x = 0, y = -50 },
 }
