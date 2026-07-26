@@ -43,53 +43,15 @@ in
 
   services.xserver.enable = false;
 
-  # Run the graphical greeter in a small, isolated Hyprland session. ReGreet
-  # hands the selected session back to greetd; this compositor exits with it.
+  # Keep the login path independent from the graphical session. Tuigreet
+  # selects the generated UWSM-managed Hyprland desktop entry.
   services.greetd = {
     enable = true;
     settings.default_session = {
-      command = "${pkgs.dbus}/bin/dbus-run-session ${pkgs.hyprland}/bin/Hyprland --config /etc/greetd/hyprland.conf";
+      command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-session --asterisks --sessions /run/current-system/sw/share/wayland-sessions --cmd '${pkgs.uwsm}/bin/uwsm start -e -D Hyprland hyprland.desktop'";
       user = "greeter";
     };
   };
-
-  programs.regreet = {
-    enable = true;
-    font = {
-      package = pkgs.nerd-fonts.jetbrains-mono;
-      name = "Berkeley Mono SemiBold SemiCondensed";
-      size = 14;
-    };
-    cursorTheme = {
-      package = pkgs.capitaine-cursors;
-      name = "capitaine-cursors";
-    };
-    settings = {
-      GTK.application_prefer_dark_theme = true;
-      appearance.greeting_msg = "Welcome back";
-      widget.clock = {
-        format = "%A · %H:%M";
-        resolution = "1s";
-      };
-    };
-  };
-
-  environment.etc."greetd/hyprland.conf".text = ''
-    monitor = , preferred, auto, 1
-
-    misc {
-      disable_hyprland_logo = true
-      disable_splash_rendering = true
-      force_default_wallpaper = 0
-      disable_watchdog_warning = true
-    }
-
-    animations {
-      enabled = false
-    }
-
-    exec-once = ${pkgs.regreet}/bin/regreet; ${pkgs.hyprland}/bin/hyprctl dispatch exit
-  '';
 
   # Sreenshare, filepickers etc. (desktop portals)
   xdg.portal.enable = true;
