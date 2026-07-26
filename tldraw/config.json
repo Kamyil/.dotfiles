@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "userPreferences": {
+    "theme": "dark",
+    "isGridMode": false,
+    "isToolLocked": false,
+    "exportBackground": false,
+    "autoCheckUpdates": true
+  },
+  "featureFlags": {}
+}

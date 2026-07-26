@@ -16,6 +16,7 @@ let
     ".config/opencode" = "opencode";
     ".config/kitty" = "kitty";
     ".config/herdr" = "herdr";
+    ".config/tldraw/config.json" = "tldraw/config.json";
     ".config/lsd" = "lsd";
     ".config/alacritty" = "alacritty";
     ".alacritty.toml" = "alacritty/alacritty.toml";

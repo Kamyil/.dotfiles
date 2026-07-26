@@ -46,8 +46,13 @@ let
         esac
       fi
     elif [ -e "$target" ]; then
-      echo "Refusing to replace non-symlink dotfile target: $target" >&2
-      exit 1
+      if [ -f "$target" ] && [ -f "$source" ] && ${pkgs.diffutils}/bin/cmp -s "$target" "$source"; then
+        # Adopt an app-generated file once it matches the declared dotfile.
+        rm "$target"
+      else
+        echo "Refusing to replace non-symlink dotfile target: $target" >&2
+        exit 1
+      fi
     fi
   '';
 in
