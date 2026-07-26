@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blocked during focus</title>
+  <link rel="stylesheet" href="blocked.css">
+</head>
+<body>
+  <main>
+    <div class="icon">󰔛</div>
+    <p class="eyebrow">FOCUS MODE</p>
+    <h1>Blocked during focus</h1>
+    <p id="label"></p>
+    <div id="remaining">--:--</div>
+    <button id="back">Back</button>
+    <button id="request" class="secondary">Request 5 minutes for this site</button>
+    <section id="override" hidden>
+      <label for="reason">Why is this needed for the current task?</label>
+      <input id="reason" autocomplete="off" maxlength="160">
+      <button id="grant" disabled>Wait 15 seconds</button>
+    </section>
+  </main>
+  <script src="blocked.js"></script>
+</body>
+</html>

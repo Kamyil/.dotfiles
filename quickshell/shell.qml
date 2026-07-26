@@ -24,6 +24,12 @@ ShellRoot {
     property string nightLightTemperature: ""
     property bool nightLightStartupAttempted: false
     property string pickerMode: "clipboard"
+    property bool focusActive: false
+    property int focusEndsAt: 0
+    property string focusLabel: ""
+    property int focusNow: Math.floor(Date.now() / 1000)
+    readonly property int focusRemainingSeconds: Math.max(0, focusEndsAt - focusNow)
+    readonly property string focusHelper: Quickshell.env("HOME") + "/.config/quickshell/focus-control.py"
 
 
     function ensureNightLight(): void {
@@ -94,6 +100,58 @@ ShellRoot {
         notificationPreferences.doNotDisturb = value
         if (value)
             toastModel.clear()
+    }
+    function applyFocusState(payload) {
+        focusActive = !!payload.active
+        focusEndsAt = Number(payload.endsAt || 0)
+        focusLabel = payload.label || ""
+        if (payload.restoreDnd !== undefined) {
+            root.setDoNotDisturb(!!payload.restoreDnd)
+            focusAcknowledge.running = true
+        }
+    }
+
+    function startFocus(seconds, label) {
+        focusAction.command = [focusHelper, "start", String(seconds), label, String(notificationPreferences.doNotDisturb)]
+        focusAction.running = true
+        root.setDoNotDisturb(true)
+    }
+
+    function stopFocus() {
+        focusAction.command = [focusHelper, "stop"]
+        focusAction.running = true
+    }
+
+    Process {
+        id: focusStatus
+        command: [root.focusHelper, "status"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try { root.applyFocusState(JSON.parse(text.trim())) }
+                catch (_) {}
+            }
+        }
+    }
+    Process {
+        id: focusAction
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try { root.applyFocusState(JSON.parse(text.trim())) }
+                catch (_) {}
+            }
+        }
+    }
+    Process { id: focusAcknowledge; command: [root.focusHelper, "ack"] }
+    Timer {
+        interval: 1000
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: {
+            root.focusNow = Math.floor(Date.now() / 1000)
+            if (!focusStatus.running && !focusAction.running)
+                focusStatus.running = true
+        }
     }
 
 
@@ -355,6 +413,15 @@ ShellRoot {
                             bar.togglePanel("wallpaper", wallpaperButton)
                     }
                 }
+                IpcHandler {
+                    target: "focus"
+                    function toggle(): void { bar.togglePanel("focus", focusButton) }
+                    function show(): void {
+                        if (bar.activePanel !== "focus")
+                            bar.togglePanel("focus", focusButton)
+                    }
+                    function stop(): void { root.stopFocus() }
+                }
 
                 anchors {
                     left: true
@@ -583,6 +650,15 @@ ShellRoot {
                             active: bar.activePanel === "clock"
                             accessibleName: "Calendar"
                             onClicked: anchor => bar.togglePanel("clock", anchor)
+                        }
+                        BarButton {
+                            id: focusButton
+                            icon: "󰔛"
+                            visible: root.focusActive
+                            label: Math.floor(root.focusRemainingSeconds / 60) + ":" + String(root.focusRemainingSeconds % 60).padStart(2, "0")
+                            active: bar.activePanel === "focus"
+                            accessibleName: "Focus mode, " + root.focusRemainingSeconds + " seconds remaining"
+                            onClicked: anchor => bar.togglePanel("focus", anchor)
                         }
                         BarButton {
                             icon: "󰖙"
@@ -1025,6 +1101,7 @@ ShellRoot {
                                 : bar.activePanel === "resources" ? resourcesComponent
                                 : bar.activePanel === "recorder" ? recorderComponent
                                 : bar.activePanel === "wallpaper" ? wallpaperComponent
+                                : bar.activePanel === "focus" ? focusComponent
                                 : null
                         }
                     }
@@ -1055,6 +1132,16 @@ ShellRoot {
                 }
                 Component { id: powerComponent; PowerPanel {} }
                 Component { id: clockComponent; ClockPanel {} }
+                Component {
+                    id: focusComponent
+                    FocusPanel {
+                        active: root.focusActive
+                        remainingSeconds: root.focusRemainingSeconds
+                        activeLabel: root.focusLabel
+                        onStartRequested: (seconds, label) => root.startFocus(seconds, label)
+                        onStopRequested: root.stopFocus()
+                    }
+                }
                 Component {
                     id: recorderComponent
                     RecorderPanel {

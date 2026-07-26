@@ -1,0 +1,18 @@
+:root { color-scheme: dark; font-family: "JetBrainsMono Nerd Font", monospace; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #111318; color: #cdd6f4; }
+main { width: min(520px, calc(100vw - 40px)); padding: 42px; border: 1px solid #313244; border-radius: 10px; background: #181b22; text-align: center; }
+.icon { color: #7aa2f7; font-size: 38px; }
+.eyebrow { margin: 14px 0 4px; color: #7aa2f7; font-size: 11px; letter-spacing: .16em; }
+h1 { margin: 8px 0; font-size: 25px; }
+#label { min-height: 20px; color: #9399b2; }
+#remaining { margin: 26px 0; font-size: 42px; font-variant-numeric: tabular-nums; }
+button, input { width: 100%; min-height: 42px; border: 1px solid #45475a; border-radius: 6px; background: #252936; color: #cdd6f4; font: inherit; }
+button { cursor: pointer; }
+button:hover:not(:disabled) { border-color: #7aa2f7; }
+button:disabled { cursor: not-allowed; opacity: .55; }
+.secondary { margin-top: 10px; background: transparent; color: #9399b2; }
+section { margin-top: 22px; padding-top: 20px; border-top: 1px solid #313244; text-align: left; }
+label { display: block; margin-bottom: 8px; color: #9399b2; font-size: 12px; }
+input { padding: 0 12px; }
+#grant { margin-top: 10px; }

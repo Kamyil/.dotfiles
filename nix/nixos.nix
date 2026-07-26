@@ -40,7 +40,7 @@ in
 
           flags = [
             "--start-maximized"
-            "--load-extension=${../helium-theme}"
+            "--load-extension=${../helium-theme},/home/kamil/.dotfiles/helium-focus"
           ];
 
           policies = {
@@ -151,6 +151,21 @@ in
             "second-brain/.keep".text = "";
             ".docker/cli-plugins/docker-buildx".source = "${pkgs.docker-buildx}/bin/docker-buildx";
             ".docker/cli-plugins/docker-compose".source = "${pkgs.docker-compose}/bin/docker-compose";
+            ".config/chromium/NativeMessagingHosts/dev.quickshell.focus.json".text = builtins.toJSON {
+              name = "dev.quickshell.focus";
+              description = "Quickshell focus mode state bridge";
+              path = "/home/kamil/.config/quickshell/focus-control.py";
+              type = "stdio";
+              allowed_origins = [ "chrome-extension://fohieaiappjfaccidjdfjpdcbdjebmna/" ];
+            };
+            ".config/net.imput.helium/NativeMessagingHosts/dev.quickshell.focus.json".text =
+              builtins.toJSON {
+                name = "dev.quickshell.focus";
+                description = "Quickshell focus mode state bridge";
+                path = "/home/kamil/.config/quickshell/focus-control.py";
+                type = "stdio";
+                allowed_origins = [ "chrome-extension://fohieaiappjfaccidjdfjpdcbdjebmna/" ];
+              };
           };
 
           fonts.fontconfig.enable = true;

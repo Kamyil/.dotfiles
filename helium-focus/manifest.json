@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Quickshell Focus Blocker",
+  "version": "1.0.0",
+  "description": "Enforces Quickshell focus sessions in Helium.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx2DTvTcQmuXkFUf0xNLJL8Dw1vfNUsqkvKCob44k8fbPgnKCAmD5RSxeiyjYMXAgOQ4d2lNi2Ag7HfG2eF5xVdwBfw1zIIN/GkoSOw9m47mpZ+TTIxOBO+1rcN9knpiIWSIrnpPoJ7gK1nLh5+EXseVTJo6flz4FMSqhIWU8p1XR0OIW5jdRW5wps/rCcDbtOtg6oMcKq8OSCZnV02OPbK4PsFpWOYGbYa1DUDgc3oHd77K/SJYOjcXyqAR0or0BhPA5yFR3hd5q34775r5oLEQXowXMrP5lXrMryTZNXSJHwOXqX+Y4wOGDruxZxLyOrwo6RvIgGT7NU0kwVf+X+wIDAQAB",
+  "permissions": ["alarms", "declarativeNetRequest", "nativeMessaging", "storage", "tabs", "webNavigation", "webRequest"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js" },
+  "web_accessible_resources": [{
+    "resources": ["blocked.html", "blocked.js", "blocked.css"],
+    "matches": ["<all_urls>"]
+  }]
+}
