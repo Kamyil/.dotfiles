@@ -8,16 +8,17 @@ Rectangle {
     required property string icon
     property string iconFontFamily: Theme.fontFamily
     property string label: ""
+    property bool tile: false
     readonly property bool hovered: mouse.containsMouse
     property bool active: false
     property string accessibleName: label
     signal clicked(var anchor)
     signal wheel(real delta)
 
-    implicitWidth: content.implicitWidth + 16
-    implicitHeight: 26
-    radius: 7
-    color: active ? Theme.elevated : mouse.containsMouse ? Theme.hover : "transparent"
+    implicitWidth: tile ? 52 : content.implicitWidth + 16
+    implicitHeight: tile ? 38 : 26
+    radius: tile ? 9 : 7
+    color: active ? Theme.elevated : mouse.containsMouse ? Theme.hover : tile ? Theme.elevated : "transparent"
 
     RowLayout {
         id: content

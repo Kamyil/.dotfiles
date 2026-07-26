@@ -648,6 +648,11 @@ ShellRoot {
                             implicitWidth: 26
                             implicitHeight: 26
 
+                            function toggleOverflowPanel(name) {
+                                controlsGrid.visible = false
+                                bar.togglePanel(name, controlsReveal)
+                            }
+
                             HoverHandler {
                                 id: controlsHover
                                 onHoveredChanged: {
@@ -662,7 +667,7 @@ ShellRoot {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: controlsGrid.visible ? "󰅁" : "󰅂"
+                                text: controlsGrid.visible ? "󰅀" : "󰅃"
                                 color: controlsGrid.visible ? Theme.accent : Theme.muted
                                 font.family: Theme.fontFamily
                                 font.pixelSize: 14
@@ -749,15 +754,17 @@ ShellRoot {
                                         }
 
                                         BarButton {
+                                            tile: true
                                             icon: notificationPreferences.doNotDisturb ? "󰂛" : root.notifications.length > 0 ? "󰂚" : "󰂜"
                                             label: root.notifications.length > 0 ? root.notifications.length : ""
                                             active: bar.activePanel === "notifications" || root.notifications.length > 0
                                             accessibleName: notificationPreferences.doNotDisturb
                                                 ? "Notifications: do not disturb"
                                                 : root.notifications.length + " notifications"
-                                            onClicked: anchor => bar.togglePanel("notifications", anchor)
+                                            onClicked: controlsReveal.toggleOverflowPanel("notifications")
                                         }
                                         BarButton {
+                                            tile: true
                                             visible: !!bar.microphone
                                             icon: bar.microphone && bar.microphone.audio && bar.microphone.audio.muted ? "󰍭" : "󰍬"
                                             active: bar.microphone && bar.microphone.audio && !bar.microphone.audio.muted
@@ -768,12 +775,14 @@ ShellRoot {
                                             }
                                         }
                                         BarButton {
+                                            tile: true
                                             icon: bar.bluetoothPowered ? "󰂯" : "󰂲"
                                             active: bar.activePanel === "bluetooth"
                                             accessibleName: "Bluetooth"
-                                            onClicked: anchor => bar.togglePanel("bluetooth", anchor)
+                                            onClicked: controlsReveal.toggleOverflowPanel("bluetooth")
                                         }
                                         BarButton {
+                                            tile: true
                                             icon: bar.nightLightState === "unavailable" ? "󰖨 ?" : "󰖨"
                                             active: bar.nightLightState === "enabled"
                                             accessibleName: bar.nightLightState === "unavailable"
