@@ -8,7 +8,7 @@ hl.env("MOZ_ENABLE_WAYLAND", "1")
 -- Autostart
 hl.on("hyprland.start", function()
 	hl.exec_cmd("quickshell")
-	hl.exec_cmd("swaybg -i ~/.dotfiles/wallpapers/kanagawa-paper-monochrome.png -m fill")
+	hl.exec_cmd("~/.config/quickshell/wallpaper-control.sh start")
 	hl.exec_cmd("bash ~/.config/hypr/exec-cursor.sh")
 end)
 

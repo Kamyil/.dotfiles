@@ -321,6 +321,18 @@ ShellRoot {
                     panel.anchor.item = item
                     panel.visible = true
                 }
+                IpcHandler {
+                    target: "wallpaper"
+                    function toggle(): void { bar.togglePanel("wallpaper", wallpaperButton) }
+                    function show(): void {
+                        if (bar.activePanel !== "wallpaper")
+                            bar.togglePanel("wallpaper", wallpaperButton)
+                    }
+                    function hide(): void {
+                        if (bar.activePanel === "wallpaper")
+                            bar.togglePanel("wallpaper", wallpaperButton)
+                    }
+                }
 
                 anchors {
                     left: true
@@ -618,6 +630,13 @@ ShellRoot {
                                 active: bar.activePanel === "display"
                                 accessibleName: "Display controls"
                                 onClicked: anchor => bar.togglePanel("display", anchor)
+                            }
+                            BarButton {
+                                id: wallpaperButton
+                                icon: "󰸉"
+                                active: bar.activePanel === "wallpaper"
+                                accessibleName: "Wallpapers"
+                                onClicked: anchor => bar.togglePanel("wallpaper", anchor)
                             }
 
 
@@ -974,6 +993,7 @@ ShellRoot {
                                 : bar.activePanel === "system" ? systemComponent
                                 : bar.activePanel === "resources" ? resourcesComponent
                                 : bar.activePanel === "recorder" ? recorderComponent
+                                : bar.activePanel === "wallpaper" ? wallpaperComponent
                                 : null
                         }
                     }
@@ -1013,6 +1033,7 @@ ShellRoot {
                         }
                     }
                 }
+                Component { id: wallpaperComponent; WallpaperPanel {} }
                 Component {
                     id: resourcesComponent
                     ResourcesPanel {

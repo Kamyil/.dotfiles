@@ -20,3 +20,4 @@ NotificationCenter 1.0 NotificationCenter.qml
 ApplicationLauncher 1.0 ApplicationLauncher.qml
 PickerPanel 1.0 PickerPanel.qml
 RecorderPanel 1.0 RecorderPanel.qml
+WallpaperPanel 1.0 WallpaperPanel.qml
