@@ -84,6 +84,8 @@ hl.animation({ leaf = "windows", enabled = true, speed = 1.2, bezier = "default"
 hl.animation({ leaf = "layers", enabled = true, speed = 1.2, bezier = "default", style = "fade" })
 hl.animation({ leaf = "fade", enabled = true, speed = 1.2, bezier = "default" })
 hl.animation({ leaf = "workspaces", enabled = true, speed = 1.4, bezier = "default", style = "slidefade 8%" })
+hl.workspace_rule({ workspace = "special:spotify", animation = "fade" })
+hl.workspace_rule({ workspace = "special:chatgpt", animation = "slidefade 8%" })
 
 hl.window_rule({
 	name = "tui-float-windows",
@@ -93,6 +95,29 @@ hl.window_rule({
 	float = true,
 	center = true,
 	size = { "monitor_w * 0.5", "monitor_h * 0.5" },
+})
+
+-- Full application windows presented as edge-aligned overlay panels.
+hl.window_rule({
+	name = "spotify-side-panel",
+	match = {
+		class = "^(Spotify)$",
+	},
+	workspace = "special:spotify",
+	float = true,
+	size = { 520, "monitor_h * 0.94" },
+	move = { 12, "monitor_h * 0.03" },
+})
+
+hl.window_rule({
+	name = "chatgpt-side-panel",
+	match = {
+		class = "^(chrome-chatgpt.com__-Default)$",
+	},
+	workspace = "special:chatgpt",
+	float = true,
+	size = { 620, "monitor_h * 0.94" },
+	move = { "monitor_w - 632", "monitor_h * 0.03" },
 })
 
 local mainMod = "SUPER"
@@ -105,6 +130,8 @@ hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("quickshell ipc call picker clipboard
 hl.bind(mainMod .. " + SHIFT + I", hl.dsp.exec_cmd("quickshell ipc call picker image"))
 -- hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("foot --app-id=tui-float nmtui"))
 -- hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("foot --app-id=tui-float bluetuith"))
+hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh spotify"))
+hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh chatgpt"))
 
 -- Window management
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
