@@ -72,6 +72,13 @@ hl.config({
 	},
 })
 
+-- Three-finger horizontal touchpad swipe between workspaces.
+hl.gesture({
+	fingers = 3,
+	direction = "horizontal",
+	action = "workspace",
+})
+
 -- Short 120–140ms transitions: enough motion to orient without sustained rendering.
 hl.animation({ leaf = "windows", enabled = true, speed = 1.2, bezier = "default", style = "popin 98%" })
 hl.animation({ leaf = "layers", enabled = true, speed = 1.2, bezier = "default", style = "fade" })
