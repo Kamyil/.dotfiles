@@ -27,6 +27,24 @@ Item {
         selectedIndex = 0
     }
     function reset() { search.text = ""; feedback = ""; selectedIndex = 0; load.running = true; search.forceActiveFocus() }
+    function revealSelected() {
+        Qt.callLater(() => {
+            if (mode === "emoji") {
+                emojiGrid.positionViewAtIndex(selectedIndex, GridView.Contain)
+                return
+            }
+            const row = entriesRepeater.itemAt(selectedIndex)
+            const flickable = entriesScroll.contentItem
+            if (!row || !flickable) return
+            const top = row.y
+            const bottom = top + row.height
+            if (top < flickable.contentY)
+                flickable.contentY = top
+            else if (bottom > flickable.contentY + flickable.height)
+                flickable.contentY = bottom - flickable.height
+        })
+    }
+    onSelectedIndexChanged: revealSelected()
     function choose(value) {
         if (select.running) return
         pendingValue = value
@@ -114,6 +132,7 @@ Item {
                 }
             }
             ScrollView {
+                id: entriesScroll
                 visible: root.mode !== "emoji"
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -122,6 +141,7 @@ Item {
                     width: parent.width
                     spacing: 3
                     Repeater {
+                        id: entriesRepeater
                         model: visibleEntries
                         delegate: Rectangle {
                             required property string value

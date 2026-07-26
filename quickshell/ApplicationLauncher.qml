@@ -43,8 +43,22 @@ Item {
         selectedIndex = 0
         search.forceActiveFocus()
     }
+    function revealSelected() {
+        Qt.callLater(() => {
+            const row = resultsRepeater.itemAt(selectedIndex)
+            const flickable = resultsScroll.contentItem
+            if (!row || !flickable) return
+            const top = row.y
+            const bottom = top + row.height
+            if (top < flickable.contentY)
+                flickable.contentY = top
+            else if (bottom > flickable.contentY + flickable.height)
+                flickable.contentY = bottom - flickable.height
+        })
+    }
     property int selectedIndex: 0
     onQueryChanged: selectedIndex = 0
+    onSelectedIndexChanged: revealSelected()
 
     Rectangle {
         anchors.fill: parent
