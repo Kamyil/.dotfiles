@@ -237,7 +237,7 @@ ShellRoot {
                 exclusiveZone: 30
                 screen: modelData
                 implicitHeight: 30
-                color: Theme.background
+                color: "transparent"
 
                 property string activePanel: ""
                 property Item panelAnchor: null
@@ -382,16 +382,34 @@ ShellRoot {
                 }
 
 
-                Rectangle {
+                Item {
                     anchors.fill: parent
-                    color: Theme.background
 
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.leftMargin: 6
+                        anchors.bottom: parent.bottom
+                        implicitWidth: leftIslandRow.implicitWidth + 14
+                        implicitHeight: 30
+                        radius: 0
+                        topLeftRadius: 10
+                        topRightRadius: 10
+                        color: Theme.background
+                        border.color: Theme.border
+                        border.width: 1
+                        Rectangle {
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom
+                            height: 1
+                            color: Theme.background
+                            z: 2
+                        }
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.leftMargin: 7
-                        anchors.rightMargin: 7
-                        spacing: 4
+                        RowLayout {
+                            id: leftIslandRow
+                            anchors.centerIn: parent
+                            spacing: 4
 
                         BarButton {
                             icon: ""
@@ -497,8 +515,34 @@ ShellRoot {
                         }
 
 
-                        Item { Layout.fillWidth: true }
 
+                        }
+                    }
+
+                    Rectangle {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.bottom: parent.bottom
+                        implicitWidth: centerIslandRow.implicitWidth + 14
+                        implicitHeight: 30
+                        radius: 0
+                        topLeftRadius: 10
+                        topRightRadius: 10
+                        color: Theme.background
+                        border.color: Theme.border
+                        border.width: 1
+                        Rectangle {
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom
+                            height: 1
+                            color: Theme.background
+                            z: 2
+                        }
+
+                        RowLayout {
+                            id: centerIslandRow
+                            anchors.centerIn: parent
+                            spacing: 4
                         BarButton {
                             icon: ""
                             label: "W" + bar.isoWeek(bar.now) + " · " + Qt.formatDateTime(bar.now, "ddd HH:mm")
@@ -515,193 +559,245 @@ ShellRoot {
                                 : "Weather"
                             onClicked: anchor => bar.togglePanel("weather", anchor)
                         }
+                        }
+                    }
+
+                    Rectangle {
+                        anchors.right: parent.right
+                        anchors.rightMargin: 6
+                        anchors.bottom: parent.bottom
+                        implicitWidth: rightIslandRow.implicitWidth + 14
+                        implicitHeight: 30
+                        radius: 0
+                        topLeftRadius: 10
+                        topRightRadius: 10
+                        color: Theme.background
+                        border.color: Theme.border
+                        border.width: 1
+                        Rectangle {
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom
+                            height: 1
+                            color: Theme.background
+                            z: 2
+                        }
+
+                        RowLayout {
+                            id: rightIslandRow
+                            anchors.centerIn: parent
+                            spacing: 4
+
+                            BarButton {
+                                icon: "󰑋"
+                                active: bar.activePanel === "recorder"
+                                accessibleName: "Screen recording"
+                                onClicked: anchor => bar.togglePanel("recorder", anchor)
+                            }
+                            BarButton {
+                                icon: Networking.wifiEnabled ? "󰤨" : "󰤮"
+                                active: bar.activePanel === "network"
+                                accessibleName: "Wi-Fi"
+                                onClicked: anchor => bar.togglePanel("network", anchor)
+                            }
+                            BarButton {
+                                icon: bar.audioMuted ? "" : bar.volume < 50 ? "" : ""
+                                iconFontFamily: "JetBrainsMono Nerd Font"
+                                label: bar.volume + "%"
+                                active: bar.activePanel === "audio"
+                                accessibleName: "Sound"
+                                onClicked: anchor => bar.togglePanel("audio", anchor)
+                                onWheel: delta => {
+                                    volumeAction.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", delta > 0 ? "5%+" : "5%-"]
+                                    volumeAction.running = true
+                                }
+                                Process { id: volumeAction; onExited: audioStatus.running = true }
+                            }
+                            BarButton {
+                                icon: "󰍹"
+                                active: bar.activePanel === "display"
+                                accessibleName: "Display controls"
+                                onClicked: anchor => bar.togglePanel("display", anchor)
+                            }
 
 
-                        Item { Layout.fillWidth: true }
 
 
                         Item {
                             id: controlsReveal
                             Layout.alignment: Qt.AlignVCenter
-                            implicitWidth: controlsRevealRow.implicitWidth
+                            implicitWidth: 26
                             implicitHeight: 26
 
                             HoverHandler {
                                 id: controlsHover
-                            }
-
-                            RowLayout {
-                                id: controlsRevealRow
-                                anchors.fill: parent
-                                spacing: 4
-
-                        Item {
-                            id: extraControls
-                            Layout.alignment: Qt.AlignVCenter
-                            implicitWidth: controlsHover.hovered ? extraControlsRow.implicitWidth : 0
-                            implicitHeight: 26
-                            opacity: controlsHover.hovered ? 1 : 0
-                            enabled: controlsHover.hovered
-                            clip: true
-
-                            Behavior on implicitWidth {
-                                NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
-                            }
-                            Behavior on opacity {
-                                NumberAnimation { duration: 140 }
-                            }
-
-                            RowLayout {
-                                id: extraControlsRow
-                                anchors.right: parent.right
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 4
-
-                        Repeater {
-                            model: SystemTray.items
-                            delegate: Rectangle {
-                                id: trayItem
-                                required property var modelData
-                                implicitWidth: 25
-                                implicitHeight: 25
-                                radius: 7
-                                color: trayMouse.containsMouse ? Theme.hover : "transparent"
-                                Image {
-                                    anchors.centerIn: parent
-                                    width: 16
-                                    height: 16
-                                    source: trayItem.modelData.icon
-                                    sourceSize.width: 32
-                                    sourceSize.height: 32
-                                }
-                                MouseArea {
-                                    id: trayMouse
-                                    anchors.fill: parent
-                                    acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: mouse => {
-                                        if (mouse.button === Qt.MiddleButton)
-                                            trayItem.modelData.secondaryActivate()
-                                        else if (mouse.button === Qt.RightButton || trayItem.modelData.onlyMenu)
-                                            trayItem.modelData.display(bar, trayItem.x + mouse.x, trayItem.y)
-                                        else
-                                            trayItem.modelData.activate()
+                                onHoveredChanged: {
+                                    if (hovered) {
+                                        controlsGridClose.stop()
+                                        controlsGrid.visible = true
+                                    } else {
+                                        controlsGridClose.restart()
                                     }
-                                    onWheel: wheel => trayItem.modelData.scroll(wheel.angleDelta.y, false)
-                                }
-                                ToolTip {
-                                    visible: trayMouse.containsMouse
-                                    text: trayItem.modelData.tooltipTitle || trayItem.modelData.title
                                 }
                             }
-                        }
-                        BarButton {
-                            icon: "󰑋"
-                            active: bar.activePanel === "recorder"
-                            accessibleName: "Screen recording"
-                            onClicked: anchor => bar.togglePanel("recorder", anchor)
-                        }
 
-                        BarButton {
-                            icon: notificationPreferences.doNotDisturb ? "󰂛" : root.notifications.length > 0 ? "󰂚" : "󰂜"
-                            label: root.notifications.length > 0 ? root.notifications.length : ""
-                            active: bar.activePanel === "notifications" || root.notifications.length > 0
-                            accessibleName: notificationPreferences.doNotDisturb
-                                ? "Notifications: do not disturb"
-                                : root.notifications.length + " notifications"
-                            onClicked: anchor => bar.togglePanel("notifications", anchor)
-                        }
-
-
-                        BarButton {
-                            icon: Networking.wifiEnabled ? "󰤨" : "󰤮"
-                            active: bar.activePanel === "network"
-                            accessibleName: "Wi-Fi"
-                            onClicked: anchor => bar.togglePanel("network", anchor)
-                        }
-
-                        BarButton {
-                            visible: !!bar.microphone
-                            icon: bar.microphone && bar.microphone.audio && bar.microphone.audio.muted ? "󰍭" : "󰍬"
-                            active: bar.microphone && bar.microphone.audio && !bar.microphone.audio.muted
-                            accessibleName: bar.microphone && bar.microphone.audio && bar.microphone.audio.muted ? "Unmute microphone" : "Mute microphone"
-                            onClicked: {
-                                if (bar.microphone && bar.microphone.audio)
-                                    bar.microphone.audio.muted = !bar.microphone.audio.muted
+                            Text {
+                                anchors.centerIn: parent
+                                text: controlsGrid.visible ? "󰅁" : "󰅂"
+                                color: controlsGrid.visible ? Theme.accent : Theme.muted
+                                font.family: Theme.fontFamily
+                                font.pixelSize: 14
+                                Accessible.name: controlsGrid.visible ? "Hide controls" : "Show controls"
                             }
-                        }
 
-                        BarButton {
-                            icon: bar.bluetoothPowered ? "󰂯" : "󰂲"
-                            active: bar.activePanel === "bluetooth"
-                            accessibleName: "Bluetooth"
-                            onClicked: anchor => bar.togglePanel("bluetooth", anchor)
-                        }
-
-                        BarButton {
-                            icon: bar.audioMuted ? "" : bar.volume < 50 ? "" : ""
-                            iconFontFamily: "JetBrainsMono Nerd Font"
-                            label: bar.volume + "%"
-                            active: bar.activePanel === "audio"
-                            accessibleName: "Sound"
-                            onClicked: anchor => bar.togglePanel("audio", anchor)
-                            onWheel: delta => {
-                                volumeAction.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", delta > 0 ? "5%+" : "5%-"]
-                                volumeAction.running = true
-                            }
-                            Process { id: volumeAction; onExited: audioStatus.running = true }
-                        }
-
-                        BarButton {
-                            icon: "󰍹"
-                            active: bar.activePanel === "display"
-                            accessibleName: "Display controls"
-                            onClicked: anchor => bar.togglePanel("display", anchor)
-                        }
-
-                        BarButton {
-                            icon: bar.nightLightState === "unavailable" ? "󰖨 ?" : "󰖨"
-                            active: bar.nightLightState === "enabled"
-                            accessibleName: bar.nightLightState === "unavailable"
-                                ? "Start night light"
-                                : "Night light " + (bar.nightLightState === "enabled" ? "on" : "off")
-                                    + (bar.nightLightTemperature ? " at " + bar.nightLightTemperature + "K" : "")
-                            onClicked: {
-                                nightLightAction.command = bar.nightLightState === "unavailable"
-                                    ? ["systemd-run", "--user", "--unit=quickshell-hyprsunset", "--collect", "hyprsunset"]
-                                    : [Quickshell.env("HOME") + "/.config/hypr/hyprsunset-control.sh", "toggle"]
-                                nightLightAction.running = true
-                            }
-                            onWheel: delta => {
-                                if (bar.nightLightState !== "unavailable") {
-                                    nightLightAction.command = [
-                                        Quickshell.env("HOME") + "/.config/hypr/hyprsunset-control.sh",
-                                        delta > 0 ? "cooler" : "warmer"
-                                    ]
-                                    nightLightAction.running = true
-                                }
-                            }
-                            Process {
-                                id: nightLightAction
-                                onExited: nightLightRefreshDelay.restart()
-                            }
                             Timer {
-                                id: nightLightRefreshDelay
-                                interval: 800
-                                onTriggered: globalNightLightStatus.running = true
+                                id: controlsGridClose
+                                interval: 220
+                                onTriggered: {
+                                    if (!controlsHover.hovered && !controlsGridHover.hovered)
+                                        controlsGrid.visible = false
+                                }
                             }
-                        }
-                            }
-                        }
 
-                        Text {
-                            text: controlsHover.hovered ? "󰅁" : "󰅂"
-                            color: Theme.muted
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 14
-                            Accessible.name: controlsHover.hovered ? "Hide additional controls" : "Additional controls"
-                        }
+                            PopupWindow {
+                                id: controlsGrid
+                                visible: false
+                                implicitWidth: 338
+                                implicitHeight: controlsGridLayout.implicitHeight + 32
+                                color: "transparent"
+
+                                anchor {
+                                    item: controlsReveal
+                                    edges: Edges.Top
+                                    gravity: Edges.Top
+                                    adjustment: PopupAdjustment.SlideX | PopupAdjustment.SlideY
+                                    margins.top: 7
+                                }
+
+                                Rectangle {
+                                    anchors.fill: parent
+                                    anchors.margins: 4
+                                    radius: 14
+                                    color: Theme.surface
+                                    border.color: Theme.border
+                                    border.width: 1
+
+                                    GridLayout {
+                                        id: controlsGridLayout
+                                        anchors.centerIn: parent
+                                        columns: 5
+                                        columnSpacing: 8
+                                        rowSpacing: 8
+
+                                        Repeater {
+                                            model: SystemTray.items
+                                            delegate: Rectangle {
+                                                id: trayItem
+                                                required property var modelData
+                                                implicitWidth: 52
+                                                implicitHeight: 38
+                                                radius: 9
+                                                color: trayMouse.containsMouse ? Theme.hover : Theme.elevated
+                                                Image {
+                                                    anchors.centerIn: parent
+                                                    width: 18
+                                                    height: 18
+                                                    source: trayItem.modelData.icon
+                                                    sourceSize.width: 32
+                                                    sourceSize.height: 32
+                                                }
+                                                MouseArea {
+                                                    id: trayMouse
+                                                    anchors.fill: parent
+                                                    acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+                                                    hoverEnabled: true
+                                                    cursorShape: Qt.PointingHandCursor
+                                                    onClicked: mouse => {
+                                                        if (mouse.button === Qt.MiddleButton)
+                                                            trayItem.modelData.secondaryActivate()
+                                                        else if (mouse.button === Qt.RightButton || trayItem.modelData.onlyMenu)
+                                                            trayItem.modelData.display(controlsGrid, trayItem.x + mouse.x, trayItem.y)
+                                                        else
+                                                            trayItem.modelData.activate()
+                                                    }
+                                                    onWheel: wheel => trayItem.modelData.scroll(wheel.angleDelta.y, false)
+                                                }
+                                                ToolTip {
+                                                    visible: trayMouse.containsMouse
+                                                    text: trayItem.modelData.tooltipTitle || trayItem.modelData.title
+                                                }
+                                            }
+                                        }
+
+                                        BarButton {
+                                            icon: notificationPreferences.doNotDisturb ? "󰂛" : root.notifications.length > 0 ? "󰂚" : "󰂜"
+                                            label: root.notifications.length > 0 ? root.notifications.length : ""
+                                            active: bar.activePanel === "notifications" || root.notifications.length > 0
+                                            accessibleName: notificationPreferences.doNotDisturb
+                                                ? "Notifications: do not disturb"
+                                                : root.notifications.length + " notifications"
+                                            onClicked: anchor => bar.togglePanel("notifications", anchor)
+                                        }
+                                        BarButton {
+                                            visible: !!bar.microphone
+                                            icon: bar.microphone && bar.microphone.audio && bar.microphone.audio.muted ? "󰍭" : "󰍬"
+                                            active: bar.microphone && bar.microphone.audio && !bar.microphone.audio.muted
+                                            accessibleName: bar.microphone && bar.microphone.audio && bar.microphone.audio.muted ? "Unmute microphone" : "Mute microphone"
+                                            onClicked: {
+                                                if (bar.microphone && bar.microphone.audio)
+                                                    bar.microphone.audio.muted = !bar.microphone.audio.muted
+                                            }
+                                        }
+                                        BarButton {
+                                            icon: bar.bluetoothPowered ? "󰂯" : "󰂲"
+                                            active: bar.activePanel === "bluetooth"
+                                            accessibleName: "Bluetooth"
+                                            onClicked: anchor => bar.togglePanel("bluetooth", anchor)
+                                        }
+                                        BarButton {
+                                            icon: bar.nightLightState === "unavailable" ? "󰖨 ?" : "󰖨"
+                                            active: bar.nightLightState === "enabled"
+                                            accessibleName: bar.nightLightState === "unavailable"
+                                                ? "Start night light"
+                                                : "Night light " + (bar.nightLightState === "enabled" ? "on" : "off")
+                                                    + (bar.nightLightTemperature ? " at " + bar.nightLightTemperature + "K" : "")
+                                            onClicked: {
+                                                nightLightAction.command = bar.nightLightState === "unavailable"
+                                                    ? ["systemd-run", "--user", "--unit=quickshell-hyprsunset", "--collect", "hyprsunset"]
+                                                    : [Quickshell.env("HOME") + "/.config/hypr/hyprsunset-control.sh", "toggle"]
+                                                nightLightAction.running = true
+                                            }
+                                            onWheel: delta => {
+                                                if (bar.nightLightState !== "unavailable") {
+                                                    nightLightAction.command = [
+                                                        Quickshell.env("HOME") + "/.config/hypr/hyprsunset-control.sh",
+                                                        delta > 0 ? "cooler" : "warmer"
+                                                    ]
+                                                    nightLightAction.running = true
+                                                }
+                                            }
+                                            Process {
+                                                id: nightLightAction
+                                                onExited: nightLightRefreshDelay.restart()
+                                            }
+                                            Timer {
+                                                id: nightLightRefreshDelay
+                                                interval: 800
+                                                onTriggered: globalNightLightStatus.running = true
+                                            }
+                                        }
+                                    }
+
+                                    HoverHandler {
+                                        id: controlsGridHover
+                                        onHoveredChanged: {
+                                            if (hovered)
+                                                controlsGridClose.stop()
+                                            else
+                                                controlsGridClose.restart()
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -721,6 +817,7 @@ ShellRoot {
                             onClicked: anchor => bar.togglePanel("power", anchor)
                         }
                     }
+                }
                 }
 
                 Timer {

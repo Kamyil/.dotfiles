@@ -8,7 +8,7 @@ hl.env("MOZ_ENABLE_WAYLAND", "1")
 -- Autostart
 hl.on("hyprland.start", function()
 	hl.exec_cmd("quickshell")
-	hl.exec_cmd("swaybg -i ~/.dotfiles/wallpapers/kanagawa-solarpunk-night.png -m fill")
+	hl.exec_cmd("swaybg -i ~/.dotfiles/wallpapers/kanagawa-paper-monochrome.png -m fill")
 	hl.exec_cmd("bash ~/.config/hypr/exec-cursor.sh")
 end)
 
@@ -35,9 +35,9 @@ hl.config({
 	},
 
 	general = {
-		gaps_in = 0,
-		gaps_out = 0,
-		border_size = 0,
+		gaps_in = 4,
+		gaps_out = 6,
+		border_size = 1,
 		col = {
 			active_border = "rgba(464645FF)",
 			inactive_border = "rgba(46464533)",
@@ -46,7 +46,7 @@ hl.config({
 	},
 
 	decoration = {
-		rounding = 0,
+		rounding = 7,
 		blur = {
 			enabled = true,
 			size = 3,
