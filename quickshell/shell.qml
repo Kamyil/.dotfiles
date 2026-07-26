@@ -517,7 +517,7 @@ ShellRoot {
                             spacing: 4
                         BarButton {
                             icon: ""
-                            label: "W" + bar.isoWeek(bar.now) + " · " + Qt.formatDateTime(bar.now, "ddd HH:mm")
+                            label: "W" + bar.isoWeek(bar.now) + " · " + Qt.formatDateTime(bar.now, "ddd dd/MM HH:mm")
                             active: bar.activePanel === "clock"
                             accessibleName: "Calendar"
                             onClicked: anchor => bar.togglePanel("clock", anchor)
