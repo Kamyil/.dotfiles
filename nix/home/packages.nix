@@ -9,6 +9,9 @@
   ...
 }:
 
+let
+  tldrawOffline = pkgs.callPackage ../packages/tldraw-offline.nix { };
+in
 {
   home.packages =
     with pkgs;
@@ -94,6 +97,7 @@
       sweethome3d.application
       kooha
       gpu-screen-recorder-gtk
+      tldrawOffline
     ]
     ++ [
       fff.packages.${pkgs.stdenv.hostPlatform.system}.fff-mcp

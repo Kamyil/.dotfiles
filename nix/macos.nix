@@ -25,6 +25,7 @@ let
   # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
   omp-overlay = import ./overlays/omp.nix;
+  tldrawOffline = darwinPkgs.callPackage ./packages/tldraw-offline.nix { };
 
   darwinPkgs = import nixpkgs {
     system = darwinSystem;
@@ -62,6 +63,7 @@ in
             git
             curl
             wget
+            tldrawOffline
           ];
 
           # Work around nix-darwin applications buildEnv pathsToLink type
