@@ -385,26 +385,12 @@ ShellRoot {
                 Item {
                     anchors.fill: parent
 
-                    Rectangle {
+                    SquircleIsland {
                         anchors.left: parent.left
                         anchors.leftMargin: 6
                         anchors.bottom: parent.bottom
                         implicitWidth: leftIslandRow.implicitWidth + 14
                         implicitHeight: 30
-                        radius: 0
-                        topLeftRadius: 10
-                        topRightRadius: 10
-                        color: Theme.background
-                        border.color: Theme.border
-                        border.width: 1
-                        Rectangle {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            height: 1
-                            color: Theme.background
-                            z: 2
-                        }
 
                         RowLayout {
                             id: leftIslandRow
@@ -519,25 +505,11 @@ ShellRoot {
                         }
                     }
 
-                    Rectangle {
+                    SquircleIsland {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottom: parent.bottom
                         implicitWidth: centerIslandRow.implicitWidth + 14
                         implicitHeight: 30
-                        radius: 0
-                        topLeftRadius: 10
-                        topRightRadius: 10
-                        color: Theme.background
-                        border.color: Theme.border
-                        border.width: 1
-                        Rectangle {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            height: 1
-                            color: Theme.background
-                            z: 2
-                        }
 
                         RowLayout {
                             id: centerIslandRow
@@ -562,26 +534,12 @@ ShellRoot {
                         }
                     }
 
-                    Rectangle {
+                    SquircleIsland {
                         anchors.right: parent.right
                         anchors.rightMargin: 6
                         anchors.bottom: parent.bottom
                         implicitWidth: rightIslandRow.implicitWidth + 14
                         implicitHeight: 30
-                        radius: 0
-                        topLeftRadius: 10
-                        topRightRadius: 10
-                        color: Theme.background
-                        border.color: Theme.border
-                        border.width: 1
-                        Rectangle {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            height: 1
-                            color: Theme.background
-                            z: 2
-                        }
 
                         RowLayout {
                             id: rightIslandRow
