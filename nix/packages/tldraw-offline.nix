@@ -21,6 +21,12 @@ let
     };
   };
 
+  linuxSrc = linuxSources.${stdenvNoCC.hostPlatform.system};
+  appimageContents = appimageTools.extractType2 {
+    inherit pname version;
+    src = linuxSrc;
+  };
+
   meta = {
     description = "Local, file-based tldraw desktop whiteboard with agent integration";
     homepage = "https://offline.tldraw.com";
@@ -37,7 +43,21 @@ in
 if stdenvNoCC.hostPlatform.isLinux then
   appimageTools.wrapType2 {
     inherit pname version meta;
-    src = linuxSources.${stdenvNoCC.hostPlatform.system};
+    src = linuxSrc;
+    extraInstallCommands = ''
+      install -Dm444 ${appimageContents}/@tldesktop.desktop \
+        $out/share/applications/tldraw-offline.desktop
+      substituteInPlace $out/share/applications/tldraw-offline.desktop \
+        --replace-fail "Exec=AppRun --no-sandbox %U" "Exec=tldraw-offline %U" \
+        --replace-fail "Icon=@tldesktop" "Icon=tldraw-offline" \
+        --replace-fail "MimeType=application/x-tldraw;application/x-tldraw;" "MimeType=application/x-tldraw;"
+
+      for size in 16 24 32 48 64 96 128 256 512; do
+        install -Dm444 \
+          ${appimageContents}/usr/share/icons/hicolor/''${size}x''${size}/apps/@tldesktop.png \
+          $out/share/icons/hicolor/''${size}x''${size}/apps/tldraw-offline.png
+      done
+    '';
   }
 else
   stdenvNoCC.mkDerivation {
