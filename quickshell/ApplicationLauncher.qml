@@ -62,7 +62,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 16
+        radius: 7
         color: Theme.surface
         border.color: Theme.border
         border.width: 1

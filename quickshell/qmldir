@@ -1,6 +1,5 @@
 singleton Theme 1.0 Theme.qml
 BarButton 1.0 BarButton.qml
-SquircleIsland 1.0 SquircleIsland.qml
 Heading 1.0 Heading.qml
 SwitchRow 1.0 SwitchRow.qml
 ActionRow 1.0 ActionRow.qml

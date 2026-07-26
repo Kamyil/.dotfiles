@@ -79,7 +79,7 @@ Item {
     Process { id: paste; command: ["wtype", "-M", "ctrl", "-P", "v", "-p", "v", "-m", "ctrl"] }
     Timer { id: pasteDelay; interval: 180; onTriggered: paste.running = true }
     Rectangle {
-        anchors.fill: parent; radius: 16; color: Theme.surface; border.color: Theme.border
+        anchors.fill: parent; radius: 7; color: Theme.surface; border.color: Theme.border
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 10
             Heading { title: root.title; subtitle: root.mode === "image" ? "Copy an image to the clipboard" : "Select to copy" }
