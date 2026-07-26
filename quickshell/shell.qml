@@ -475,17 +475,19 @@ ShellRoot {
                                 onClicked: if (root.activeMediaPlayer) root.activeMediaPlayer.previous()
                             }
                             BarButton {
+                                id: mediaPlayButton
                                 icon: root.activeMediaPlayer && root.activeMediaPlayer.isPlaying ? "󰏤" : "󰐊"
-                                label: {
-                                    if (!root.activeMediaPlayer) return ""
-                                    const artist = root.activeMediaPlayer.trackArtist || ""
-                                    const title = root.activeMediaPlayer.trackTitle || root.activeMediaPlayer.identity || ""
-                                    return artist.length > 0 ? artist + " — " + title : title
-                                }
-                                Layout.maximumWidth: 280
                                 active: root.activeMediaPlayer && root.activeMediaPlayer.isPlaying
                                 accessibleName: root.activeMediaPlayer && root.activeMediaPlayer.isPlaying ? "Pause media" : "Play media"
                                 onClicked: if (root.activeMediaPlayer) root.activeMediaPlayer.togglePlaying()
+                                onHoveredChanged: {
+                                    if (hovered) {
+                                        mediaHoverClose.stop()
+                                        mediaHover.visible = true
+                                    } else {
+                                        mediaHoverClose.restart()
+                                    }
+                                }
                             }
                             BarButton {
                                 icon: "󰒭"
@@ -717,6 +719,117 @@ ShellRoot {
                             active: bar.activePanel === "power"
                             accessibleName: "Battery"
                             onClicked: anchor => bar.togglePanel("power", anchor)
+                        }
+                    }
+                }
+
+                Timer {
+                    id: mediaHoverClose
+                    interval: 180
+                    onTriggered: {
+                        if (!mediaPlayButton.hovered && !mediaCardHover.hovered)
+                            mediaHover.visible = false
+                    }
+                }
+
+                PopupWindow {
+                    id: mediaHover
+                    visible: false
+                    implicitWidth: 330
+                    implicitHeight: 104
+                    color: "transparent"
+
+                    anchor {
+                        item: mediaPlayButton
+                        edges: Edges.Top
+                        gravity: Edges.Top
+                        adjustment: PopupAdjustment.FlipX | PopupAdjustment.SlideX | PopupAdjustment.SlideY
+                        margins.top: 7
+                    }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.margins: 4
+                        radius: 14
+                        color: Theme.surface
+                        border.color: Theme.border
+                        border.width: 1
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 12
+
+                            Rectangle {
+                                Layout.preferredWidth: 72
+                                Layout.preferredHeight: 72
+                                radius: 9
+                                color: Theme.elevated
+                                clip: true
+
+                                Image {
+                                    id: mediaArtwork
+                                    anchors.fill: parent
+                                    source: root.activeMediaPlayer ? root.activeMediaPlayer.trackArtUrl || "" : ""
+                                    fillMode: Image.PreserveAspectCrop
+                                    asynchronous: true
+                                }
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    visible: mediaArtwork.status !== Image.Ready
+                                    text: "󰎆"
+                                    color: Theme.muted
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: 24
+                                }
+                            }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 4
+
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: root.activeMediaPlayer
+                                        ? root.activeMediaPlayer.trackTitle || root.activeMediaPlayer.identity || "Unknown track"
+                                        : ""
+                                    color: Theme.foreground
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: 13
+                                    font.weight: Font.DemiBold
+                                    elide: Text.ElideRight
+                                }
+
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: root.activeMediaPlayer ? root.activeMediaPlayer.trackArtist || "" : ""
+                                    color: Theme.muted
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: 11
+                                    elide: Text.ElideRight
+                                }
+
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: root.activeMediaPlayer ? root.activeMediaPlayer.identity || "" : ""
+                                    color: Theme.muted
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: 10
+                                    elide: Text.ElideRight
+                                }
+                            }
+                        }
+
+                        HoverHandler {
+                            id: mediaCardHover
+                            onHoveredChanged: {
+                                if (hovered) {
+                                    mediaHoverClose.stop()
+                                } else {
+                                    mediaHoverClose.restart()
+                                }
+                            }
                         }
                     }
                 }

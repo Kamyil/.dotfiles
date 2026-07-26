@@ -8,6 +8,7 @@ Rectangle {
     required property string icon
     property string iconFontFamily: Theme.fontFamily
     property string label: ""
+    readonly property bool hovered: mouse.containsMouse
     property bool active: false
     property string accessibleName: label
     signal clicked(var anchor)
