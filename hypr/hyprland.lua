@@ -23,10 +23,17 @@ hl.config({
 		follow_mouse = 1,
 		repeat_rate = 50,
 		repeat_delay = 300,
-		sensitivity = 0.6875,
+		sensitivity = 0.4,
+		accel_profile = "adaptive",
 		natural_scroll = true,
 		touchpad = {
 			natural_scroll = true,
+			scroll_factor = 0.7,
+			clickfinger_behavior = true,
+			tap_to_click = true,
+			tap_button_map = "lrm",
+			tap_and_drag = true,
+			disable_while_typing = true,
 		},
 	},
 
