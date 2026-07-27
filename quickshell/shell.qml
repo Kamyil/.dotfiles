@@ -231,10 +231,13 @@ ShellRoot {
     IpcHandler {
         target: "launcher"
         function toggle(): void {
-            launcherWindow.visible = !launcherWindow.visible
+            if (launcherWindow.visible)
+                launcherWindow.visible = false
+            else
+                root.showOverlay("launcher")
         }
         function show(): void {
-            launcherWindow.visible = true
+            root.showOverlay("launcher")
         }
         function hide(): void {
             launcherWindow.visible = false
@@ -270,10 +273,54 @@ ShellRoot {
         function lock(): void { root.lockSession() }
     }
 
+    function showOverlay(name: string): void {
+        overlayScreenLookup.overlay = name
+        if (!overlayScreenLookup.running)
+            overlayScreenLookup.running = true
+    }
+
     function showPicker(mode: string): void {
         pickerMode = mode
-        pickerWindow.visible = true
-        Qt.callLater(() => pickerContent.reset())
+        showOverlay("picker")
+    }
+
+    function openOverlayAt(name: string, x: real, y: real): void {
+        const cursorScreen = Number.isFinite(x) && Number.isFinite(y)
+            ? Quickshell.screens.find(candidate =>
+                x >= candidate.x && x < candidate.x + candidate.width
+                && y >= candidate.y && y < candidate.y + candidate.height)
+            : null
+        const focusedScreen = Quickshell.screens.find(candidate =>
+            Hyprland.monitorFor(candidate) === Hyprland.focusedMonitor)
+        const target = cursorScreen || focusedScreen || Quickshell.screens[0] || null
+
+        if (name === "launcher") {
+            launcherWindow.screen = target
+            launcherWindow.visible = true
+        } else if (name === "tools") {
+            toolsWindow.screen = target
+            toolsWindow.visible = true
+            Qt.callLater(() => toolsContent.reset())
+        } else {
+            pickerWindow.screen = target
+            pickerWindow.visible = true
+            Qt.callLater(() => pickerContent.reset())
+        }
+    }
+
+    Process {
+        id: overlayScreenLookup
+        property string overlay: ""
+        command: ["hyprctl", "cursorpos"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const coordinates = text.trim().split(",")
+                root.openOverlayAt(
+                    overlayScreenLookup.overlay,
+                    Number(coordinates[0]),
+                    Number(coordinates[1]))
+            }
+        }
     }
 
     IpcHandler {
@@ -287,13 +334,13 @@ ShellRoot {
     IpcHandler {
         target: "tools"
         function toggle(): void {
-            toolsWindow.visible = !toolsWindow.visible
             if (toolsWindow.visible)
-                Qt.callLater(() => toolsContent.reset())
+                toolsWindow.visible = false
+            else
+                root.showOverlay("tools")
         }
         function show(): void {
-            toolsWindow.visible = true
-            Qt.callLater(() => toolsContent.reset())
+            root.showOverlay("tools")
         }
         function hide(): void { toolsWindow.visible = false }
     }
