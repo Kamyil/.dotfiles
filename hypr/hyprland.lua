@@ -19,7 +19,7 @@ hl.config({
 
 	input = {
 		kb_layout = "pl",
-		kb_options = "altwin:swap_lalt_lwin,caps:escape",
+		kb_options = "caps:escape",
 		follow_mouse = 1,
 		repeat_rate = 50,
 		repeat_delay = 300,
@@ -77,6 +77,12 @@ hl.config({
 		force_default_wallpaper = 0,
 		disable_hyprland_logo = true,
 	},
+})
+
+-- Preserve the Mac-like modifier order only on the ThinkPad's built-in keyboard.
+hl.device({
+	name = "at-translated-set-2-keyboard",
+	kb_options = "altwin:swap_lalt_lwin,caps:escape",
 })
 
 -- Three-finger horizontal touchpad swipe between workspaces.
