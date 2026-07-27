@@ -156,6 +156,9 @@ in
               tap "FelixKratz/formulae", trusted: true
               tap "steveyegge/beads", trusted: true
               tap "steipete/tap", trusted: true
+              # Force prevents Brew Bundle's default adoption path from recursively
+              # chmodding an existing signed app bundle.
+              cask "helium-browser", args: { force: true }
             '';
             brews = [
               "sketchybar"
@@ -167,7 +170,6 @@ in
             ];
             casks = [
               # Keep these that aren't available in nixpkgs or ARM macOS
-              "helium-browser"
               "firefox"
               "spotify"
               "vivaldi"

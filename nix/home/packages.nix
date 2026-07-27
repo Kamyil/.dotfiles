@@ -91,9 +91,9 @@ in
       imagemagick
       tldr
       watchexec
-      qutebrowser
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
+      qutebrowser
       sweethome3d.application
       kooha
       gpu-screen-recorder-gtk
