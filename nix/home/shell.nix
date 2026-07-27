@@ -123,7 +123,6 @@ in
       superfile = "command superfile --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
 
       # Git aliases
-      gpom = "git pull origin master";
       gpod = "git pull origin development";
       gc = "git checkout";
       gcb = "git checkout -b";
@@ -189,6 +188,27 @@ in
         _dotfiles_theme_load
       }
       _dotfiles_theme_load
+
+      # Pull from origin's conventional primary branch.
+      gpom() {
+        local remote_head branch
+
+        remote_head="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null)"
+        branch="''${remote_head#origin/}"
+
+        if [[ "$branch" != main && "$branch" != master ]]; then
+          if git ls-remote --exit-code --heads origin main >/dev/null 2>&1; then
+            branch=main
+          elif git ls-remote --exit-code --heads origin master >/dev/null 2>&1; then
+            branch=master
+          else
+            print -u2 "gpom: origin has neither a main nor master branch"
+            return 1
+          fi
+        fi
+
+        git pull origin "$branch" "$@"
+      }
       export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
 
       # fnm owns interactive Node.js versions on both platforms.
