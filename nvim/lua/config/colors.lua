@@ -135,9 +135,21 @@ local function disable_italics()
       vim.api.nvim_set_hl(0, name, highlight)
     end
   end
+
+  -- Svelte marks local readonly functions with this higher-priority semantic
+  -- token. Keep its color without switching font faces during token refreshes.
+  local readonly_function = vim.api.nvim_get_hl(0, {
+    name = '@lsp.typemod.function.readonly',
+    link = false,
+  })
+  readonly_function.bold = false
+  readonly_function.italic = false
+  readonly_function.cterm = nil
+  vim.api.nvim_set_hl(0, '@lsp.typemod.function.readonly', readonly_function)
 end
 
 disable_italics()
+
 vim.api.nvim_create_autocmd('ColorScheme', {
   callback = disable_italics,
 })
