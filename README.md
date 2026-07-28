@@ -4,6 +4,18 @@ A single, live-editable configuration repository for my macOS and NixOS machines
 
 The repository keeps application configuration in the root directory (`nvim/`, `kitty/`, `wezterm/`, `hypr/`, and so on). Nix describes which programs are installed and where configuration links should exist; the links point back into this checkout instead of copying files into `$HOME`.
 
+## Desktop showcase
+
+My NixOS desktop: Hyprland, Quickshell, Kitty, and the matching system widgets configured in this repository.
+
+![NixOS desktop with a dark Japanese landscape wallpaper](assets/desktop/desktop.png)
+
+| Fastfetch | Calendar |
+| --- | --- |
+| ![Fastfetch in Kitty](assets/desktop/fastfetch.png) | ![Quickshell calendar widget](assets/desktop/calendar.png) |
+
+![NixOS desktop with the system resources widget open](assets/desktop/system-resources.png)
+
 ## Architecture
 
 The top-level Nix flake is the composition root. It imports one system definition for each supported operating system and merges their outputs.
