@@ -8,6 +8,7 @@ ThemeTextField 1.0 ThemeTextField.qml
 ThemeSlider 1.0 ThemeSlider.qml
 ThemeDialog 1.0 ThemeDialog.qml
 NetworkPanel 1.0 NetworkPanel.qml
+VpnPanel 1.0 VpnPanel.qml
 BluetoothPanel 1.0 BluetoothPanel.qml
 AudioPanel 1.0 AudioPanel.qml
 PowerPanel 1.0 PowerPanel.qml
