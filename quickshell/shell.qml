@@ -1169,8 +1169,9 @@ ShellRoot {
                 PopupWindow {
                     id: panel
                     visible: false
-                    grabFocus: false
-                    onVisibleChanged: if (!visible) Qt.callLater(() => {
+                    property bool focusRemapPending: false
+                    grabFocus: !root.screenshotMode
+                    onVisibleChanged: if (!visible && !focusRemapPending) Qt.callLater(() => {
                         if (!panel.visible)
                             bar.activePanel = ""
                     })
@@ -1225,16 +1226,20 @@ ShellRoot {
                     }
                 }
 
-                HyprlandFocusGrab {
-                    windows: [panel]
-                    active: panel.visible && !root.screenshotMode
-                    onCleared: {
-                        if (!root.screenshotMode) {
-                            panel.visible = false
-                            bar.activePanel = ""
-                        }
+                Connections {
+                    target: root
+                    function onScreenshotModeChanged(): void {
+                        if (!panel.visible)
+                            return
+                        panel.focusRemapPending = true
+                        panel.visible = false
+                        Qt.callLater(() => {
+                            panel.visible = true
+                            panel.focusRemapPending = false
+                        })
                     }
                 }
+
 
 
                 Component { id: networkComponent; NetworkPanel {} }
