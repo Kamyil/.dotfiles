@@ -1169,8 +1169,8 @@ ShellRoot {
 
                     anchor {
                         item: bar.panelAnchor
-                        edges: Edges.Top | Edges.Left
-                        gravity: Edges.Top | Edges.Left
+                        edges: Edges.Top
+                        gravity: Edges.Top
                         adjustment: PopupAdjustment.FlipX | PopupAdjustment.SlideX | PopupAdjustment.SlideY
                         margins.top: 7
                     }
@@ -1239,7 +1239,7 @@ ShellRoot {
                     }
                 }
                 Component { id: powerComponent; PowerPanel {} }
-                Component { id: clockComponent; ClockPanel {} }
+                Component { id: clockComponent; CalendarPanel {} }
                 Component {
                     id: focusComponent
                     FocusPanel {

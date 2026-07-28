@@ -5,12 +5,16 @@ import "."
 Item {
     id: root
     implicitWidth: 340
-    implicitHeight: 350
+    implicitHeight: 390
 
     property date now: new Date()
     property date shownMonth: new Date(now.getFullYear(), now.getMonth(), 1)
     readonly property var monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     readonly property var dayNames: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
+    readonly property date yearStart: new Date(now.getFullYear(), 0, 1)
+    readonly property date nextYearStart: new Date(now.getFullYear() + 1, 0, 1)
+    readonly property real yearProgress: Math.max(0, Math.min(1, (now.getTime() - yearStart.getTime()) / (nextYearStart.getTime() - yearStart.getTime())))
+    readonly property int daysLeft: Math.max(0, Math.round((Date.UTC(now.getFullYear() + 1, 0, 1) - Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000) - 1)
 
     function isoWeek(date) {
         const day = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
@@ -56,6 +60,44 @@ Item {
             Layout.alignment: Qt.AlignHCenter
         }
 
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 5
+
+            RowLayout {
+                Layout.fillWidth: true
+
+                Text {
+                    text: root.now.getFullYear() + " progress"
+                    color: Theme.muted
+                    font.family: Theme.fontFamily
+                    font.pixelSize: 10
+                }
+                Item { Layout.fillWidth: true }
+                Text {
+                    text: (root.yearProgress * 100).toFixed(1) + "% elapsed · "
+                        + ((1 - root.yearProgress) * 100).toFixed(1) + "% left · "
+                        + root.daysLeft + " days left"
+                    color: Theme.muted
+                    font.family: Theme.fontFamily
+                    font.pixelSize: 10
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                implicitHeight: 6
+                radius: height / 2
+                color: Theme.surface
+
+                Rectangle {
+                    width: parent.width * root.yearProgress
+                    height: parent.height
+                    radius: parent.radius
+                    color: Theme.accent
+                }
+            }
+        }
         RowLayout {
             Layout.fillWidth: true
             Text {
