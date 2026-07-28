@@ -7,7 +7,7 @@ import "."
 Item {
     id: root
     implicitWidth: 340
-    implicitHeight: 270
+    implicitHeight: 310
 
     property bool externalMetrics: false
     property int cpu: 0
@@ -15,6 +15,9 @@ Item {
     property int gpu: -1
     property string memoryUsedGiB: "0.0"
     property string memoryTotalGiB: "0.0"
+    property int ssd: 0
+    property string ssdUsedGiB: "0.0"
+    property string ssdTotalGiB: "0.0"
     property string error: ""
 
     function refresh() {
@@ -41,6 +44,9 @@ Item {
                     root.memory = value.memory
                     root.memoryUsedGiB = value.memoryUsedGiB
                     root.memoryTotalGiB = value.memoryTotalGiB
+                    root.ssd = value.ssd
+                    root.ssdUsedGiB = value.ssdUsedGiB
+                    root.ssdTotalGiB = value.ssdTotalGiB
                     root.gpu = value.gpu
                     root.error = ""
                 } catch (exception) {
@@ -119,6 +125,12 @@ Item {
             label: "Memory"
             value: root.memory
             detail: root.memoryUsedGiB + " / " + root.memoryTotalGiB + " GiB  ·  " + root.memory + "%"
+        }
+
+        UsageRow {
+            label: "SSD"
+            value: root.ssd
+            detail: root.ssdUsedGiB + " / " + root.ssdTotalGiB + " GiB  ·  " + root.ssd + "%"
         }
 
         UsageRow {

@@ -9,37 +9,7 @@ read_cpu() {
 }
 
 read_gpu_time() {
-  local -A seen=()
-  local total=0
-  local found=false
-  local file pid client key value engine_total has_engine
-  for file in /proc/[0-9]*/fdinfo/*; do
-    [[ -r "$file" ]] || continue
-    pid=${file#/proc/}
-    pid=${pid%%/*}
-    client=""
-    engine_total=0
-    has_engine=false
-    while read -r key value _; do
-      case "$key" in
-        drm-client-id:) client=$value ;;
-        drm-engine-capacity-*) ;;
-        drm-engine-*) engine_total=$((engine_total + value)); has_engine=true ;;
-      esac
-    done < "$file" 2>/dev/null || true
-    [[ -n "$client" ]] || continue
-    [[ "$has_engine" == true ]] || continue
-    key="$pid:$client"
-    [[ -z "${seen[$key]+present}" ]] || continue
-    seen[$key]=1
-    total=$((total + engine_total))
-    found=true
-  done
-  if [[ "$found" == true ]]; then
-    printf '%s\n' "$total"
-  else
-    printf '%s\n' -1
-  fi
+  printf '%s\n' -1
 }
 
 read -r idle_before total_before < <(read_cpu)
@@ -73,6 +43,14 @@ fi
 memory_used_gib=$(awk -v kib="$memory_used_kib" 'BEGIN { printf "%.1f", kib / 1048576 }')
 memory_total_gib=$(awk -v kib="$memory_total_kib" 'BEGIN { printf "%.1f", kib / 1048576 }')
 
+read -r _ ssd_total_kib ssd_used_kib _ ssd < <(df -Pk / | tail -n 1)
+ssd=0
+if (( ssd_total_kib > 0 )); then
+  ssd=$((100 * ssd_used_kib / ssd_total_kib))
+fi
+ssd_used_gib=$(awk -v kib="$ssd_used_kib" 'BEGIN { printf "%.1f", kib / 1048576 }')
+ssd_total_gib=$(awk -v kib="$ssd_total_kib" 'BEGIN { printf "%.1f", kib / 1048576 }')
+
 gpu_after=$(read_gpu_time)
 gpu=-1
 elapsed_ms=$((end_ms - start_ms))
@@ -81,5 +59,5 @@ if (( gpu_before >= 0 && gpu_after >= gpu_before && elapsed_ms > 0 )); then
   if (( gpu > 100 )); then gpu=100; fi
 fi
 
-printf '{"cpu":%d,"memory":%d,"memoryUsedGiB":"%s","memoryTotalGiB":"%s","gpu":%d}\n' \
-  "$cpu" "$memory" "$memory_used_gib" "$memory_total_gib" "$gpu"
+printf '{"cpu":%d,"memory":%d,"memoryUsedGiB":"%s","memoryTotalGiB":"%s","ssd":%d,"ssdUsedGiB":"%s","ssdTotalGiB":"%s","gpu":%d}\n' \
+  "$cpu" "$memory" "$memory_used_gib" "$memory_total_gib" "$ssd" "$ssd_used_gib" "$ssd_total_gib" "$gpu"

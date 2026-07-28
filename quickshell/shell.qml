@@ -401,8 +401,9 @@ ShellRoot {
 
                 property string activePanel: ""
                 property Item panelAnchor: null
-                property int volume: 0
-                property bool audioMuted: false
+                readonly property var audioSink: Pipewire.defaultAudioSink
+                readonly property int volume: audioSink && audioSink.audio ? Math.round(audioSink.audio.volume * 100) : 0
+                readonly property bool audioMuted: audioSink && audioSink.audio ? audioSink.audio.muted : false
                 readonly property bool bluetoothPowered: {
                     for (const adapter of Bluetooth.adapters.values) {
                         if (adapter.enabled)
@@ -421,13 +422,16 @@ ShellRoot {
                 property string resourceMemoryTotal: "0.0"
                 property int resourceMemory: 0
                 property int resourceGpu: -1
+                property int resourceSsd: 0
+                property string resourceSsdUsed: "0.0"
+                property string resourceSsdTotal: "0.0"
                 readonly property var microphone: Pipewire.defaultAudioSource
                 readonly property string weatherTemperature: root.weatherTemperature
                 readonly property string weatherCondition: root.weatherCondition
 
 
 
-                PwObjectTracker { objects: bar.microphone ? [bar.microphone] : [] }
+                PwObjectTracker { objects: [bar.audioSink, bar.microphone].filter(object => object) }
 
                 function isoWeek(date) {
                     const day = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
@@ -529,24 +533,12 @@ ShellRoot {
                     repeat: true
                     triggeredOnStart: true
                     onTriggered: {
-                        audioStatus.running = true
                         if (!resourceStatus.running)
                             resourceStatus.running = true
                     }
                 }
 
 
-                Process {
-                    id: audioStatus
-                    command: ["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"]
-                    stdout: StdioCollector {
-                        onStreamFinished: {
-                            const match = text.match(/Volume:\s+([0-9.]+)/)
-                            if (match) bar.volume = Math.round(Number(match[1]) * 100)
-                            bar.audioMuted = /MUTED/.test(text)
-                        }
-                    }
-                }
 
 
 
@@ -562,6 +554,9 @@ ShellRoot {
                                 bar.resourceGpu = value.gpu
                                 bar.resourceMemoryUsed = value.memoryUsedGiB
                                 bar.resourceMemoryTotal = value.memoryTotalGiB
+                                bar.resourceSsd = value.ssd
+                                bar.resourceSsdUsed = value.ssdUsedGiB
+                                bar.resourceSsdTotal = value.ssdTotalGiB
                             } catch (exception) {
                                 // Keep the last valid sample when a transient read fails.
                             }
@@ -824,20 +819,13 @@ ShellRoot {
                                     volumeAction.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", delta > 0 ? "5%+" : "5%-"]
                                     volumeAction.running = true
                                 }
-                                Process { id: volumeAction; onExited: audioStatus.running = true }
+                                Process { id: volumeAction }
                             }
                             BarButton {
                                 icon: "󰍹"
                                 active: bar.activePanel === "display"
                                 accessibleName: "Display controls"
                                 onClicked: anchor => bar.togglePanel("display", anchor)
-                            }
-                            BarButton {
-                                id: wallpaperButton
-                                icon: "󰸉"
-                                active: bar.activePanel === "wallpaper"
-                                accessibleName: "Wallpapers"
-                                onClicked: anchor => bar.togglePanel("wallpaper", anchor)
                             }
 
 
@@ -966,6 +954,13 @@ ShellRoot {
                                         }
                                         BarButton {
                                             tile: true
+                                            icon: "󰸉"
+                                            active: bar.activePanel === "wallpaper"
+                                            accessibleName: "Wallpapers"
+                                            onClicked: controlsReveal.toggleOverflowPanel("wallpaper")
+                                        }
+                                        BarButton {
+                                            tile: true
                                             visible: !!bar.microphone
                                             icon: bar.microphone && bar.microphone.audio && bar.microphone.audio.muted ? "󰍭" : "󰍬"
                                             active: bar.microphone && bar.microphone.audio && !bar.microphone.audio.muted
@@ -1033,8 +1028,8 @@ ShellRoot {
                         BarButton {
                             icon: "󰍛"
                             active: bar.activePanel === "resources"
-                            label: "CPU " + bar.resourceCpu + "%  RAM " + bar.resourceMemoryUsed + "/" + bar.resourceMemoryTotal + " GB"
-                            accessibleName: "System resources: CPU " + bar.resourceCpu + " percent, memory " + bar.resourceMemoryUsed + " of " + bar.resourceMemoryTotal + " gibibytes"
+                            label: "CPU " + bar.resourceCpu + "%  RAM " + bar.resourceMemoryUsed + "/" + bar.resourceMemoryTotal + " GB  SSD " + bar.resourceSsdUsed + "/" + bar.resourceSsdTotal + " GB (" + bar.resourceSsd + "%)"
+                            accessibleName: "System resources: CPU " + bar.resourceCpu + " percent, memory " + bar.resourceMemoryUsed + " of " + bar.resourceMemoryTotal + " gibibytes, SSD " + bar.resourceSsdUsed + " of " + bar.resourceSsdTotal + " gibibytes, " + bar.resourceSsd + " percent used"
                             onClicked: anchor => bar.togglePanel("resources", anchor)
                         }
                         BarButton {
@@ -1274,6 +1269,9 @@ ShellRoot {
                         gpu: bar.resourceGpu
                         memoryUsedGiB: bar.resourceMemoryUsed
                         memoryTotalGiB: bar.resourceMemoryTotal
+                        ssd: bar.resourceSsd
+                        ssdUsedGiB: bar.resourceSsdUsed
+                        ssdTotalGiB: bar.resourceSsdTotal
                     }
                 }
                 Component {
