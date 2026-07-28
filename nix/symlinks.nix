@@ -53,6 +53,7 @@ let
     ".config/walker/config.toml" = "walker/config.toml";
     ".config/walker/themes/kanagawa.css" = "walker/themes/kanagawa.css";
     ".config/kmonad/config.kbd" = "kmonad/config.kbd";
+    ".config/xkb/thinkpad.xkb" = "xkb/thinkpad.xkb";
     ".local/share/omarchy/bin" = "omarchy/bin";
     ".local/share/omarchy/default/walker/themes/omarchy-default/layout.xml" =
       "omarchy/default/walker/themes/omarchy-default/layout.xml";
