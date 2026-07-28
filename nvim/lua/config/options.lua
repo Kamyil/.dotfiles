@@ -63,9 +63,8 @@ vim.opt.ignorecase = true -- ignore case in search patterns (again, for redundan
 vim.opt.smartcase = true -- smart case (again, for redundancy)
 vim.opt.smartindent = true -- make indenting smarter again
 
--- Folding (treesitter-based)
-vim.o.foldmethod = 'expr'
-vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+-- Manual folds avoid recalculating Tree-sitter fold expressions on every redraw.
+vim.o.foldmethod = 'manual'
 vim.o.foldlevel = 99 -- Start with all folds open
 vim.o.foldenable = true
 
