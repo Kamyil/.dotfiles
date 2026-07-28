@@ -263,3 +263,8 @@ hl.bind(mainMod .. " + SHIFT + 4", screenshot)
 -- across config reloads, so inserting between existing binds can remap actions.
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("quickshell ipc call tools toggle"))
 hl.bind(mainMod .. " + F", hl.dsp.exec_cmd("quickshell ipc call focus toggle"))
+
+-- Audio media keys, including the Sofle rotary encoder.
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("pamixer --increase 5"))
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("pamixer --decrease 5"))
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("pamixer --toggle-mute"))
