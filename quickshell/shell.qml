@@ -32,6 +32,7 @@ ShellRoot {
     readonly property string focusHelper: Quickshell.env("HOME") + "/.config/quickshell/focus-control.py"
     property bool vpnActive: false
     property string vpnName: ""
+    property bool screenshotMode: false
 
     function updateVpnStatus(text) {
         let name = ""
@@ -311,6 +312,13 @@ ShellRoot {
     IpcHandler {
         target: "session"
         function lock(): void { root.lockSession() }
+    }
+
+    IpcHandler {
+        target: "panels"
+        function setScreenshotMode(active: bool): void {
+            root.screenshotMode = active
+        }
     }
 
     function showOverlay(name: string): void {
@@ -1158,7 +1166,7 @@ ShellRoot {
                 PopupWindow {
                     id: panel
                     visible: false
-                    grabFocus: true
+                    grabFocus: false
                     onVisibleChanged: if (!visible) Qt.callLater(() => {
                         if (!panel.visible)
                             bar.activePanel = ""
@@ -1208,6 +1216,17 @@ ShellRoot {
                     Shortcut {
                         sequence: "Escape"
                         onActivated: {
+                            panel.visible = false
+                            bar.activePanel = ""
+                        }
+                    }
+                }
+
+                HyprlandFocusGrab {
+                    windows: [panel]
+                    active: panel.visible && !root.screenshotMode
+                    onCleared: {
+                        if (!root.screenshotMode) {
                             panel.visible = false
                             bar.activePanel = ""
                         }
