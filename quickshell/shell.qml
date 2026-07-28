@@ -704,6 +704,18 @@ ShellRoot {
                                 onClicked: if (root.activeMediaPlayer) root.activeMediaPlayer.next()
                             }
                         }
+                        BarButton {
+                            id: focusButton
+                            icon: "󰔛"
+                            label: root.focusActive
+                                ? Math.floor(root.focusRemainingSeconds / 60) + ":" + String(root.focusRemainingSeconds % 60).padStart(2, "0")
+                                : ""
+                            active: bar.activePanel === "focus"
+                            accessibleName: root.focusActive
+                                ? "Focus mode, " + root.focusRemainingSeconds + " seconds remaining"
+                                : "Focus mode"
+                            onClicked: anchor => bar.togglePanel("focus", anchor)
+                        }
 
 
 
@@ -740,15 +752,6 @@ ShellRoot {
                             active: bar.activePanel === "clock"
                             accessibleName: "Calendar"
                             onClicked: anchor => bar.togglePanel("clock", anchor)
-                        }
-                        BarButton {
-                            id: focusButton
-                            icon: "󰔛"
-                            visible: root.focusActive
-                            label: Math.floor(root.focusRemainingSeconds / 60) + ":" + String(root.focusRemainingSeconds % 60).padStart(2, "0")
-                            active: bar.activePanel === "focus"
-                            accessibleName: "Focus mode, " + root.focusRemainingSeconds + " seconds remaining"
-                            onClicked: anchor => bar.togglePanel("focus", anchor)
                         }
                         BarButton {
                             icon: "󰖙"
