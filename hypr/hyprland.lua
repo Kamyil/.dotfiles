@@ -79,10 +79,16 @@ hl.config({
 	},
 })
 
--- Preserve the Mac-like modifier order only on the ThinkPad's built-in keyboard.
+-- Keep the ThinkPad's Mac-like modifier order and swap its right Ctrl/Print Screen keys.
 hl.device({
 	name = "at-translated-set-2-keyboard",
-	kb_options = "altwin:swap_lalt_lwin,caps:escape",
+	kb_file = "/home/kamil/.dotfiles/xkb/thinkpad.xkb",
+})
+
+-- The physical Print Screen key is exposed by the separate ThinkPad hotkey device.
+hl.device({
+	name = "thinkpad-extra-buttons",
+	kb_file = "/home/kamil/.dotfiles/xkb/thinkpad.xkb",
 })
 
 -- Three-finger horizontal touchpad swipe between workspaces.
