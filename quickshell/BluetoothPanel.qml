@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell.Io
 import Quickshell.Bluetooth
 import Quickshell.Services.Pipewire
 import "."
@@ -154,34 +155,63 @@ Item {
                             delegate: ActionRow {
                                 id: deviceRow
                                 required property var modelData
-                                property bool connectAfterPair: false
+                                property bool profileConnectSucceeded: false
+                                readonly property bool pairingActive: pairProcess.running && !profileConnectSucceeded
 
                                 title: modelData.deviceName || modelData.name || modelData.address
-                                subtitle: modelData.connected
-                                    ? (modelData.batteryAvailable ? "connected · " + Math.round(modelData.battery * 100) + "% battery" : "connected")
-                                    : modelData.pairing ? "pairing"
+                                subtitle: pairingActive ? "pairing"
+                                    : modelData.connected
+                                        ? (modelData.batteryAvailable ? "connected · " + Math.round(modelData.battery * 100) + "% battery" : "connected")
                                     : modelData.paired ? (modelData.trusted ? "remembered · right-click to forget" : "paired · right-click to forget")
                                     : "nearby"
-                                icon: modelData.connected ? "󰂱" : modelData.paired ? "󰂯" : ""
-                                trailing: modelData.connected ? "Disconnect"
-                                    : modelData.pairing ? "Pairing…"
+                                icon: pairingActive ? "" : modelData.connected ? "󰂱" : modelData.paired ? "󰂯" : ""
+                                trailing: pairingActive ? "Pairing…"
+                                    : modelData.connected ? "Disconnect"
                                     : modelData.paired ? "Connect" : "Pair & connect"
-                                selected: modelData.connected
+                                selected: modelData.connected && !pairingActive
                                 onClicked: {
-                                    if (modelData.connected) {
+                                    if (pairingActive) {
+                                        return
+                                    } else if (modelData.connected) {
                                         modelData.disconnect()
                                     } else if (modelData.paired) {
                                         modelData.trusted = true
                                         modelData.connect()
-                                    } else if (!modelData.pairing) {
-                                        connectAfterPair = true
-                                        modelData.pair()
+                                    } else {
+                                        profileConnectSucceeded = false
+                                        root.setDiscovery(false)
+                                        pairLaunch.restart()
                                     }
                                 }
 
                                 TapHandler {
                                     acceptedButtons: Qt.RightButton
                                     onTapped: if (deviceRow.modelData.paired && !deviceRow.modelData.connected) deviceRow.modelData.forget()
+                                }
+
+                                Timer {
+                                    id: pairLaunch
+                                    interval: 300
+                                    onTriggered: {
+                                        pairProcess.command = ["bluetoothctl", "--agent", "NoInputNoOutput", "--timeout", "30",
+                                            "pair", deviceRow.modelData.address]
+                                        pairProcess.running = true
+                                    }
+                                }
+
+                                Process {
+                                    id: pairProcess
+                                }
+
+                                Process {
+                                    id: profileConnect
+                                    onExited: {
+                                        if (deviceRow.modelData.connected) {
+                                            deviceRow.profileConnectSucceeded = true
+                                            deviceRow.modelData.trusted = true
+                                        }
+                                    }
+
                                 }
 
                                 Timer {
@@ -201,10 +231,10 @@ Item {
                                 Connections {
                                     target: deviceRow.modelData
                                     function onPairedChanged() {
-                                        if (deviceRow.connectAfterPair && deviceRow.modelData.paired) {
-                                            deviceRow.connectAfterPair = false
-                                            deviceRow.modelData.trusted = true
-                                            deviceRow.modelData.connect()
+                                        if (deviceRow.modelData.paired && pairProcess.running && !profileConnect.running) {
+                                            profileConnect.command = ["bluetoothctl", "--timeout", "10", "connect",
+                                                deviceRow.modelData.address, "0000110b-0000-1000-8000-00805f9b34fb"]
+                                            profileConnect.running = true
                                         }
                                     }
                                     function onConnectedChanged() {

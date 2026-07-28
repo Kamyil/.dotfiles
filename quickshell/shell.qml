@@ -30,6 +30,32 @@ ShellRoot {
     property int focusNow: Math.floor(Date.now() / 1000)
     readonly property int focusRemainingSeconds: Math.max(0, focusEndsAt - focusNow)
     readonly property string focusHelper: Quickshell.env("HOME") + "/.config/quickshell/focus-control.py"
+    property bool vpnActive: false
+    property string vpnName: ""
+
+    function updateVpnStatus(text) {
+        let name = ""
+        let type = ""
+        for (const line of text.split("\n")) {
+            const separator = line.indexOf(":")
+            if (separator < 0)
+                continue
+            const key = line.slice(0, separator).trim()
+            const value = line.slice(separator + 1).trim()
+            if (key === "NAME")
+                name = value
+            else if (key === "TYPE") {
+                type = value
+                if (type === "wireguard") {
+                    vpnActive = true
+                    vpnName = name
+                    return
+                }
+            }
+        }
+        vpnActive = false
+        vpnName = ""
+    }
 
 
     function ensureNightLight(): void {
@@ -174,6 +200,20 @@ ShellRoot {
         onTriggered: if (!globalNightLightStatus.running) globalNightLightStatus.running = true
     }
 
+
+    Process {
+        id: globalVpnStatus
+        command: ["nmcli", "-m", "multiline", "-e", "no", "-f", "NAME,TYPE", "connection", "show", "--active"]
+        stdout: StdioCollector { onStreamFinished: root.updateVpnStatus(text) }
+    }
+    Timer {
+        id: globalVpnRefresh
+        interval: 2000
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: if (!globalVpnStatus.running) globalVpnStatus.running = true
+    }
 
     Process {
         id: globalWeatherStatus
@@ -758,6 +798,22 @@ ShellRoot {
                                 onClicked: anchor => bar.togglePanel("network", anchor)
                             }
                             BarButton {
+                                icon: Bluetooth.devices.values.length > 0 ? "󰂱"
+                                    : Bluetooth.defaultAdapter && Bluetooth.defaultAdapter.enabled ? "" : "󰂲"
+                                active: bar.activePanel === "bluetooth"
+                                accessibleName: Bluetooth.devices.values.length > 0 ? "Bluetooth connected" : "Bluetooth"
+                                onClicked: anchor => bar.togglePanel("bluetooth", anchor)
+                            }
+                            BarButton {
+                                id: vpnButton
+                                icon: root.vpnActive ? "󰌾" : "󰌿"
+                                active: bar.activePanel === "vpn" || root.vpnActive
+                                accessibleName: root.vpnActive
+                                    ? "WireGuard VPN connected: " + root.vpnName
+                                    : "WireGuard VPN disconnected"
+                                onClicked: anchor => bar.togglePanel("vpn", anchor)
+                            }
+                            BarButton {
                                 icon: bar.audioMuted ? "" : bar.volume < 50 ? "" : ""
                                 iconFontFamily: "JetBrainsMono Nerd Font"
                                 label: bar.volume + "%"
@@ -1137,6 +1193,7 @@ ShellRoot {
                             anchors.fill: parent
                             anchors.margins: 16
                             sourceComponent: bar.activePanel === "network" ? networkComponent
+                                : bar.activePanel === "vpn" ? vpnComponent
                                 : bar.activePanel === "bluetooth" ? bluetoothComponent
                                 : bar.activePanel === "audio" ? audioComponent
                                 : bar.activePanel === "display" ? displayComponent
@@ -1164,6 +1221,15 @@ ShellRoot {
 
 
                 Component { id: networkComponent; NetworkPanel {} }
+                Component {
+                    id: vpnComponent
+                    VpnPanel {
+                        onStatusChanged: {
+                            if (!globalVpnStatus.running)
+                                globalVpnStatus.running = true
+                        }
+                    }
+                }
                 Component { id: bluetoothComponent; BluetoothPanel {} }
                 Component { id: audioComponent; AudioPanel {} }
                 Component { id: displayComponent; MonitorPanel {} }
