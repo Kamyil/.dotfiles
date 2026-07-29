@@ -16,35 +16,34 @@ customCommands:
 
 gui:
   language: en
-  # Semantic ANSI colors follow the active terminal palette.
   theme:
     activeBorderColor:
-      - yellow
+      - '#c4b28a'
       - bold
     inactiveBorderColor:
-      - default
+      - '#727169'
     optionsTextColor:
-      - yellow
+      - '#c4b28a'
     selectedLineBgColor:
-      - reverse
+      - '#363646'
     selectedRangeBgColor:
-      - reverse
+      - '#363646'
     cherryPickedCommitBgColor:
-      - default
+      - '#393836'
     cherryPickedCommitFgColor:
-      - yellow
+      - '#c4b28a'
     unstagedChangesColor:
-      - red
+      - '#c4746e'
     defaultFgColor:
-      - default
+      - '#DCD7BA'
     searchingActiveBorderColor:
-      - yellow
+      - '#c4b28a'
       - bold
     stagedChangesColor:
-      - green
+      - '#699469'
     markedBaseCommitFgColor:
-      - default
+      - '#9e9b93'
     markedBaseCommitBgColor:
-      - default
-authorColors:
-  '*': cyan
+      - '#393836'
+  authorColors:
+    '*': '#8ea49e'
