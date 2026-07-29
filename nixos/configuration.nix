@@ -190,8 +190,6 @@ in
     gnumake
 
     # Desktop applications
-    vivaldi
-    slack
     keepassxc
     foot
     ghostty
