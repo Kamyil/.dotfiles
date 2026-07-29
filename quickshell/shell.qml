@@ -152,6 +152,7 @@ ShellRoot {
     Process {
         id: focusStatus
         command: [root.focusHelper, "status"]
+        running: true
         stdout: StdioCollector {
             onStreamFinished: {
                 try { root.applyFocusState(JSON.parse(text.trim())) }
@@ -171,13 +172,13 @@ ShellRoot {
     Process { id: focusAcknowledge; command: [root.focusHelper, "ack"] }
     Timer {
         interval: 1000
-        running: true
+        running: root.focusActive
         repeat: true
         triggeredOnStart: true
         onTriggered: {
             root.focusNow = Math.floor(Date.now() / 1000)
-            if (!focusStatus.running && !focusAction.running)
-                focusStatus.running = true
+            if (root.focusRemainingSeconds <= 0 && !focusAction.running)
+                root.stopFocus()
         }
     }
 
@@ -193,27 +194,23 @@ ShellRoot {
     }
 
 
-    Timer {
-        interval: 4000
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: if (!globalNightLightStatus.running) globalNightLightStatus.running = true
-    }
 
 
     Process {
         id: globalVpnStatus
         command: ["nmcli", "-m", "multiline", "-e", "no", "-f", "NAME,TYPE", "connection", "show", "--active"]
+        running: true
         stdout: StdioCollector { onStreamFinished: root.updateVpnStatus(text) }
     }
-    Timer {
-        id: globalVpnRefresh
-        interval: 2000
+    Process {
+        command: ["nmcli", "monitor"]
         running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: if (!globalVpnStatus.running) globalVpnStatus.running = true
+        stdout: SplitParser {
+            onRead: _ => {
+                if (!globalVpnStatus.running)
+                    globalVpnStatus.running = true
+            }
+        }
     }
 
     Process {
@@ -239,6 +236,7 @@ ShellRoot {
 
     Process {
         id: globalNightLightStatus
+        running: true
         command: [Quickshell.env("HOME") + "/.config/hypr/hyprsunset-control.sh", "status"]
         stdout: StdioCollector {
             onStreamFinished: {

@@ -55,14 +55,7 @@ hl.config({
 	decoration = {
 		rounding = 7,
 		blur = {
-			enabled = true,
-			size = 3,
-			passes = 1,
-			new_optimizations = true,
-			xray = false,
-			special = false,
-			popups = false,
-			input_methods = false,
+			enabled = false,
 		},
 		shadow = {
 			enabled = false,
