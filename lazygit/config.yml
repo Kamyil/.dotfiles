@@ -1,8 +1,7 @@
 git:
   pagers:
     - colorArg: always
-      pager: hunk pager --theme custom
-      # pager: delta --dark --paging=never --syntax-theme=gruvmax-fang
+      pager: delta --dark --paging=never
       # pager: difft
       # externalDiffCommand: difft --color=always
       # externalDiffCommand: difft --color=always --display=inline --syntax-highlight=on

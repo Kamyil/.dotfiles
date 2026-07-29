@@ -520,6 +520,10 @@ in
     enableZshIntegration = false;
   };
 
+  home.activation.buildBatThemeCache = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    run ${pkgs.bat}/bin/bat cache --build
+  '';
+
   # Git configuration
   programs.git = {
     enable = true;
@@ -528,6 +532,8 @@ in
       user.email = "mccom_kks@mccom.pl";
       core.editor = "nvim";
       core.pager = "hunk pager";
+      include.path = "~/.local/state/dotfiles-theme/current/delta.gitconfig";
+      delta.line-numbers = true;
       init.defaultBranch = "main";
     };
   };

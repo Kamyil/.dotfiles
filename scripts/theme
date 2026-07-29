@@ -44,7 +44,7 @@ case "$command" in
 esac
 
 bundle="$themes_dir/$command"
-[[ -f "$bundle/theme.json" && -f "$bundle/kitty.conf" && -f "$bundle/theme.zsh" && -f "$bundle/hunk.toml" ]] || {
+[[ -f "$bundle/theme.json" && -f "$bundle/kitty.conf" && -f "$bundle/theme.zsh" && -f "$bundle/hunk.toml" && -f "$bundle/delta.gitconfig" ]] || {
   printf 'Incomplete theme bundle: %s\n' "$bundle" >&2
   exit 1
 }

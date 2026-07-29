@@ -1,0 +1,18 @@
+[delta]
+    features = kanagawa-paper
+
+[delta "kanagawa-paper"]
+    syntax-theme = "Kanagawa Paper"
+    minus-style = syntax "#332424"
+    minus-emph-style = syntax "#43242b"
+    plus-style = syntax "#243024"
+    plus-emph-style = syntax "#2b3328"
+    line-numbers-minus-style = "#c4746e"
+    line-numbers-plus-style = "#699469"
+    line-numbers-zero-style = "#727169"
+    line-numbers-left-style = "#9e9b93"
+    line-numbers-right-style = "#9e9b93"
+    file-style = bold "#8ea49e"
+    file-decoration-style = "#625e5a" box
+    hunk-header-style = file line-number syntax
+    hunk-header-decoration-style = "#625e5a" box

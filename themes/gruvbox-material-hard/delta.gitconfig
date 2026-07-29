@@ -1,0 +1,18 @@
+[delta]
+    features = gruvbox-material-hard
+
+[delta "gruvbox-material-hard"]
+    syntax-theme = gruvbox-dark
+    minus-style = syntax "#3c2626"
+    minus-emph-style = syntax "#542e2e"
+    plus-style = syntax "#29331f"
+    plus-emph-style = syntax "#354224"
+    line-numbers-minus-style = "#ea6962"
+    line-numbers-plus-style = "#a9b665"
+    line-numbers-zero-style = "#928374"
+    line-numbers-left-style = "#928374"
+    line-numbers-right-style = "#928374"
+    file-style = bold "#7daea3"
+    file-decoration-style = "#504945" box
+    hunk-header-style = file line-number syntax
+    hunk-header-decoration-style = "#504945" box
