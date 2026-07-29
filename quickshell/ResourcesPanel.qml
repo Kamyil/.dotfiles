@@ -58,7 +58,7 @@ Item {
 
     Timer {
         interval: 2000
-        running: !root.externalMetrics
+        running: root.visible && !root.externalMetrics
         repeat: true
         triggeredOnStart: true
         onTriggered: root.refresh()

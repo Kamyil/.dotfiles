@@ -35,7 +35,7 @@ Item {
 
     Timer {
         interval: 1000
-        running: true
+        running: root.visible
         repeat: true
         onTriggered: root.now = new Date()
     }

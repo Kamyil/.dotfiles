@@ -9,7 +9,7 @@ state_file="$state_dir/current"
 wallpapers() {
     local path
     shopt -s nullglob
-    for path in "$wallpaper_dir"/*.png "$wallpaper_dir"/*.jpg "$wallpaper_dir"/*.jpeg "$wallpaper_dir"/*.webp; do
+    for path in "$wallpaper_dir"/*.png "$wallpaper_dir"/*.jpg "$wallpaper_dir"/*.jpeg; do
         basename -- "$path"
     done | sort
 }
@@ -18,6 +18,9 @@ current() {
     local selected=""
     if [[ -r "$state_file" ]]; then
         IFS= read -r selected < "$state_file"
+    fi
+    if [[ "$selected" == *.webp && -f "$wallpaper_dir/${selected%.webp}.png" ]]; then
+        selected="${selected%.webp}.png"
     fi
     if [[ -n "$selected" && -f "$wallpaper_dir/$selected" ]]; then
         printf '%s\n' "$selected"

@@ -1,7 +1,5 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
-import Quickshell.Widgets
 import "."
 
 Rectangle {
@@ -27,8 +25,10 @@ Rectangle {
         width: row.iconSource.length > 0 || row.icon.length > 0 ? 18 : 0
         height: 18
 
-        IconImage {
+        Image {
             anchors.fill: parent
+            sourceSize.width: 18
+            sourceSize.height: 18
             source: row.iconSource
             visible: row.iconSource.length > 0
         }

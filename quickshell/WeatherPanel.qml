@@ -58,7 +58,7 @@ Item {
         stderr: StdioCollector { onStreamFinished: if (text.trim()) root.error = text.trim() }
         onExited: (exitCode, exitStatus) => { if (exitCode !== 0 && !root.error) root.error = "Weather service unavailable" }
     }
-    Timer { interval: 900000; running: true; repeat: true; onTriggered: if (!weather.running) weather.running = true }
+    Timer { interval: 900000; running: root.visible; repeat: true; triggeredOnStart: true; onTriggered: if (!weather.running) weather.running = true }
 
     ColumnLayout {
         anchors.fill: parent

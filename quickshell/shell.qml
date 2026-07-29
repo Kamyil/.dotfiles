@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
@@ -33,6 +32,14 @@ ShellRoot {
     property bool vpnActive: false
     property string vpnName: ""
     property bool screenshotMode: false
+    property int resourceCpu: 0
+    property string resourceMemoryUsed: "0.0"
+    property string resourceMemoryTotal: "0.0"
+    property int resourceMemory: 0
+    property int resourceGpu: -1
+    property int resourceSsd: 0
+    property string resourceSsdUsed: "0.0"
+    property string resourceSsdTotal: "0.0"
 
     function updateVpnStatus(text) {
         let name = ""
@@ -195,6 +202,28 @@ ShellRoot {
 
 
 
+
+    Process {
+        command: [Quickshell.env("HOME") + "/.config/quickshell/resource-status.sh", "watch", "4"]
+        running: true
+        stdout: SplitParser {
+            onRead: line => {
+                try {
+                    const value = JSON.parse(line)
+                    root.resourceCpu = value.cpu
+                    root.resourceMemory = value.memory
+                    root.resourceGpu = value.gpu
+                    root.resourceMemoryUsed = value.memoryUsedGiB
+                    root.resourceMemoryTotal = value.memoryTotalGiB
+                    root.resourceSsd = value.ssd
+                    root.resourceSsdUsed = value.ssdUsedGiB
+                    root.resourceSsdTotal = value.ssdTotalGiB
+                } catch (exception) {
+                    // Keep the last valid sample when a transient read fails.
+                }
+            }
+        }
+    }
 
     Process {
         id: globalVpnStatus
@@ -423,14 +452,14 @@ ShellRoot {
                 property date now: new Date()
                 readonly property string nightLightState: root.nightLightState
                 readonly property string nightLightTemperature: root.nightLightTemperature
-                property int resourceCpu: 0
-                property string resourceMemoryUsed: "0.0"
-                property string resourceMemoryTotal: "0.0"
-                property int resourceMemory: 0
-                property int resourceGpu: -1
-                property int resourceSsd: 0
-                property string resourceSsdUsed: "0.0"
-                property string resourceSsdTotal: "0.0"
+                readonly property int resourceCpu: root.resourceCpu
+                readonly property string resourceMemoryUsed: root.resourceMemoryUsed
+                readonly property string resourceMemoryTotal: root.resourceMemoryTotal
+                readonly property int resourceMemory: root.resourceMemory
+                readonly property int resourceGpu: root.resourceGpu
+                readonly property int resourceSsd: root.resourceSsd
+                readonly property string resourceSsdUsed: root.resourceSsdUsed
+                readonly property string resourceSsdTotal: root.resourceSsdTotal
                 readonly property var microphone: Pipewire.defaultAudioSource
                 readonly property string weatherTemperature: root.weatherTemperature
                 readonly property string weatherCondition: root.weatherCondition
@@ -479,12 +508,6 @@ ShellRoot {
                     return apps
                 }
 
-                function appIconColor(appId) {
-                    let hash = 0
-                    for (let index = 0; index < appId.length; ++index)
-                        hash = ((hash << 5) - hash + appId.charCodeAt(index)) | 0
-                    return Theme.appIconPalette[(hash >>> 0) % Theme.appIconPalette.length]
-                }
 
                 function togglePanel(name, item) {
                     if (activePanel === name) {
@@ -527,20 +550,13 @@ ShellRoot {
                 }
 
                 Timer {
-                    interval: 1000
+                    interval: 60000 - (Date.now() % 60000)
                     running: true
-                    repeat: true
-                    onTriggered: bar.now = new Date()
-                }
-
-                Timer {
-                    interval: 4000
-                    running: true
-                    repeat: true
-                    triggeredOnStart: true
                     onTriggered: {
-                        if (!resourceStatus.running)
-                            resourceStatus.running = true
+                        bar.now = new Date()
+                        interval = 60000
+                        repeat = true
+                        restart()
                     }
                 }
 
@@ -548,27 +564,7 @@ ShellRoot {
 
 
 
-                Process {
-                    id: resourceStatus
-                    command: [Quickshell.env("HOME") + "/.config/quickshell/resource-status.sh"]
-                    stdout: StdioCollector {
-                        onStreamFinished: {
-                            try {
-                                const value = JSON.parse(text)
-                                bar.resourceCpu = value.cpu
-                                bar.resourceMemory = value.memory
-                                bar.resourceGpu = value.gpu
-                                bar.resourceMemoryUsed = value.memoryUsedGiB
-                                bar.resourceMemoryTotal = value.memoryTotalGiB
-                                bar.resourceSsd = value.ssd
-                                bar.resourceSsdUsed = value.ssdUsedGiB
-                                bar.resourceSsdTotal = value.ssdTotalGiB
-                            } catch (exception) {
-                                // Keep the last valid sample when a transient read fails.
-                            }
-                        }
-                    }
-                }
+
 
 
                 Item {
@@ -645,16 +641,14 @@ ShellRoot {
                                         }
                                         Repeater {
                                             model: apps
-                                            delegate: IconImage {
+                                            delegate: Image {
                                                 required property var modelData
                                                 anchors.verticalCenter: parent.verticalCenter
-                                                implicitSize: 13
+                                                width: 13
+                                                height: 13
+                                                sourceSize.width: 13
+                                                sourceSize.height: 13
                                                 source: Quickshell.iconPath(modelData.icon, "application-x-executable")
-                                                layer.enabled: true
-                                                layer.effect: MultiEffect {
-                                                    colorization: 1
-                                                    colorizationColor: bar.appIconColor(modelData.appId)
-                                                }
                                             }
                                         }
                                     }

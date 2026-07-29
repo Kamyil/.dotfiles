@@ -175,7 +175,7 @@ Item {
         command: [root.helperDir + "network-status.sh"]
         stdout: StdioCollector { onStreamFinished: root.updateDetails(text) }
     }
-    Timer { interval: 1500; running: true; repeat: true; triggeredOnStart: true; onTriggered: if (!details.running) details.running = true }
+    Timer { interval: 1500; running: root.visible; repeat: true; triggeredOnStart: true; onTriggered: if (!details.running) details.running = true }
 
     Process {
         id: dnsStatus
@@ -183,7 +183,7 @@ Item {
         stdout: StdioCollector { onStreamFinished: if (text.trim()) root.dnsProvider = text.trim() }
         stderr: StdioCollector { onStreamFinished: if (text.trim()) root.feedback = text.trim() }
     }
-    Timer { interval: 5000; running: true; repeat: true; triggeredOnStart: true; onTriggered: if (!dnsStatus.running && !dnsAction.running) dnsStatus.running = true }
+    Timer { interval: 5000; running: root.visible; repeat: true; triggeredOnStart: true; onTriggered: if (!dnsStatus.running && !dnsAction.running) dnsStatus.running = true }
 
     Process {
         id: dnsAction

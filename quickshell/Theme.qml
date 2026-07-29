@@ -14,13 +14,5 @@ QtObject {
     readonly property color good: "#7e9579"
     readonly property color warning: "#a7956a"
     readonly property color danger: "#c27672"
-    readonly property var appIconPalette: [
-        "#c4746e",
-        "#699469",
-        "#c4b28a",
-        "#809ba7",
-        "#a292a3",
-        "#8ea49e"
-    ]
     readonly property string fontFamily: "Berkeley Mono SemiBold SemiCondensed"
 }
