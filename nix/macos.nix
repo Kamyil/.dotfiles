@@ -16,6 +16,7 @@
   hunk,
   lumen,
   herdr,
+  himalaya-tui,
   ...
 }:
 
@@ -224,6 +225,7 @@ in
             hunk
             lumen
             herdr
+            himalaya-tui
             ;
         };
 

@@ -6,17 +6,23 @@
   lazyjira,
   hunk,
   herdr,
+  himalaya-tui,
   ...
 }:
 
 let
   tldrawOffline = pkgs.callPackage ../packages/tldraw-offline.nix { };
+  slk = pkgs.callPackage ../packages/slk.nix { };
 in
 {
   home.packages =
     with pkgs;
     [
       ripgrep
+      slk
+      aerc
+      neomutt
+      w3m
       btop
       yazi
       tmux
@@ -104,5 +110,6 @@ in
       hunk.packages.${pkgs.stdenv.hostPlatform.system}.default
       lazyjira.packages.${pkgs.stdenv.hostPlatform.system}.default
       herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
+      himalaya-tui.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
 }

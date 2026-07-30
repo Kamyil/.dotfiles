@@ -45,6 +45,8 @@
 
     herdr.url = "github:ogulcancelik/herdr/v0.7.5";
     herdr.inputs.nixpkgs.follows = "nixpkgs";
+    himalaya-tui.url = "github:pimalaya/himalaya-tui";
+    himalaya-tui.inputs.nixpkgs.follows = "nixpkgs";
 
     helium.url = "github:oxcl/nix-flake-helium-browser";
     helium.inputs.nixpkgs.follows = "nixpkgs";
@@ -75,6 +77,7 @@
       hunk,
       lumen,
       herdr,
+      himalaya-tui,
       helium,
       ...
     }:
@@ -102,7 +105,6 @@
         vault = requiredInstallerPath "NIXOS_INSTALLER_VAULT";
       };
 
-
       nixosConfig = import ./nixos.nix {
         inherit
           nixpkgs
@@ -119,6 +121,7 @@
           hunk
           lumen
           herdr
+          himalaya-tui
           helium
           ;
       };
@@ -141,6 +144,7 @@
           hunk
           lumen
           herdr
+          himalaya-tui
           ;
       };
     in

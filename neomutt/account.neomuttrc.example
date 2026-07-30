@@ -1,0 +1,33 @@
+# Machine-local account configuration.
+# Replace every example value after the first activation. Keep this file at
+# ~/.config/neomutt/private/account.neomuttrc and never add it to Git or Nix.
+
+set real_name = "Your Name"
+set from = "you@company.example"
+
+# POP3 with implicit TLS normally uses port 995. For STARTTLS on port 110, use
+# pop://pop.company.example:110 instead; ssl_force_tls remains enabled globally.
+set pop_host = "pops://pop.company.example:995"
+set pop_user = "you@company.example"
+set folder = $pop_host
+set spool_file = +
+
+# SMTP with implicit TLS normally uses port 465. Percent-encode @ as %40 in the
+# URL username. For STARTTLS on port 587, use smtp://...:587 instead.
+set smtp_url = "smtps://you%40company.example@smtp.company.example:465"
+
+# Safest default: leave passwords unset and let NeoMutt prompt once per process.
+unset pop_pass
+unset smtp_pass
+
+# Optional macOS Keychain lookup. Store the password first with:
+# security add-generic-password -a "you@company.example" -s "company-mail" -w
+# Then replace the two `unset` lines above with:
+# set pop_pass = "`security find-generic-password -a 'you@company.example' -s 'company-mail' -w`"
+# set smtp_pass = $pop_pass
+
+# Optional Linux Secret Service lookup (KeePassXC or GNOME Keyring). Store it:
+# secret-tool store --label="Company mail" service company-mail username you@company.example
+# Then replace the two `unset` lines above with:
+# set pop_pass = "`secret-tool lookup service company-mail username you@company.example`"
+# set smtp_pass = $pop_pass

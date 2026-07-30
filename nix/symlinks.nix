@@ -16,6 +16,8 @@ let
     ".config/opencode" = "opencode";
     ".config/kitty" = "kitty";
     ".config/herdr" = "herdr";
+    ".config/neomutt/neomuttrc" = "neomutt/neomuttrc";
+    ".config/neomutt/mailcap" = "neomutt/mailcap";
     ".config/tldraw/config.json" = "tldraw/config.json";
     ".config/lsd" = "lsd";
     ".config/alacritty" = "alacritty";

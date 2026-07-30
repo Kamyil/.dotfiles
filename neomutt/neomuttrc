@@ -1,0 +1,33 @@
+# Public NeoMutt configuration. Account details and credentials stay in the
+# machine-local private/account.neomuttrc file created during activation.
+
+set editor = "nvim"
+set charset = "utf-8"
+set send_charset = "utf-8"
+set use_from = yes
+set envelope_from = yes
+set ssl_force_tls = yes
+set ssl_verify_dates = yes
+set ssl_verify_host = yes
+
+set sort = "reverse-date"
+set sort_aux = "last-date-received"
+set date_format = "%Y-%m-%d %H:%M"
+set index_format = "%4C %Z %{%Y-%m-%d %H:%M} %-24.24F %s"
+set pager_index_lines = 10
+set pager_stop = yes
+set markers = no
+set sidebar_visible = yes
+set sidebar_width = 30
+set sidebar_format = "%D%*  %n"
+bind index,pager \CE sidebar-toggle-visible
+
+# Prefer an existing plain-text part; render HTML-only mail through the local
+# w3m mailcap entry without loading images or running JavaScript.
+set mailcap_path = "~/.config/neomutt/mailcap"
+alternative_order text/plain text/enriched text/html
+auto_view text/html
+
+source "~/.dotfiles/themes/kanagawa-paper/neomutt.neomuttrc"
+
+source "~/.config/neomutt/private/account.neomuttrc"

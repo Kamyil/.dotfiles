@@ -74,4 +74,17 @@ in
   home.activation.adoptDotfileSymlinks = config.lib.dag.entryBefore [ "checkLinkTargets" ] (
     lib.concatStringsSep "\n" (lib.mapAttrsToList mkAdoptionCheck links)
   );
+
+  # Initialize account metadata outside Git and the Nix store. Never overwrite
+  # a configured account or relax its permissions on subsequent activations.
+  home.activation.bootstrapNeoMuttAccount = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+    private_dir=${lib.escapeShellArg "${config.home.homeDirectory}/.config/neomutt/private"}
+    account="$private_dir/account.neomuttrc"
+    template=${lib.escapeShellArg "${repo}/neomutt/account.neomuttrc.example"}
+
+    ${pkgs.coreutils}/bin/install -d -m 700 "$private_dir"
+    if [ ! -e "$account" ]; then
+      ${pkgs.coreutils}/bin/install -m 600 "$template" "$account"
+    fi
+  '';
 }

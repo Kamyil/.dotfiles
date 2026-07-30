@@ -1,0 +1,48 @@
+# Kanagawa Paper Ink for NeoMutt.
+# xterm-256 approximations of themes/kanagawa-paper/theme.json keep the theme
+# portable across ncurses TERM entries that do not expose direct RGB colors.
+
+color normal              color187 color233
+color error               color233 color173
+color message             color187 color235
+color prompt              color180 color233
+color search              color233 color180
+color status              color187 color235
+color tilde               color247 color233
+color tree                color103 color233
+
+color indicator           color233 color103
+color index               color187 color233 "~A"
+color index               color247 color233 "~R"
+color index               color109 color233 "~N"
+color index               color180 color233 "~F"
+color index               color173 color233 "~D"
+color index_author        color139 color233 "~A"
+color index_subject       color187 color233 "~A"
+color index_tag           color180 color233
+
+color sidebar_background  color187 color233
+color sidebar_divider     color237 color233
+color sidebar_flagged     color180 color233
+color sidebar_highlight   color233 color139
+color sidebar_indicator   color233 color103
+color sidebar_new         color109 color233
+color sidebar_ordinary    color247 color233
+color sidebar_spool_file  color187 color233
+color sidebar_unread      color103 color233
+
+color attachment          color180 color233
+color bold                color187 color233
+color hdrdefault          color247 color233
+color header              color103 color233 "^(From|To|Cc|Bcc):"
+color header              color139 color233 "^Subject:"
+color header              color109 color233 "^Date:"
+color markers             color173 color233
+color quoted              color247 color233
+color quoted1             color103 color233
+color quoted2             color109 color233
+color quoted3             color139 color233
+color signature           color65 color233
+color underline           color103 color233
+color body                color103 color233 "(https?|ftp)://[^ ]+"
+color body                color109 color233 "[-a-z_0-9.]+@[-a-z_0-9.]+"

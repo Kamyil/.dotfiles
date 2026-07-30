@@ -1,0 +1,3 @@
+# Render HTML mail as readable text inside NeoMutt's pager. w3m does not execute
+# JavaScript; disabling images also avoids fetching image-based tracking pixels.
+text/html; w3m -I UTF-8 -O UTF-8 -o display_image=false -o auto_image=false -T text/html -dump %s; copiousoutput
