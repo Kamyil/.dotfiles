@@ -85,4 +85,4 @@ nix eval --raw ./nix#nixosConfigurations.nixos.config.home-manager.users.kamil.p
 - Shell: `#!/usr/bin/env bash`, quoted expansions, ShellCheck-compatible.
 - Lua: local variables, `snake_case`; use repository Stylua settings.
 - Preserve the surrounding config style; use `nixfmt` for Nix.
-- Commit format: `(topic) - (feature/change)`, e.g. `(nix) - update omp overlay`.
+- Commit format: pls use standard "Conventional Commits" convention for naming commits to make them consistent
