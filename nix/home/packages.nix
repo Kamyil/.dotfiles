@@ -12,6 +12,7 @@
 
 let
   tldrawOffline = pkgs.callPackage ../packages/tldraw-offline.nix { };
+  diskonaut = pkgs.callPackage ../packages/diskonaut.nix { };
   slk = pkgs.callPackage ../packages/slk.nix { };
 in
 {
@@ -19,6 +20,7 @@ in
     with pkgs;
     [
       ripgrep
+      diskonaut
       slk
       aerc
       neomutt
