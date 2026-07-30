@@ -173,6 +173,16 @@ in
     options = "--delete-older-than 14d";
   };
 
+  nix.optimise = {
+    automatic = true;
+    dates = [ "weekly" ];
+  };
+
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+  };
+
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -239,8 +249,15 @@ in
 
   # List services that you want to enable:
 
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  # Keep remote access key-only.
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+    };
+  };
 
   # Docker configuration
   virtualisation.docker.enable = true;
