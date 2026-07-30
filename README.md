@@ -1,12 +1,12 @@
 # .dotfiles
 
-A single, live-editable configuration repository for my macOS and NixOS machines.
+A cross-platform dotfiles repository for macOS and NixOS.
 
-The repository keeps application configuration in the root directory (`nvim/`, `kitty/`, `wezterm/`, `hypr/`, and so on). Nix describes which programs are installed and where configuration links should exist; the links point back into this checkout instead of copying files into `$HOME`.
+Application configs live at the repository root. Nix installs packages and links those configs into `$HOME`, so most edits take effect without a rebuild.
 
 ## Desktop showcase
 
-My NixOS desktop: Hyprland, Quickshell, Kitty, and the matching system widgets configured in this repository.
+NixOS running Hyprland, Quickshell, Kitty, and the widgets configured here.
 
 ![NixOS desktop with a dark Japanese landscape wallpaper](assets/desktop/desktop.png)
 
@@ -18,86 +18,59 @@ My NixOS desktop: Hyprland, Quickshell, Kitty, and the matching system widgets c
 
 ## Architecture
 
-The top-level Nix flake is the composition root. It imports one system definition for each supported operating system and merges their outputs.
+[`nix/flake.nix`](nix/flake.nix) defines both systems. Each system combines platform settings with the same Home Manager configuration.
 
 ```mermaid
 flowchart TD
-    F["nix/flake.nix<br/>inputs + outputs"] --> D["nix/macos.nix<br/>nix-darwin host"]
-    F --> L["nix/nixos.nix<br/>NixOS composition"]
-    L --> NH["nixos/configuration.nix<br/>NixOS host"]
-    D --> HM1["Home Manager"]
-    L --> HM2["Home Manager"]
-    HM1 --> S["nix/shared.nix<br/>shared Home Manager entry"]
-    HM2 --> S
-    S --> M["nix/home/<br/>shell + packages + live links"]
-    M --> SYM["nix/symlinks.nix<br/>common + platform link maps"]
-    HM1 --> MAC["MacBook-Pro-Kamil<br/>aarch64-darwin"]
-    HM2 --> NIX["nixos<br/>x86_64-linux"]
+    F["nix/flake.nix"]
+    F --> M["macOS<br/>nix/macos.nix"]
+    F --> N["NixOS<br/>nix/nixos.nix"]
+    N --> H["Host settings<br/>nixos/configuration.nix"]
+    M --> S["Shared Home Manager<br/>nix/shared.nix"]
+    N --> S
+    S --> P["Packages and shell<br/>nix/home/"]
+    S --> L["Live config links<br/>nix/symlinks.nix"]
 ```
 
-### Platform branches
-
-```mermaid
-flowchart LR
-    ROOT["nix/flake.nix"] --> DARWIN["nix-darwin<br/>MacBook-Pro-Kamil"]
-    ROOT --> NIXOS["NixOS<br/>nixos"]
-    DARWIN --> D_SYS["macOS system defaults<br/>Homebrew + shells"]
-    DARWIN --> D_HOME["shared.nix + macOS packages"]
-    NIXOS --> N_SYS["nixos/configuration.nix<br/>boot, networking, Hyprland, PipeWire"]
-    NIXOS --> N_HOME["shared.nix + Linux packages"]
-```
-
-- **`nix/flake.nix`** pins inputs and exposes the `darwinConfigurations` and `nixosConfigurations` outputs.
-- **`nix/shared.nix`** imports the common Home Manager modules in `nix/home/`.
-- **`nix/home/`** contains shared shell, package, and live-link modules.
-- **`nix/macos.nix`** builds the `MacBook-Pro-Kamil` nix-darwin system, bootstraps Homebrew through nix-homebrew, and adds macOS packages, defaults, and shell helpers.
-- **`nix/nixos.nix`** composes the `nixos` host with Home Manager, Linux-specific user settings, and sops-nix.
-- **`nixos/configuration.nix`** contains machine-level NixOS settings such as boot, networking, firmware updates, power/thermal management, graphics, audio, and Hyprland.
-- **`nix/overlays/`** packages tools that need a local overlay (`opencode` and `omp`).
-- **`nix-index-database`** supplies `nix-locate` and `comma` on both platforms; **sops-nix** is imported for future encrypted secrets, but no secrets or recipients are declared yet.
+- **macOS:** nix-darwin, Homebrew, system defaults, and macOS packages.
+- **NixOS:** host settings, Hyprland, Linux packages, and sops-nix.
+- **Shared:** shell tools, Home Manager packages, and links to root-level configs.
+- **Local overlays:** packages for `opencode` and `omp` in `nix/overlays/`.
 
 ## How live configuration reload works
 
-Nix owns the *topology* of the links. Git owns the mutable configuration contents. Home Manager uses out-of-store links, so editing a file in this repository edits the file the application is already reading.
+Home Manager creates out-of-store symlinks from `$HOME` to this checkout. Applications therefore read the repository files directly.
 
 ```mermaid
-sequenceDiagram
-    participant R as Root checkout
-    participant N as Nix/Home Manager
-    participant H as $HOME config path
-    participant A as Application
-
-    N->>H: Create symlink
-    H-->>R: points to .dotfiles/<tool>
-    R->>A: File edit is immediately visible
-    A->>H: Reload/watch configuration
-    Note over N,A: Rebuilds update link topology and packages;
-    Note over R,A: normal edits do not require a rebuild
+flowchart LR
+    R["Repository config"] -->|symlink| H["$HOME config path"]
+    H --> A["Application"]
+    E["Edit file"] --> R
+    B["Nix rebuild"] -->|packages + links| H
 ```
 
-The link policy lives in [`nix/symlinks.nix`](nix/symlinks.nix):
+Link definitions live in [`nix/symlinks.nix`](nix/symlinks.nix):
 
-- `commonLinks` applies to both operating systems.
-- `darwinLinks` adds macOS-only paths such as SketchyBar, Aerospace, Hammerspoon, and cmux.
-- `linuxLinks` adds Hyprland, Quickshell, Dunst, Waybar, Walker, Omarchy, and other Linux desktop paths.
-- Home Manager creates every repository link with `mkOutOfStoreSymlink`.
-- Activation adopts only legacy symlinks already pointing into this checkout. Missing sources, real targets, and unrelated symlinks abort without overwriting them.
+- `commonLinks` applies everywhere.
+- `darwinLinks` contains macOS-only apps.
+- `linuxLinks` contains NixOS-only apps.
+- Activation adopts only legacy links that already point into this checkout; it refuses real files and unrelated links.
 
-Editing linked files remains immediate and requires no rebuild. Rebuild only after changing packages or link topology.
+Edit a linked config directly. Rebuild only after changing packages or links.
 
 ## Repository layout
 
 ```text
 .
-├── nix/                 # Flake, system definitions, shared HM, overlays
-├── nixos/               # NixOS machine configuration
-├── nvim/ kitty/ ...     # Application configs at repository root
-├── scripts/             # Helper scripts used by configs and workflows
-├── docs/                # Setup and recovery notes
+├── nix/                 # Flake, systems, Home Manager, overlays
+├── nixos/               # NixOS host settings
+├── nvim/ kitty/ ...     # Application configs
+├── scripts/             # Setup and workflow helpers
+├── docs/                # Setup and recovery guides
 └── README.md
 ```
 
-The important convention is: **a tool's configuration directory is a root-level sibling, not hidden below a second `config/` tree**. For example, edit `kitty/kitty.conf`, `herdr/config.toml`, or `nvim/init.lua`; the corresponding `$HOME/.config/...` path is linked to that directory.
+Each app config is a root-level sibling rather than part of a second `config/` tree. For example, `$HOME/.config/kitty` links to `kitty/`.
 
 ## Tool and platform matrix
 
