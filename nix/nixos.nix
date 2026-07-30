@@ -44,6 +44,7 @@ in
           ];
 
           policies = {
+            DeveloperToolsAvailability = 1;
             ExtensionInstallForcelist = [
               "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
               "gfbliohnnapiefjpjlpjnehglfpaknnc" # Surfingkeys
