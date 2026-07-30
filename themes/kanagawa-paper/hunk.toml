@@ -5,8 +5,11 @@ watch = false
 exclude_untracked = false
 line_numbers = true
 wrap_lines = false
-agent_notes = false
+agent_notes = true
 transparent_background = false
+hunk_headers = true
+menu_bar = true
+copy_decorations = false
 
 [custom_theme]
 base = "graphite"
