@@ -173,14 +173,13 @@ in
               type = "stdio";
               allowed_origins = [ "chrome-extension://fohieaiappjfaccidjdfjpdcbdjebmna/" ];
             };
-            ".config/net.imput.helium/NativeMessagingHosts/dev.quickshell.focus.json".text =
-              builtins.toJSON {
-                name = "dev.quickshell.focus";
-                description = "Quickshell focus mode state bridge";
-                path = "/home/kamil/.config/quickshell/focus-control.py";
-                type = "stdio";
-                allowed_origins = [ "chrome-extension://fohieaiappjfaccidjdfjpdcbdjebmna/" ];
-              };
+            ".config/net.imput.helium/NativeMessagingHosts/dev.quickshell.focus.json".text = builtins.toJSON {
+              name = "dev.quickshell.focus";
+              description = "Quickshell focus mode state bridge";
+              path = "/home/kamil/.config/quickshell/focus-control.py";
+              type = "stdio";
+              allowed_origins = [ "chrome-extension://fohieaiappjfaccidjdfjpdcbdjebmna/" ];
+            };
           };
 
           fonts.fontconfig.enable = true;
