@@ -3,7 +3,7 @@ fullscreen = "current-screen"
 resize = { mode = "smart" }
 floating-hack = true
 initial-tool = "brush"
-copy-command = "wl-copy"
+copy-command = "wl-copy --type image/png"
 actions-on-enter = ["save-to-clipboard", "exit"]
 actions-on-escape = ["exit"]
 
