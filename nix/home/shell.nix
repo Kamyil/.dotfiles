@@ -105,6 +105,7 @@ in
       y = "yazi .";
       x = "exit";
       o = "omp";
+      or = "omp --resume";
       oc = "opencode";
       lg = "lazygit";
       ldk = "lazydocker";
