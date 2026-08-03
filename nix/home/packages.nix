@@ -86,6 +86,7 @@ in
       podman
       podman-compose
       ffmpeg
+      openai-whisper
       postgresql
       helix
       superfile

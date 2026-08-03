@@ -87,6 +87,7 @@ The package sets are intentionally split into common, macOS, and NixOS layers. â
 | Agentic coding | oh-my-pi (`omp`) primary; OpenCode fallback | [`pi/`](pi), [`opencode/`](opencode) |
 | SQL workflow | vim-dadbod, vim-dadbod-ui, vim-dadbod-completion in Neovim | [`nvim/init.lua`](nvim/init.lua) |
 | Networking and transfer | curl, wget, OpenSSH, rsync, socat, WireGuard | shell configuration |
+| Audio transcription | OpenAI Whisper (`transcribe <audio-file>`, Polish `large-v3`) | Shared package and Zsh alias in [`nix/home/`](nix/home) |
 | Terminal UI and utilities | btop, htop, fastfetch, superfile, lazydocker, tldr | [`btop/`](btop), [`superfile/`](superfile) |
 | Terminal/workflow CLIs | herdr, worktrunk, lazyjira | [`herdr/`](herdr), [`worktrunk/`](worktrunk) |
 | Browser tooling | qutebrowser (available fallback) | Nix package; no repository-specific configuration |
