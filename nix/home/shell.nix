@@ -123,7 +123,6 @@ in
       spf = "command superfile --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
       slk = "env -u WAYLAND_DISPLAY command slk";
       superfile = "command superfile --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
-      transcribe = "whisper --model large-v3 --language Polish --task transcribe --output_format txt";
 
       # Git aliases
       gpod = "git pull origin development";

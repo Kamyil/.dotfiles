@@ -100,6 +100,7 @@ in
               nixd
               nodejs_22
               trash-cli
+              openai-whisper
               docker-buildx
               docker-compose
               satty
@@ -136,6 +137,7 @@ in
           programs.zsh.shellAliases = {
             finder = "xdg-open";
             nrs = "nh os switch ~/.dotfiles/nix";
+            transcribe = "whisper --model large-v3 --language Polish --task transcribe --output_format txt";
           };
 
           programs.zsh.initContent = lib.mkAfter ''

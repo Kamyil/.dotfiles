@@ -296,6 +296,7 @@ in
                 lolcat
                 rustup
                 openssl
+                uv
                 zellij
                 sshfs-fuse
                 nerd-fonts.geist-mono
@@ -310,6 +311,7 @@ in
             programs.zsh.shellAliases = {
               finder = "open";
               nrs = "nh darwin switch ~/.dotfiles/nix";
+              transcribe = "uvx parakeet-mlx --model mlx-community/parakeet-tdt-0.6b-v3 --output-format txt";
             };
 
             programs.zsh.initContent = lib.mkMerge [

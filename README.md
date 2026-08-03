@@ -87,7 +87,6 @@ The package sets are intentionally split into common, macOS, and NixOS layers. â
 | Agentic coding | oh-my-pi (`omp`) primary; OpenCode fallback | [`pi/`](pi), [`opencode/`](opencode) |
 | SQL workflow | vim-dadbod, vim-dadbod-ui, vim-dadbod-completion in Neovim | [`nvim/init.lua`](nvim/init.lua) |
 | Networking and transfer | curl, wget, OpenSSH, rsync, socat, WireGuard | shell configuration |
-| Audio transcription | OpenAI Whisper (`transcribe <audio-file>`, Polish `large-v3`) | Shared package and Zsh alias in [`nix/home/`](nix/home) |
 | Terminal UI and utilities | btop, htop, fastfetch, superfile, lazydocker, tldr | [`btop/`](btop), [`superfile/`](superfile) |
 | Terminal/workflow CLIs | herdr, worktrunk, lazyjira | [`herdr/`](herdr), [`worktrunk/`](worktrunk) |
 | Browser tooling | qutebrowser (available fallback) | Nix package; no repository-specific configuration |
@@ -108,6 +107,7 @@ For agentic work, **oh-my-pi (`omp`) is the primary harness** and **OpenCode is 
 | Virtualization | Lima, Colima, QEMU, UTM | QEMU, Podman, Docker |
 | GUI application delivery | Homebrew brews and casks | Nix packages and NixOS modules |
 | macOS automation | Hammerspoon | Hyprland scripts / systemd user services |
+| Audio transcription | Parakeet MLX (`transcribe <audio-file>`, TDT 0.6B v3) | NixOS uses OpenAI Whisper under the same alias |
 | Desktop applications | Chromium, Firefox, Vivaldi, Signal, Obsidian, Postman, Raycast | Chromium, Firefox, Signal, Obsidian, qutebrowser (package availability differs) |
 
 The primary macOS browser is **Helium**, installed outside this flake. Chromium, Firefox, Vivaldi, and qutebrowser remain declaratively installed fallbacks.
