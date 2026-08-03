@@ -157,6 +157,7 @@ in
               tap "FelixKratz/formulae", trusted: true
               tap "steveyegge/beads", trusted: true
               tap "steipete/tap", trusted: true
+              tap "cloudmanic/spice-edit", trusted: true
               # Force prevents Brew Bundle's default adoption path from recursively
               # chmodding an existing signed app bundle.
               cask "helium-browser", args: { force: true }
@@ -167,6 +168,7 @@ in
               "jiratui"
               "bd"
               "stripe-cli"
+              "spice-edit"
               # opencode - installed via nix overlay (see overlays/opencode.nix)
             ];
             casks = [

@@ -53,6 +53,11 @@ let
         elif [[ "$target" = *.json ]] \
           && [ "$(${pkgs.jq}/bin/jq -S -c . "$target" 2>/dev/null)" = "$(${pkgs.jq}/bin/jq -S -c . "$source" 2>/dev/null)" ]; then
           files_match=true
+        elif [[ "$target" = *.toml ]] \
+          && ${pkgs.python3}/bin/python3 -c \
+            'import sys, tomllib; norm = lambda value: {key: child for key, item in value.items() if (child := norm(item)) != {}} if isinstance(value, dict) else value; sys.exit(norm(tomllib.load(open(sys.argv[1], "rb"))) != norm(tomllib.load(open(sys.argv[2], "rb"))))' \
+            "$target" "$source" 2>/dev/null; then
+          files_match=true
         fi
       fi
 
@@ -60,8 +65,10 @@ let
         # Adopt an app-generated file once it matches the declared dotfile.
         rm "$target"
       else
-        echo "Refusing to replace non-symlink dotfile target: $target" >&2
-        exit 1
+        backup=${lib.escapeShellArg "${config.home.homeDirectory}/.local/state/home-manager/dotfile-backups/${target}"}".$(${pkgs.coreutils}/bin/date +%Y%m%d-%H%M%S)-$$"
+        ${pkgs.coreutils}/bin/mkdir -p "$(${pkgs.coreutils}/bin/dirname "$backup")"
+        ${pkgs.coreutils}/bin/mv "$target" "$backup"
+        echo "Backed up conflicting dotfile target: $target -> $backup" >&2
       fi
     fi
   '';
@@ -69,8 +76,8 @@ in
 {
   home.file = lib.mapAttrs (_: mkHomeFile) links;
 
-  # Remove only legacy links that already point to this checkout. Real files,
-  # directories, and unrelated symlinks remain untouched and abort activation.
+  # Adopt matching files directly. Preserve conflicting real files and
+  # directories under ~/.local/state/home-manager/dotfile-backups first.
   home.activation.adoptDotfileSymlinks = config.lib.dag.entryBefore [ "checkLinkTargets" ] (
     lib.concatStringsSep "\n" (lib.mapAttrsToList mkAdoptionCheck links)
   );
