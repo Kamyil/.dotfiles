@@ -121,6 +121,7 @@ in
       private_gitignore = "nvim .git/info/exclude";
       git_log = "serie";
       spf = "command superfile --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
+      slk = "env -u WAYLAND_DISPLAY command slk";
       superfile = "command superfile --config-file ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml";
 
       # Git aliases
