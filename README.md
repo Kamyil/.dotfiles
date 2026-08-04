@@ -28,13 +28,14 @@ flowchart TD
     N --> H["Host settings<br/>nixos/configuration.nix"]
     M --> S["Shared Home Manager<br/>nix/shared.nix"]
     N --> S
-    S --> P["Packages and shell<br/>nix/home/"]
+    S --> P["Packages and shell integration<br/>nix/home/"]
     S --> L["Live config links<br/>nix/symlinks.nix"]
+    S --> Z["Live Zsh code<br/>zsh/"]
 ```
 
 - **macOS:** nix-darwin, Homebrew, system defaults, and macOS packages.
 - **NixOS:** host settings, Hyprland, Linux packages, and sops-nix.
-- **Shared:** shell tools, Home Manager packages, and links to root-level configs.
+- **Shared:** shell tools, Home Manager packages, live Zsh code under `zsh/`, and links to root-level configs.
 - **Local overlays:** packages for `opencode` and `omp` in `nix/overlays/`.
 
 ## How live configuration reload works
@@ -54,7 +55,7 @@ Link definitions live in [`nix/symlinks.nix`](nix/symlinks.nix):
 - `commonLinks` applies everywhere.
 - `darwinLinks` contains macOS-only apps.
 - `linuxLinks` contains NixOS-only apps.
-- Activation adopts only legacy links that already point into this checkout; it refuses real files and unrelated links.
+- Activation adopts matching files, backs up conflicting real files under `~/.local/state/home-manager/dotfile-backups`, and refuses unrelated symlinks.
 
 Edit a linked config directly. Rebuild only after changing packages or links.
 
@@ -65,6 +66,7 @@ Edit a linked config directly. Rebuild only after changing packages or links.
 ├── nix/                 # Flake, systems, Home Manager, overlays
 ├── nixos/               # NixOS host settings
 ├── nvim/ kitty/ ...     # Application configs
+├── zsh/                 # Live aliases and shell functions
 ├── scripts/             # Setup and workflow helpers
 ├── docs/                # Setup and recovery guides
 └── README.md

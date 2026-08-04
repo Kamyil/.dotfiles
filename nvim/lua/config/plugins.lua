@@ -153,49 +153,9 @@ require('lazy').setup({
   'farmergreg/vim-lastplace', -- Automatically jump to the last cursor position
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
-  -- Themes / Colorschemes
-  { 'sho-87/kanagawa-paper.nvim', lazy = false }, -- Colorscheme / theme
-  { 'thesimonho/kanagawa-paper.nvim', lazy = false }, -- Colorscheme / theme
-  { 'catppuccin/nvim', lazy = false }, -- Alternative colorscheme
-  { 'vague-theme/vague.nvim', lazy = false }, -- Alternative colorscheme
-  { 'ramojus/mellifluous.nvim', lazy = false }, -- Alternative colorscheme
-  { 'xero/miasma.nvim', lazy = false }, -- Alternative colorscheme
-  { 'RRethy/base16-nvim', lazy = false }, -- Alternative colorscheme
-  { 'rose-pine/neovim', lazy = false }, -- Alternative colorscheme
-  { 'sainnhe/gruvbox-material', lazy = false }, -- Alternative colorscheme
-  { 'folke/tokyonight.nvim', lazy = false }, -- Alternative colorscheme
-  { 'datsfilipe/vesper.nvim', lazy = false }, -- Alternative colorscheme
-  { 'scottmckendry/cyberdream.nvim', lazy = false }, -- Alternative colorscheme
-  { 'ember-theme/nvim', lazy = false }, -- Alternative colorscheme
-  { 'aktersnurra/no-clown-fiesta.nvim', lazy = false }, -- Alternative colorscheme
-  { 'marko-cerovac/material.nvim', lazy = false }, -- Alternative colorscheme
-  { 'Mofiqul/vscode.nvim', lazy = false }, -- Alternative colorscheme
-  { 'AlexvZyl/nordic.nvim', lazy = false }, -- Alternative colorscheme
-  { 'FrenzyExists/aquarium-vim', lazy = false }, -- Alternative colorscheme
-  { 'smit4k/shale.nvim', lazy = false }, -- Alternative colorscheme
-
-  {
-    'everviolet/nvim',
-    name = 'evergarden',
-    priority = 1000, -- Colorscheme plugin is loaded first before any other plugins
-    opts = {
-      theme = {
-        variant = 'winter', -- 'winter'|'fall'|'spring'|'summer'
-        accent = 'green',
-      },
-      editor = {
-        transparent_background = true,
-        sign = { color = 'none' },
-        float = {
-          color = 'mantle',
-          solid_border = false,
-        },
-        completion = {
-          color = 'surface0',
-        },
-      },
-    },
-  },
+  -- Active theme and one contrasting fallback selected by scripts/theme.
+  { 'thesimonho/kanagawa-paper.nvim', lazy = false },
+  { 'sainnhe/gruvbox-material', lazy = false },
 
   'nvim-lualine/lualine.nvim', -- Statusline
 

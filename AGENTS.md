@@ -18,7 +18,7 @@
 - `nix/shared.nix`: shared Home Manager entrypoint.
 - `nix/home/links.nix`: out-of-store Home Manager links and collision checks.
 - `nix/home/packages.nix`: shared user packages.
-- `nix/home/shell.nix`: shared Zsh, prompt, history, and Git configuration.
+- `nix/home/shell.nix`: shared Zsh integration, prompt, history, and Git configuration; `zsh/` owns live aliases and functions.
 - `nix/symlinks.nix`: authoritative common/Darwin/Linux repository link maps.
 - `nix/overlays/`: active local overlays only. `omp` and OpenCode are the supported coding harnesses; do not restore the separate `pi` or Codex packages.
 
@@ -29,8 +29,8 @@
 - Darwin-only examples: Aerospace, SketchyBar, Hammerspoon, cmux.
 - Linux-only examples: Hyprland, Waybar, Walker, Omarchy.
 - `nix/home/links.nix` must use `mkOutOfStoreSymlink`; never use `force = true`.
-- Missing sources, real targets, and unrelated symlinks must abort activation without modifying the target.
-- Existing links already pointing into `~/.dotfiles` may be adopted.
+- Matching real files and links already pointing into `~/.dotfiles` may be adopted.
+- Conflicting real files and directories must be moved under `~/.local/state/home-manager/dotfile-backups`; unrelated symlinks and missing sources must abort activation without modifying the target.
 - Rebuild only after changing packages or link topology. Normal config edits require no rebuild.
 
 ## Package and Shell Ownership
