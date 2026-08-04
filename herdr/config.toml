@@ -74,8 +74,8 @@ remove_worktree = "prefix+alt+d"
 
 new_tab = ["prefix+c", "ctrl+n"]
 rename_tab = ["prefix+shift+t", "ctrl+r"]
-previous_tab = "prefix+p"
-next_tab = "prefix+n"
+previous_tab = ["prefix+p", "ctrl+shift+h"]
+next_tab = ["prefix+n", "ctrl+shift+l"]
 switch_tab = ["prefix+1..9", "ctrl+1..9"]
 close_tab = "prefix+shift+x"
 
