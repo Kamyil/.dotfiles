@@ -20,6 +20,7 @@ herdr/session.json
 pi/agent/auth.json
 scripts/.env
 quickshell/weather-location
+nixos/wireguard-private.nix
 
 # Obsidian workspace state
 obsidian/workspace*.json

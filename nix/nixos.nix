@@ -138,6 +138,7 @@ in
             finder = "xdg-open";
             nrs = "nh os switch ~/.dotfiles/nix";
             transcribe = "parakeet-transcribe";
+            wgr = "sudo systemctl restart wg-quick-wg0.service";
           };
 
           programs.zsh.initContent = lib.mkAfter ''

@@ -97,7 +97,30 @@ in
   # disappears and is plugged back in.
   networking.networkmanager = {
     enable = true;
+    unmanaged = [ "interface-name:wg0" ];
     settings.connection.autoconnect-retries-default = 0;
+  };
+
+  # Keep the private WireGuard configuration outside the flake. NixOS owns
+  # the service lifecycle; wg-quick reads the runtime file directly.
+  systemd.services.wg-quick-wg0 = {
+    description = "WireGuard wg0 via wg-quick";
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
+    unitConfig.ConditionPathExists = "/etc/wireguard/wg0.conf";
+    path = with pkgs; [
+      wireguard-tools
+      iproute2
+      iptables
+      openresolv
+    ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.wireguard-tools}/bin/wg-quick up /etc/wireguard/wg0.conf";
+      ExecStop = "${pkgs.wireguard-tools}/bin/wg-quick down /etc/wireguard/wg0.conf";
+    };
   };
 
   services.dnsmasq = {
