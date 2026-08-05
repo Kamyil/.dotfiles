@@ -7,14 +7,6 @@ Dialog {
 
     modal: true
     padding: 16
-    enter: Transition {
-        NumberAnimation { property: "opacity"; from: 0; to: 1; duration: Theme.motionFast; easing.type: Easing.OutCubic }
-        NumberAnimation { property: "scale"; from: 0.97; to: 1; duration: Theme.motionPanel; easing.type: Easing.OutCubic }
-    }
-    exit: Transition {
-        NumberAnimation { property: "opacity"; from: 1; to: 0; duration: Theme.motionFast; easing.type: Easing.InCubic }
-        NumberAnimation { property: "scale"; from: 1; to: 0.97; duration: Theme.motionFast; easing.type: Easing.InCubic }
-    }
 
     background: Rectangle {
         color: Theme.elevated

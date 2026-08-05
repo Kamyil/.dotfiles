@@ -901,8 +901,6 @@ ShellRoot {
                                     opacity: controlsGrid.visible ? 1 : 0
                                     scale: controlsGrid.visible ? 1 : 0.97
                                     transformOrigin: Item.Top
-                                    Behavior on opacity { NumberAnimation { duration: Theme.motionFast; easing.type: Easing.OutCubic } }
-                                    Behavior on scale { NumberAnimation { duration: Theme.motionPanel; easing.type: Easing.OutCubic } }
                                     GridLayout {
                                         id: controlsGridLayout
                                         anchors.centerIn: parent
@@ -1086,8 +1084,6 @@ ShellRoot {
                         opacity: mediaHover.visible ? 1 : 0
                         scale: mediaHover.visible ? 1 : 0.97
                         transformOrigin: Item.Top
-                        Behavior on opacity { NumberAnimation { duration: Theme.motionFast; easing.type: Easing.OutCubic } }
-                        Behavior on scale { NumberAnimation { duration: Theme.motionPanel; easing.type: Easing.OutCubic } }
 
                         RowLayout {
                             anchors.fill: parent
@@ -1199,8 +1195,6 @@ ShellRoot {
                         opacity: panel.visible ? 1 : 0
                         scale: panel.visible ? 1 : 0.97
                         transformOrigin: Item.Top
-                        Behavior on opacity { NumberAnimation { duration: Theme.motionFast; easing.type: Easing.OutCubic } }
-                        Behavior on scale { NumberAnimation { duration: Theme.motionPanel; easing.type: Easing.OutCubic } }
 
                         Loader {
                             id: contentLoader
@@ -1346,8 +1340,6 @@ ShellRoot {
             height: Math.min(520, launcherWindow.height - 80)
             opacity: launcherWindow.visible ? 1 : 0
             scale: launcherWindow.visible ? 1 : 0.97
-            Behavior on opacity { NumberAnimation { duration: Theme.motionFast; easing.type: Easing.OutCubic } }
-            Behavior on scale { NumberAnimation { duration: Theme.motionPanel; easing.type: Easing.OutCubic } }
             onCloseRequested: launcherWindow.visible = false
         }
         onVisibleChanged: if (visible) launcherContent.reset()
@@ -1376,8 +1368,6 @@ ShellRoot {
             height: Math.min(520, pickerWindow.height - 80)
             opacity: pickerWindow.visible ? 1 : 0
             scale: pickerWindow.visible ? 1 : 0.97
-            Behavior on opacity { NumberAnimation { duration: Theme.motionFast; easing.type: Easing.OutCubic } }
-            Behavior on scale { NumberAnimation { duration: Theme.motionPanel; easing.type: Easing.OutCubic } }
             mode: root.pickerMode
             onCloseRequested: pickerWindow.visible = false
         }
@@ -1405,8 +1395,6 @@ ShellRoot {
             height: Math.min(520, toolsWindow.height - 80)
             opacity: toolsWindow.visible ? 1 : 0
             scale: toolsWindow.visible ? 1 : 0.97
-            Behavior on opacity { NumberAnimation { duration: Theme.motionFast; easing.type: Easing.OutCubic } }
-            Behavior on scale { NumberAnimation { duration: Theme.motionPanel; easing.type: Easing.OutCubic } }
             onShowRequested: toolsWindow.visible = true
             onCloseRequested: toolsWindow.visible = false
             onHideRequested: toolsWindow.visible = false

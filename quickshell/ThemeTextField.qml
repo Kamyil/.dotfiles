@@ -24,6 +24,5 @@ TextField {
         border.color: control.activeFocus ? Theme.accent : control.hovered ? Theme.muted : Theme.border
         border.width: control.activeFocus ? 2 : 1
 
-        Behavior on border.color { ColorAnimation { duration: 100 } }
     }
 }

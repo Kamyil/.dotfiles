@@ -55,7 +55,6 @@ Rectangle {
             y: 2
             x: row.checked ? 18 : 2
             color: Theme.foreground
-            Behavior on x { NumberAnimation { duration: 130; easing.type: Easing.OutCubic } }
         }
     }
 

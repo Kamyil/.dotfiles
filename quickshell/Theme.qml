@@ -15,6 +15,4 @@ QtObject {
     readonly property color warning: "#a7956a"
     readonly property color danger: "#c27672"
     readonly property string fontFamily: "Berkeley Mono SemiBold SemiCondensed"
-    readonly property int motionFast: 100
-    readonly property int motionPanel: 100
 }

@@ -36,7 +36,5 @@ Button {
         border.color: control.selected ? Theme.accent : control.hovered ? Theme.muted : Theme.border
         border.width: 1
 
-        Behavior on color { ColorAnimation { duration: 100 } }
-        Behavior on border.color { ColorAnimation { duration: 100 } }
     }
 }

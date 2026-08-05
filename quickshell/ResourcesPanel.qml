@@ -101,7 +101,6 @@ Item {
                 height: parent.height
                 radius: parent.radius
                 color: root.metricColor(parent.parent.value)
-                Behavior on width { NumberAnimation { duration: 180 } }
             }
         }
     }
