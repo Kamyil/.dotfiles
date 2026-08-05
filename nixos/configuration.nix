@@ -106,8 +106,14 @@ in
   systemd.services.wg-quick-wg0 = {
     description = "WireGuard wg0 via wg-quick";
     wantedBy = [ "multi-user.target" ];
-    wants = [ "network-online.target" ];
-    after = [ "network-online.target" ];
+    wants = [
+      "network-online.target"
+      "dnsmasq.service"
+    ];
+    after = [
+      "network-online.target"
+      "dnsmasq.service"
+    ];
     unitConfig.ConditionPathExists = "/etc/wireguard/wg0.conf";
     path = with pkgs; [
       wireguard-tools
@@ -123,6 +129,7 @@ in
     };
   };
 
+
   services.dnsmasq = {
     enable = true;
     settings = {
@@ -131,6 +138,7 @@ in
         "/.localhost/::1"
       ];
       "resolv-file" = "/run/NetworkManager/resolv.conf";
+      "conf-dir" = "/etc/dnsmasq.d,*.conf";
       "addn-hosts" = "/etc/dnsmasq-private-hosts";
     };
   };
@@ -260,6 +268,7 @@ in
   # Provide /bin/bash for tools expecting an absolute path
   systemd.tmpfiles.rules = [
     "L+ /bin/bash - - - - /run/current-system/sw/bin/bash"
+    "d /etc/dnsmasq.d 0755 root root -"
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
