@@ -100,6 +100,7 @@ in
       tldr
       watchexec
 	  firefox
+	  dig
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       qutebrowser
