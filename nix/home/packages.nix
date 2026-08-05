@@ -99,6 +99,7 @@ in
       imagemagick
       tldr
       watchexec
+	  firefox
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       qutebrowser
