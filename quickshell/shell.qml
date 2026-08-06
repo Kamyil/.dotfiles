@@ -32,6 +32,7 @@ ShellRoot {
     property bool vpnActive: false
     property string vpnName: ""
     property bool screenshotMode: false
+    readonly property string wireguardHelper: Quickshell.env("HOME") + "/.config/quickshell/wireguard-control.sh"
     property int resourceCpu: 0
     property string resourceMemoryUsed: "0.0"
     property string resourceMemoryTotal: "0.0"
@@ -42,27 +43,9 @@ ShellRoot {
     property string resourceSsdTotal: "0.0"
 
     function updateVpnStatus(text) {
-        let name = ""
-        let type = ""
-        for (const line of text.split("\n")) {
-            const separator = line.indexOf(":")
-            if (separator < 0)
-                continue
-            const key = line.slice(0, separator).trim()
-            const value = line.slice(separator + 1).trim()
-            if (key === "NAME")
-                name = value
-            else if (key === "TYPE") {
-                type = value
-                if (type === "wireguard") {
-                    vpnActive = true
-                    vpnName = name
-                    return
-                }
-            }
-        }
-        vpnActive = false
-        vpnName = ""
+        const name = text.trim().split("\n")[0]
+        vpnActive = name.length > 0
+        vpnName = name
     }
 
 
@@ -227,18 +210,17 @@ ShellRoot {
 
     Process {
         id: globalVpnStatus
-        command: ["nmcli", "-m", "multiline", "-e", "no", "-f", "NAME,TYPE", "connection", "show", "--active"]
+        command: [root.wireguardHelper, "active"]
         running: true
         stdout: StdioCollector { onStreamFinished: root.updateVpnStatus(text) }
     }
-    Process {
-        command: ["nmcli", "monitor"]
+    Timer {
+        interval: 5000
         running: true
-        stdout: SplitParser {
-            onRead: _ => {
-                if (!globalVpnStatus.running)
-                    globalVpnStatus.running = true
-            }
+        repeat: true
+        onTriggered: {
+            if (!globalVpnStatus.running)
+                globalVpnStatus.running = true
         }
     }
 
