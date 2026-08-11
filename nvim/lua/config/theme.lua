@@ -31,7 +31,16 @@ M.palette = read_palette(active)
     aqua = '#8ea49e',
   }
 
+
 function M.apply()
+  -- Keep experiments independent from the cross-tool theme selector.
+  if vim.env.NVIM_EXPERIMENTS_THEME == 'cendre' then
+    vim.cmd.colorscheme('cendre')
+    return
+  elseif vim.env.NVIM_EXPERIMENTS == '1' or vim.env.NVIM_EXPERIMENTS_THEME == 'luna' then
+    vim.cmd.colorscheme('luna')
+    return
+  end
   if M.palette.name == 'gruvbox-material-hard' then
     vim.g.gruvbox_material_background = 'hard'
     vim.g.gruvbox_material_foreground = 'material'

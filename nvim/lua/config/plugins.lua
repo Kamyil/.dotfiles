@@ -155,6 +155,35 @@ require('lazy').setup({
 
   -- Active theme and one contrasting fallback selected by scripts/theme.
   { 'thesimonho/kanagawa-paper.nvim', lazy = false },
+  -- Opt-in colorscheme experiments:
+  --   NVIM_EXPERIMENTS=1 nvim                 (Luna)
+  --   NVIM_EXPERIMENTS_THEME=cendre nvim      (Cendre)
+  {
+    'wtfox/luna.nvim',
+    lazy = false,
+    priority = 1000,
+    cond = function()
+      return vim.env.NVIM_EXPERIMENTS == '1' or vim.env.NVIM_EXPERIMENTS_THEME == 'luna'
+    end,
+    opts = {
+      transparent = false,
+      accent = 1.0,
+      plugins = { all = true, auto = true },
+    },
+  },
+  {
+    'Aejkatappaja/cendre',
+    lazy = false,
+    priority = 1000,
+    cond = function()
+      return vim.env.NVIM_EXPERIMENTS_THEME == 'cendre'
+    end,
+    opts = {
+      background = 'hard',
+      italic_virtual_text = false,
+      italic_comments = false,
+    },
+  },
   { 'sainnhe/gruvbox-material', lazy = false },
 
   'nvim-lualine/lualine.nvim', -- Statusline

@@ -128,7 +128,8 @@ macOS Homebrew is used for GUI applications and tools that are unavailable or in
 | Network and Bluetooth controls | Quickshell panels; impala and bluetuith as fallbacks | macOS system UI or third-party GUI tools |
 | Container stack | Docker, Podman, Compose, buildx | Docker/Podman plus Colima/Lima |
 | Linux development | gcc, nixd, nightly Rust, Zig, PHP, Go | clang/Xcode toolchain, rustup, same language tools |
-| Screenshot and clipboard | Satty, grim, slurp, wl-clipboard | macOS screenshot and clipboard tools |
+| Screenshot and clipboard | Omasnap, Satty fallback, grim, slurp, wl-clipboard | macOS screenshot and clipboard tools |
+| GUI files and media | Thunar with GVfs, Tumbler, and video thumbnails; imv for images; mpv for video/WebM (`Super+E` or `finder`) | Finder, Preview, QuickTime Player |
 | Keyboard remapping | kmonad | macOS keyboard shortcuts / QMK Toolbox |
 | Linux fonts/cursors | JetBrains Mono, Lexend, Capitaine cursors | Nerd fonts and macOS font management |
 | Laptop firmware and power | fwupd, thermald, power-profiles-daemon | Vendor firmware tools and macOS power management |

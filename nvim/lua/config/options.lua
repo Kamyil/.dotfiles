@@ -54,7 +54,7 @@ vim.opt.listchars = {
 	extends = '❯', -- Show when line continues beyond screen
 	precedes = '❮', -- Show when line starts before screen
 }
-vim.opt.list = true -- Show whitespace characters
+vim.opt.list = false -- Show whitespace characters
 vim.opt.fillchars = { eob = ' ' } -- Change the character at the end of buffer (empty lines)
 vim.g.loaded_netrw = 1 -- disable netrw (default file explorer)
 vim.g.loaded_netrwPlugin = 1 --  disable netrw plugin
