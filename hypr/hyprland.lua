@@ -247,10 +247,19 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind(mainMod .. " + CTRL + Q", hl.dsp.exec_cmd("quickshell ipc call session lock"))
 
 -- Screenshots
-local screenshot = hl.dsp.exec_cmd("/home/kamil/.config/hypr/screenshot-area.sh")
+local screenshot = hl.dsp.exec_cmd("/home/kamil/.config/hypr/omasnap.sh")
 hl.bind("Print", screenshot)
 hl.bind(mainMod .. " + Print", screenshot)
 hl.bind(mainMod .. " + SHIFT + 4", screenshot)
+
+hl.layer_rule({
+	name = "omasnap-overlay",
+	match = {
+		namespace = "^omasnap$",
+	},
+	no_anim = true,
+	animation = "none",
+})
 
 -- Keep newly-added bindings at the end: Hyprland preserves Lua callback IDs
 -- across config reloads, so inserting between existing binds can remap actions.
@@ -261,3 +270,6 @@ hl.bind(mainMod .. " + F", hl.dsp.exec_cmd("quickshell ipc call focus toggle"))
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("pamixer --increase 5"))
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("pamixer --decrease 5"))
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("pamixer --toggle-mute"))
+
+-- GUI file explorer for drag-and-drop workflows.
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("thunar"))
