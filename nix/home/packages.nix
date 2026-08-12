@@ -104,6 +104,7 @@ in
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       qutebrowser
+      beekeeper-studio
       sweethome3d.application
       obs-studio
       tldrawOffline
