@@ -50,6 +50,7 @@ in
               "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
               "gfbliohnnapiefjpjlpjnehglfpaknnc" # Surfingkeys
               "oboonakemofpalcgghocfoadofidjkkk" # KeePassXC-Browser
+              "epamlgdeklcjkldoaclgjdmjnchdgbho" # Time Snatch
             ];
             WebAppInstallForceList = [
               {
