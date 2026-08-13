@@ -259,29 +259,7 @@ end
 
 ensure_kitty_on_path()
 
-local smart_splits = require('smart-splits')
-smart_splits.setup({
-	at_edge = 'stop',
-	multiplexer_integration = 'kitty',
-	disable_multiplexer_nav_when_zoomed = true,
-})
-
-keymap('n', '<C-h>', smart_splits.move_cursor_left, { desc = 'Move to left split' })
-keymap('n', '<C-j>', smart_splits.move_cursor_down, { desc = 'Move to lower split' })
-keymap('n', '<C-k>', smart_splits.move_cursor_up, { desc = 'Move to upper split' })
-keymap('n', '<C-l>', smart_splits.move_cursor_right, { desc = 'Move to right split' })
-keymap('n', '<C-\\>', smart_splits.move_cursor_previous, { desc = 'Move to previous split' })
-
-vim.api.nvim_create_autocmd('FileType', {
-	group = vim.api.nvim_create_augroup('fyler-smart-splits', { clear = true }),
-	pattern = 'fyler',
-	callback = function(args)
-		vim.keymap.set('n', '<C-h>', smart_splits.move_cursor_left, { buffer = args.buf, desc = 'Move to left split' })
-		vim.keymap.set('n', '<C-j>', smart_splits.move_cursor_down, { buffer = args.buf, desc = 'Move to lower split' })
-		vim.keymap.set('n', '<C-k>', smart_splits.move_cursor_up, { buffer = args.buf, desc = 'Move to upper split' })
-		vim.keymap.set('n', '<C-l>', smart_splits.move_cursor_right, { buffer = args.buf, desc = 'Move to right split' })
-	end,
-})
+keymap('n', '<C-\\>', '<C-w>p', { desc = 'Move to previous split' })
 
 -- keymap('n', '<leader>o', ':update<CR> :source<CR>') -- source file inline (most useful for editing neovim config file
 keymap('n', '<leader>w', ':write<CR>')

@@ -82,64 +82,19 @@ require('lazy').setup({
         ignore_previewwindows = true,
       })
     end,
-    keys = {
-      {
-        '<C-h>',
-        function()
-          require('herdr-splits').move_cursor_left()
-        end,
-        desc = 'Navigate left',
-      },
-      {
-        '<C-j>',
-        function()
-          require('herdr-splits').move_cursor_down()
-        end,
-        desc = 'Navigate down',
-      },
-      {
-        '<C-k>',
-        function()
-          require('herdr-splits').move_cursor_up()
-        end,
-        desc = 'Navigate up',
-      },
-      {
-        '<C-l>',
-        function()
-          require('herdr-splits').move_cursor_right()
-        end,
-        desc = 'Navigate right',
-      },
-      {
-        '<M-h>',
-        function()
-          require('herdr-splits').resize_left()
-        end,
-        desc = 'Resize left',
-      },
-      {
-        '<M-j>',
-        function()
-          require('herdr-splits').resize_down()
-        end,
-        desc = 'Resize down',
-      },
-      {
-        '<M-k>',
-        function()
-          require('herdr-splits').resize_up()
-        end,
-        desc = 'Resize up',
-      },
-      {
-        '<M-l>',
-        function()
-          require('herdr-splits').resize_right()
-        end,
-        desc = 'Resize right',
-      },
-    },
+  },
+  {
+    'lmilojevicc/herdr-splits.nvim',
+    cond = vim.env.HERDR_ENV == '1',
+    event = 'VeryLazy',
+    config = function()
+      require('herdr-splits').setup({
+        default_amount = 0.05,
+        neovim_amount = 3,
+        at_edge = 'wrap',
+        ignore_previewwindows = true,
+      })
+    end,
   },
   {
     'Saghen/blink.cmp',
@@ -283,14 +238,32 @@ require('lazy').setup({
     },
   },
   {
-
-    'mrjones2014/smart-splits.nvim', -- Better navigation between Neovim and Kitty splits
-    build = './kitty/install-kittens.bash',
+    'bojackduy/nvim-herdr-navigation',
+    submodules = false,
+    cond = function()
+      return vim.env.HERDR_PANE_ID ~= nil
+    end,
+    event = 'VeryLazy',
+    init = function(plugin)
+      vim.opt.rtp:prepend(plugin.dir .. '/nvim-herdr-navigation')
+    end,
+    config = function()
+      vim.schedule(function()
+        require('herdr-navigation').setup({
+          keybindings = {
+            left = '<C-h>',
+            down = '<C-j>',
+            up = '<C-k>',
+            right = '<C-l>',
+          },
+        })
+      end)
+    end,
   },
-  'folke/lazydev.nvim', -- Better neovim config editing, without any non-valid warnings
-  'folke/todo-comments.nvim', -- Highlight comments like TODO, FIXME, BUG, INFO etc.
   'mluders/comfy-line-numbers.nvim', -- More comfortable vertical motions (without needing to reach so far away from current buttons)
   'brenoprata10/nvim-highlight-colors', -- Highlight color codes
+  'folke/lazydev.nvim', -- Better neovim config editing, without any non-valid warnings
+  'folke/todo-comments.nvim', -- Highlight comments like TODO, FIXME, BUG, INFO etc.
 
   -- Git
   { 'akinsho/git-conflict.nvim', version = '*', config = true }, -- Coloring Git Conflict inline

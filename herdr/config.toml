@@ -79,10 +79,11 @@ next_tab = ["prefix+n", "ctrl+shift+l"]
 switch_tab = ["prefix+1..9", "ctrl+1..9"]
 close_tab = "prefix+shift+x"
 
-focus_pane_left = ["prefix+h", "ctrl+alt+h", "ctrl+h"]
-focus_pane_down = ["prefix+j", "ctrl+alt+j", "ctrl+j"]
-focus_pane_up = ["prefix+k", "ctrl+alt+k", "ctrl+k"]
-focus_pane_right = ["prefix+l", "ctrl+alt+l", "ctrl+l"]
+focus_pane_left = ["prefix+h", "ctrl+alt+h"]
+focus_pane_down = ["prefix+j", "ctrl+alt+j"]
+focus_pane_up = ["prefix+k", "ctrl+alt+k"]
+focus_pane_right = ["prefix+l", "ctrl+alt+l"]
+
 
 swap_pane_left = "prefix+shift+h"
 swap_pane_down = "prefix+shift+j"
@@ -162,3 +163,26 @@ key = "ctrl+s"
 type = "shell"
 command = "~/.dotfiles/scripts/herdr-second-brain-toggle.sh"
 description = "toggle second-brain workspace"
+[[keys.command]]
+key = "ctrl+h"
+type = "shell"
+command = "~/.dotfiles/scripts/herdr-navigate.sh left"
+description = "navigate left (Vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "shell"
+command = "~/.dotfiles/scripts/herdr-navigate.sh down"
+description = "navigate down (Vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "shell"
+command = "~/.dotfiles/scripts/herdr-navigate.sh up"
+description = "navigate up (Vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "shell"
+command = "~/.dotfiles/scripts/herdr-navigate.sh right"
+description = "navigate right (Vim/herdr)"
