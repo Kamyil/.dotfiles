@@ -80,22 +80,16 @@ vim.g.autoformat = false -- Disable autoformatting by default
 local ts_parser_install_dir = vim.fn.stdpath('data') .. '/ts-parsers'
 vim.fn.mkdir(ts_parser_install_dir .. '/parser', 'p')
 
--- Enable default LSP inline diagnostic
+-- Avoid recomputing diagnostic virtual text on every keystroke. Diagnostics
+-- remain visible through signs and underlines while editing.
 vim.diagnostic.config({
-	-- virtual_text = false,                       -- Ensure virtual text is disabled since lsp_lines handles it
-	-- virtual_lines = { only_current_line = false }, -- Show virtual lines for all lines
-	-- underline = true,                           -- Underline diagnostics
-	severity_sort = true, -- Sort diagnostics by severity
+	severity_sort = true,
 	underline = true,
-	virtual_text = {
-		spacing = 2,
-		prefix = '●',
-	},
+	virtual_text = false,
 	virtual_lines = false,
-	update_in_insert = true,
+	update_in_insert = false,
 	signs = {
 		text = {
-			-- signs via https://github.com/ricbermo/yanc/blob/main/lua/utils.lua. Thanks ricbermo!
 			[vim.diagnostic.severity.ERROR] = '',
 			[vim.diagnostic.severity.WARN] = '',
 			[vim.diagnostic.severity.HINT] = '',

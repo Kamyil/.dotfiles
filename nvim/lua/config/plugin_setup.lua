@@ -64,50 +64,24 @@ require('blink.cmp').setup({
           -- customize the drawing of kind icons
           kind_icon = {
             text = function(ctx)
-              -- default kind icon
-              local icon = ctx.kind_icon
-              -- if LSP source, check for color derived from documentation
-              if ctx.item.source_name == 'LSP' then
-                local color_item = require('nvim-highlight-colors').format(ctx.item.documentation, { kind = ctx.kind })
-                if color_item and color_item.abbr ~= '' then
-                  icon = color_item.abbr
-                end
-              end
-              return icon .. ctx.icon_gap
-            end,
-            highlight = function(ctx)
-              -- default highlight group
-              local highlight = 'BlinkCmpKind' .. ctx.kind
-              -- if LSP source, check for color derived from documentation
-              if ctx.item.source_name == 'LSP' then
-                local color_item = require('nvim-highlight-colors').format(ctx.item.documentation, { kind = ctx.kind })
-                if color_item and color_item.abbr_hl_group then
-                  highlight = color_item.abbr_hl_group
-                end
-              end
-              return highlight
+              return ctx.kind_icon .. ctx.icon_gap
             end,
           },
         },
       },
     },
     documentation = {
-      auto_show = true,
-      auto_show_delay_ms = 250,
-      treesitter_highlighting = true,
-      window = {
-        -- border = borders,
-      },
+      -- Avoid floating-window redraws and a second Tree-sitter pass while typing.
+      auto_show = false,
+      treesitter_highlighting = false,
+      window = {},
     },
     list = {
       selection = { preselect = false, auto_insert = false },
     },
   },
   signature = {
-    enabled = true,
-    window = {
-      -- border = borders,
-    },
+    enabled = false,
   },
   sources = {
     default = { 'lsp', 'path', 'snippets', 'buffer' },
@@ -123,12 +97,10 @@ require('blink.cmp').setup({
   },
 })
 
-require('modes').setup()
 
 local function set_hl_link(group, target)
   vim.api.nvim_set_hl(0, group, { link = target })
 end
-
 function M.apply_terminal_theme_highlights()
   set_hl_link('NormalFloat', 'Normal')
   set_hl_link('FloatBorder', 'Comment')
