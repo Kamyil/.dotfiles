@@ -22,16 +22,30 @@
       disko,
       ...
     }:
+    let
+      commonModules = [
+        nixos-hardware.nixosModules.raspberry-pi-4
+        ./hardware.nix
+        ./configuration.nix
+      ];
+    in
     {
       nixosConfigurations.malinka = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
-
-        modules = [
-          nixos-hardware.nixosModules.raspberry-pi-4
+        modules = commonModules ++ [
           disko.nixosModules.disko
-          ./hardware.nix
           ./disko.nix
-          ./configuration.nix
+        ];
+      };
+
+      nixosConfigurations.malinka-sd = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        modules = commonModules ++ [
+          ({ modulesPath, ... }: {
+            imports = [
+              "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
+            ];
+          })
         ];
       };
     };
