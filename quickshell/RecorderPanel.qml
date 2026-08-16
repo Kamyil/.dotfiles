@@ -37,19 +37,11 @@ Item {
         }
 
         ActionRow {
-            title: "Kooha"
-            subtitle: "Simple region, monitor, and audio recording"
-            icon: "󰕧"
-            trailing: "Open"
-            onClicked: root.launch(["kooha"])
-        }
-
-        ActionRow {
-            title: "GPU Screen Recorder"
-            subtitle: "Hardware-accelerated recording and replay"
+            title: "OBS Studio"
+            subtitle: "Record a display, window, or application with audio"
             icon: "󰑋"
             trailing: "Open"
-            onClicked: root.launch(["gpu-screen-recorder-gtk"])
+            onClicked: root.launch(["obs"])
         }
 
         Item { Layout.fillHeight: true }

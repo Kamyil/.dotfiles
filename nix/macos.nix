@@ -192,6 +192,7 @@ in
               "eqmac"
               "ghostty"
               "postman"
+              "beekeeper-studio"
               "opencode-desktop"
               "emacs-app"
               "sweet-home3d"

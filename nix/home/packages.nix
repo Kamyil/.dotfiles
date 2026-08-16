@@ -104,9 +104,9 @@ in
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       qutebrowser
+      beekeeper-studio
       sweethome3d.application
-      kooha
-      gpu-screen-recorder-gtk
+      obs-studio
       tldrawOffline
     ]
     ++ [

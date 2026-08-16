@@ -129,7 +129,6 @@ in
     };
   };
 
-
   services.dnsmasq = {
     enable = true;
     settings = {
@@ -188,6 +187,10 @@ in
     layout = "pl";
     variant = "";
   };
+
+  # File-manager integration: Trash, removable/network locations, and thumbnails.
+  services.gvfs.enable = true;
+  services.tumbler.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

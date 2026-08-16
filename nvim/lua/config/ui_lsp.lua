@@ -4,13 +4,10 @@ require('ibl').setup({
 		char = '│',
 		tab_char = '│',
 	},
+	-- Scope extmarks are recalculated while scrolling and editing. Disable
+	-- them globally; indentation guides remain enabled without this redraw pass.
 	scope = {
-		enabled = true,
-		show_start = true,
-		show_end = false,
-		injected_languages = false,
-		highlight = { 'Function', 'Label' },
-		priority = 500,
+		enabled = false,
 	},
 	exclude = {
 		filetypes = {
@@ -160,6 +157,22 @@ require('mason-lspconfig').setup({
 			lspconfig[server_name].setup(server)
 		end,
 	},
+})
+-- Svelte semantic-token highlighting is disabled buffer-locally because its
+-- tag/embedded-language token stream duplicates Tree-sitter highlighting.
+vim.api.nvim_create_autocmd('LspAttach', {
+	group = vim.api.nvim_create_augroup('DisableSvelteSemanticTokens', { clear = true }),
+	callback = function(args)
+		if vim.bo[args.buf].filetype ~= 'svelte' then
+			return
+		end
+		local client_id = args.data.client_id
+		vim.schedule(function()
+			if vim.lsp.semantic_tokens then
+				pcall(vim.lsp.semantic_tokens.stop, args.buf, client_id)
+			end
+		end)
+	end,
 })
 
 require('render-markdown').setup({

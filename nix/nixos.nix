@@ -50,6 +50,7 @@ in
               "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
               "gfbliohnnapiefjpjlpjnehglfpaknnc" # Surfingkeys
               "oboonakemofpalcgghocfoadofidjkkk" # KeePassXC-Browser
+              "epamlgdeklcjkldoaclgjdmjnchdgbho" # Time Snatch
             ];
             WebAppInstallForceList = [
               {
@@ -88,7 +89,7 @@ in
             ;
         };
 
-        home-manager.users.kamil = { pkgs, ... }: {
+        home-manager.users.kamil = { lib, pkgs, ... }: {
           imports = [ ./shared.nix ];
 
           home.homeDirectory = lib.mkForce "/home/kamil";
@@ -104,6 +105,10 @@ in
               docker-compose
               satty
               chromium
+              thunar
+              ffmpegthumbnailer
+              imv
+              mpv
               thunderbird
               signal-desktop
               spotify
@@ -129,13 +134,14 @@ in
             ])
             ++ [
               (pkgs.callPackage ./packages/parakeet-transcribe.nix { })
+              (pkgs.callPackage ./packages/omasnap.nix { })
               sqlit.packages.${system}.default
               worktrunk.packages.${system}.default
               lumen.packages.${system}.default
             ];
 
           programs.zsh.shellAliases = {
-            finder = "xdg-open";
+            finder = "thunar";
             nrs = "nh os switch ~/.dotfiles/nix";
             transcribe = "parakeet-transcribe";
           };
@@ -163,6 +169,28 @@ in
             "$HOME/.local/share/pnpm"
             "$HOME/.local/share/omarchy/bin"
           ];
+
+          # Preserve user-managed browser and mail associations while enforcing
+          # media defaults. Declarative mimeApps would clobber the existing file.
+          home.activation.mediaMimeDefaults = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+            ${pkgs.xdg-utils}/bin/xdg-mime default imv.desktop image/avif
+            ${pkgs.xdg-utils}/bin/xdg-mime default imv.desktop image/bmp
+            ${pkgs.xdg-utils}/bin/xdg-mime default imv.desktop image/gif
+            ${pkgs.xdg-utils}/bin/xdg-mime default imv.desktop image/jpeg
+            ${pkgs.xdg-utils}/bin/xdg-mime default imv.desktop image/png
+            ${pkgs.xdg-utils}/bin/xdg-mime default imv.desktop image/svg+xml
+            ${pkgs.xdg-utils}/bin/xdg-mime default imv.desktop image/tiff
+            ${pkgs.xdg-utils}/bin/xdg-mime default imv.desktop image/webp
+            ${pkgs.xdg-utils}/bin/xdg-mime default mpv.desktop video/mp2t
+            ${pkgs.xdg-utils}/bin/xdg-mime default mpv.desktop video/mp4
+            ${pkgs.xdg-utils}/bin/xdg-mime default mpv.desktop video/mpeg
+            ${pkgs.xdg-utils}/bin/xdg-mime default mpv.desktop video/ogg
+            ${pkgs.xdg-utils}/bin/xdg-mime default mpv.desktop video/quicktime
+            ${pkgs.xdg-utils}/bin/xdg-mime default mpv.desktop video/webm
+            ${pkgs.xdg-utils}/bin/xdg-mime default mpv.desktop video/x-flv
+            ${pkgs.xdg-utils}/bin/xdg-mime default mpv.desktop video/x-matroska
+            ${pkgs.xdg-utils}/bin/xdg-mime default mpv.desktop video/x-msvideo
+          '';
 
           home.file = {
             "second-brain/.keep".text = "";
