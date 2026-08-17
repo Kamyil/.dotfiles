@@ -1,0 +1,35 @@
+name: Build Malinka SD image
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "malinka/**"
+      - ".github/workflows/build-malinka.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            max-jobs = auto
+
+      - name: Build Raspberry Pi SD image
+        run: nix build ./malinka#nixosConfigurations.malinka-sd.config.system.build.sdImage
+
+      - name: Upload SD image
+        uses: actions/upload-artifact@v4
+        with:
+          name: malinka-sd-image
+          path: malinka/result/sd-image/*.img.zst
+          if-no-files-found: error
+          retention-days: 14

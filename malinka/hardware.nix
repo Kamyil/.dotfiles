@@ -18,7 +18,7 @@
   hardware.raspberry-pi.firmware = {
     enable = true;
     path = "/boot/firmware";
-    uboot.enable = true;
+    uboot.enable = false;
   };
 
   # Keep the HDMI/virtual console out of the normal headless boot path while
