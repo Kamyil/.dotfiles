@@ -20,6 +20,8 @@
     path = "/boot/firmware";
     uboot.enable = false;
   };
+  # Avoid the Raspberry Pi module shrinker probing unavailable DRM aliases.
+  boot.initrd.includeDefaultModules = false;
 
   # Keep the HDMI/virtual console out of the normal headless boot path while
   # preserving the serial console as a recovery option.
