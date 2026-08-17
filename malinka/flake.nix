@@ -2,7 +2,7 @@
   description = "Malinka — headless Raspberry Pi 4";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware";

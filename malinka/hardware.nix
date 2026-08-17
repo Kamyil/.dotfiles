@@ -13,7 +13,7 @@
   hardware.raspberry-pi.firmware = {
     enable = true;
     path = "/boot/firmware";
-    uboot.enable = false;
+    uboot.enable = true;
   };
   # Avoid the Raspberry Pi module shrinker probing unavailable DRM aliases.
   boot.initrd.includeDefaultModules = false;
