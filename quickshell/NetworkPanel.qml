@@ -241,7 +241,7 @@ Item {
             }
             Rectangle {
                 visible: !!root.info.speed || !!root.info.bitrate
-                implicitWidth: speedBadge.implicitWidth + 12; implicitHeight: 24; radius: 7; color: "transparent"; border.color: Theme.border
+                implicitWidth: speedBadge.implicitWidth + 12; implicitHeight: 24; radius: Theme.radius; color: "transparent"; border.color: Theme.border
                 Text { id: speedBadge; anchors.centerIn: parent; text: root.info.speed ? root.info.speed + "mbit" : root.info.bitrate || ""; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: 10 }
             }
         }

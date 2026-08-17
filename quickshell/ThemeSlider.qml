@@ -19,13 +19,13 @@ Slider {
         implicitHeight: 4
         width: control.availableWidth
         height: implicitHeight
-        radius: 2
+        radius: Theme.radius
         color: Theme.border
 
         Rectangle {
             width: control.visualPosition * parent.width
             height: parent.height
-            radius: parent.radius
+            radius: Theme.radius
             color: Theme.accent
         }
     }
@@ -35,7 +35,7 @@ Slider {
         y: control.topPadding + control.availableHeight / 2 - height / 2
         implicitWidth: 14
         implicitHeight: 14
-        radius: 7
+        radius: Theme.radius
         color: control.pressed ? Theme.accent : Theme.foreground
         border.color: Theme.background
         border.width: 2

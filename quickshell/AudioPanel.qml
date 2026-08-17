@@ -49,7 +49,7 @@ Item {
 
         Layout.fillWidth: true
         implicitHeight: compact ? 52 : 62
-        radius: 9
+        radius: Theme.radius
         color: Theme.elevated
 
         RowLayout {

@@ -124,7 +124,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 7
+        radius: Theme.radius
         color: Theme.surface
         border.color: Theme.border
         ColumnLayout {
@@ -216,7 +216,7 @@ Item {
                     visible: root.result.length > 0
                     Layout.fillWidth: true
                     implicitHeight: resultColumn.implicitHeight + 32
-                    radius: 8
+                    radius: Theme.radius
                     color: Theme.elevated
                     ColumnLayout {
                         id: resultColumn

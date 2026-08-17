@@ -11,7 +11,7 @@ Rectangle {
 
     Layout.fillWidth: true
     implicitHeight: subtitle.length > 0 ? 52 : 42
-    radius: 9
+    radius: Theme.radius
     color: mouse.containsMouse ? Theme.hover : Theme.elevated
 
     Column {
@@ -46,12 +46,12 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         width: 36
         height: 20
-        radius: 10
+        radius: Theme.radius
         color: row.checked ? Theme.accent : Theme.border
         Rectangle {
             width: 16
             height: 16
-            radius: 8
+            radius: Theme.radius
             y: 2
             x: row.checked ? 18 : 2
             color: Theme.foreground

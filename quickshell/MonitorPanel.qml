@@ -52,7 +52,7 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             implicitHeight: 58
-            radius: 9
+            radius: Theme.radius
             color: Theme.elevated
             RowLayout {
                 anchors.fill: parent; anchors.margins: 10; spacing: 10
@@ -87,7 +87,7 @@ Item {
                         required property string yPos
                         required property real scale
                         required property bool focused
-                        Layout.fillWidth: true; implicitHeight: 92; radius: 9
+                        Layout.fillWidth: true; implicitHeight: 92; radius: Theme.radius
                         color: focused ? Theme.hover : Theme.elevated
                         border.color: focused ? Theme.accent : Theme.border
                         ColumnLayout {

@@ -87,13 +87,13 @@ Item {
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: 6
-                radius: height / 2
+                radius: Theme.radius
                 color: Theme.surface
 
                 Rectangle {
                     width: parent.width * root.yearProgress
                     height: parent.height
-                    radius: parent.radius
+                    radius: Theme.radius
                     color: Theme.accent
                 }
             }
@@ -151,7 +151,7 @@ Item {
                     readonly property bool today: day.toDateString() === root.now.toDateString()
                     Layout.fillWidth: true
                     implicitHeight: 28
-                    radius: 7
+                    radius: Theme.radius
                     color: today ? Theme.accent : "transparent"
                     Text {
                         anchors.centerIn: parent

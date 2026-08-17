@@ -558,9 +558,9 @@ ShellRoot {
                         anchors.bottom: parent.bottom
                         implicitWidth: leftIslandRow.implicitWidth + 14
                         implicitHeight: 30
-                        radius: 0
-                        topLeftRadius: 7
-                        topRightRadius: 7
+                        radius: Theme.radius
+                        topLeftRadius: Theme.radius
+                        topRightRadius: Theme.radius
                         color: Theme.background
                         border.color: Theme.border
                         border.width: 1
@@ -606,7 +606,7 @@ ShellRoot {
                                     visible: apps.length > 0
                                     implicitWidth: Math.max(24, workspaceContent.implicitWidth + 10)
                                     implicitHeight: 24
-                                    radius: 7
+                                    radius: Theme.radius
                                     color: focused ? Theme.elevated : workspaceMouse.containsMouse ? Theme.hover : "transparent"
                                     Row {
                                         id: workspaceContent
@@ -701,9 +701,9 @@ ShellRoot {
                         anchors.bottom: parent.bottom
                         implicitWidth: centerIslandRow.implicitWidth + 14
                         implicitHeight: 30
-                        radius: 0
-                        topLeftRadius: 7
-                        topRightRadius: 7
+                        radius: Theme.radius
+                        topLeftRadius: Theme.radius
+                        topRightRadius: Theme.radius
                         color: Theme.background
                         border.color: Theme.border
                         border.width: 1
@@ -745,9 +745,9 @@ ShellRoot {
                         anchors.bottom: parent.bottom
                         implicitWidth: rightIslandRow.implicitWidth + 14
                         implicitHeight: 30
-                        radius: 0
-                        topLeftRadius: 7
-                        topRightRadius: 7
+                        radius: Theme.radius
+                        topLeftRadius: Theme.radius
+                        topRightRadius: Theme.radius
                         color: Theme.background
                         border.color: Theme.border
                         border.width: 1
@@ -875,7 +875,7 @@ ShellRoot {
                                 Rectangle {
                                     anchors.fill: parent
                                     anchors.margins: 4
-                                    radius: 7
+                                    radius: Theme.radius
                                     color: Theme.surface
                                     border.color: Theme.border
                                     border.width: 1
@@ -897,7 +897,7 @@ ShellRoot {
                                                 required property var modelData
                                                 implicitWidth: 52
                                                 implicitHeight: 38
-                                                radius: 9
+                                                radius: Theme.radius
                                                 color: trayMouse.containsMouse ? Theme.hover : Theme.elevated
                                                 Image {
                                                     anchors.centerIn: parent
@@ -1059,7 +1059,7 @@ ShellRoot {
                     Rectangle {
                         anchors.fill: parent
                         anchors.margins: 4
-                        radius: 7
+                        radius: Theme.radius
                         color: Theme.surface
                         border.color: Theme.border
                         border.width: 1
@@ -1075,7 +1075,7 @@ ShellRoot {
                             Rectangle {
                                 Layout.preferredWidth: 72
                                 Layout.preferredHeight: 72
-                                radius: 9
+                                radius: Theme.radius
                                 color: Theme.elevated
                                 clip: true
 
@@ -1170,7 +1170,7 @@ ShellRoot {
                     Rectangle {
                         anchors.fill: parent
                         anchors.margins: 4
-                        radius: 7
+                        radius: Theme.radius
                         color: Theme.surface
                         border.color: Theme.border
                         border.width: 1
@@ -1416,7 +1416,7 @@ ShellRoot {
                     required property string imageSource
                     Layout.fillWidth: true
                     implicitHeight: toastContent.implicitHeight + 24
-                    radius: 12
+                    radius: Theme.radius
                     color: Theme.surface
                     border.color: Theme.border
                     border.width: 1

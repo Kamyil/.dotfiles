@@ -44,7 +44,7 @@ Item {
             subtitle: root.stateName + (root.duration(root.remainingSeconds) ? " · " + root.duration(root.remainingSeconds) : "")
         }
         Rectangle {
-            Layout.fillWidth: true; implicitHeight: 88; radius: 10; color: Theme.elevated
+            Layout.fillWidth: true; implicitHeight: 88; radius: Theme.radius; color: Theme.elevated
             RowLayout {
                 anchors.fill: parent; anchors.margins: 14; spacing: 12
                 Text {

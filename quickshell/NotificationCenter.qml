@@ -44,7 +44,7 @@ Item {
                         required property var modelData
                         Layout.fillWidth: true
                         implicitHeight: content.implicitHeight + 20
-                        radius: 9
+                        radius: Theme.radius
                         color: Theme.elevated
                         RowLayout {
                             id: content

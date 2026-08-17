@@ -28,7 +28,7 @@ Button {
     }
 
     background: Rectangle {
-        radius: 7
+        radius: Theme.radius
         color: control.selected ? Theme.accent
             : control.down ? Theme.hover
             : control.hovered ? Theme.elevated

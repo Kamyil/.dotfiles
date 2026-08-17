@@ -17,7 +17,7 @@ Rectangle {
 
     implicitWidth: tile ? 52 : content.implicitWidth + 16
     implicitHeight: tile ? 38 : 26
-    radius: tile ? 9 : 7
+    radius: Theme.radius
     color: active ? Theme.elevated : mouse.containsMouse ? Theme.hover : tile ? Theme.elevated : "transparent"
 
     RowLayout {

@@ -93,13 +93,13 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             implicitHeight: 8
-            radius: 4
+            radius: Theme.radius
             color: Theme.elevated
 
             Rectangle {
                 width: parent.parent.available ? parent.width * Math.max(0, Math.min(100, parent.parent.value)) / 100 : 0
                 height: parent.height
-                radius: parent.radius
+                radius: Theme.radius
                 color: root.metricColor(parent.parent.value)
             }
         }

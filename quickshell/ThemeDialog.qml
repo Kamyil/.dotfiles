@@ -12,7 +12,7 @@ Dialog {
         color: Theme.elevated
         border.color: Theme.border
         border.width: 1
-        radius: 10
+        radius: Theme.radius
     }
 
     header: Rectangle {
