@@ -411,9 +411,9 @@ ShellRoot {
             PanelWindow {
                 id: bar
                 required property var modelData
-                exclusiveZone: 30
+                exclusiveZone: 42
                 screen: modelData
-                implicitHeight: 30
+                implicitHeight: 42
                 color: "transparent"
 
                 property string activePanel: ""
@@ -528,7 +528,19 @@ ShellRoot {
                 anchors {
                     left: true
                     right: true
-                    bottom: true
+                    bottom: !bar.atTop
+                    top: bar.atTop
+                }
+
+                property bool atTop: false
+
+                function moveToTopOrBottom(y) {
+                    const nextAtTop = y < bar.height / 2
+                    if (nextAtTop !== bar.atTop) {
+                        bar.atTop = nextAtTop
+                        bar.activePanel = ""
+                        panel.visible = false
+                    }
                 }
 
                 Timer {
@@ -550,20 +562,37 @@ ShellRoot {
 
 
                 Item {
-                    anchors.fill: parent
-
                     Rectangle {
-                        anchors.left: parent.left
-                        anchors.leftMargin: 6
-                        anchors.bottom: parent.bottom
-                        implicitWidth: leftIslandRow.implicitWidth + 14
-                        implicitHeight: 30
+                        anchors.fill: parent
+                        anchors.margins: 3
                         radius: Theme.radius
-                        topLeftRadius: Theme.radius
-                        topRightRadius: Theme.radius
                         color: Theme.background
                         border.color: Theme.border
                         border.width: 1
+                    }
+
+                    DragHandler {
+                        id: barDrag
+                        target: null
+                        acceptedButtons: Qt.LeftButton
+                        onActiveChanged: {
+                            if (!active)
+                                bar.moveToTopOrBottom(barDrag.centroid.position.y)
+                        }
+                    }
+
+                    anchors.fill: parent
+
+                    Rectangle {
+                        id: leftIsland
+                        anchors.left: parent.left
+                        anchors.leftMargin: 6
+                        anchors.top: bar.atTop ? parent.top : undefined
+                        anchors.bottom: bar.atTop ? undefined : parent.bottom
+                        implicitWidth: leftIslandRow.implicitWidth + 14
+                        implicitHeight: 42
+                        color: "transparent"
+                        border.width: 0
                         Rectangle {
                             anchors.left: parent.left
                             anchors.right: parent.right
@@ -697,24 +726,14 @@ ShellRoot {
                     }
 
                     Rectangle {
+                        id: centerIsland
                         anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.bottom: parent.bottom
+                        anchors.top: bar.atTop ? parent.top : undefined
+                        anchors.bottom: bar.atTop ? undefined : parent.bottom
                         implicitWidth: centerIslandRow.implicitWidth + 14
-                        implicitHeight: 30
-                        radius: Theme.radius
-                        topLeftRadius: Theme.radius
-                        topRightRadius: Theme.radius
-                        color: Theme.background
-                        border.color: Theme.border
-                        border.width: 1
-                        Rectangle {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            height: 1
-                            color: Theme.background
-                            z: 2
-                        }
+                        implicitHeight: 42
+                        color: "transparent"
+                        border.width: 0
 
                         RowLayout {
                             id: centerIslandRow
@@ -740,25 +759,15 @@ ShellRoot {
                     }
 
                     Rectangle {
+                        id: rightIsland
                         anchors.right: parent.right
                         anchors.rightMargin: 6
-                        anchors.bottom: parent.bottom
+                        anchors.top: bar.atTop ? parent.top : undefined
+                        anchors.bottom: bar.atTop ? undefined : parent.bottom
                         implicitWidth: rightIslandRow.implicitWidth + 14
-                        implicitHeight: 30
-                        radius: Theme.radius
-                        topLeftRadius: Theme.radius
-                        topRightRadius: Theme.radius
-                        color: Theme.background
-                        border.color: Theme.border
-                        border.width: 1
-                        Rectangle {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            height: 1
-                            color: Theme.background
-                            z: 2
-                        }
+                        implicitHeight: 42
+                        color: "transparent"
+                        border.width: 0
 
                         RowLayout {
                             id: rightIslandRow
