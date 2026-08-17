@@ -30,6 +30,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: malinka-sd-image
-          path: malinka/result/sd-image/*.img.zst
+          path: result/sd-image/*.img.zst
           if-no-files-found: error
           retention-days: 14
