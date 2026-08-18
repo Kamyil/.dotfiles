@@ -411,12 +411,15 @@ ShellRoot {
             PanelWindow {
                 id: bar
                 required property var modelData
-                exclusiveZone: 42
+                exclusiveZone: 38
                 screen: modelData
-                implicitHeight: 42
+                implicitHeight: 38
+                // Keep bar islands aligned with Hyprland's gaps_out.
+                readonly property int hyprlandMargin: 6
                 color: "transparent"
 
                 property string activePanel: ""
+                property bool panelReturnToLauncher: false
                 property Item panelAnchor: null
                 readonly property var audioSink: Pipewire.defaultAudioSink
                 readonly property int volume: audioSink && audioSink.audio ? Math.round(audioSink.audio.volume * 100) : 0
@@ -491,7 +494,7 @@ ShellRoot {
                 }
 
 
-                function togglePanel(name, item) {
+                function togglePanel(name, item, returnToLauncher) {
                     if (activePanel === name) {
                         activePanel = ""
                         panel.visible = false
@@ -499,9 +502,14 @@ ShellRoot {
                     }
                     panel.visible = false
                     activePanel = name
+                    panelReturnToLauncher = returnToLauncher === true
                     panelAnchor = item
                     panel.anchor.item = item
                     panel.visible = true
+                    Qt.callLater(() => {
+                        if (panel.visible && contentLoader.item && contentLoader.item.forceActiveFocus)
+                            contentLoader.item.forceActiveFocus()
+                    })
                 }
                 IpcHandler {
                     target: "wallpaper"
@@ -564,7 +572,10 @@ ShellRoot {
                 Item {
                     Rectangle {
                         anchors.fill: parent
-                        anchors.margins: 3
+                        anchors.topMargin: 3
+                        anchors.bottomMargin: 3
+                        anchors.leftMargin: bar.hyprlandMargin
+                        anchors.rightMargin: bar.hyprlandMargin
                         radius: Theme.radius
                         color: Theme.background
                         border.color: Theme.border
@@ -586,11 +597,11 @@ ShellRoot {
                     Rectangle {
                         id: leftIsland
                         anchors.left: parent.left
-                        anchors.leftMargin: 6
+                        anchors.leftMargin: bar.hyprlandMargin
                         anchors.top: bar.atTop ? parent.top : undefined
                         anchors.bottom: bar.atTop ? undefined : parent.bottom
                         implicitWidth: leftIslandRow.implicitWidth + 14
-                        implicitHeight: 42
+                        implicitHeight: 38
                         color: "transparent"
                         border.width: 0
                         Rectangle {
@@ -731,7 +742,7 @@ ShellRoot {
                         anchors.top: bar.atTop ? parent.top : undefined
                         anchors.bottom: bar.atTop ? undefined : parent.bottom
                         implicitWidth: centerIslandRow.implicitWidth + 14
-                        implicitHeight: 42
+                        implicitHeight: 38
                         color: "transparent"
                         border.width: 0
 
@@ -761,11 +772,11 @@ ShellRoot {
                     Rectangle {
                         id: rightIsland
                         anchors.right: parent.right
-                        anchors.rightMargin: 6
+                        anchors.rightMargin: bar.hyprlandMargin
                         anchors.top: bar.atTop ? parent.top : undefined
                         anchors.bottom: bar.atTop ? undefined : parent.bottom
                         implicitWidth: rightIslandRow.implicitWidth + 14
-                        implicitHeight: 42
+                        implicitHeight: 38
                         color: "transparent"
                         border.width: 0
 
@@ -1212,8 +1223,12 @@ ShellRoot {
                     Shortcut {
                         sequence: "Escape"
                         onActivated: {
+                            const returnToLauncher = bar.panelReturnToLauncher
+                            bar.panelReturnToLauncher = false
                             panel.visible = false
                             bar.activePanel = ""
+                            if (returnToLauncher)
+                                launcherWindow.visible = true
                         }
                     }
                 }
@@ -1332,6 +1347,10 @@ ShellRoot {
             opacity: launcherWindow.visible ? 1 : 0
             scale: launcherWindow.visible ? 1 : 0.97
             onCloseRequested: launcherWindow.visible = false
+            onActionRequested: action => {
+                bar.togglePanel(action, launcherContent, true)
+                launcherWindow.visible = false
+            }
         }
         onVisibleChanged: if (visible) launcherContent.reset()
     }
