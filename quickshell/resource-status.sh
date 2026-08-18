@@ -30,6 +30,8 @@ sample() {
     cpu=$((100 * (total_delta - idle_delta) / total_delta))
   fi
 
+  local swap_total_kib=0
+  local swap_free_kib=0
   local memory_total_kib=0
   local memory_available_kib=0
   local key value
@@ -37,6 +39,8 @@ sample() {
     case "$key" in
       MemTotal:) memory_total_kib=$value ;;
       MemAvailable:) memory_available_kib=$value ;;
+      SwapTotal:) swap_total_kib=$value ;;
+      SwapFree:) swap_free_kib=$value ;;
     esac
   done < /proc/meminfo
 
@@ -44,6 +48,12 @@ sample() {
   local memory=0
   if (( memory_total_kib > 0 )); then
     memory=$((100 * memory_used_kib / memory_total_kib))
+  fi
+
+  local swap_used_kib=$((swap_total_kib - swap_free_kib))
+  local swap=0
+  if (( swap_total_kib > 0 )); then
+    swap=$((100 * swap_used_kib / swap_total_kib))
   fi
 
   local -a disk_lines
@@ -55,8 +65,9 @@ sample() {
     ssd=$((100 * ssd_used_kib / ssd_total_kib))
   fi
 
-  printf '{"cpu":%d,"memory":%d,"memoryUsedGiB":"%s","memoryTotalGiB":"%s","ssd":%d,"ssdUsedGiB":"%s","ssdTotalGiB":"%s","gpu":-1}\n' \
+  printf '{"cpu":%d,"memory":%d,"memoryUsedGiB":"%s","memoryTotalGiB":"%s","swap":%d,"swapUsedGiB":"%s","swapTotalGiB":"%s","ssd":%d,"ssdUsedGiB":"%s","ssdTotalGiB":"%s","gpu":-1}\n' \
     "$cpu" "$memory" "$(format_gib "$memory_used_kib")" "$(format_gib "$memory_total_kib")" \
+    "$swap" "$(format_gib "$swap_used_kib")" "$(format_gib "$swap_total_kib")" \
     "$ssd" "$(format_gib "$ssd_used_kib")" "$(format_gib "$ssd_total_kib")"
 }
 

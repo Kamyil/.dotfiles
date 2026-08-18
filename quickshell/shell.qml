@@ -37,6 +37,9 @@ ShellRoot {
     property string resourceMemoryUsed: "0.0"
     property string resourceMemoryTotal: "0.0"
     property int resourceMemory: 0
+    property int resourceSwap: 0
+    property string resourceSwapUsed: "0.0"
+    property string resourceSwapTotal: "0.0"
     property int resourceGpu: -1
     property int resourceSsd: 0
     property string resourceSsdUsed: "0.0"
@@ -197,6 +200,9 @@ ShellRoot {
                     root.resourceMemory = value.memory
                     root.resourceGpu = value.gpu
                     root.resourceMemoryUsed = value.memoryUsedGiB
+                    root.resourceSwap = value.swap
+                    root.resourceSwapUsed = value.swapUsedGiB
+                    root.resourceSwapTotal = value.swapTotalGiB
                     root.resourceMemoryTotal = value.memoryTotalGiB
                     root.resourceSsd = value.ssd
                     root.resourceSsdUsed = value.ssdUsedGiB
@@ -441,6 +447,9 @@ ShellRoot {
                 readonly property string resourceMemoryUsed: root.resourceMemoryUsed
                 readonly property string resourceMemoryTotal: root.resourceMemoryTotal
                 readonly property int resourceMemory: root.resourceMemory
+                readonly property int resourceSwap: root.resourceSwap
+                readonly property string resourceSwapUsed: root.resourceSwapUsed
+                readonly property string resourceSwapTotal: root.resourceSwapTotal
                 readonly property int resourceGpu: root.resourceGpu
                 readonly property int resourceSsd: root.resourceSsd
                 readonly property string resourceSsdUsed: root.resourceSsdUsed
@@ -1306,6 +1315,9 @@ ShellRoot {
                         ssd: bar.resourceSsd
                         ssdUsedGiB: bar.resourceSsdUsed
                         ssdTotalGiB: bar.resourceSsdTotal
+                        swap: bar.resourceSwap
+                        swapUsedGiB: bar.resourceSwapUsed
+                        swapTotalGiB: bar.resourceSwapTotal
                     }
                 }
                 Component {
