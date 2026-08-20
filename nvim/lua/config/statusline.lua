@@ -91,25 +91,6 @@ local function diagnostics_with_icons()
   return result
 end
 
-local function harpoon_display()
-  local marks = harpoon:list().items
-  local current_file_path = vim.fn.expand('%:p:.')
-  local label = {}
-
-  for id, item in ipairs(marks) do
-    if item.value == current_file_path then
-      table.insert(label, '%#HarpoonActive#' .. id .. '%#Normal#')
-    else
-      table.insert(label, '%#HarpoonInactive#' .. id .. '%#Normal#')
-    end
-  end
-
-  if #label > 0 then
-    return '󰛢 ' .. table.concat(label, ' ')
-  end
-  return ''
-end
-
 local function git_diff_display()
   local icons = { removed = ' ', changed = ' ', added = ' ' }
   local signs = vim.b.gitsigns_status_dict
@@ -153,7 +134,6 @@ require('lualine').setup({
     },
     lualine_b = {
       { 'branch', icon = '' },
-      { harpoon_display, color = {} },
     },
     lualine_c = {
       { 'filename', path = 1, symbols = { modified = '', readonly = '', unnamed = '[No Name]' } },

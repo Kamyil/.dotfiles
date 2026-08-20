@@ -19,7 +19,7 @@ hl.config({
 
 	input = {
 		kb_layout = "pl",
-		kb_options = "caps:escape,lv3:lalt_switch",
+		kb_options = "caps:escape",
 		follow_mouse = 1,
 		repeat_rate = 50,
 		repeat_delay = 300,

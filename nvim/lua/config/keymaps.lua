@@ -364,23 +364,12 @@ end, { desc = '[N]ote [L]ink from selection' })
 -- keymap('n', '<leader>nts', timetracking.start, { desc = '[N]ote [T]ime [S]tart' })
 -- keymap('n', '<leader>nte', timetracking.stop, { desc = '[N]ote [T]ime [E]nd' })
 
--- Harpoon setup (quick file switching between files that I currently work on)
-local harpoon = require('harpoon')
--- local harpoon_mark = require('harpoon.mark');
-
-harpoon:setup()
-
-keymap('n', 'ga', function()
-	harpoon:list():add()
-end) -- add file to harpoon jumplist
-keymap('n', 'ge', function()
-	harpoon.ui:toggle_quick_menu(harpoon:list())
-end) -- open jumplist with currently added items
+-- Barbar (tabline of all open buffers; Alt+1..9 jumps to the Nth visible buffer)
+keymap('n', 'ga', '<cmd>BufferClose<cr>', { desc = 'Close current buffer' })
+keymap('n', 'ge', '<cmd>BufferPick<cr>', { desc = 'Pick a buffer to jump to' })
 
 for i = 1, 9 do
-	keymap('n', '<A-' .. i .. '>', function()
-		harpoon:list():select(i)
-	end, { desc = 'Harpoon to file ' .. i })
+	keymap('n', '<A-' .. i .. '>', '<cmd>BufferGoto ' .. i .. '<cr>', { desc = 'Go to buffer ' .. i })
 end
 --
 -- better indenting with selected text

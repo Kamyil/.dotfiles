@@ -269,10 +269,17 @@ require('lazy').setup({
   { 'akinsho/git-conflict.nvim', version = '*', config = true }, -- Coloring Git Conflict inline
   'FabijanZulj/blame.nvim', -- Show git blame info in the gutter
 
-  -- Harpoon
+  -- Barbar (tabline showing all open buffers, so hidden files can't pile up unseen)
   {
-    'ThePrimeagen/harpoon',
-    branch = 'harpoon2', -- For better switching between files. Add files to the jumplist and switch between them with Alt+1,2,3,4,5. Also edit jumplist like a vim buffer
+    'romgrk/barbar.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    init = function()
+      vim.g.barbar_auto_setup = false
+    end,
+    lazy = false, -- Tabline must render from startup; nothing `require`s it
+    opts = {
+      -- Jump with Alt+1..9, close with `ga`, pick with `ge` (see keymaps.lua)
+    },
   },
 
   -- Markdown notetaking

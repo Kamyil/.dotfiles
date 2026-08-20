@@ -449,12 +449,6 @@ hi("BlinkCmpKindField",    { fg = c.fg })
 hi("BlinkCmpKindStruct",   { fg = c.snow_blue })
 
 -----------------------------------------------------------------------
--- Harpoon
------------------------------------------------------------------------
-hi("HarpoonActive",        { fg = c.wood_light, bold = true })
-hi("HarpoonInactive",      { fg = c.fg_dark })
-
------------------------------------------------------------------------
 -- Todo Comments
 -----------------------------------------------------------------------
 hi("TodoBgFIX",            { fg = c.bg, bg = c.meat_red, bold = true })

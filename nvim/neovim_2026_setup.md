@@ -6,8 +6,7 @@
 # TODO before release
 - [x] Setup LSP
 - [x] Setup Treesitter
-- [x] Setup Harpoon
-- [x] Setup incline with harpoon items
+- [x] Setup Barbar (replaces Harpoon + incline)
 - [x] Setup Native Package Manager
 - [x] Setup blink for faster and better autocompletion
 - [x] require('mini.surround').setup()
