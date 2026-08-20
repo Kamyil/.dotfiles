@@ -37,10 +37,10 @@ Launch all reviewers in a single message using the Task tool. Use the `interroga
 
 | Subagent | Default model |
 |----------|---------------|
-| Reviewer A | `claude-fable-5-thinking-max` |
-| Reviewer B | `gpt-5.6-sol-max` |
-| Reviewer C | `grok-4.6-fast-xhigh` |
-| Reviewer D | `claude-opus-5-thinking-xhigh` |
+| Reviewer A | `gpt-5.6-terra` |
+| Reviewer B | `gpt-5.6-terra` |
+| Reviewer C | `gpt-5.6-terra` |
+| Reviewer D | `gpt-5.6-terra` |
 
 For each reviewer:
 - `subagent_type`: `generalPurpose`
