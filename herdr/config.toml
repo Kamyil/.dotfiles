@@ -71,7 +71,7 @@ rename_tab = ["prefix+shift+t", "ctrl+r"]
 previous_tab = ["prefix+p", "ctrl+shift+h"]
 next_tab = ["prefix+n", "ctrl+shift+l"]
 switch_tab = ["prefix+1..9", "ctrl+1..9"]
-close_tab = "prefix+shift+x"
+close_tab = ["prefix+shift+x", "ctrl+x", "ctrl+w"]
 
 focus_pane_left = ["prefix+h", "ctrl+alt+h"]
 focus_pane_down = ["prefix+j", "ctrl+alt+j"]
