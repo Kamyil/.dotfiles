@@ -65,7 +65,7 @@ Item {
         spacing: 12
         Heading { title: "Weather"; subtitle: root.location }
         Rectangle {
-            Layout.fillWidth: true; implicitHeight: 116; radius: 10; color: Theme.elevated
+        Layout.fillWidth: true; implicitHeight: 116; radius: Theme.radius; color: Theme.elevated
             RowLayout {
                 anchors.fill: parent; anchors.margins: 16; spacing: 14
                 Text { text: root.iconFor(root.condition); color: Theme.accent; font.family: Theme.fontFamily; font.pixelSize: 44 }
@@ -87,7 +87,7 @@ Item {
                 required property string feelsLikeValue
                 Layout.fillWidth: true
                 implicitHeight: 64
-                radius: 10
+                radius: Theme.radius
                 color: Theme.elevated
                 RowLayout {
                     anchors.fill: parent
@@ -115,7 +115,7 @@ Item {
                     required property string high
                     required property string summary
                     required property string rain
-                    Layout.fillWidth: true; implicitHeight: 52; radius: 8; color: Theme.elevated
+                    Layout.fillWidth: true; implicitHeight: 52; radius: Theme.radius; color: Theme.elevated
                     RowLayout {
                         anchors.fill: parent; anchors.margins: 10; spacing: 10
                         Text { text: Qt.formatDate(new Date(dateValue + "T12:00:00"), "ddd"); color: Theme.foreground; font.family: Theme.fontFamily; font.pixelSize: 10; font.weight: Font.DemiBold; Layout.preferredWidth: 32 }

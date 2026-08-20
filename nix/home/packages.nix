@@ -87,6 +87,7 @@ in
       podman-compose
       ffmpeg
       postgresql
+      cliamp
       helix
       superfile
       qemu

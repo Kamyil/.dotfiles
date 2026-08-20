@@ -19,7 +19,7 @@ TextField {
     selectByMouse: true
 
     background: Rectangle {
-        radius: 8
+        radius: Theme.radius
         color: control.enabled ? Theme.background : Theme.surface
         border.color: control.activeFocus ? Theme.accent : control.hovered ? Theme.muted : Theme.border
         border.width: control.activeFocus ? 2 : 1

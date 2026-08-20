@@ -37,6 +37,9 @@ ShellRoot {
     property string resourceMemoryUsed: "0.0"
     property string resourceMemoryTotal: "0.0"
     property int resourceMemory: 0
+    property int resourceSwap: 0
+    property string resourceSwapUsed: "0.0"
+    property string resourceSwapTotal: "0.0"
     property int resourceGpu: -1
     property int resourceSsd: 0
     property string resourceSsdUsed: "0.0"
@@ -197,6 +200,9 @@ ShellRoot {
                     root.resourceMemory = value.memory
                     root.resourceGpu = value.gpu
                     root.resourceMemoryUsed = value.memoryUsedGiB
+                    root.resourceSwap = value.swap
+                    root.resourceSwapUsed = value.swapUsedGiB
+                    root.resourceSwapTotal = value.swapTotalGiB
                     root.resourceMemoryTotal = value.memoryTotalGiB
                     root.resourceSsd = value.ssd
                     root.resourceSsdUsed = value.ssdUsedGiB
@@ -411,12 +417,15 @@ ShellRoot {
             PanelWindow {
                 id: bar
                 required property var modelData
-                exclusiveZone: 30
+                exclusiveZone: 38
                 screen: modelData
-                implicitHeight: 30
+                implicitHeight: 38
+                // Keep bar islands aligned with Hyprland's gaps_out.
+                readonly property int hyprlandMargin: 6
                 color: "transparent"
 
                 property string activePanel: ""
+                property bool panelReturnToLauncher: false
                 property Item panelAnchor: null
                 readonly property var audioSink: Pipewire.defaultAudioSink
                 readonly property int volume: audioSink && audioSink.audio ? Math.round(audioSink.audio.volume * 100) : 0
@@ -438,6 +447,9 @@ ShellRoot {
                 readonly property string resourceMemoryUsed: root.resourceMemoryUsed
                 readonly property string resourceMemoryTotal: root.resourceMemoryTotal
                 readonly property int resourceMemory: root.resourceMemory
+                readonly property int resourceSwap: root.resourceSwap
+                readonly property string resourceSwapUsed: root.resourceSwapUsed
+                readonly property string resourceSwapTotal: root.resourceSwapTotal
                 readonly property int resourceGpu: root.resourceGpu
                 readonly property int resourceSsd: root.resourceSsd
                 readonly property string resourceSsdUsed: root.resourceSsdUsed
@@ -491,7 +503,7 @@ ShellRoot {
                 }
 
 
-                function togglePanel(name, item) {
+                function togglePanel(name, item, returnToLauncher) {
                     if (activePanel === name) {
                         activePanel = ""
                         panel.visible = false
@@ -499,9 +511,14 @@ ShellRoot {
                     }
                     panel.visible = false
                     activePanel = name
+                    panelReturnToLauncher = returnToLauncher === true
                     panelAnchor = item
                     panel.anchor.item = item
                     panel.visible = true
+                    Qt.callLater(() => {
+                        if (panel.visible && contentLoader.item && contentLoader.item.forceActiveFocus)
+                            contentLoader.item.forceActiveFocus()
+                    })
                 }
                 IpcHandler {
                     target: "wallpaper"
@@ -528,7 +545,19 @@ ShellRoot {
                 anchors {
                     left: true
                     right: true
-                    bottom: true
+                    bottom: !bar.atTop
+                    top: bar.atTop
+                }
+
+                property bool atTop: false
+
+                function moveToTopOrBottom(y) {
+                    const nextAtTop = y < bar.height / 2
+                    if (nextAtTop !== bar.atTop) {
+                        bar.atTop = nextAtTop
+                        bar.activePanel = ""
+                        panel.visible = false
+                    }
                 }
 
                 Timer {
@@ -550,20 +579,40 @@ ShellRoot {
 
 
                 Item {
-                    anchors.fill: parent
-
                     Rectangle {
-                        anchors.left: parent.left
-                        anchors.leftMargin: 6
-                        anchors.bottom: parent.bottom
-                        implicitWidth: leftIslandRow.implicitWidth + 14
-                        implicitHeight: 30
-                        radius: 0
-                        topLeftRadius: 7
-                        topRightRadius: 7
+                        anchors.fill: parent
+                        anchors.topMargin: 3
+                        anchors.bottomMargin: 3
+                        anchors.leftMargin: bar.hyprlandMargin
+                        anchors.rightMargin: bar.hyprlandMargin
+                        radius: Theme.radius
                         color: Theme.background
                         border.color: Theme.border
                         border.width: 1
+                    }
+
+                    DragHandler {
+                        id: barDrag
+                        target: null
+                        acceptedButtons: Qt.LeftButton
+                        onActiveChanged: {
+                            if (!active)
+                                bar.moveToTopOrBottom(barDrag.centroid.position.y)
+                        }
+                    }
+
+                    anchors.fill: parent
+
+                    Rectangle {
+                        id: leftIsland
+                        anchors.left: parent.left
+                        anchors.leftMargin: bar.hyprlandMargin
+                        anchors.top: bar.atTop ? parent.top : undefined
+                        anchors.bottom: bar.atTop ? undefined : parent.bottom
+                        implicitWidth: leftIslandRow.implicitWidth + 14
+                        implicitHeight: 38
+                        color: "transparent"
+                        border.width: 0
                         Rectangle {
                             anchors.left: parent.left
                             anchors.right: parent.right
@@ -606,7 +655,7 @@ ShellRoot {
                                     visible: apps.length > 0
                                     implicitWidth: Math.max(24, workspaceContent.implicitWidth + 10)
                                     implicitHeight: 24
-                                    radius: 7
+                                    radius: Theme.radius
                                     color: focused ? Theme.elevated : workspaceMouse.containsMouse ? Theme.hover : "transparent"
                                     Row {
                                         id: workspaceContent
@@ -697,24 +746,14 @@ ShellRoot {
                     }
 
                     Rectangle {
+                        id: centerIsland
                         anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.bottom: parent.bottom
+                        anchors.top: bar.atTop ? parent.top : undefined
+                        anchors.bottom: bar.atTop ? undefined : parent.bottom
                         implicitWidth: centerIslandRow.implicitWidth + 14
-                        implicitHeight: 30
-                        radius: 0
-                        topLeftRadius: 7
-                        topRightRadius: 7
-                        color: Theme.background
-                        border.color: Theme.border
-                        border.width: 1
-                        Rectangle {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            height: 1
-                            color: Theme.background
-                            z: 2
-                        }
+                        implicitHeight: 38
+                        color: "transparent"
+                        border.width: 0
 
                         RowLayout {
                             id: centerIslandRow
@@ -740,25 +779,15 @@ ShellRoot {
                     }
 
                     Rectangle {
+                        id: rightIsland
                         anchors.right: parent.right
-                        anchors.rightMargin: 6
-                        anchors.bottom: parent.bottom
+                        anchors.rightMargin: bar.hyprlandMargin
+                        anchors.top: bar.atTop ? parent.top : undefined
+                        anchors.bottom: bar.atTop ? undefined : parent.bottom
                         implicitWidth: rightIslandRow.implicitWidth + 14
-                        implicitHeight: 30
-                        radius: 0
-                        topLeftRadius: 7
-                        topRightRadius: 7
-                        color: Theme.background
-                        border.color: Theme.border
-                        border.width: 1
-                        Rectangle {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            height: 1
-                            color: Theme.background
-                            z: 2
-                        }
+                        implicitHeight: 38
+                        color: "transparent"
+                        border.width: 0
 
                         RowLayout {
                             id: rightIslandRow
@@ -875,7 +904,7 @@ ShellRoot {
                                 Rectangle {
                                     anchors.fill: parent
                                     anchors.margins: 4
-                                    radius: 7
+                                    radius: Theme.radius
                                     color: Theme.surface
                                     border.color: Theme.border
                                     border.width: 1
@@ -897,7 +926,7 @@ ShellRoot {
                                                 required property var modelData
                                                 implicitWidth: 52
                                                 implicitHeight: 38
-                                                radius: 9
+                                                radius: Theme.radius
                                                 color: trayMouse.containsMouse ? Theme.hover : Theme.elevated
                                                 Image {
                                                     anchors.centerIn: parent
@@ -1059,7 +1088,7 @@ ShellRoot {
                     Rectangle {
                         anchors.fill: parent
                         anchors.margins: 4
-                        radius: 7
+                        radius: Theme.radius
                         color: Theme.surface
                         border.color: Theme.border
                         border.width: 1
@@ -1075,7 +1104,7 @@ ShellRoot {
                             Rectangle {
                                 Layout.preferredWidth: 72
                                 Layout.preferredHeight: 72
-                                radius: 9
+                                radius: Theme.radius
                                 color: Theme.elevated
                                 clip: true
 
@@ -1170,7 +1199,7 @@ ShellRoot {
                     Rectangle {
                         anchors.fill: parent
                         anchors.margins: 4
-                        radius: 7
+                        radius: Theme.radius
                         color: Theme.surface
                         border.color: Theme.border
                         border.width: 1
@@ -1203,8 +1232,12 @@ ShellRoot {
                     Shortcut {
                         sequence: "Escape"
                         onActivated: {
+                            const returnToLauncher = bar.panelReturnToLauncher
+                            bar.panelReturnToLauncher = false
                             panel.visible = false
                             bar.activePanel = ""
+                            if (returnToLauncher)
+                                launcherWindow.visible = true
                         }
                     }
                 }
@@ -1282,6 +1315,9 @@ ShellRoot {
                         ssd: bar.resourceSsd
                         ssdUsedGiB: bar.resourceSsdUsed
                         ssdTotalGiB: bar.resourceSsdTotal
+                        swap: bar.resourceSwap
+                        swapUsedGiB: bar.resourceSwapUsed
+                        swapTotalGiB: bar.resourceSwapTotal
                     }
                 }
                 Component {
@@ -1323,6 +1359,10 @@ ShellRoot {
             opacity: launcherWindow.visible ? 1 : 0
             scale: launcherWindow.visible ? 1 : 0.97
             onCloseRequested: launcherWindow.visible = false
+            onActionRequested: action => {
+                bar.togglePanel(action, launcherContent, true)
+                launcherWindow.visible = false
+            }
         }
         onVisibleChanged: if (visible) launcherContent.reset()
     }
@@ -1416,7 +1456,7 @@ ShellRoot {
                     required property string imageSource
                     Layout.fillWidth: true
                     implicitHeight: toastContent.implicitHeight + 24
-                    radius: 12
+                    radius: Theme.radius
                     color: Theme.surface
                     border.color: Theme.border
                     border.width: 1

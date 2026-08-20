@@ -79,7 +79,7 @@ Item {
     Process { id: paste; command: ["wtype", "-M", "ctrl", "-P", "v", "-p", "v", "-m", "ctrl"] }
     Timer { id: pasteDelay; interval: 180; onTriggered: paste.running = true }
     Rectangle {
-        anchors.fill: parent; radius: 7; color: Theme.surface; border.color: Theme.border
+        anchors.fill: parent; radius: Theme.radius; color: Theme.surface; border.color: Theme.border
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 10
             Heading { title: root.title; subtitle: root.mode === "image" ? "Copy an image to the clipboard" : "Select to copy" }
@@ -109,7 +109,7 @@ Item {
                     required property int index
                     width: emojiGrid.cellWidth
                     height: emojiGrid.cellHeight
-                    radius: 8
+                    radius: Theme.radius
                     color: index === root.selectedIndex ? Theme.elevated : emojiMouse.containsMouse ? Theme.hover : "transparent"
 
                     Text {
@@ -150,7 +150,7 @@ Item {
                             readonly property bool selected: index === root.selectedIndex
                             Layout.fillWidth: true
                             implicitHeight: root.mode === "image" ? 48 : 40
-                            radius: 8
+                            radius: Theme.radius
                             color: selected ? Theme.elevated : rowMouse.containsMouse ? Theme.hover : "transparent"
 
                             RowLayout {

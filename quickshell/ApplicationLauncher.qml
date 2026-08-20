@@ -9,6 +9,7 @@ Item {
     implicitWidth: 620
     implicitHeight: 520
     signal closeRequested()
+    signal actionRequested(string action)
     property string query: search.text
 
     function normalized(value) { return String(value || "").toLowerCase() }
@@ -26,7 +27,13 @@ Item {
         return -1
     }
     function results() {
-        const values = DesktopEntries.applications.values.filter(entry => entry && !entry.noDisplay && score(entry) >= 0)
+        const actions = [
+            { name: "WiFi", genericName: "Network settings and connections", keywords: "wifi wireless network", action: "network" },
+            { name: "Displays", genericName: "Brightness and monitor settings", keywords: "display monitor brightness", action: "display" }
+        ]
+        const apps = DesktopEntries.applications.values.filter(entry => entry && !entry.noDisplay && score(entry) >= 0)
+        const matches = actions.filter(entry => score(entry) >= 0)
+        const values = matches.concat(apps)
         values.sort((a, b) => {
             const difference = score(b) - score(a)
             return difference !== 0 ? difference : String(a.name).localeCompare(String(b.name))
@@ -35,8 +42,13 @@ Item {
     }
     function launch(entry) {
         if (!entry) return
-        entry.execute()
-        closeRequested()
+        if (entry.action) {
+            actionRequested(entry.action)
+            closeRequested()
+        } else {
+            entry.execute()
+            closeRequested()
+        }
     }
     function reset() {
         search.text = ""
@@ -62,7 +74,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 7
+        radius: Theme.radius
         color: Theme.surface
         border.color: Theme.border
         border.width: 1

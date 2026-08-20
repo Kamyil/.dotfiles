@@ -7,7 +7,7 @@ import "."
 Item {
     id: root
     implicitWidth: 340
-    implicitHeight: 310
+    implicitHeight: 370
 
     property bool externalMetrics: false
     property int cpu: 0
@@ -16,6 +16,9 @@ Item {
     property string memoryUsedGiB: "0.0"
     property string memoryTotalGiB: "0.0"
     property int ssd: 0
+    property int swap: 0
+    property string swapUsedGiB: "0.0"
+    property string swapTotalGiB: "0.0"
     property string ssdUsedGiB: "0.0"
     property string ssdTotalGiB: "0.0"
     property string error: ""
@@ -45,6 +48,9 @@ Item {
                     root.memoryUsedGiB = value.memoryUsedGiB
                     root.memoryTotalGiB = value.memoryTotalGiB
                     root.ssd = value.ssd
+                    root.swap = value.swap
+                    root.swapUsedGiB = value.swapUsedGiB
+                    root.swapTotalGiB = value.swapTotalGiB
                     root.ssdUsedGiB = value.ssdUsedGiB
                     root.ssdTotalGiB = value.ssdTotalGiB
                     root.gpu = value.gpu
@@ -93,13 +99,13 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             implicitHeight: 8
-            radius: 4
+            radius: Theme.radius
             color: Theme.elevated
 
             Rectangle {
                 width: parent.parent.available ? parent.width * Math.max(0, Math.min(100, parent.parent.value)) / 100 : 0
                 height: parent.height
-                radius: parent.radius
+                radius: Theme.radius
                 color: root.metricColor(parent.parent.value)
             }
         }
@@ -124,6 +130,13 @@ Item {
             label: "Memory"
             value: root.memory
             detail: root.memoryUsedGiB + " / " + root.memoryTotalGiB + " GiB  ·  " + root.memory + "%"
+        }
+
+        UsageRow {
+            label: "SWAP"
+            value: root.swap
+            available: root.swapTotalGiB !== "0.0"
+            detail: root.swapUsedGiB + " / " + root.swapTotalGiB + " GiB  ·  " + root.swap + "%"
         }
 
         UsageRow {

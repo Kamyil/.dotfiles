@@ -53,7 +53,7 @@ hl.config({
 	},
 
 	decoration = {
-		rounding = 7,
+		rounding = 0,
 		blur = {
 			enabled = false,
 		},

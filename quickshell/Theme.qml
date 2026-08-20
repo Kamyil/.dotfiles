@@ -15,4 +15,5 @@ QtObject {
     readonly property color warning: "#a7956a"
     readonly property color danger: "#c27672"
     readonly property string fontFamily: "Berkeley Mono SemiBold SemiCondensed"
+    readonly property real radius: 0
 }

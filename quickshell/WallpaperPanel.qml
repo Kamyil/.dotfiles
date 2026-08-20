@@ -126,7 +126,7 @@ Item {
                     anchors.fill: parent
                     anchors.rightMargin: 6
                     anchors.bottomMargin: 6
-                    radius: 7
+                    radius: Theme.radius
                     color: Theme.elevated
                     border.color: card.selected ? Theme.accent : cardMouse.containsMouse ? Theme.muted : Theme.border
                     border.width: card.selected ? 2 : 1

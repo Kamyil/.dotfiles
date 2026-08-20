@@ -14,7 +14,7 @@ Rectangle {
 
     Layout.fillWidth: true
     implicitHeight: subtitle.length > 0 ? 48 : 40
-    radius: 8
+    radius: Theme.radius
     color: selected ? Theme.elevated : mouse.containsMouse ? Theme.hover : "transparent"
 
     Item {
