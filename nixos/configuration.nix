@@ -78,6 +78,8 @@ in
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
 
+  # Allow cross-building aarch64 NixOS images on this x86_64 laptop.
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10;

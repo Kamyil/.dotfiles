@@ -30,6 +30,8 @@ let
     ".config/zennotes" = "zennotes";
     ".pi/agent" = "pi/agent";
     "second-brain/.obsidian" = "obsidian";
+    ".omp/agent/AGENTS.md" = "omp/agent/AGENTS.md";
+    ".omp/agent/skills" = "omp/agent/skills";
     ".omp/agent/themes" = "pi/agent/themes";
     "second-brain/.obsidian.vimrc" = "obsidian/obsidian.vimrc";
   };
