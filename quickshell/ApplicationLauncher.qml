@@ -19,11 +19,14 @@ Item {
         const name = normalized(entry.name)
         const generic = normalized(entry.genericName)
         const keywords = normalized(entry.keywords)
+        const id = normalized(entry.id)
+        const command = normalized(entry.command)
         if (name === needle) return 100
         if (name.startsWith(needle)) return 80
         if (name.includes(needle)) return 60
         if (generic.includes(needle)) return 40
         if (keywords.includes(needle)) return 20
+        if (id.includes(needle) || command.includes(needle)) return 20
         return -1
     }
     function results() {
