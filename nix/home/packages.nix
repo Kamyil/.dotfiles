@@ -20,6 +20,7 @@ in
     with pkgs;
     [
       ripgrep
+      codex
       diskonaut
       slk
       aerc
@@ -86,6 +87,7 @@ in
       podman
       podman-compose
       ffmpeg
+      yt-dlp
       postgresql
       cliamp
       helix

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+file="${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/ytdlp-preferences.json"
+mkdir -p "$(dirname "$file")"
+case "${1:-get}" in
+  get) [[ -f "$file" ]] && cat "$file" || printf '{}\n' ;;
+  set) printf '%s\n' "${2:?missing json}" > "$file.tmp"; mv "$file.tmp" "$file" ;;
+  *) exit 2 ;;
+esac

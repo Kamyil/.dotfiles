@@ -1,0 +1,551 @@
+#!/usr/bin/env bash
+#
+# ytdlp-queue - a download queue for yt-dlp.
+#
+# The bar widget never runs yt-dlp itself. It asks this script, and this script
+# owns the queue: one download at a time, every job on disk. A restart of the
+# shell therefore does not take a running download down with it, and the widget
+# finds the queue as it left it.
+#
+# Commands:
+#   add <url> [--mode video|audio] [--quality best|<height>]
+#            [--audio-format keep|<format>] [--dest <dir>]
+#   list                  every job as a JSON array, oldest first
+#   cancel <id>           stop a running job, drop a queued one
+#   clear                 forget every finished, failed and cancelled job
+#   default-dest          the directory a job lands in when none is given
+#   complete-dir <prefix> directories that continue the prefix, and their
+#                         longest common start
+#   checkout status [--dir <dir>]   what sits in the checkout folder
+#   checkout sync   [--dir <dir>]   clone it, or pull it if it is already there
+#   binary                which yt-dlp runs, where it comes from, its version
+#   worker                internal: work the queue until it runs dry
+
+set -euo pipefail
+shopt -s nullglob
+
+# The checkout wins over the package. Arch lags weeks behind, and YouTube breaks
+# yt-dlp often enough that those weeks are the difference between a download and
+# a 403. The package stays as the fallback, so moving the checkout away costs
+# convenience but not the plugin.
+#
+# Where the checkout sits differs from machine to machine, so callers pass the
+# folder in. This is only the value used when nobody says otherwise.
+readonly DEFAULT_CHECKOUT="$HOME/src/github.com/yt-dlp"
+readonly PACKAGE_YT_DLP=/usr/bin/yt-dlp
+readonly CHECKOUT_ORIGIN="https://github.com/yt-dlp/yt-dlp.git"
+
+readonly STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy-ytdlp"
+readonly JOBS_DIR="$STATE_DIR/jobs"
+readonly LOGS_DIR="$STATE_DIR/logs"
+readonly LOCK_FILE="$STATE_DIR/worker.lock"
+
+# Marks the lines yt-dlp writes for our progress template. Everything else it
+# prints is log, so the two need to be told apart on one stream.
+readonly PROGRESS_MARK="__ytdlp_queue_progress__"
+
+readonly SELF="$(readlink -f "$0")"
+
+ensure_dirs() {
+  mkdir -p "$JOBS_DIR" "$LOGS_DIR"
+}
+
+checkout_script() {
+  local dir
+  dir="$(expand_home "${1:-$DEFAULT_CHECKOUT}")"
+  [ -n "$dir" ] || dir="$DEFAULT_CHECKOUT"
+  printf '%s/yt-dlp.sh' "${dir%/}"
+}
+
+resolve_yt_dlp() {
+  local script
+  script="$(checkout_script "${1:-}")"
+  if [ -x "$script" ]; then
+    printf '%s' "$script"
+    return 0
+  fi
+  if [ -x "$PACKAGE_YT_DLP" ]; then
+    printf '%s' "$PACKAGE_YT_DLP"
+    return 0
+  fi
+  local packaged
+  packaged="$(command -v yt-dlp 2>/dev/null || true)"
+  if [ -x "$packaged" ]; then
+    printf '%s' "$packaged"
+    return 0
+  fi
+  return 1
+}
+
+cmd_binary() {
+  local dir="$DEFAULT_CHECKOUT"
+  while (($#)); do
+    case "$1" in
+      --dir) dir="${2:-}"; shift 2 ;;
+      *) die "unknown option: $1" 2 ;;
+    esac
+  done
+
+  local path source version
+  if ! path="$(resolve_yt_dlp "$dir")"; then
+    jq -n '{ path: "", source: "", version: "" }'
+    return 0
+  fi
+  if [ "$path" = "$(checkout_script "$dir")" ]; then source="checkout"; else source="package"; fi
+  version="$("$path" --version 2>/dev/null | tail -1 || true)"
+  jq -n --arg path "$path" --arg source "$source" --arg version "$version" \
+    '{ path: $path, source: $source, version: $version }'
+}
+
+checkout_status() {
+  local dir="$1"
+  local exists=false is_repo=false runnable=false head="" head_date=""
+  [ -d "$dir" ] && exists=true
+  if [ -d "$dir/.git" ]; then
+    is_repo=true
+    head="$(git -C "$dir" log -1 --format=%h 2>/dev/null || true)"
+    head_date="$(git -C "$dir" log -1 --format=%cs 2>/dev/null || true)"
+  fi
+  [ -x "$dir/yt-dlp.sh" ] && runnable=true
+  jq -n --arg dir "$dir" --argjson exists "$exists" --argjson isRepo "$is_repo" \
+    --argjson runnable "$runnable" --arg head "$head" --arg headDate "$head_date" \
+    '{ dir: $dir, exists: $exists, isRepo: $isRepo, runnable: $runnable,
+       head: $head, headDate: $headDate }'
+}
+
+# Runs in a terminal, so its output is meant for a person to read.
+checkout_sync() {
+  local dir="$1"
+  [ -n "$dir" ] || die "no checkout folder given" 2
+
+  if [ -d "$dir/.git" ]; then
+    printf 'Updating the yt-dlp checkout in %s\n\n' "$dir"
+    git -C "$dir" pull --ff-only
+  else
+    # A folder that holds something else is never touched. Cloning into it
+    # would mix two unrelated trees, and there is no way back from that.
+    if [ -e "$dir" ] && [ -n "$(ls -A "$dir" 2>/dev/null)" ]; then
+      die "$dir already holds something that is not a yt-dlp checkout" 1
+    fi
+    printf 'Cloning yt-dlp into %s\n\n' "$dir"
+    mkdir -p "$dir"
+    git clone "$CHECKOUT_ORIGIN" "$dir"
+  fi
+
+  printf '\nyt-dlp is now at '
+  "$dir/yt-dlp.sh" --version 2>/dev/null | tail -1 || printf 'an unknown version\n'
+}
+
+cmd_checkout() {
+  local action="${1:-status}"
+  shift || true
+  local dir="$DEFAULT_CHECKOUT"
+  while (($#)); do
+    case "$1" in
+      --dir) dir="${2:-}"; shift 2 ;;
+      *) die "unknown option: $1" 2 ;;
+    esac
+  done
+  dir="$(expand_home "$dir")"
+  dir="${dir%/}"
+  [ -n "$dir" ] || dir="$DEFAULT_CHECKOUT"
+
+  case "$action" in
+    status) checkout_status "$dir" ;;
+    sync) checkout_sync "$dir" ;;
+    *) die "unknown checkout action: $action" 2 ;;
+  esac
+}
+
+job_file() { printf '%s/%s.json' "$JOBS_DIR" "$1"; }
+progress_file() { printf '%s/%s.progress' "$JOBS_DIR" "$1"; }
+log_file() { printf '%s/%s.log' "$LOGS_DIR" "$1"; }
+
+die() {
+  printf '%s\n' "$1" >&2
+  exit "${2:-1}"
+}
+
+job_field() {
+  local file
+  file="$(job_file "$1")"
+  [ -f "$file" ] || return 1
+  jq -r --arg field "$2" '.[$field] // "" | tostring' "$file"
+}
+
+# Every write goes through a temporary file. A reader that catches the moment
+# would otherwise parse half a job and report the queue as broken.
+write_atomic() {
+  local target="$1"
+  cat > "$target.tmp"
+  mv "$target.tmp" "$target"
+}
+
+update_job() {
+  local id="$1"
+  shift
+  local file
+  file="$(job_file "$id")"
+  [ -f "$file" ] || return 0
+  jq "$@" "$file" | write_atomic "$file"
+}
+
+now() { date -u +%Y-%m-%dT%H:%M:%SZ; }
+
+expand_home() {
+  case "$1" in
+    "~") printf '%s' "$HOME" ;;
+    "~/"*) printf '%s/%s' "$HOME" "${1#\~/}" ;;
+    *) printf '%s' "$1" ;;
+  esac
+}
+
+cmd_default_dest() {
+  local dir
+  dir="$(xdg-user-dir DOWNLOAD 2>/dev/null || true)"
+  [ -n "$dir" ] || dir="$HOME/Downloads"
+  printf '%s\n' "$dir"
+}
+
+# The longest start every candidate shares. Typing stops where the choices
+# begin to differ, which is the whole point of a completion.
+common_prefix() {
+  local result="${1:-}"
+  shift || true
+  local candidate
+  for candidate in "$@"; do
+    while [ -n "$result" ] && [ "${candidate#"$result"}" = "$candidate" ]; do
+      result="${result%?}"
+    done
+    [ -n "$result" ] || break
+  done
+  printf '%s' "$result"
+}
+
+cmd_complete_dir() {
+  local prefix
+  prefix="$(expand_home "${1:-}")"
+  [ -n "$prefix" ] || prefix="$HOME/"
+
+  local dir base
+  case "$prefix" in
+    */) dir="${prefix%/}"; base="" ;;
+    *) dir="$(dirname "$prefix")"; base="$(basename "$prefix")" ;;
+  esac
+  [ -n "$dir" ] || dir="/"
+
+  local found=()
+  local entry
+  while IFS= read -r entry; do
+    # A dot directory only shows up once someone asks for one by name.
+    case "$(basename "$entry")" in
+      .*) [ "${base:0:1}" = "." ] || continue ;;
+    esac
+    found+=("$entry/")
+  done < <(find "$dir" -mindepth 1 -maxdepth 1 -type d -name "$base*" 2>/dev/null | sort)
+
+  # The common start is taken from every candidate, the list only from the
+  # first few. `total` says how many there were, so a shortened list never
+  # passes for a complete one.
+  local common=""
+  [ ${#found[@]} -gt 0 ] && common="$(common_prefix "${found[@]}")"
+
+  local matches=( "${found[@]:0:20}" )
+
+  jq -n --arg common "$common" --argjson total "${#found[@]}" --args \
+    '{ common: $common, total: $total, matches: $ARGS.positional }' "${matches[@]}"
+}
+
+cmd_add() {
+  local url="" mode="video" quality="best" audio_format="keep" dest=""
+  local checkout="$DEFAULT_CHECKOUT"
+  while (($#)); do
+    case "$1" in
+      --checkout) checkout="${2:-}"; shift 2 ;;
+      --mode) mode="${2:-}"; shift 2 ;;
+      --quality) quality="${2:-}"; shift 2 ;;
+      --audio-format) audio_format="${2:-}"; shift 2 ;;
+      --dest) dest="${2:-}"; shift 2 ;;
+      --) shift; url="${1:-}"; shift || true ;;
+      -*) die "unknown option: $1" 2 ;;
+      *) url="$1"; shift ;;
+    esac
+  done
+
+  case "$url" in
+    http://*|https://*) ;;
+    "") die "no url given" 2 ;;
+    *) die "not a link: $url" 2 ;;
+  esac
+
+  case "$mode" in
+    video|audio) ;;
+    *) die "unknown mode: $mode" 2 ;;
+  esac
+
+  case "$audio_format" in
+    keep|mp3|m4a|opus|flac|wav) ;;
+    *) die "unknown audio format: $audio_format" 2 ;;
+  esac
+
+  checkout="$(expand_home "$checkout")"
+  checkout="${checkout%/}"
+  [ -n "$checkout" ] || checkout="$DEFAULT_CHECKOUT"
+
+  resolve_yt_dlp "$checkout" >/dev/null \
+    || die "no yt-dlp found: neither $(checkout_script "$checkout") nor $PACKAGE_YT_DLP" 3
+
+  dest="$(expand_home "${dest:-}")"
+  [ -n "$dest" ] || dest="$(cmd_default_dest)"
+
+  ensure_dirs
+  local id
+  id="$(date +%s%N)"
+  jq -n \
+    --arg id "$id" \
+    --arg url "$url" \
+    --arg mode "$mode" \
+    --arg quality "$quality" \
+    --arg audioFormat "$audio_format" \
+    --arg checkout "$checkout" \
+    --arg dest "$dest" \
+    --arg added "$(now)" \
+    '{ id: $id, url: $url, mode: $mode, quality: $quality,
+       audioFormat: $audioFormat, checkout: $checkout, dest: $dest,
+       status: "queued", added: $added, title: "", error: "", pid: 0 }' \
+    | write_atomic "$(job_file "$id")"
+
+  start_worker
+  printf '%s\n' "$id"
+}
+
+# The worker takes the lock itself and leaves at once when another one holds it,
+# so calling this after every add costs nothing but the one process.
+start_worker() {
+  setsid "$SELF" worker >/dev/null 2>&1 </dev/null &
+  disown 2>/dev/null || true
+}
+
+cmd_list() {
+  ensure_dirs
+  local files=( "$JOBS_DIR"/*.json )
+  if [ ${#files[@]} -eq 0 ]; then
+    printf '[]\n'
+    return 0
+  fi
+
+  # Progress changes many times a second. It lives beside the job rather than
+  # inside it, so a running download does not rewrite its job file constantly.
+  local live="" id progress
+  for file in "${files[@]}"; do
+    id="$(basename "$file" .json)"
+    progress="$(cat "$(progress_file "$id")" 2>/dev/null || true)"
+    [ -n "$progress" ] && live+="$id"$'\t'"$progress"$'\n'
+  done
+
+  jq -s --arg live "$live" '
+    ($live
+      | split("\n")
+      | map(select(length > 0) | split("\t"))
+      | map({ key: .[0], value: { percent: ((.[1] | tonumber?) // null),
+                                  speed: (.[2] // "" | sub("^\\s+"; "") | sub("\\s+$"; "")),
+                                  eta: (.[3] // "" | sub("^\\s+"; "") | sub("\\s+$"; "")) } })
+      | from_entries) as $progress
+    | map(. + ($progress[.id] // {}))
+    | sort_by(.added)
+  ' "${files[@]}"
+}
+
+cmd_cancel() {
+  local id="${1:-}"
+  [ -n "$id" ] || die "no job given" 2
+  [ -f "$(job_file "$id")" ] || die "no such job: $id" 1
+
+  local status pid
+  status="$(job_field "$id" status)"
+  pid="$(job_field "$id" pid)"
+
+  case "$status" in
+    queued|running) ;;
+    *) die "job is already $status: $id" 1 ;;
+  esac
+
+  # The status is set before the signal. The worker reads it back when yt-dlp
+  # dies and must not mistake a cancelled job for a failed one.
+  update_job "$id" --arg status cancelled --arg finished "$(now)" \
+    '.status = $status | .finished = $finished'
+
+  if [ "$status" = "running" ] && [ -n "$pid" ] && [ "$pid" != "0" ]; then
+    kill -TERM "$pid" 2>/dev/null || true
+  fi
+}
+
+cmd_clear() {
+  ensure_dirs
+  local id status
+  for file in "$JOBS_DIR"/*.json; do
+    id="$(basename "$file" .json)"
+    status="$(jq -r '.status' "$file")"
+    case "$status" in
+      done|failed|cancelled)
+        rm -f "$file" "$(progress_file "$id")" "$(log_file "$id")"
+        ;;
+    esac
+  done
+}
+
+next_queued() {
+  local file status
+  for file in "$JOBS_DIR"/*.json; do
+    status="$(jq -r '.status' "$file")"
+    if [ "$status" = "queued" ]; then
+      basename "$file" .json
+      return 0
+    fi
+  done
+  return 1
+}
+
+format_args() {
+  local mode="$1" quality="$2" audio_format="$3"
+  if [ "$mode" = "audio" ]; then
+    printf '%s\n' --format "ba/b" --extract-audio
+    # "keep" forces no container: re-encoding a stream that already plays
+    # costs time and quality for nothing. Any other value is a deliberate ask.
+    [ "$audio_format" = "keep" ] || printf '%s\n' --audio-format "$audio_format"
+    return 0
+  fi
+  if [ "$quality" = "best" ]; then
+    printf '%s\n' --format "bv*+ba/b"
+  else
+    printf '%s\n' --format "bv*[height<=$quality]+ba/b[height<=$quality]/b"
+  fi
+}
+
+run_job() {
+  local id="$1"
+  local url mode quality audio_format checkout dest
+  url="$(job_field "$id" url)"
+  mode="$(job_field "$id" mode)"
+  quality="$(job_field "$id" quality)"
+  audio_format="$(job_field "$id" audioFormat)"
+  [ -n "$audio_format" ] || audio_format="keep"
+  checkout="$(job_field "$id" checkout)"
+  [ -n "$checkout" ] || checkout="$DEFAULT_CHECKOUT"
+  dest="$(job_field "$id" dest)"
+
+  local log progress
+  log="$(log_file "$id")"
+  progress="$(progress_file "$id")"
+  : > "$log"
+
+  if ! mkdir -p "$dest" 2>>"$log"; then
+    update_job "$id" --arg status failed --arg error "cannot create $dest" \
+      --arg finished "$(now)" \
+      '.status = $status | .error = $error | .finished = $finished'
+    return 0
+  fi
+
+  local tab=$'\t'
+  local template="download:${PROGRESS_MARK}%(progress._percent_str)s${tab}%(progress._speed_str)s${tab}%(progress._eta_str)s${tab}%(info.title)s"
+
+  local args=(
+    --newline
+    --no-colors
+    --ignore-config
+    --no-playlist
+    --paths "$dest"
+    --output '%(title)s [%(id)s].%(ext)s'
+    --progress-template "$template"
+  )
+  local extra
+  mapfile -t extra < <(format_args "$mode" "$quality" "$audio_format")
+  args+=( "${extra[@]}" )
+
+  local fifo="$STATE_DIR/$id.fifo"
+  rm -f "$fifo"
+  mkfifo "$fifo"
+
+  local binary
+  binary="$(resolve_yt_dlp "$checkout")"
+
+  "$binary" "${args[@]}" -- "$url" >"$fifo" 2>&1 &
+  local pid=$!
+
+  update_job "$id" --arg status running --arg started "$(now)" --argjson pid "$pid" \
+    '.status = $status | .started = $started | .pid = $pid'
+
+  local line rest percent speed eta title
+  local title_seen=0
+  while IFS= read -r line; do
+    case "$line" in
+      "$PROGRESS_MARK"*)
+        rest="${line#"$PROGRESS_MARK"}"
+        IFS=$'\t' read -r percent speed eta title <<<"$rest"
+        printf '%s\t%s\t%s\n' "${percent//[ %]/}" "$speed" "$eta" | write_atomic "$progress"
+        if [ "$title_seen" -eq 0 ] && [ -n "${title:-}" ] && [ "$title" != "NA" ]; then
+          update_job "$id" --arg title "$title" '.title = $title'
+          title_seen=1
+        fi
+        ;;
+      *)
+        printf '%s\n' "$line" >> "$log"
+        ;;
+    esac
+  done < "$fifo"
+
+  local rc=0
+  wait "$pid" || rc=$?
+  rm -f "$fifo" "$progress"
+
+  if [ "$(job_field "$id" status)" = "cancelled" ]; then
+    update_job "$id" --argjson pid 0 '.pid = $pid'
+    return 0
+  fi
+
+  if [ "$rc" -eq 0 ]; then
+    update_job "$id" --arg status done --arg finished "$(now)" --argjson pid 0 \
+      '.status = $status | .finished = $finished | .pid = $pid'
+    return 0
+  fi
+
+  local error
+  error="$(grep -a 'ERROR' "$log" | tail -1 || true)"
+  [ -n "$error" ] || error="yt-dlp exited with $rc"
+  update_job "$id" --arg status failed --arg error "$error" --arg finished "$(now)" \
+    --argjson pid 0 \
+    '.status = $status | .error = $error | .finished = $finished | .pid = $pid'
+}
+
+cmd_worker() {
+  ensure_dirs
+  exec 9>"$LOCK_FILE"
+  flock -n 9 || exit 0
+  local id
+  while id="$(next_queued)"; do
+    [ -n "$id" ] || break
+    run_job "$id"
+  done
+}
+
+main() {
+  local command="${1:-}"
+  shift || true
+  case "$command" in
+    add) cmd_add "$@" ;;
+    list) cmd_list ;;
+    cancel) cmd_cancel "$@" ;;
+    clear) cmd_clear ;;
+    default-dest) cmd_default_dest ;;
+    complete-dir) cmd_complete_dir "$@" ;;
+    checkout) cmd_checkout "$@" ;;
+    binary) cmd_binary "$@" ;;
+    worker) cmd_worker ;;
+    ""|-h|--help)
+      awk 'NR > 2 && /^#/ { sub(/^# ?/, ""); print; next } NR > 2 { exit }' "$SELF"
+      ;;
+    *) die "unknown command: $command" 2 ;;
+  esac
+}
+
+main "$@"

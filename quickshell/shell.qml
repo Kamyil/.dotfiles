@@ -533,6 +533,18 @@ ShellRoot {
                     }
                 }
                 IpcHandler {
+                    target: "ytdlp"
+                    function toggle(): void { bar.togglePanel("ytdlp", ytdlpButton) }
+                    function show(): void {
+                        if (bar.activePanel !== "ytdlp")
+                            bar.togglePanel("ytdlp", ytdlpButton)
+                    }
+                    function hide(): void {
+                        if (bar.activePanel === "ytdlp")
+                            bar.togglePanel("ytdlp", ytdlpButton)
+                    }
+                }
+                IpcHandler {
                     target: "focus"
                     function toggle(): void { bar.togglePanel("focus", focusButton) }
                     function show(): void {
@@ -638,6 +650,12 @@ ShellRoot {
                             active: launcherWindow.visible
                             accessibleName: "Application launcher"
                             onClicked: launcherWindow.visible = !launcherWindow.visible
+                        }
+                        BarButton {
+                            icon: "󰚩"
+                            active: bar.activePanel === "agents"
+                            accessibleName: "Agent usage limits"
+                            onClicked: anchor => bar.togglePanel("agents", anchor)
                         }
 
 
@@ -970,11 +988,12 @@ ShellRoot {
                                             onClicked: controlsReveal.toggleOverflowPanel("notifications")
                                         }
                                         BarButton {
+                                            id: ytdlpButton
                                             tile: true
-                                            icon: "󰸉"
-                                            active: bar.activePanel === "wallpaper"
-                                            accessibleName: "Wallpapers"
-                                            onClicked: controlsReveal.toggleOverflowPanel("wallpaper")
+                                            icon: "󰗼"
+                                            active: bar.activePanel === "ytdlp"
+                                            accessibleName: "yt-dlp downloads"
+                                            onClicked: controlsReveal.toggleOverflowPanel("ytdlp")
                                         }
                                         BarButton {
                                             tile: true
@@ -1221,10 +1240,12 @@ ShellRoot {
                                 : bar.activePanel === "power" ? powerComponent
                                 : bar.activePanel === "clock" ? clockComponent
                                 : bar.activePanel === "system" ? systemComponent
+                                : bar.activePanel === "agents" ? agentsComponent
                                 : bar.activePanel === "resources" ? resourcesComponent
                                 : bar.activePanel === "recorder" ? recorderComponent
                                 : bar.activePanel === "wallpaper" ? wallpaperComponent
                                 : bar.activePanel === "focus" ? focusComponent
+                                : bar.activePanel === "ytdlp" ? ytdlpComponent
                                 : null
                         }
                     }
@@ -1283,6 +1304,7 @@ ShellRoot {
                 }
                 Component { id: powerComponent; PowerPanel {} }
                 Component { id: clockComponent; CalendarPanel {} }
+                Component { id: agentsComponent; AgentsPanel {} }
                 Component {
                     id: focusComponent
                     FocusPanel {
@@ -1302,6 +1324,7 @@ ShellRoot {
                         }
                     }
                 }
+                Component { id: ytdlpComponent; YtdlpPanel {} }
                 Component { id: wallpaperComponent; WallpaperPanel {} }
                 Component {
                     id: resourcesComponent
