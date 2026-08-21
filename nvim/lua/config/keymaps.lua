@@ -81,6 +81,10 @@ require('fzf-lua').setup({
 local fzf_lua = require('fzf-lua')
 
 local function dupa() end
+keymap('n', '<A-e>', function()
+	require('buffer_manager.ui').toggle_quick_menu()
+end, { desc = 'Buffer Manager' })
+
 
 local function run_from_edit_window(fn)
 	local current_win = vim.api.nvim_get_current_win()

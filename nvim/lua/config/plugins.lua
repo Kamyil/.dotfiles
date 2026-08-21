@@ -281,6 +281,8 @@ require('lazy').setup({
       -- Jump with Alt+1..9, close with `ga`, pick with `ge` (see keymaps.lua)
     },
   },
+  -- plugin for managing buffers in handy list
+  {'j-morano/buffer_manager.nvim', lazy = false },
 
   -- Markdown notetaking
   'epwalsh/obsidian.nvim',

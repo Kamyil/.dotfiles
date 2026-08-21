@@ -97,9 +97,9 @@ hl.animation({ leaf = "layers", enabled = true, speed = 1.2, bezier = "default",
 hl.animation({ leaf = "fade", enabled = true, speed = 1.2, bezier = "default" })
 hl.animation({ leaf = "workspaces", enabled = true, speed = 1.4, bezier = "default", style = "slidefade 8%" })
 hl.workspace_rule({ workspace = "special:spotify", animation = "fade" })
-hl.workspace_rule({ workspace = "special:chatgpt", animation = "slidefade 8%" })
-hl.workspace_rule({ workspace = "special:messenger", animation = "slidefade 8%" })
-hl.workspace_rule({ workspace = "special:todoist", animation = "slidefade 8%" })
+hl.workspace_rule({ workspace = "special:chatgpt", animation = "fade" })
+hl.workspace_rule({ workspace = "special:messenger", animation = "fade" })
+hl.workspace_rule({ workspace = "special:todoist", animation = "fade" })
 
 -- Mark terminals so universal clipboard shortcuts can use terminal-safe chords.
 hl.window_rule({
@@ -120,49 +120,49 @@ hl.window_rule({
 	size = { "monitor_w * 0.5", "monitor_h * 0.5" },
 })
 
--- Full application windows presented as edge-aligned overlay panels.
+-- Special workspace applications use centered, modal-style windows.
 hl.window_rule({
-	name = "spotify-side-panel",
+	name = "spotify-modal",
 	match = {
 		class = "^(Spotify)$",
 	},
 	workspace = "special:spotify",
 	float = true,
-	size = { 520, "monitor_h * 0.94" },
-	move = { 12, "monitor_h * 0.03" },
+	center = true,
+	size = { "monitor_w * 0.7", "monitor_h * 0.85" },
 })
 
 hl.window_rule({
-	name = "chatgpt-side-panel",
+	name = "chatgpt-modal",
 	match = {
 		class = "^(chrome-chatgpt.com__-Default)$",
 	},
 	workspace = "special:chatgpt",
 	float = true,
-	size = { 620, "monitor_h * 0.94" },
-	move = { "monitor_w - 632", "monitor_h * 0.03" },
+	center = true,
+	size = { "monitor_w * 0.7", "monitor_h * 0.85" },
 })
 
 hl.window_rule({
-	name = "messenger-side-panel",
+	name = "messenger-modal",
 	match = {
 		class = "^(chrome-www.messenger.com__-Default)$",
 	},
 	workspace = "special:messenger",
 	float = true,
-	size = { 620, "monitor_h * 0.94" },
-	move = { "monitor_w - 632", "monitor_h * 0.03" },
+	center = true,
+	size = { "monitor_w * 0.7", "monitor_h * 0.85" },
 })
 
 hl.window_rule({
-	name = "todoist-side-panel",
+	name = "todoist-modal",
 	match = {
 		class = "^(chrome-app.todoist.com__-Default)$",
 	},
 	workspace = "special:todoist",
 	float = true,
-	size = { 620, "monitor_h * 0.94" },
-	move = { "monitor_w - 632", "monitor_h * 0.03" },
+	center = true,
+	size = { "monitor_w * 0.7", "monitor_h * 0.85" },
 })
 
 -- Inject shortcuts without SUPER: a virtual keyboard would merge the physically
