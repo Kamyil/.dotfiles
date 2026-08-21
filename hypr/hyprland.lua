@@ -101,6 +101,15 @@ hl.workspace_rule({ workspace = "special:chatgpt", animation = "slidefade 8%" })
 hl.workspace_rule({ workspace = "special:messenger", animation = "slidefade 8%" })
 hl.workspace_rule({ workspace = "special:todoist", animation = "slidefade 8%" })
 
+-- Mark terminals so universal clipboard shortcuts can use terminal-safe chords.
+hl.window_rule({
+	name = "terminal-apps",
+	match = {
+		class = "^(kitty|tui-float)$",
+	},
+	tag = "+terminal",
+})
+
 hl.window_rule({
 	name = "tui-float-windows",
 	match = {
@@ -156,13 +165,51 @@ hl.window_rule({
 	move = { "monitor_w - 632", "monitor_h * 0.03" },
 })
 
+-- Inject shortcuts without SUPER: a virtual keyboard would merge the physically
+-- held modifier into the chord. Splitting down/up avoids stuck synthetic keys.
+local function send_shortcut_once(mods, key)
+	return function()
+		hl.dispatch(hl.dsp.send_key_state({ mods = mods, key = key, state = "down" }))
+		hl.timer(function()
+			hl.dispatch(hl.dsp.send_key_state({ mods = mods, key = key, state = "up" }))
+		end, { timeout = 50, type = "oneshot" })
+	end
+end
+
+local function active_window_is_terminal()
+	local window = hl.get_active_window()
+	if not window then
+		return false
+	end
+
+	for _, tag in ipairs(window.tags or {}) do
+		if tag:gsub("%*$", "") == "terminal" then
+			return true
+		end
+	end
+
+	return false
+end
+
+local function universal_clipboard_shortcut(default_mods, default_key, terminal_mods, terminal_key)
+	return function()
+		if active_window_is_terminal() then
+			send_shortcut_once(terminal_mods, terminal_key)()
+		else
+			send_shortcut_once(default_mods, default_key)()
+		end
+	end
+end
+
 local mainMod = "SUPER"
 
 -- Core applications
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("kitty"))
 hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("quickshell ipc call launcher toggle"))
 hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd("quickshell ipc call picker emoji"))
-hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("quickshell ipc call picker clipboard"))
+hl.bind(mainMod .. " + C", universal_clipboard_shortcut("CTRL", "C", "CTRL", "Insert"))
+hl.bind(mainMod .. " + V", universal_clipboard_shortcut("CTRL", "V", "SHIFT", "Insert"))
+hl.bind(mainMod .. " + CTRL + V", hl.dsp.exec_cmd("quickshell ipc call picker clipboard"))
 hl.bind(mainMod .. " + SHIFT + I", hl.dsp.exec_cmd("quickshell ipc call picker image"))
 -- hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("foot --app-id=tui-float nmtui"))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh todoist"))
