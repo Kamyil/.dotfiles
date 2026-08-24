@@ -69,9 +69,15 @@ if [[ -L "$current_link" ]]; then
 fi
 "$repo_root/scripts/theme-render" "$bundle" "$next_dir"
 printf '%s\n' "$command" > "$next_dir/theme.name"
+if [[ -d "$bundle/backgrounds" ]]; then
+  ln -s -- "$bundle/backgrounds" "$next_dir/backgrounds"
+fi
 ln -sfn -- "$next_dir" "$current_link"
 if [[ -n "$old_target" && "$old_target" == "$state_dir"/.next-* && "$old_target" != "$next_dir" ]]; then
   rm -rf -- "$old_target"
+fi
+if [[ -x "$repo_root/quickshell/wallpaper-control.sh" ]]; then
+  "$repo_root/quickshell/wallpaper-control.sh" theme >/dev/null 2>&1 || true
 fi
 
 if command -v kitty >/dev/null 2>&1; then
