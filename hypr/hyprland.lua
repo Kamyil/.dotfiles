@@ -220,6 +220,7 @@ local mainMod = "SUPER"
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("kitty"))
 hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("quickshell ipc call launcher toggle"))
 hl.bind(mainMod .. " + ALT + Space", hl.dsp.exec_cmd("quickshell ipc call themes togglePicker"))
+hl.bind(mainMod .. " + CTRL + Space", hl.dsp.exec_cmd("quickshell ipc call wallpapers togglePicker"))
 hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd("quickshell ipc call picker emoji"))
 hl.bind(mainMod .. " + C", universal_clipboard_shortcut("CTRL", "C", "CTRL", "Insert"))
 hl.bind(mainMod .. " + V", universal_clipboard_shortcut("CTRL", "V", "SHIFT", "Insert"))

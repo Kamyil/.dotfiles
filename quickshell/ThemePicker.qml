@@ -8,13 +8,18 @@ import Quickshell.Wayland
 Item {
     id: root
 
+    property bool wallpaperMode: false
     property bool opened: false
     property var themes: []
     property int selectedIndex: 0
     property bool applying: false
     property string lastError: ""
-    readonly property string helper: Quickshell.env("HOME") + "/.dotfiles/scripts/theme-picker-data"
-    readonly property string switcher: Quickshell.env("HOME") + "/.dotfiles/scripts/theme"
+    readonly property string helper: wallpaperMode
+        ? Quickshell.env("HOME") + "/.config/quickshell/wallpaper-control.sh"
+        : Quickshell.env("HOME") + "/.dotfiles/scripts/theme-picker-data"
+    readonly property string switcher: wallpaperMode
+        ? Quickshell.env("HOME") + "/.config/quickshell/wallpaper-control.sh"
+        : Quickshell.env("HOME") + "/.dotfiles/scripts/theme"
 
     function open(): void {
         opened = true
@@ -49,21 +54,26 @@ Item {
         if (applying || themes.length === 0)
             return
         applying = true
-        applyProcess.command = [switcher, themes[selectedIndex].name]
+        applyProcess.command = wallpaperMode
+            ? [switcher, "set", themes[selectedIndex].file]
+            : [switcher, themes[selectedIndex].name]
         applyProcess.running = true
     }
 
     Process {
         id: loader
-        command: [root.helper]
+        command: root.wallpaperMode ? [root.helper, "list"] : [root.helper]
         stdout: StdioCollector {
             onStreamFinished: {
                 try {
                     const payload = JSON.parse(text)
-                    root.themes = payload.themes || []
+                    root.themes = root.wallpaperMode
+                        ? (payload.wallpapers || [])
+                        : (payload.themes || [])
                     root.selectedIndex = 0
                     for (let index = 0; index < root.themes.length; index++) {
-                        if (root.themes[index].selected) {
+                        if ((root.wallpaperMode && root.themes[index].file === payload.current)
+                                || (!root.wallpaperMode && root.themes[index].selected)) {
                             root.selectedIndex = index
                             break
                         }
@@ -71,7 +81,7 @@ Item {
                     Qt.callLater(function() { carousel.forceActiveFocus() })
                 } catch (error) {
                     root.lastError = String(error)
-                    console.warn("Failed to load theme picker:", error)
+                    console.warn("Failed to load carousel picker:", error)
                     root.close()
                 }
             }
@@ -89,7 +99,7 @@ Item {
     }
 
     IpcHandler {
-        target: "themes"
+        target: root.wallpaperMode ? "wallpapers" : "themes"
         function openPicker(): string { root.open(); return root.opened ? "open" : "closed" }
         function closePicker(): void { root.close() }
         function togglePicker(): void { root.toggle() }
@@ -102,7 +112,7 @@ Item {
         anchors { top: true; bottom: true; left: true; right: true }
         color: "transparent"
         exclusionMode: ExclusionMode.Ignore
-        WlrLayershell.namespace: "dotfiles-theme-picker"
+        WlrLayershell.namespace: root.wallpaperMode ? "dotfiles-wallpaper-picker" : "dotfiles-theme-picker"
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: root.opened ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
@@ -200,7 +210,7 @@ Item {
 
                         Image {
                             anchors.fill: parent
-                            source: card.nearby ? card.entry.preview : ""
+                            source: card.nearby ? (root.wallpaperMode ? card.entry.source : card.entry.preview) : ""
                             fillMode: Image.PreserveAspectCrop
                             asynchronous: true
                             cache: true
@@ -241,7 +251,9 @@ Item {
                 anchors.top: parent.top
                 anchors.topMargin: Math.min(470, parent.height - 90) + 18
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: root.themes.length > 0 ? root.themes[root.selectedIndex].label : ""
+                text: root.themes.length > 0
+                    ? (root.wallpaperMode ? root.themes[root.selectedIndex].name : root.themes[root.selectedIndex].label)
+                    : ""
                 color: Theme.foreground
                 font.family: Theme.fontFamily
                 font.pixelSize: 24
