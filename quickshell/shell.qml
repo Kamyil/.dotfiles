@@ -17,6 +17,9 @@ import "."
 
 ShellRoot {
     id: root
+    ThemePicker {
+        id: themePicker
+    }
     property string weatherTemperature: ""
     property string weatherCondition: ""
     property string nightLightState: "unavailable"
