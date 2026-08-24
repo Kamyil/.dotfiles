@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+import json
+import subprocess
+from pathlib import Path
+
+repo = Path(__file__).resolve().parent.parent
+names = subprocess.check_output([repo / "scripts/theme", "list"], text=True).splitlines()
+current = subprocess.check_output([repo / "scripts/theme", "current"], text=True).strip()
+items = []
+for name in names:
+    preview = repo / "themes" / name / "preview.png"
+    if not preview.is_file():
+        continue
+    items.append({
+        "name": name,
+        "label": name.replace("-", " ").title(),
+        "preview": preview.as_uri(),
+        "selected": name == current,
+    })
+print(json.dumps({"current": current, "themes": items}))

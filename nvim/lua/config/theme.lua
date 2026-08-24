@@ -29,6 +29,7 @@ M.palette = read_palette(active)
     blue = '#809ba7',
     purple = '#a292a3',
     aqua = '#8ea49e',
+    accent = '#809ba7',
   }
 
 

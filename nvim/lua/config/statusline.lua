@@ -1,23 +1,24 @@
--- Lualine follows the active cross-tool palette.
-local active = require('config.theme').palette
+-- Lualine uses the active cross-tool palette, never a fixed plugin theme.
+local palette = require('config.theme').palette
 local theme_colors = {
-  bg = active.background,
-  bg_dark = active.background,
-  bg_alt = active.selection,
-  fg = active.foreground,
-  fg_dim = active.foreground,
-  muted = active.muted,
-  red = active.red,
-  green = active.green,
-  yellow = active.yellow,
-  blue = active.blue,
-  magenta = active.purple,
-  cyan = active.aqua,
+  bg = palette.background,
+  bg_dark = palette.background,
+  bg_alt = palette.selection,
+  fg = palette.foreground,
+  fg_dim = palette.foreground,
+  muted = palette.muted,
+  accent = palette.accent,
+  red = palette.red,
+  green = palette.green,
+  yellow = palette.yellow,
+  blue = palette.blue,
+  magenta = palette.purple,
+  cyan = palette.aqua,
 }
 
 local active_theme = {
   normal = {
-    a = { fg = theme_colors.bg_dark, bg = theme_colors.cyan, gui = 'bold' },
+    a = { fg = theme_colors.bg_dark, bg = theme_colors.accent, gui = 'bold' },
     b = { fg = theme_colors.fg, bg = theme_colors.bg_alt },
     c = { fg = theme_colors.fg_dim, bg = theme_colors.bg },
   },

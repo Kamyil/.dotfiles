@@ -108,8 +108,13 @@ require('lazy').setup({
   'farmergreg/vim-lastplace', -- Automatically jump to the last cursor position
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
-  -- Active theme and one contrasting fallback selected by scripts/theme.
+  -- Themes selected by scripts/theme.
   { 'thesimonho/kanagawa-paper.nvim', lazy = false },
+  { 'catppuccin/nvim', name = 'catppuccin', lazy = false },
+  { 'rose-pine/neovim', name = 'rose-pine', lazy = false },
+  { 'folke/tokyonight.nvim', lazy = false },
+  { 'datsfilipe/vesper.nvim', lazy = false },
+  { 'OldJobobo/miasma.nvim', lazy = false },
   -- Opt-in colorscheme experiments:
   --   NVIM_EXPERIMENTS=1 nvim                 (Luna)
   --   NVIM_EXPERIMENTS_THEME=cendre nvim      (Cendre)

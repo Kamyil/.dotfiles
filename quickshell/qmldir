@@ -23,6 +23,7 @@ PickerPanel 1.0 PickerPanel.qml
 ToolsPanel 1.0 ToolsPanel.qml
 RecorderPanel 1.0 RecorderPanel.qml
 WallpaperPanel 1.0 WallpaperPanel.qml
+ThemePicker 1.0 ThemePicker.qml
 FocusPanel 1.0 FocusPanel.qml
 AgentsPanel 1.0 AgentsPanel.qml
 YtdlpPanel 1.0 YtdlpPanel.qml

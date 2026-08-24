@@ -5,17 +5,26 @@ repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 themes_dir="$repo_root/themes"
 state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles-theme"
 current_link="$state_dir/current"
+theme_names=(kanagawa-paper catppuccin-mocha rose-pine tokyo-night vesper koyanagi miasma gruvbox-material-hard)
 
 theme_name() {
-  if [[ -L "$current_link" ]]; then
-    basename -- "$(readlink -- "$current_link")"
+  if [[ -r "$current_link/theme.name" ]]; then
+    cat -- "$current_link/theme.name"
   else
     printf '%s\n' 'kanagawa-paper'
   fi
 }
 
 usage() {
-  printf 'Usage: theme <kanagawa-paper|gruvbox-material-hard|toggle|current|list>\n' >&2
+  printf 'Usage: theme <%s|toggle|refresh|current|list>\n' "$(IFS='|'; printf '%s' "${theme_names[*]}")" >&2
+}
+
+is_theme() {
+  local candidate
+  for candidate in "${theme_names[@]}"; do
+    [[ "$candidate" == "$1" ]] && return 0
+  done
+  return 1
 }
 
 command=${1:-toggle}
@@ -25,8 +34,11 @@ case "$command" in
     exit 0
     ;;
   list)
-    printf '%s\n' kanagawa-paper gruvbox-material-hard
+    printf '%s\n' "${theme_names[@]}"
     exit 0
+    ;;
+  refresh)
+    command=$(theme_name)
     ;;
   toggle)
     if [[ $(theme_name) == kanagawa-paper ]]; then
@@ -35,37 +47,58 @@ case "$command" in
       command=kanagawa-paper
     fi
     ;;
-  kanagawa-paper|gruvbox-material-hard)
-    ;;
   *)
-    usage
-    exit 2
+    if ! is_theme "$command"; then
+      usage
+      exit 2
+    fi
     ;;
 esac
 
 bundle="$themes_dir/$command"
-[[ -f "$bundle/theme.json" && -f "$bundle/kitty.conf" && -f "$bundle/theme.zsh" && -f "$bundle/hunk.toml" && -f "$bundle/delta.gitconfig" ]] || {
+[[ -f "$bundle/theme.json" ]] || {
   printf 'Incomplete theme bundle: %s\n' "$bundle" >&2
   exit 1
 }
 
 mkdir -p -- "$state_dir"
-ln -sfn -- "$bundle" "$current_link"
+next_dir="$state_dir/.next-$command-$$"
+old_target=
+if [[ -L "$current_link" ]]; then
+  old_target=$(readlink -f -- "$current_link")
+fi
+"$repo_root/scripts/theme-render" "$bundle" "$next_dir"
+printf '%s\n' "$command" > "$next_dir/theme.name"
+if [[ -d "$bundle/backgrounds" ]]; then
+  ln -s -- "$bundle/backgrounds" "$next_dir/backgrounds"
+fi
+ln -sfn -- "$next_dir" "$current_link"
+if [[ -n "$old_target" && "$old_target" == "$state_dir"/.next-* && "$old_target" != "$next_dir" ]]; then
+  rm -rf -- "$old_target"
+fi
+if [[ -x "$repo_root/quickshell/wallpaper-control.sh" ]]; then
+  "$repo_root/quickshell/wallpaper-control.sh" theme >/dev/null 2>&1 || true
+fi
 
 if command -v kitty >/dev/null 2>&1; then
-  kitty @ --to "${KITTY_LISTEN_ON:-unix:/tmp/kitty}" set-colors --all "$bundle/kitty.conf" >/dev/null 2>&1 || true
+  kitty @ --to "${KITTY_LISTEN_ON:-unix:/tmp/kitty}" set-colors --all "$current_link/kitty.conf" >/dev/null 2>&1 || true
+fi
+if command -v pkill >/dev/null 2>&1; then
+  pkill -USR2 ghostty >/dev/null 2>&1 || true
 fi
 if command -v omp >/dev/null 2>&1; then
-  if [[ "$command" == kanagawa-paper ]]; then
-    omp_theme=kanagawa-paper-ink
-  else
-    omp_theme=gruvbox-material-hard
-  fi
-  omp config set theme.dark "$omp_theme" >/dev/null
-  omp config set theme.light "$omp_theme" >/dev/null
+  omp config set theme.dark dotfiles >/dev/null 2>&1 || true
+  omp config set theme.light dotfiles >/dev/null 2>&1 || true
 fi
+"$repo_root/scripts/herdr-theme" "$current_link/theme.json"
 if command -v herdr >/dev/null 2>&1; then
   herdr server reload-config >/dev/null 2>&1 || true
+fi
+if command -v hyprctl >/dev/null 2>&1; then
+  hyprctl reload >/dev/null 2>&1 || true
+fi
+if command -v qs >/dev/null 2>&1; then
+  qs ipc call theme reload >/dev/null 2>&1 || true
 fi
 
 printf '%s\n' "$command"
