@@ -1,0 +1,263 @@
+#!/usr/bin/env python3
+import json
+import re
+import shutil
+import sys
+from pathlib import Path
+
+repo = Path(__file__).resolve().parent.parent
+source = Path(sys.argv[1]).resolve()
+out = Path(sys.argv[2]).resolve()
+palette = json.loads((source / "theme.json").read_text())
+
+if out.exists():
+    shutil.rmtree(out)
+shutil.copytree(source, out)
+
+required = (
+    "name", "nvim_colorscheme", "background", "surface", "elevated", "selection",
+    "foreground", "muted", "red", "green", "yellow", "blue", "purple", "aqua",
+    "accent", "tab_bar", "black", "white", "bright_black", "bright_red",
+    "bright_green", "bright_yellow", "bright_blue", "bright_purple", "bright_aqua",
+    "bright_white", "helium_frame", "herdr_theme",
+)
+missing = [key for key in required if key not in palette]
+if missing:
+    raise SystemExit(f"Missing palette keys in {source / 'theme.json'}: {', '.join(missing)}")
+
+p = palette
+ansi = [p["black"], p["red"], p["green"], p["yellow"], p["blue"], p["purple"], p["aqua"], p["white"]]
+bright = [p["bright_black"], p["bright_red"], p["bright_green"], p["bright_yellow"], p["bright_blue"], p["bright_purple"], p["bright_aqua"], p["bright_white"]]
+
+kitty = [
+    f"background {p['background']}", f"foreground {p['foreground']}",
+    f"selection_background {p['selection']}", f"selection_foreground {p['foreground']}",
+    f"cursor {p['accent']}", f"cursor_text_color {p['background']}",
+    f"url_color {p['aqua']}", f"active_border_color {p['accent']}",
+    f"inactive_border_color {p['muted']}", f"active_tab_background {p['accent']}",
+    f"active_tab_foreground {p['background']}", f"inactive_tab_background {p['tab_bar']}",
+    f"inactive_tab_foreground {p['muted']}", f"tab_bar_background {p['tab_bar']}",
+]
+kitty += [f"color{i} {color}" for i, color in enumerate(ansi + bright)]
+(out / "kitty.conf").write_text("\n".join(kitty) + "\n")
+
+foot = ["[colors]", f"foreground={p['foreground'][1:]}", f"background={p['background'][1:]}",
+        f"selection-foreground={p['foreground'][1:]}", f"selection-background={p['selection'][1:]}"]
+foot += [f"regular{i}={color[1:]}" for i, color in enumerate(ansi)]
+foot += [f"bright{i}={color[1:]}" for i, color in enumerate(bright)]
+(out / "foot.ini").write_text("\n".join(foot) + "\n")
+
+ghostty = [f"background = {p['background']}", f"foreground = {p['foreground']}",
+           f"selection-background = {p['selection']}", f"selection-foreground = {p['foreground']}",
+           f"cursor-color = {p['accent']}", f"cursor-text = {p['background']}"]
+ghostty += [f"palette = {i}={color}" for i, color in enumerate(ansi + bright)]
+(out / "ghostty.conf").write_text("\n".join(ghostty) + "\n")
+
+starship = (repo / "starship/starship.toml").read_text()
+starship = re.sub(r'^palette = ".*"$', 'palette = "dotfiles"', starship, count=1, flags=re.MULTILINE)
+starship += "\n[palettes.dotfiles]\n" + "\n".join([
+    f'black = "{p["black"]}"', f'red = "{p["red"]}"', f'green = "{p["green"]}"',
+    f'yellow = "{p["yellow"]}"', f'blue = "{p["blue"]}"', f'purple = "{p["purple"]}"',
+    f'cyan = "{p["aqua"]}"', f'white = "{p["foreground"]}"', f'pink = "{p["purple"]}"',
+    f'orange = "{p["yellow"]}"', f'text = "{p["foreground"]}"', f'surface0 = "{p["surface"]}"',
+]) + "\n"
+(out / "starship.toml").write_text(starship)
+
+
+lazygit = (repo / "lazygit/config.yml").read_text()
+key_colors = {
+    "activeBorderColor": p["accent"], "inactiveBorderColor": p["muted"],
+    "optionsTextColor": p["yellow"], "selectedLineBgColor": p["selection"],
+    "selectedRangeBgColor": p["selection"], "cherryPickedCommitBgColor": p["elevated"],
+    "cherryPickedCommitFgColor": p["yellow"], "unstagedChangesColor": p["red"],
+    "defaultFgColor": p["foreground"], "searchingActiveBorderColor": p["accent"],
+    "stagedChangesColor": p["green"], "markedBaseCommitFgColor": p["muted"],
+    "markedBaseCommitBgColor": p["elevated"],
+}
+lines = lazygit.splitlines()
+for i, line in enumerate(lines[:-1]):
+    key = line.strip().removesuffix(":")
+    if key in key_colors and lines[i + 1].lstrip().startswith("- '"):
+        indent = lines[i + 1][:-len(lines[i + 1].lstrip())]
+        lines[i + 1] = f"{indent}- '{key_colors[key]}'"
+lazygit = "\n".join(lines).replace("'*': '#8ea49e'", f"'*': '{p['aqua']}'") + "\n"
+(out / "lazygit.yml").write_text(lazygit)
+
+fzf = f"--color=bg+:{p['surface']},bg:{p['background']},spinner:{p['aqua']},hl:{p['red']},fg:{p['foreground']},header:{p['red']},info:{p['purple']},pointer:{p['aqua']},marker:{p['aqua']},fg+:{p['foreground']},prompt:{p['purple']},hl+:{p['red']}"
+eza = f"da={p['blue']}:di={p['blue']}:ex={p['green']}:fi={p['foreground']}:ln={p['aqua']}:ur={p['yellow']}:uw={p['red']}:ux={p['green']}:gr={p['muted']}:gw={p['muted']}:gx={p['muted']}"
+(out / "theme.zsh").write_text("\n".join([
+    f"export FZF_THEME_OPTS='{fzf}'", f"export EZA_COLORS='{eza}'",
+    'export STARSHIP_CONFIG="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles-theme/current/starship.toml"',
+    'export LG_CONFIG_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles-theme/current/lazygit.yml"',
+]) + "\n")
+
+hunk = f'''theme = "custom"
+mode = "auto"
+vcs = "git"
+watch = false
+line_numbers = true
+wrap_lines = false
+agent_notes = true
+transparent_background = false
+hunk_headers = true
+menu_bar = true
+
+[custom_theme]
+base = "graphite"
+label = "{p['name']}"
+background = "{p['background']}"
+panel = "{p['surface']}"
+panelAlt = "{p['elevated']}"
+border = "{p['muted']}"
+accent = "{p['accent']}"
+accentMuted = "{p['blue']}"
+text = "{p['foreground']}"
+muted = "{p['muted']}"
+addedBg = "{p['surface']}"
+removedBg = "{p['surface']}"
+contextBg = "{p['background']}"
+addedContentBg = "{p['elevated']}"
+removedContentBg = "{p['elevated']}"
+contextContentBg = "{p['surface']}"
+addedSignColor = "{p['green']}"
+removedSignColor = "{p['red']}"
+lineNumberBg = "{p['background']}"
+lineNumberFg = "{p['muted']}"
+selectedHunk = "{p['selection']}"
+badgeAdded = "{p['green']}"
+badgeRemoved = "{p['red']}"
+badgeNeutral = "{p['blue']}"
+fileNew = "{p['green']}"
+fileDeleted = "{p['red']}"
+fileRenamed = "{p['aqua']}"
+fileModified = "{p['yellow']}"
+fileUntracked = "{p['purple']}"
+noteBorder = "{p['accent']}"
+noteBackground = "{p['surface']}"
+noteTitleBackground = "{p['elevated']}"
+noteTitleText = "{p['foreground']}"
+
+[custom_theme.syntax]
+default = "{p['foreground']}"
+keyword = "{p['purple']}"
+string = "{p['green']}"
+comment = "{p['muted']}"
+number = "{p['yellow']}"
+function = "{p['aqua']}"
+property = "{p['foreground']}"
+type = "{p['blue']}"
+punctuation = "{p['foreground']}"
+'''
+(out / "hunk.toml").write_text(hunk)
+
+delta = f'''[delta]
+    features = dotfiles-theme
+
+[delta "dotfiles-theme"]
+    minus-style = syntax "{p['surface']}"
+    minus-emph-style = syntax "{p['elevated']}"
+    plus-style = syntax "{p['surface']}"
+    plus-emph-style = syntax "{p['elevated']}"
+    line-numbers-minus-style = "{p['red']}"
+    line-numbers-plus-style = "{p['green']}"
+    line-numbers-zero-style = "{p['muted']}"
+    line-numbers-left-style = "{p['muted']}"
+    line-numbers-right-style = "{p['muted']}"
+    file-style = bold "{p['aqua']}"
+    file-decoration-style = "{p['muted']}" box
+    hunk-header-style = file line-number syntax
+    hunk-header-decoration-style = "{p['muted']}" box
+'''
+(out / "delta.gitconfig").write_text(delta)
+
+helium = {
+    "manifest_version": 3, "name": f"Dotfiles {p['name']}", "version": "1.0",
+    "theme": {"colors": {
+        "frame": p["helium_frame"], "frame_inactive": p["background"],
+        "toolbar": p["background"], "tab_text": p["foreground"],
+        "tab_background_text": p["muted"], "bookmark_text": p["foreground"],
+        "ntp_background": p["background"], "ntp_text": p["foreground"],
+        "button_background": p["surface"],
+    }, "tints": {"buttons": [0.0, 0.0, 0.72]}, "properties": {"ntp_background_alignment": "center"}}
+}
+(out / "helium").mkdir()
+(out / "helium/manifest.json").write_text(json.dumps(helium, indent=2) + "\n")
+
+(out / "hyprland-colors.lua").write_text("return {\n" +
+    f"  active_border = \"rgba({p['accent'][1:]}ff)\",\n" +
+    f"  inactive_border = \"rgba({p['muted'][1:]}55)\",\n" + "}\n")
+
+opencode = {
+    "$schema": "https://opencode.ai/theme.json",
+    "defs": {key: p[key] for key in (
+        "background", "surface", "elevated", "selection", "foreground", "muted",
+        "red", "green", "yellow", "blue", "purple", "aqua", "accent"
+    )},
+    "theme": {
+        "primary": "accent", "secondary": "blue", "accent": "purple",
+        "error": "red", "warning": "yellow", "success": "green", "info": "aqua",
+        "text": "foreground", "textMuted": "muted", "background": "background",
+        "backgroundPanel": "surface", "backgroundElement": "elevated",
+        "border": "muted", "borderActive": "accent", "borderSubtle": "surface",
+        "diffAdded": "green", "diffRemoved": "red", "diffContext": "muted",
+        "diffHunkHeader": "blue", "diffHighlightAdded": "green",
+        "diffHighlightRemoved": "red", "diffAddedBg": "surface",
+        "diffRemovedBg": "surface", "diffContextBg": "background",
+        "diffLineNumber": "muted", "diffAddedLineNumberBg": "elevated",
+        "diffRemovedLineNumberBg": "elevated", "markdownText": "foreground",
+        "markdownHeading": "accent", "markdownLink": "blue",
+        "markdownLinkText": "aqua", "markdownCode": "green",
+        "markdownBlockQuote": "muted", "markdownEmph": "yellow",
+        "markdownStrong": "accent", "markdownHorizontalRule": "muted",
+        "markdownListItem": "accent", "markdownListEnumeration": "aqua",
+        "markdownImage": "blue", "markdownImageText": "aqua",
+        "markdownCodeBlock": "foreground", "syntaxComment": "muted",
+        "syntaxKeyword": "purple", "syntaxFunction": "blue",
+        "syntaxVariable": "foreground", "syntaxString": "green",
+        "syntaxNumber": "yellow", "syntaxType": "aqua",
+        "syntaxOperator": "red", "syntaxPunctuation": "muted",
+    },
+}
+(out / "opencode.json").write_text(json.dumps(opencode, indent=2) + "\n")
+
+omp = {
+    "$schema": "https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json",
+    "name": "dotfiles",
+    "vars": {
+        "bg": p["background"], "bgDark": p["tab_bar"], "bgDarker": p["black"],
+        "bgSoft": p["surface"], "bgSofter": p["elevated"], "fg": p["foreground"],
+        "fgDim": p["muted"], "muted": p["muted"], "border": p["muted"],
+        "blue": p["blue"], "cyan": p["aqua"], "green": p["green"],
+        "yellow": p["yellow"], "red": p["red"], "pink": p["purple"],
+        "violet": p["accent"],
+    },
+    "colors": {
+        "accent": "violet", "border": "border", "borderAccent": "violet",
+        "borderMuted": "bgSofter", "success": "green", "error": "red",
+        "warning": "yellow", "muted": "muted", "dim": "border", "text": "fg",
+        "thinkingText": "fgDim", "selectedBg": "bgSoft", "userMessageBg": "bgSoft",
+        "userMessageText": "fg", "customMessageBg": "bgSoft",
+        "customMessageText": "fg", "customMessageLabel": "cyan",
+        "toolPendingBg": "bgSoft", "toolSuccessBg": "bgSoft", "toolErrorBg": "bgSoft",
+        "statusLineBg": "bgDark", "toolTitle": "yellow", "toolOutput": "fg",
+        "mdHeading": "yellow", "mdLink": "blue", "mdLinkUrl": "fgDim",
+        "mdCode": "cyan", "mdCodeBlock": "fg", "mdCodeBlockBorder": "border",
+        "mdQuote": "fgDim", "mdQuoteBorder": "border", "mdHr": "border",
+        "mdListBullet": "yellow", "toolDiffAdded": "green",
+        "toolDiffRemoved": "red", "toolDiffContext": "fgDim",
+        "syntaxComment": "muted", "syntaxKeyword": "pink", "syntaxFunction": "blue",
+        "syntaxVariable": "fg", "syntaxString": "green", "syntaxNumber": "yellow",
+        "syntaxType": "cyan", "syntaxOperator": "red", "syntaxPunctuation": "fgDim",
+        "thinkingOff": "muted", "thinkingMinimal": "cyan", "thinkingLow": "blue",
+        "thinkingMedium": "yellow", "thinkingHigh": "pink", "thinkingXhigh": "red",
+        "bashMode": "yellow", "pythonMode": "blue", "statusLineSep": "border",
+        "statusLineModel": "yellow", "statusLinePath": "cyan",
+        "statusLineGitClean": "green", "statusLineGitDirty": "yellow",
+        "statusLineContext": "violet", "statusLineSpend": "yellow",
+        "statusLineStaged": "green", "statusLineDirty": "yellow",
+        "statusLineUntracked": "red", "statusLineOutput": "blue",
+        "statusLineCost": "yellow", "statusLineSubagents": "pink",
+    },
+    "export": {"pageBg": "bg", "cardBg": "bgSoft", "infoBg": "bgSoft"},
+}
+(out / "omp.json").write_text(json.dumps(omp, indent=2) + "\n")

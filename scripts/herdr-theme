@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+import json
+import os
+import re
+import sys
+from pathlib import Path
+
+palette_path = Path(sys.argv[1])
+config_path = Path(os.environ.get("HERDR_CONFIG_PATH", Path.home() / ".config/herdr/config.toml"))
+palette = json.loads(palette_path.read_text())
+theme = palette.get("herdr_theme", "terminal")
+config = config_path.read_text()
+updated, count = re.subn(
+    r'(?m)^(\[theme\]\n)name = "[^"]*"',
+    rf'\1name = "{theme}"',
+    config,
+    count=1,
+)
+if count != 1:
+    raise SystemExit(f"Could not find [theme] name in {config_path}")
+if updated != config:
+    temporary = config_path.with_suffix(".toml.tmp")
+    temporary.write_text(updated)
+    temporary.replace(config_path)

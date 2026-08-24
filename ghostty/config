@@ -4,6 +4,7 @@
 #
 # # Theme and appearance
 theme = Kanagawa Dragon
+config-file = ~/.local/state/dotfiles-theme/current/ghostty.conf
 # theme = Popping And Locking
 # theme = Black Metal (Bathory)
 

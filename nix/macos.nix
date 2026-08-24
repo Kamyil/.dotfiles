@@ -243,9 +243,12 @@ in
           }:
           let
             heliumLauncher = pkgs.writeShellScript "helium-themed" ''
+              if [[ ! -f "$HOME/.local/state/dotfiles-theme/current/helium/manifest.json" ]]; then
+                "$HOME/.dotfiles/scripts/theme" kanagawa-paper >/dev/null
+              fi
               exec "/Applications/Helium.app/Contents/MacOS/Helium" \
                 --start-maximized \
-                --load-extension="${../helium-theme}" \
+                --load-extension="$HOME/.local/state/dotfiles-theme/current/helium" \
                 "$@"
             '';
             heliumLauncherInfo = pkgs.writeText "helium-themed-Info.plist" ''

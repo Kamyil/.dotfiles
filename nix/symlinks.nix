@@ -15,6 +15,7 @@ let
     ".config/tmux" = "tmux";
     ".config/opencode" = "opencode";
     ".config/kitty" = "kitty";
+    ".config/foot" = "foot";
     ".config/herdr" = "herdr";
     ".config/neomutt/neomuttrc" = "neomutt/neomuttrc";
     ".config/neomutt/mailcap" = "neomutt/mailcap";

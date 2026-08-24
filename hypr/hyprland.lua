@@ -1,6 +1,19 @@
 -- Hyprland 0.55+ configuration.
 require("monitors")
 
+local theme_colors = {
+	active_border = "rgba(809ba7ff)",
+	inactive_border = "rgba(9e9b9355)",
+}
+local theme_file = os.getenv("HOME") .. "/.local/state/dotfiles-theme/current/hyprland-colors.lua"
+local theme_loader = loadfile(theme_file)
+if theme_loader then
+	local loaded = theme_loader()
+	if type(loaded) == "table" then
+		theme_colors = loaded
+	end
+end
+
 -- Prefer native Wayland backends so applications render at the output scale.
 hl.env("NIXOS_OZONE_WL", "1")
 hl.env("MOZ_ENABLE_WAYLAND", "1")
@@ -46,8 +59,8 @@ hl.config({
 		gaps_out = 6,
 		border_size = 1,
 		col = {
-			active_border = "rgba(464645FF)",
-			inactive_border = "rgba(46464533)",
+			active_border = theme_colors.active_border,
+			inactive_border = theme_colors.inactive_border,
 		},
 		layout = "dwindle",
 	},
