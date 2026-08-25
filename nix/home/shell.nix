@@ -138,6 +138,7 @@ in
       if command -v fnm >/dev/null 2>&1; then
         eval "$(fnm env --use-on-cd)"
       fi
+      export PATH="$HOME/.cache/.bun/bin:$PATH"
 
        # Docker BuildKit
        export DOCKER_BUILDKIT=1

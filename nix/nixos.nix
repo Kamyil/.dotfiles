@@ -168,6 +168,7 @@ in
           home.sessionPath = [
             "$HOME/.local/share/pnpm"
             "$HOME/.local/share/omarchy/bin"
+            "$HOME/.cache/.bun/bin"
           ];
 
           # Preserve user-managed browser and mail associations while enforcing
