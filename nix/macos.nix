@@ -67,6 +67,13 @@ in
             tldrawOffline
           ];
 
+          # Route only .lan queries through the DNS server reachable over WireGuard.
+          # This resolver may remain installed while the tunnel is down; macOS keeps
+          # DHCP/Wi-Fi resolvers for every other domain.
+          environment.etc."resolver/lan".text = ''
+            nameserver 10.10.0.1
+          '';
+
           # Work around nix-darwin applications buildEnv pathsToLink type
           system.build.applications = lib.mkForce (
             pkgs.buildEnv {

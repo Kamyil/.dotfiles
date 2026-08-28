@@ -1,4 +1,4 @@
-# WireGuard DNS on NixOS
+# WireGuard DNS on NixOS and macOS
 
 WireGuard is managed by NixOS, while its private configuration remains outside the public repository:
 
@@ -7,7 +7,21 @@ WireGuard is managed by NixOS, while its private configuration remains outside t
 - `dnsmasq` is the system resolver at `127.0.0.1`.
 - NetworkManager supplies the normal upstream DNS servers.
 
-## VPN DNS lifecycle
+## macOS: persistent split DNS
+
+The `malinka` tunnel uses `wg-quick` with `wireguard-go`. Its private configuration must not set `DNS = 10.10.0.1`, because `wg-quick` would make the Raspberry Pi resolver global and public DNS would fail whenever the tunnel is unavailable.
+
+nix-darwin manages `/etc/resolver/lan` through `environment.etc` in `nix/macos.nix`:
+
+```text
+nameserver 10.10.0.1
+```
+
+macOS therefore sends only `.lan` queries to `10.10.0.1`; DHCP/Wi-Fi resolvers remain responsible for public domains. The resolver file intentionally exists independently of the WireGuard lifecycle. With the tunnel down, only `.lan` resolution is unavailable.
+
+## NixOS
+
+### VPN DNS lifecycle
 
 The external `wg0.conf` leaves `DNS = ...` disabled and changes the `dnsmasq` upstream while the tunnel is active:
 
@@ -26,7 +40,7 @@ When `wg0` starts, all DNS queries use the VPN resolver. When it stops, `dnsmasq
 
 WireGuard itself does not resolve names. `dnsmasq` converts names to IP addresses; WireGuard's `AllowedIPs` and routes determine whether packets to those addresses travel through the tunnel.
 
-## Reproducibility boundary
+### Reproducibility boundary
 
 The public Nix configuration reproducibly provides:
 
