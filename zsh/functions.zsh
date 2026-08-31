@@ -83,12 +83,19 @@ _dotfiles_wireguard_interface() {
 wgu() {
   local iface
   iface=$(_dotfiles_wireguard_interface up "$1") || return
-  sudo WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go wg-quick up "$iface"
+  sudo WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go wg-quick up "$iface" || return
+  if [[ "$iface" == malinka ]]; then
+    sudo /usr/bin/touch /var/run/wireguard/malinka.desired-active
+  fi
 }
 
 wgd() {
   local iface
   iface=$(_dotfiles_wireguard_interface down "$1") || return
+  if [[ "$iface" == malinka ]]; then
+    # User intent wins even when runtime cleanup is already partially broken.
+    sudo /bin/rm -f /var/run/wireguard/malinka.desired-active
+  fi
   sudo WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go wg-quick down "$iface"
 }
 

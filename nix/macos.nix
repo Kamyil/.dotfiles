@@ -54,6 +54,73 @@ in
           lib,
           ...
         }:
+        let
+          malinkaDesiredActive = "/var/run/wireguard/malinka.desired-active";
+
+          triggerMalinkaWakeRefresh = pkgs.writeShellScript "trigger-malinka-wake-refresh" ''
+            set -eu
+
+            if [[ -f ${malinkaDesiredActive} ]]; then
+              /usr/bin/touch /var/run/malinka-wireguard-wake
+            fi
+          '';
+
+          runMalinka = pkgs.writeShellScript "run-malinka-wireguard" ''
+            set -u
+
+            [[ -f ${malinkaDesiredActive} ]] || exit 0
+
+            export PATH="${pkgs.wireguard-tools}/bin:${pkgs.wireguard-go}/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+            export WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go
+
+            echo "$(/bin/date '+%Y-%m-%dT%H:%M:%S%z') starting malinka"
+
+            # Preserve the launchd-owned PID so wg-quick detects launchd, keeps
+            # its route monitor attached, and waits for that monitor.
+            exec ${pkgs.wireguard-tools}/bin/wg-quick up malinka
+          '';
+
+          refreshMalinka = pkgs.writeShellScript "refresh-malinka-wireguard" ''
+            set -u
+
+            timestamp() {
+              /bin/date '+%Y-%m-%dT%H:%M:%S%z'
+            }
+
+            if [[ ! -f ${malinkaDesiredActive} ]]; then
+              echo "$(timestamp) malinka is intentionally inactive; nothing to refresh"
+              exit 0
+            fi
+
+            echo "$(timestamp) refresh requested"
+
+            # A wake/network notification can arrive before the new network is usable.
+            /bin/sleep 5
+
+            export PATH="${pkgs.wireguard-tools}/bin:${pkgs.wireguard-go}/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+            export WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go
+
+            runtime_interface=
+            [[ ! -f /var/run/wireguard/malinka.name ]] || runtime_interface=$(/bin/cat /var/run/wireguard/malinka.name)
+
+            if [[ -n "$runtime_interface" ]]; then
+              if ${pkgs.wireguard-tools}/bin/wg show "$runtime_interface" >/dev/null 2>&1; then
+                echo "$(timestamp) stopping malinka ($runtime_interface)"
+              else
+                echo "$(timestamp) cleaning stale malinka mapping ($runtime_interface)"
+              fi
+
+              if ! ${pkgs.wireguard-tools}/bin/wg-quick down malinka; then
+                echo "$(timestamp) wg-quick down failed; removing stale userspace state"
+                /bin/rm -f "/var/run/wireguard/$runtime_interface.sock" /var/run/wireguard/malinka.name
+              fi
+            fi
+
+            echo "$(timestamp) starting launchd tunnel service"
+            /bin/launchctl kickstart -k system/org.nixos.malinka-wireguard
+            echo "$(timestamp) refresh dispatched"
+          '';
+        in
         {
           nix.enable = false;
           nixpkgs.pkgs = darwinPkgs;
@@ -73,6 +140,45 @@ in
           environment.etc."resolver/lan".text = ''
             nameserver 10.10.0.1
           '';
+
+          # sleepwatcher converts the native macOS wake notification into a file
+          # event. The refresh job also watches resolv.conf, which macOS rewrites
+          # when the active network/DNS configuration changes.
+          # wg-quick deliberately stays alive under launchd so its route monitor
+          # remains a child of the service. The event job only restarts this job.
+          launchd.daemons.malinka-wireguard = {
+            command = "${runMalinka}";
+            serviceConfig = {
+              ProcessType = "Background";
+              ThrottleInterval = 10;
+              StandardOutPath = "/var/log/malinka-wireguard.log";
+              StandardErrorPath = "/var/log/malinka-wireguard.log";
+            };
+          };
+
+          launchd.daemons.malinka-wireguard-wake = {
+            command = "${pkgs.sleepwatcher}/bin/sleepwatcher -w '${triggerMalinkaWakeRefresh}'";
+            serviceConfig = {
+              KeepAlive = true;
+              ProcessType = "Background";
+              StandardOutPath = "/var/log/malinka-wireguard-wake.log";
+              StandardErrorPath = "/var/log/malinka-wireguard-wake.log";
+            };
+          };
+
+          launchd.daemons.malinka-wireguard-refresh = {
+            command = "${refreshMalinka}";
+            serviceConfig = {
+              ProcessType = "Background";
+              ThrottleInterval = 10;
+              WatchPaths = [
+                "/etc/resolv.conf"
+                "/var/run/malinka-wireguard-wake"
+              ];
+              StandardOutPath = "/var/log/malinka-wireguard-refresh.log";
+              StandardErrorPath = "/var/log/malinka-wireguard-refresh.log";
+            };
+          };
 
           # Work around nix-darwin applications buildEnv pathsToLink type
           system.build.applications = lib.mkForce (

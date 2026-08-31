@@ -19,6 +19,20 @@ nameserver 10.10.0.1
 
 macOS therefore sends only `.lan` queries to `10.10.0.1`; DHCP/Wi-Fi resolvers remain responsible for public domains. The resolver file intentionally exists independently of the WireGuard lifecycle. With the tunnel down, only `.lan` resolution is unavailable.
 
+### Endpoint refresh after wake or network changes
+
+`vpn.malinka.uk` is resolved when `wg-quick up malinka` runs. To discard a stale split-horizon endpoint address, nix-darwin declares three launchd daemons:
+
+- `malinka-wireguard-wake` uses `sleepwatcher` to emit a wake file event when the desired-active marker exists;
+- `malinka-wireguard-refresh` watches that event and `/etc/resolv.conf`, cleans up the current or stale runtime mapping, then kickstarts the tunnel service;
+- `malinka-wireguard` runs `wg-quick up malinka`.
+
+The `wgu malinka` helper creates `/var/run/wireguard/malinka.desired-active` only after a successful manual start. `wgd malinka` removes it before attempting cleanup, so explicit user intent wins even when the runtime state is broken. Wake and network events do nothing without this marker.
+
+The mapping file `/var/run/wireguard/malinka.name` contains the actual `wireguard-go` interface name (for example `utun4`). Cleanup therefore uses that name rather than the `malinka` configuration name and tolerates stale socket/mapping state.
+
+On Darwin, `wg-quick up` calls `launchctl procinfo $$`, keeps its route monitor attached when that PID belongs to launchd, and waits for it. The dedicated `malinka-wireguard` wrapper therefore ends with `exec wg-quick up malinka`: `wg-quick` replaces the launchd-owned process instead of running as its child. The tunnel service remains running with the route monitor, while the refresh job remains short-lived and only uses `launchctl kickstart`. There is no polling loop or periodic restart. Refresh logs are written to `/var/log/malinka-wireguard-refresh.log`; tunnel and route-monitor logs use `/var/log/malinka-wireguard.log`.
+
 ## NixOS
 
 ### VPN DNS lifecycle
