@@ -14,4 +14,6 @@ jobs:
         with:
           determinate: false
       - name: Evaluate macOS and NixOS outputs
-        run: nix flake check --no-build ./nix
+        run: |
+          nix eval --raw ./nix#nixosConfigurations.nixos.config.system.build.toplevel.drvPath
+          nix eval --raw ./nix#darwinConfigurations.MacBook-Pro-Kamil.system.drvPath
