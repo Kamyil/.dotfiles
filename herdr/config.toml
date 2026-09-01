@@ -93,10 +93,10 @@ split_horizontal = ["prefix+minus", "ctrl+alt+shift+d", "ctrl+shift+/"]
 close_pane = ["prefix+x", "ctrl+x"]
 zoom = ["prefix+z", "ctrl+alt+z", "ctrl+z"]
 resize_mode = "prefix+r"
-copy_mode = "prefix+["
+copy_mode = "ctrl+f"
 
 rename_pane = "prefix+shift+p"
-edit_scrollback = ["prefix+e", "ctrl+f"]
+edit_scrollback = "prefix+e"
 toggle_sidebar = ["prefix+b", "ctrl+shift+e"]
 
 previous_agent = "prefix+alt+p"
