@@ -151,8 +151,9 @@ require('lazy').setup({
   {
     'A7Lavinraj/fyler.nvim',
     dependencies = { 'nvim-mini/mini.icons' },
-    lazy = false, -- Necessary for `default_explorer` to work properly
+    lazy = false,
     opts = {
+      use_as_default_explorer = false,
       integrations = {
         icon = 'nvim_web_devicons',
       },
@@ -284,9 +285,24 @@ require('lazy').setup({
       vim.api.nvim_create_autocmd('VimEnter', {
         once = true,
         callback = function()
-          -- Restore the directory session, but do not replace explicit files or stdin.
-          if vim.fn.argc() == 0 and vim.v.stdin ~= 1 then
+          if vim.v.stdin == 1 then
+            return
+          end
+
+          local argc = vim.fn.argc()
+          if argc == 0 then
             persistence.load()
+            return
+          end
+
+          -- `nvim .` should restore that directory instead of opening an explorer.
+          if argc == 1 then
+            local directory = vim.fn.fnamemodify(vim.fn.argv(0), ':p')
+            if vim.fn.isdirectory(directory) == 1 then
+              vim.api.nvim_buf_delete(0, { force = true })
+              vim.fn.chdir(directory)
+              persistence.load()
+            end
           end
         end,
       })
