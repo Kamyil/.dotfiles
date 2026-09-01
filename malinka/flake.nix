@@ -13,6 +13,11 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    system-manager = {
+      url = "github:numtide/system-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -20,6 +25,7 @@
       nixpkgs,
       nixos-hardware,
       disko,
+      system-manager,
       ...
     }:
     let
@@ -47,6 +53,10 @@
             ];
           })
         ];
+      };
+
+      systemConfigs.malinka = system-manager.lib.makeSystemConfig {
+        modules = [ ./system-manager.nix ];
       };
     };
 }
