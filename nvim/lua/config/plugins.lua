@@ -271,6 +271,27 @@ require('lazy').setup({
       -- Jump with Alt+1..9, close with `ga`, pick with `ge` (see keymaps.lua)
     },
   },
+  {
+    'folke/persistence.nvim',
+    lazy = false,
+    opts = {
+      branch = false, -- Keep one session per working directory
+    },
+    config = function(_, opts)
+      local persistence = require('persistence')
+      persistence.setup(opts)
+
+      vim.api.nvim_create_autocmd('VimEnter', {
+        once = true,
+        callback = function()
+          -- Restore the directory session, but do not replace explicit files or stdin.
+          if vim.fn.argc() == 0 and vim.v.stdin ~= 1 then
+            persistence.load()
+          end
+        end,
+      })
+    end,
+  },
   -- plugin for managing buffers in handy list
   {'j-morano/buffer_manager.nvim', lazy = false },
 
