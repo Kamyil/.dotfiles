@@ -227,28 +227,25 @@ in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  	# DNSMasq for Malinka script up
+    # DNSMasq for Malinka script up
     (writeShellScriptBin "malinka-dns-up" ''
-        	set -euo pipefail
+        	   set -euo pipefail
 
-        	${coreutils}/bin/install -d -m 0755 /etc/dnsmasq.d
+        	   ${coreutils}/bin/install -d -m 0755 /etc/dnsmasq.d
 
-        	printf '%s\n' \
-          	  'no-resolv' \
-          	  'server=10.10.0.1' \
-          	  > /etc/dnsmasq.d/malinka.conf
+        	   printf '%s\n' \
+             'server=/lan/10.10.0.1' \
+             > /etc/dnsmasq.d/malinka.conf
 
-        	${systemd}/bin/systemctl restart dnsmasq.service
-      	  '')
+        	   ${systemd}/bin/systemctl restart dnsmasq.service
+      	   '')
 
-  	# DNSMasq for Malinka script down
     (writeShellScriptBin "malinka-dns-down" ''
-        	set -euo pipefail
+        		   set -euo pipefail
 
-        	${coreutils}/bin/rm -f /etc/dnsmasq.d/malinka.conf
-
-        	${systemd}/bin/systemctl restart dnsmasq.service
-      	  '')
+        		   ${coreutils}/bin/rm -f /etc/dnsmasq.d/malinka.conf
+        		   ${systemd}/bin/systemctl restart dnsmasq.service
+      		   '')
     # Recovery and system integration
     vim
     bash
