@@ -1,18 +1,8 @@
 {
-  description = "Malinka — headless Raspberry Pi 4";
+  description = "Malinka — Raspberry Pi OS managed with Nix System Manager";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     system-manager = {
       url = "github:numtide/system-manager";
@@ -21,42 +11,10 @@
   };
 
   outputs =
+    { system-manager, ... }:
     {
-      nixpkgs,
-      nixos-hardware,
-      disko,
-      system-manager,
-      ...
-    }:
-    let
-      commonModules = [
-        nixos-hardware.nixosModules.raspberry-pi-4
-        ./hardware.nix
-        ./configuration.nix
-      ];
-    in
-    {
-      nixosConfigurations.malinka = nixpkgs.lib.nixosSystem {
-        system = "aarch64-linux";
-        modules = commonModules ++ [
-          disko.nixosModules.disko
-          ./disko.nix
-        ];
-      };
-
-      nixosConfigurations.malinka-sd = nixpkgs.lib.nixosSystem {
-        system = "aarch64-linux";
-        modules = commonModules ++ [
-          ({ modulesPath, ... }: {
-            imports = [
-              "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
-            ];
-          })
-        ];
-      };
-
       systemConfigs.malinka = system-manager.lib.makeSystemConfig {
-        modules = [ ./system-manager.nix ];
+        modules = [ ./system.nix ];
       };
     };
 }
