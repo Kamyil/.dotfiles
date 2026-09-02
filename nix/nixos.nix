@@ -105,7 +105,7 @@ in
               docker-compose
               satty
               chromium
-              thunar
+              nautilus
               ffmpegthumbnailer
               imv
               mpv
@@ -141,7 +141,7 @@ in
             ];
 
           programs.zsh.shellAliases = {
-            finder = "thunar";
+            finder = "nautilus";
             nrs = "nh os switch ~/.dotfiles/nix";
             transcribe = "parakeet-transcribe";
           };
@@ -223,6 +223,8 @@ in
               size = 24;
             };
           };
+
+          dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
 
           xdg.enable = true;
 

@@ -102,6 +102,7 @@ wgd() {
 SD_BASE_DIRS=(
   "$HOME/Work/Projects"
   "$HOME/Personal/Projects"
+  "$HOME/.ssh"
 )
 SD_DEPTH=1
 C_BASE_DIRS=("$HOME/.dotfiles")
@@ -199,7 +200,7 @@ remote_sshfs() {
 }
 
 sdn() { sd && nvim . }
-sdo() { sd && opencode }
+sdo() { sd && omp }
 
 db() {
   source "$HOME/.zsh_db_configs"

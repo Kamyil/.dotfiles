@@ -3,7 +3,7 @@ local M = {}
 
 -- OPTIONS -- (boring but important stuff)
 vim.o.number = true
-vim.o.relativenumber = false
+vim.o.relativenumber = true
 vim.o.signcolumn =
 'yes'                                                  -- will use 3 columns to make line numbers have a little bit more margin
 vim.o.termguicolors = true                             -- Enable nice colors

@@ -151,8 +151,9 @@ require('lazy').setup({
   {
     'A7Lavinraj/fyler.nvim',
     dependencies = { 'nvim-mini/mini.icons' },
-    lazy = false, -- Necessary for `default_explorer` to work properly
+    lazy = false,
     opts = {
+      use_as_default_explorer = false,
       integrations = {
         icon = 'nvim_web_devicons',
       },
@@ -270,6 +271,42 @@ require('lazy').setup({
     opts = {
       -- Jump with Alt+1..9, close with `ga`, pick with `ge` (see keymaps.lua)
     },
+  },
+  {
+    'folke/persistence.nvim',
+    lazy = false,
+    opts = {
+      branch = false, -- Keep one session per working directory
+    },
+    config = function(_, opts)
+      local persistence = require('persistence')
+      persistence.setup(opts)
+
+      vim.api.nvim_create_autocmd('VimEnter', {
+        once = true,
+        callback = function()
+          if vim.v.stdin == 1 then
+            return
+          end
+
+          local argc = vim.fn.argc()
+          if argc == 0 then
+            persistence.load()
+            return
+          end
+
+          -- `nvim .` should restore that directory instead of opening an explorer.
+          if argc == 1 then
+            local directory = vim.fn.fnamemodify(vim.fn.argv(0), ':p')
+            if vim.fn.isdirectory(directory) == 1 then
+              vim.api.nvim_buf_delete(0, { force = true })
+              vim.fn.chdir(directory)
+              persistence.load()
+            end
+          end
+        end,
+      })
+    end,
   },
   -- plugin for managing buffers in handy list
   {'j-morano/buffer_manager.nvim', lazy = false },

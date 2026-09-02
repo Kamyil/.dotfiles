@@ -60,6 +60,8 @@ in
     xdg-desktop-portal-hyprland
   ];
 
+  programs.dconf.enable = true;
+
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -190,9 +192,9 @@ in
     variant = "";
   };
 
-  # File-manager integration: Trash, removable/network locations, and thumbnails.
+  # File-manager integration: Trash, removable/network locations, and disks.
   services.gvfs.enable = true;
-  services.tumbler.enable = true;
+  services.udisks2.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
