@@ -6,6 +6,7 @@
     ./home/links.nix
     ./home/packages.nix
     ./home/shell.nix
+    ./home/tmux.nix
   ];
 
   home.username = "kamil";

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+rfkill unblock wifi || true
+omarchy_bin="${OMARCHY_BIN:-$HOME/.local/share/omarchy/bin}"
+exec "$omarchy_bin/omarchy-launch-or-focus-tui" impala

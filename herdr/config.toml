@@ -24,8 +24,9 @@ redraw_on_focus_gained = false
 mouse_scroll_lines = 5
 
 
+status_indicators = "symbols"
 [ui.toast]
-delivery = "terminal"
+delivery = "system"
 delay_seconds = 2
 
 [ui.toast.clipboard]

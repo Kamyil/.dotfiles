@@ -38,7 +38,6 @@ in
       w3m
       btop
       yazi
-      tmux
       gh
       railway
       curl

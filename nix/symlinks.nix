@@ -12,7 +12,6 @@ let
     ".config/btop" = "btop";
     ".config/bat" = "bat";
     ".config/ghostty" = "ghostty";
-    ".config/tmux" = "tmux";
     ".config/opencode" = "opencode";
     ".config/kitty" = "kitty";
     ".config/foot" = "foot";
