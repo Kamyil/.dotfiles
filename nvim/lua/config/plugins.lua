@@ -288,10 +288,12 @@ require('lazy').setup({
           if vim.v.stdin == 1 then
             return
           end
-
           local argc = vim.fn.argc()
+
           if argc == 0 then
-            persistence.load()
+            vim.schedule(function()
+              persistence.load()
+            end)
             return
           end
 
@@ -301,7 +303,9 @@ require('lazy').setup({
             if vim.fn.isdirectory(directory) == 1 then
               vim.api.nvim_buf_delete(0, { force = true })
               vim.fn.chdir(directory)
-              persistence.load()
+              vim.schedule(function()
+                persistence.load()
+              end)
             end
           end
         end,
