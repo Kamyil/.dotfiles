@@ -40,7 +40,6 @@ let
     ".config/sketchybar" = "sketchybar";
     ".config/aerospace" = "aerospace";
     ".hammerspoon" = "hammerspoon";
-    ".config/cmux" = "cmux";
   };
 
   linuxLinks = {
