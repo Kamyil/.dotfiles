@@ -16,6 +16,8 @@
   herdr,
   himalaya-tui,
   helium,
+  chatgpt-desktop-app,
+  zennotes,
   ...
 }:
 
@@ -27,14 +29,23 @@ in
     inherit system;
     modules = [
       {
-        nixpkgs.overlays = [ rust-overlay.overlays.default ];
+        nixpkgs.overlays = [
+          rust-overlay.overlays.default
+          (_final: _prev: {
+            zennotes-desktop = zennotes.packages.${system}.zennotes-desktop;
+          })
+        ];
       }
       disko.nixosModules.disko
       helium.nixosModules.default
+      chatgpt-desktop-app.nixosModules.default
       ../nixos/disk-config.nix
       ../nixos/configuration.nix
       sops-nix.nixosModules.sops
       home-manager.nixosModules.home-manager
+      {
+        programs.chatgpt-desktop-app.enable = true;
+      }
       {
         programs.helium = {
           enable = true;
@@ -53,11 +64,6 @@ in
               "epamlgdeklcjkldoaclgjdmjnchdgbho" # Time Snatch
             ];
             WebAppInstallForceList = [
-              {
-                url = "https://chatgpt.com/";
-                default_launch_container = "window";
-                create_desktop_shortcut = true;
-              }
               {
                 url = "https://app.todoist.com/";
                 default_launch_container = "window";

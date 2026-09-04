@@ -1,13 +1,12 @@
 # Packages used by the interactive user on both macOS and NixOS.
-{
-  pkgs,
-  lib,
-  fff,
-  lazyjira,
-  hunk,
-  herdr,
-  himalaya-tui,
-  ...
+{ pkgs
+, lib
+, fff
+, lazyjira
+, hunk
+, herdr
+, himalaya-tui
+, ...
 }:
 
 let
@@ -29,6 +28,7 @@ in
   home.packages =
     with pkgs;
     [
+      zennotes-desktop
       ripgrep
       codex
       diskonaut
@@ -111,8 +111,8 @@ in
       imagemagick
       tldr
       watchexec
-	  firefox
-	  dig
+      firefox
+      dig
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       qutebrowser

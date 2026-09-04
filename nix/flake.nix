@@ -51,6 +51,9 @@
     helium.url = "github:oxcl/nix-flake-helium-browser";
     helium.inputs.nixpkgs.follows = "nixpkgs";
 
+    chatgpt-desktop-app.url = "github:poeck/chatgpt-desktop-app-nix-flake";
+
+    zennotes.url = "github:ZenNotes/zennotes";
     # Add private fonts
     # berkeley-font = {
     #   url = "path:///home/kamil/.local/share/fonts";
@@ -79,6 +82,8 @@
       herdr,
       himalaya-tui,
       helium,
+      chatgpt-desktop-app,
+      zennotes,
       ...
     }:
     let
@@ -123,6 +128,8 @@
           herdr
           himalaya-tui
           helium
+          chatgpt-desktop-app
+          zennotes
           ;
       };
 

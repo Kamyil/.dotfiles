@@ -45,6 +45,24 @@
         "type": "github"
       }
     },
+    "chatgpt-desktop-app": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1788514803,
+        "narHash": "sha256-PeD6aJOuYU3UyIvr9LNs+Gc82x4f9j8mECitym5Mdkc=",
+        "owner": "poeck",
+        "repo": "chatgpt-desktop-app-nix-flake",
+        "rev": "fbf328917ef7f78f957c8830c0987a1081314d9d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "poeck",
+        "repo": "chatgpt-desktop-app-nix-flake",
+        "type": "github"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1773857772,
@@ -644,16 +662,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1781205904,
-        "narHash": "sha256-wgDBmjCJwE3TbPsi0ssVo0a41I+fQF+ilbA7px3oNCY=",
+        "lastModified": 1786384358,
+        "narHash": "sha256-RzPPiWeUtuvymnpuEWsdtzli5w4kjZs49FqEs3/1u+I=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "6a5f30d2338998faee5e41d99cc8db8343592ce7",
+        "rev": "2fcb964de67fcf60b43471c55d5d99e61a9ccb5a",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixpkgs-unstable",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -670,6 +688,38 @@
       "original": {
         "owner": "nix-community",
         "repo": "nixpkgs.lib",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1781205904,
+        "narHash": "sha256-wgDBmjCJwE3TbPsi0ssVo0a41I+fQF+ilbA7px3oNCY=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "6a5f30d2338998faee5e41d99cc8db8343592ce7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
+        "lastModified": 1781074563,
+        "narHash": "sha256-md8WlXOlfnIeHeOScMTTHFyf2d6iaTwPl2apR5EQ3P4=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "9ae611a455b90cf061d8f332b977e387bda8e1ca",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
         "type": "github"
       }
     },
@@ -691,6 +741,7 @@
     },
     "root": {
       "inputs": {
+        "chatgpt-desktop-app": "chatgpt-desktop-app",
         "disko": "disko",
         "fff": "fff",
         "helium": "helium",
@@ -704,11 +755,12 @@
         "nix-homebrew": "nix-homebrew",
         "nix-index-database": "nix-index-database",
         "nixos-anywhere": "nixos-anywhere",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "rust-overlay": "rust-overlay_3",
         "sops-nix": "sops-nix",
         "sqlit": "sqlit",
-        "worktrunk": "worktrunk"
+        "worktrunk": "worktrunk",
+        "zennotes": "zennotes"
       }
     },
     "rust-analyzer-src": {
@@ -1053,6 +1105,24 @@
       "original": {
         "owner": "max-sixty",
         "repo": "worktrunk",
+        "type": "github"
+      }
+    },
+    "zennotes": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_3"
+      },
+      "locked": {
+        "lastModified": 1788376644,
+        "narHash": "sha256-JaKVSk2jmkSVVhqfG9gWzq8sGveR2/tuFgTbRk5PPkY=",
+        "owner": "ZenNotes",
+        "repo": "zennotes",
+        "rev": "e2fb64c796efc3d46e74d4397c69427fe210f3b7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ZenNotes",
+        "repo": "zennotes",
         "type": "github"
       }
     },

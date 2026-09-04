@@ -111,7 +111,6 @@ hl.animation({ leaf = "fade", enabled = true, speed = 1.2, bezier = "default" })
 hl.animation({ leaf = "workspaces", enabled = true, speed = 1.4, bezier = "default", style = "slidefade 8%" })
 -- Notes is an interruption tool; do not delay it behind a workspace transition.
 hl.workspace_rule({ workspace = "special:notes", animation = "none" })
-hl.workspace_rule({ workspace = "special:chatgpt", animation = "fade" })
 hl.workspace_rule({ workspace = "special:messenger", animation = "fade" })
 hl.workspace_rule({ workspace = "special:todoist", animation = "fade" })
 
@@ -146,16 +145,6 @@ hl.window_rule({
 	size = { "monitor_w * 0.7", "monitor_h * 0.75" },
 })
 
-hl.window_rule({
-	name = "chatgpt-modal",
-	match = {
-		class = "^(chrome-chatgpt.com__-Default)$",
-	},
-	workspace = "special:chatgpt",
-	float = true,
-	center = true,
-	size = { "monitor_w * 0.7", "monitor_h * 0.85" },
-})
 
 hl.window_rule({
 	name = "messenger-modal",
@@ -230,7 +219,6 @@ hl.bind(mainMod .. " + SHIFT + I", hl.dsp.exec_cmd("quickshell ipc call picker i
 -- hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("foot --app-id=tui-float nmtui"))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh todoist"))
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh notes"))
-hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh chatgpt"))
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh messenger"))
 
 -- Window management

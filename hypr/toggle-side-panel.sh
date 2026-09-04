@@ -8,10 +8,6 @@ case "$panel" in
         app_class='Spotify'
         launch_command='spotify'
         ;;
-    chatgpt)
-        app_class='chrome-chatgpt.com__-Default'
-        launch_command='helium --app=https://chatgpt.com'
-        ;;
     messenger)
         app_class='chrome-www.messenger.com__-Default'
         launch_command='helium --app=https://www.messenger.com'
@@ -25,7 +21,7 @@ case "$panel" in
         launch_command='kitty --class second-brain --directory "$HOME/second-brain" nvim'
         ;;
     *)
-        printf 'usage: %s {spotify|chatgpt|messenger|todoist|notes}\n' "$0" >&2
+        printf 'usage: %s {spotify|messenger|todoist|notes}\n' "$0" >&2
         exit 2
         ;;
 esac
@@ -69,9 +65,10 @@ if [ "$panel" = notes ]; then
     hyprctl dispatch "hl.dsp.focus({ window = [[class:^(second-brain)$]] })" >/dev/null
     exit 0
 fi
-
-if ! client_exists; then
-    hyprctl dispatch "hl.dsp.exec_cmd([[$launch_command]])" >/dev/null
-fi
-
-hyprctl dispatch "hl.dsp.workspace.toggle_special([[$panel]])" >/dev/null
+            WebAppInstallForceList = [
+              {
+                url = "https://app.todoist.com/";
+                default_launch_container = "window";
+                create_desktop_shortcut = true;
+              }
+            ];
