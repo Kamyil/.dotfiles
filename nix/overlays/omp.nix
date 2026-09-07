@@ -5,7 +5,7 @@
 final: prev: {
   omp = prev.stdenv.mkDerivation rec {
     pname = "omp";
-    version = "18.0.11";
+    version = "18.1.10";
 
     src =
       let
@@ -17,10 +17,10 @@ final: prev: {
           else
             "linux-x64";
         hashes = {
-          "darwin-arm64" = "sha256-iLSj5o4ZkEuPzBuksxnvaHlfT+BqbRAdVk/EgssMwlI=";
-          "darwin-x64" = "sha256-gPfcV5uI0OVbXOTrTQ6UBxGvaTKPT/ssKTuOFJf/ei0=";
-          "linux-arm64" = "sha256-5fd8tlqi3Hd6ilkyvjsuakQnHI3y6yCc6m8E8hLz8BA=";
-          "linux-x64" = "sha256-YFRGCynputXrp4M28pHhl5wvoKXNlvwtkq/WZsxoHSY=";
+          "darwin-arm64" = "sha256-+TYT9cxmoi5DaOlV99EhuVCDBtQVOykyMY5dRezxOkQ=";
+          "darwin-x64" = "sha256-YZqKbufLoeGod/+Men5Lc6IQG6rW6cwnSEH/HbSzm4Y=";
+          "linux-arm64" = "sha256-q6e+thJFl4nlOduYDJVoDCbSbKDWd3YVL85wzG4drAY=";
+          "linux-x64" = "sha256-6R1VmO5H4dQJn9hobcn2HJt1Xy6gd9Xxd0q6EHIyH54=";
         };
       in
       prev.fetchurl {
