@@ -23,6 +23,7 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("quickshell")
 	hl.exec_cmd("~/.config/quickshell/wallpaper-control.sh start")
 	hl.exec_cmd("bash ~/.config/hypr/exec-cursor.sh")
+	hl.exec_cmd("hyprctl plugin load /run/current-system/sw/lib/hyprland/plugins/hypr-kinetic-scroll.so")
 end)
 
 hl.config({
