@@ -7,6 +7,28 @@
 let
   opencode-overlay = import ../nix/overlays/opencode.nix;
   omp-overlay = import ../nix/overlays/omp.nix;
+  hypr-kinetic-scroll = pkgs.hyprlandPlugins.mkHyprlandPlugin {
+    pluginName = "hypr-kinetic-scroll";
+    version = "0.1-657a8a7";
+    src = pkgs.fetchFromGitHub {
+      owner = "savonovv";
+      repo = "hypr-kinetic-scroll";
+      rev = "657a8a7cb1cc0a24a06e2dc0947df3e8f4e729ca";
+      hash = "sha256-2RI9RSoXhri9tr9DAsB/Zen96DzKsj/wLRbQQKEZ1Yc=";
+    };
+    installPhase = ''
+      runHook preInstall
+      install -Dm755 hypr-kinetic-scroll.so \
+        "$out/lib/hyprland/plugins/hypr-kinetic-scroll.so"
+      runHook postInstall
+    '';
+    meta = {
+      description = "Compositor-level kinetic touchpad scrolling for Hyprland";
+      homepage = "https://github.com/savonovv/hypr-kinetic-scroll";
+      license = pkgs.lib.licenses.mit;
+      platforms = pkgs.lib.platforms.linux;
+    };
+  };
 in
 {
   imports = [
@@ -289,6 +311,7 @@ in
     slurp
     uwsm
     walker
+    hypr-kinetic-scroll
   ];
 
   # Provide /bin/bash for tools expecting an absolute path
