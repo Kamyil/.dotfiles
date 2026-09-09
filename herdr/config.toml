@@ -26,14 +26,14 @@ mouse_scroll_lines = 5
 tab_bar_position = "bottom"
 sidebar_collapsed_mode = "hidden"
 
-tab_bar_right = [
-  { type = "zoom" },
-  { type = "hostname" },
-  { type = "datetime", format = "%H:%M" },
-  { type = "text", text = "prod" },
-  { type = "command", command = "~/.config/herdr/status.sh", interval_seconds = 5, timeout_seconds = 2 },
-]
-tab_bar_right_separator = " · "
+# tab_bar_right = [
+#   { type = "zoom" },
+#   { type = "hostname" },
+#   { type = "datetime", format = "%H:%M" },
+#   { type = "text", text = "prod" },
+#   { type = "command", command = "~/.config/herdr/status.sh", interval_seconds = 5, timeout_seconds = 2 },
+# ]
+# tab_bar_right_separator = " · "
 
 
 status_indicators = "symbols"
@@ -209,7 +209,7 @@ command = "~/.dotfiles/scripts/herdr-navigate.sh right"
 description = "navigate right (Vim/herdr)"
 
 [[keys.command]]
-key = "prefix+shift+r"
+key = "prefix+shift+a"
 type = "plugin_action"
 command = "herdr-agent-quota.refresh"
 description = "refresh all agent quotas"
