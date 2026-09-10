@@ -5,7 +5,7 @@ command_timeout = 100
 
 follow_symlinks = false
 add_newline = false
-format = "$directory$git_branch "
+format = "$directory$git_branch > "
 
 palette = "kanagawa"
 
