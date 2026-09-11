@@ -75,6 +75,10 @@ in
     };
   };
 
+  # Persist desktop secrets and unlock them through the tuigreet login.
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.greetd.enableGnomeKeyring = true;
+
   # Sreenshare, filepickers etc. (desktop portals)
   xdg.portal.enable = true;
   xdg.portal.extraPortals = with pkgs; [
