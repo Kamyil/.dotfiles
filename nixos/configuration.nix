@@ -7,6 +7,7 @@
 let
   opencode-overlay = import ../nix/overlays/opencode.nix;
   omp-overlay = import ../nix/overlays/omp.nix;
+  claude-code-overlay = import ../nix/overlays/claude-code.nix;
   hypr-kinetic-scroll = pkgs.hyprlandPlugins.mkHyprlandPlugin {
     pluginName = "hypr-kinetic-scroll";
     version = "0.1-657a8a7";
@@ -229,6 +230,7 @@ in
   nixpkgs.overlays = [
     opencode-overlay
     omp-overlay
+    claude-code-overlay
   ];
 
   nix.gc = {

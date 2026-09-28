@@ -46,6 +46,7 @@ in
       fd
       openspec
       omp
+      claude-code
       zsh-completions
       eza
       difftastic
