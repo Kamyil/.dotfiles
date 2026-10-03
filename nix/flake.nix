@@ -43,7 +43,7 @@
     lumen.url = "github:jnsahaj/lumen";
     lumen.inputs.nixpkgs.follows = "nixpkgs";
 
-    herdr.url = "github:ogulcancelik/herdr/v0.8.2";
+    herdr.url = "github:ogulcancelik/herdr/v0.9.0";
     herdr.inputs.nixpkgs.follows = "nixpkgs";
     himalaya-tui.url = "github:pimalaya/himalaya-tui";
     himalaya-tui.inputs.nixpkgs.follows = "nixpkgs";
@@ -51,6 +51,9 @@
     helium.url = "github:oxcl/nix-flake-helium-browser";
     helium.inputs.nixpkgs.follows = "nixpkgs";
 
+    chatgpt-desktop-app.url = "github:poeck/chatgpt-desktop-app-nix-flake";
+
+    zennotes.url = "github:ZenNotes/zennotes";
     # Add private fonts
     # berkeley-font = {
     #   url = "path:///home/kamil/.local/share/fonts";
@@ -79,6 +82,8 @@
       herdr,
       himalaya-tui,
       helium,
+      chatgpt-desktop-app,
+      zennotes,
       ...
     }:
     let
@@ -123,6 +128,8 @@
           herdr
           himalaya-tui
           helium
+          chatgpt-desktop-app
+          zennotes
           ;
       };
 

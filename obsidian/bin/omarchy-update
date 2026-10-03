@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+echo "Run: sudo nixos-rebuild switch --flake ~/.dotfiles/nix"

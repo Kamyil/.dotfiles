@@ -16,6 +16,8 @@
   herdr,
   himalaya-tui,
   helium,
+  chatgpt-desktop-app,
+  zennotes,
   ...
 }:
 
@@ -27,14 +29,23 @@ in
     inherit system;
     modules = [
       {
-        nixpkgs.overlays = [ rust-overlay.overlays.default ];
+        nixpkgs.overlays = [
+          rust-overlay.overlays.default
+          (_final: _prev: {
+            zennotes-desktop = zennotes.packages.${system}.zennotes-desktop;
+          })
+        ];
       }
       disko.nixosModules.disko
       helium.nixosModules.default
+      chatgpt-desktop-app.nixosModules.default
       ../nixos/disk-config.nix
       ../nixos/configuration.nix
       sops-nix.nixosModules.sops
       home-manager.nixosModules.home-manager
+      {
+        programs.chatgpt-desktop-app.enable = true;
+      }
       {
         programs.helium = {
           enable = true;
@@ -53,11 +64,6 @@ in
               "epamlgdeklcjkldoaclgjdmjnchdgbho" # Time Snatch
             ];
             WebAppInstallForceList = [
-              {
-                url = "https://chatgpt.com/";
-                default_launch_container = "window";
-                create_desktop_shortcut = true;
-              }
               {
                 url = "https://app.todoist.com/";
                 default_launch_container = "window";
@@ -105,7 +111,7 @@ in
               docker-compose
               satty
               chromium
-              thunar
+              nautilus
               ffmpegthumbnailer
               imv
               mpv
@@ -141,7 +147,7 @@ in
             ];
 
           programs.zsh.shellAliases = {
-            finder = "thunar";
+            finder = "nautilus";
             nrs = "nh os switch ~/.dotfiles/nix";
             transcribe = "parakeet-transcribe";
           };
@@ -168,6 +174,7 @@ in
           home.sessionPath = [
             "$HOME/.local/share/pnpm"
             "$HOME/.local/share/omarchy/bin"
+            "$HOME/.cache/.bun/bin"
           ];
 
           # Preserve user-managed browser and mail associations while enforcing
@@ -222,6 +229,8 @@ in
               size = 24;
             };
           };
+
+          dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
 
           xdg.enable = true;
 

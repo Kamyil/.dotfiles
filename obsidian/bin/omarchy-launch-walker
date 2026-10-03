@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Keep the launcher focused on its one job: starting desktop applications.
+if [ "$#" -eq 0 ]; then
+  set -- -m applications
+fi
+
+# Hyprland normally starts Walker's GApplication service. Recover if it is not
+# running yet, such as immediately after switching to this configuration.
+if ! pgrep -x walker >/dev/null; then
+  setsid walker --gapplication-service >/dev/null 2>&1 &
+  sleep 0.2
+fi
+
+exec walker --width 644 --height 300 "$@"

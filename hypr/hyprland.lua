@@ -23,6 +23,7 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("quickshell")
 	hl.exec_cmd("~/.config/quickshell/wallpaper-control.sh start")
 	hl.exec_cmd("bash ~/.config/hypr/exec-cursor.sh")
+	hl.exec_cmd("hyprctl plugin load /run/current-system/sw/lib/hyprland/plugins/hypr-kinetic-scroll.so")
 end)
 
 hl.config({
@@ -109,8 +110,8 @@ hl.animation({ leaf = "windows", enabled = true, speed = 1.2, bezier = "default"
 hl.animation({ leaf = "layers", enabled = true, speed = 1.2, bezier = "default", style = "fade" })
 hl.animation({ leaf = "fade", enabled = true, speed = 1.2, bezier = "default" })
 hl.animation({ leaf = "workspaces", enabled = true, speed = 1.4, bezier = "default", style = "slidefade 8%" })
-hl.workspace_rule({ workspace = "special:spotify", animation = "fade" })
-hl.workspace_rule({ workspace = "special:chatgpt", animation = "fade" })
+-- Notes is an interruption tool; do not delay it behind a workspace transition.
+hl.workspace_rule({ workspace = "special:notes", animation = "none" })
 hl.workspace_rule({ workspace = "special:messenger", animation = "fade" })
 hl.workspace_rule({ workspace = "special:todoist", animation = "fade" })
 
@@ -135,26 +136,16 @@ hl.window_rule({
 
 -- Special workspace applications use centered, modal-style windows.
 hl.window_rule({
-	name = "spotify-modal",
+	name = "notes-modal",
 	match = {
-		class = "^(Spotify)$",
+		class = "^(second-brain)$",
 	},
-	workspace = "special:spotify",
+	workspace = "special:notes",
 	float = true,
 	center = true,
-	size = { "monitor_w * 0.7", "monitor_h * 0.85" },
+	size = { "monitor_w * 0.7", "monitor_h * 0.75" },
 })
 
-hl.window_rule({
-	name = "chatgpt-modal",
-	match = {
-		class = "^(chrome-chatgpt.com__-Default)$",
-	},
-	workspace = "special:chatgpt",
-	float = true,
-	center = true,
-	size = { "monitor_w * 0.7", "monitor_h * 0.85" },
-})
 
 hl.window_rule({
 	name = "messenger-modal",
@@ -228,8 +219,7 @@ hl.bind(mainMod .. " + CTRL + V", hl.dsp.exec_cmd("quickshell ipc call picker cl
 hl.bind(mainMod .. " + SHIFT + I", hl.dsp.exec_cmd("quickshell ipc call picker image"))
 -- hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("foot --app-id=tui-float nmtui"))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh todoist"))
-hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh spotify"))
-hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh chatgpt"))
+hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh notes"))
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exec_cmd("~/.config/hypr/toggle-side-panel.sh messenger"))
 
 -- Window management

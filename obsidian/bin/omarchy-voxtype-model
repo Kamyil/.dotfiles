@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v voxtype >/dev/null 2>&1; then
+  omarchy_bin="${OMARCHY_BIN:-$HOME/.local/share/omarchy/bin}"
+  exec "$omarchy_bin/omarchy-launch-floating-terminal-with-presentation" "voxtype setup model"
+fi
+
+exit 1

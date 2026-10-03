@@ -27,11 +27,11 @@ local function disable_italics()
   vim.api.nvim_set_hl(0, '@lsp.typemod.function.readonly', readonly_function)
 end
 
-disable_italics()
+-- disable_italics()
 
-vim.api.nvim_create_autocmd('ColorScheme', {
-  callback = disable_italics,
-})
+-- vim.api.nvim_create_autocmd('ColorScheme', {
+--   callback = disable_italics,
+-- })
 
 -- =============================================================================
 -- MARKDOWN HEADING HIGHLIGHTS (render-markdown.nvim)
@@ -43,18 +43,18 @@ vim.api.nvim_create_autocmd('ColorScheme', {
 -- protocol to actually render headings at larger font sizes.
 
 -- Heading foregrounds: bold + bright per level
-local palette = active_theme.palette
-vim.api.nvim_set_hl(0, 'RenderMarkdownH1', { fg = palette.foreground, bold = true })
-vim.api.nvim_set_hl(0, 'RenderMarkdownH2', { fg = palette.foreground, bold = true })
-vim.api.nvim_set_hl(0, 'RenderMarkdownH3', { fg = palette.yellow, bold = true })
-vim.api.nvim_set_hl(0, 'RenderMarkdownH4', { fg = palette.yellow, bold = false })
-vim.api.nvim_set_hl(0, 'RenderMarkdownH5', { fg = palette.muted, bold = false })
-vim.api.nvim_set_hl(0, 'RenderMarkdownH6', { fg = palette.muted, bold = false })
-
--- Heading backgrounds: subtle tint, strongest for h1-h2
-vim.api.nvim_set_hl(0, 'RenderMarkdownH1Bg', { bg = palette.selection })
-vim.api.nvim_set_hl(0, 'RenderMarkdownH2Bg', { bg = palette.selection })
-vim.api.nvim_set_hl(0, 'RenderMarkdownH3Bg', { bg = palette.background })
-vim.api.nvim_set_hl(0, 'RenderMarkdownH4Bg', { bg = palette.background })
-vim.api.nvim_set_hl(0, 'RenderMarkdownH5Bg', { bg = palette.background })
-vim.api.nvim_set_hl(0, 'RenderMarkdownH6Bg', { bg = palette.background })
+-- local palette = active_theme.palette
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH1', { fg = palette.foreground, bold = true })
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH2', { fg = palette.foreground, bold = true })
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH3', { fg = palette.yellow, bold = true })
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH4', { fg = palette.yellow, bold = false })
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH5', { fg = palette.muted, bold = false })
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH6', { fg = palette.muted, bold = false })
+--
+-- -- Heading backgrounds: subtle tint, strongest for h1-h2
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH1Bg', { bg = palette.selection })
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH2Bg', { bg = palette.selection })
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH3Bg', { bg = palette.background })
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH4Bg', { bg = palette.background })
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH5Bg', { bg = palette.background })
+-- vim.api.nvim_set_hl(0, 'RenderMarkdownH6Bg', { bg = palette.background })

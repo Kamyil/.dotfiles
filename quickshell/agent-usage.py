@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 import json
-import os
 import select
 import shutil
-import sqlite3
 import subprocess
 import sys
 import time
 from datetime import datetime, timezone
-from pathlib import Path
 
 
 def rpc_request(process, request_id, method, params=None, timeout=8):
@@ -81,51 +78,56 @@ def codex_usage():
     return result
 
 
-def opencode_db():
-    data_home = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
-    return data_home / "opencode/opencode.db"
+GO_WINDOW_ALLOWANCE = {"5h": 12.0, "7d": 30.0, "monthly": 60.0}
 
 
-def local_go_cost(db, start_ms):
-    if not db.exists():
-        return 0.0
-    connection = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
-    try:
-        query = """
-            SELECT COALESCE(SUM(CAST(json_extract(data, '$.cost') AS REAL)), 0)
-            FROM part
-            WHERE time_created >= ?
-              AND json_extract(data, '$.type') = 'step-finish'
-              AND COALESCE(json_extract(data, '$.providerID'), json_extract(data, '$.providerId'), '') IN ('opencode', 'opencode-go')
-        """
-        return float(connection.execute(query, (start_ms,)).fetchone()[0] or 0)
-    except sqlite3.Error:
-        return 0.0
-    finally:
-        connection.close()
+def omp_usage_report(provider, timeout=30):
+    binary = shutil.which("omp")
+    if not binary:
+        raise RuntimeError("omp not found")
+    process = subprocess.run(
+        [binary, "usage", "--json", "--provider", provider],
+        capture_output=True,
+        text=True,
+        timeout=timeout,
+    )
+    if process.returncode != 0:
+        raise RuntimeError(process.stderr.strip() or f"omp usage exited {process.returncode}")
+    reports = (json.loads(process.stdout) or {}).get("reports") or []
+    return reports[0] if reports else None
 
 
 def opencode_go_usage():
-    now = time.time()
-    windows = [
-        ("5 hour", 5 * 3600, 12.0),
-        ("Weekly", 7 * 86400, 30.0),
-        ("Monthly", 30 * 86400, 60.0),
-    ]
-    db = opencode_db()
-    limits = []
-    for label, seconds, allowance in windows:
-        spent = local_go_cost(db, int((now - seconds) * 1000))
-        limits.append({
-            "label": label,
-            "percent": min(100.0, spent / allowance * 100.0),
-            "detail": f"${spent:.2f} / ${allowance:.0f}",
-            "estimated": True,
-        })
-    status = "Local estimate from OpenCode history"
-    if not db.exists():
-        status = "No local OpenCode usage history"
-    return {"id": "opencode-go", "name": "OpenCode Go", "plan": "Go", "limits": limits, "status": status}
+    result = {"id": "opencode-go", "name": "OpenCode Go", "plan": "Go", "limits": [], "status": ""}
+    try:
+        report = omp_usage_report("opencode-go")
+    except (OSError, subprocess.SubprocessError, json.JSONDecodeError, RuntimeError) as error:
+        result["status"] = f"Usage unavailable: {error}"
+        return result
+    if not report:
+        result["status"] = "No OpenCode Go account configured"
+        return result
+    for limit in report.get("limits") or []:
+        amount = limit.get("amount") or {}
+        fraction = amount.get("usedFraction")
+        if fraction is None:
+            continue
+        window = limit.get("window") or {}
+        entry = {
+            "label": window.get("label") or limit.get("label") or "Limit",
+            "percent": round(max(0.0, min(1.0, float(fraction))) * 100.0, 1),
+        }
+        resets = window.get("resetsAt")
+        if resets:
+            entry["resetsAt"] = datetime.fromtimestamp(resets / 1000, timezone.utc).isoformat()
+        allowance = GO_WINDOW_ALLOWANCE.get(window.get("id"))
+        if allowance:
+            used = float(fraction) * allowance
+            entry["detail"] = f"{entry['percent']:.1f}% · ${used:.2f} / ${allowance:.0f}"
+        result["limits"].append(entry)
+    if not result["limits"]:
+        result["status"] = "No usage reported"
+    return result
 
 
 def main():

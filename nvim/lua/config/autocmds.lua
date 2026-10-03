@@ -24,43 +24,6 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   end,
 })
 
-vim.api.nvim_create_autocmd('VimEnter', {
-  desc = 'Open Fyler on startup when no file is provided',
-  group = vim.api.nvim_create_augroup('fyler-startup', { clear = true }),
-  callback = function()
-    if #vim.api.nvim_list_uis() == 0 then
-      return
-    end
-
-    local argc = vim.fn.argc()
-    if argc > 1 then
-      return
-    end
-
-    if argc == 1 then
-      local arg0 = vim.fn.argv(0)
-      if vim.fn.isdirectory(arg0) == 0 then
-        return
-      end
-    end
-
-    vim.schedule(function()
-      if argc == 1 then
-        local root_path = vim.fs.normalize(vim.fn.fnamemodify(vim.fn.argv(0), ':p'))
-        require('fyler').open({
-          root_path = root_path,
-          ui = {
-            hidden_items = {
-              always_visible = { '^' .. vim.pesc(root_path) .. '$' },
-            },
-          },
-        })
-      else
-        require('fyler').open()
-      end
-    end)
-  end,
-})
 
 -- Set the commentstring for Smarty templates
 local smarty_augroup = vim.api.nvim_create_augroup('SmartyComment', { clear = true })

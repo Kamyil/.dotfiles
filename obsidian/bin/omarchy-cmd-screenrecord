@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v gpu-screen-recorder >/dev/null 2>&1; then
+  exec gpu-screen-recorder --help
+fi
+
+echo "gpu-screen-recorder is not installed" >&2
+exit 1

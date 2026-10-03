@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+config_file="$HOME/.config/voxtype/config.toml"
+
+if [ -f "$config_file" ]; then
+  omarchy_bin="${OMARCHY_BIN:-$HOME/.local/share/omarchy/bin}"
+  exec "$omarchy_bin/omarchy-launch-editor" "$config_file"
+fi
+
+exit 1
