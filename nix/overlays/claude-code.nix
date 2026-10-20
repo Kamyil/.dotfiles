@@ -1,11 +1,13 @@
 # Custom overlay for Claude Code release binaries.
 #
-# To update: change `version` and update the platform SHA-256 hashes from
+# To update, run:
+#   scripts/update-claude-code-overlay.sh <version|latest|stable>
+# Hashes come from
 # https://downloads.claude.ai/claude-code-releases/<version>/manifest.json.
 final: prev: {
   claude-code = prev.stdenvNoCC.mkDerivation rec {
     pname = "claude-code";
-    version = "2.1.283";
+    version = "2.1.304";
 
     src =
       let
@@ -17,10 +19,10 @@ final: prev: {
           else
             "linux-x64";
         hashes = {
-          "darwin-arm64" = "d8cb1e5c79684cc12a8bfc813e3a2073406921b6245744b3009be3ab5651d21e";
-          "darwin-x64" = "c896d2aee12ff4d95861033d9730d3d22dc19e4f32779134d3399ef3dfb0e77a";
-          "linux-arm64" = "346d294f0103d6fc0de11ac953579b5c62dfa90698a4cfc486b6f927c615e697";
-          "linux-x64" = "1859583ce32920595c61ef868bee52e1b1594f7486db209935e01f1e5e804ae2";
+          "darwin-arm64" = "b9ac5374839f14abf3f1f45610637c332b5daee5ce0d1634726cef87aab78e6a";
+          "darwin-x64" = "f2ae409b46b1bdc1dec7afa12c6a094ff64e7d4ca272ca09f69dd0080c846703";
+          "linux-arm64" = "c487117526509ab6d2ee6013e14f181faf68d6d6afe6bb0d4b2b4a9feca5ecb3";
+          "linux-x64" = "ea0f135784631619a7a409d07322ecec964f9cc4fd377508ed1ba3f141f27912";
         };
       in
       prev.fetchurl {

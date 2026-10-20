@@ -36,7 +36,7 @@ flowchart TD
 - **macOS:** nix-darwin, Homebrew, system defaults, and macOS packages.
 - **NixOS:** host settings, Hyprland, Linux packages, and sops-nix.
 - **Shared:** shell tools, Home Manager packages, live Zsh code under `zsh/`, and links to root-level configs.
-- **Local overlays:** packages for `opencode` and `omp` in `nix/overlays/`.
+- **Local overlays:** packages for `opencode`, `omp`, `claude-code`, and `vercel` in `nix/overlays/`. Bump the release-binary overlays with `scripts/update-opencode-overlay.sh`, `scripts/update-omp-overlay.sh`, and `scripts/update-claude-code-overlay.sh` (each takes `<version|latest>`).
 
 ## How live configuration reload works
 
