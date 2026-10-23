@@ -13,6 +13,9 @@ let
   tldrawOffline = pkgs.callPackage ../packages/tldraw-offline.nix { };
   diskonaut = pkgs.callPackage ../packages/diskonaut.nix { };
   slk = pkgs.callPackage ../packages/slk.nix { };
+  # Godot 4 .NET projects. On macOS the godot-mono cask pulls in Homebrew's
+  # dotnet-sdk, so Nix provides the SDK only on Linux to keep a single one.
+  dotnetSdk = pkgs.dotnetCorePackages.sdk_10_0;
   cliampFixed =
     if pkgs.stdenv.isDarwin then
       pkgs.cliamp.overrideAttrs
@@ -113,6 +116,7 @@ in
       watchexec
       firefox
       dig
+      roslyn-ls
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       qutebrowser
@@ -120,6 +124,9 @@ in
       sweethome3d.application
       obs-studio
       tldrawOffline
+      # macOS gets the godot-mono Homebrew cask (not in the Darwin binary cache)
+      godot-mono
+      dotnetSdk
     ]
     ++ [
       fff.packages.${pkgs.stdenv.hostPlatform.system}.fff-mcp
@@ -128,4 +135,17 @@ in
       herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
       himalaya-tui.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
+
+  home.sessionVariables =
+    if pkgs.stdenv.isDarwin then
+      {
+        DOTNET_ROOT = "/usr/local/share/dotnet";
+        # Godot MCP only auto-detects the non-.NET Godot.app
+        GODOT_PATH = "/Applications/Godot_mono.app/Contents/MacOS/Godot";
+      }
+    else
+      {
+        DOTNET_ROOT = "${dotnetSdk}/share/dotnet";
+        GODOT_PATH = lib.getExe pkgs.godot-mono;
+      };
 }

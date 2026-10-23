@@ -291,6 +291,9 @@ in
               "vivaldi"
               "libreoffice"
               "love"
+              "godot-mono"
+              # godot-mono dependency; listed so bundle cleanup keeps it
+              "dotnet-sdk"
               "stats"
               "macs-fan-control"
               "utm"
