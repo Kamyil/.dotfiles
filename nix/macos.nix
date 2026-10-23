@@ -471,7 +471,11 @@ in
               PNPM_HOME = "/Users/kamil/Library/pnpm";
               HOMEBREW_NO_AUTO_UPDATE = "1";
             };
-            home.sessionPath = [ "/Users/kamil/Library/pnpm" ];
+            home.sessionPath = [
+              "/Users/kamil/Library/pnpm"
+              # Rex CLI, shipped inside the app's self-updating server bundle
+              "/Users/kamil/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS"
+            ];
 
             home.file."Applications/Helium Themed.app".source = heliumLauncherApp;
 

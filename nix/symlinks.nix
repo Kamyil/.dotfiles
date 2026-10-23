@@ -16,6 +16,7 @@ let
     ".config/kitty" = "kitty";
     ".config/foot" = "foot";
     ".config/herdr" = "herdr";
+    ".config/rex" = "rex";
     ".config/neomutt/neomuttrc" = "neomutt/neomuttrc";
     ".config/neomutt/mailcap" = "neomutt/mailcap";
     ".config/tldraw/config.json" = "tldraw/config.json";

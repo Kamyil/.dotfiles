@@ -263,6 +263,21 @@ end
 
 ensure_kitty_on_path()
 
+-- Rex: Ctrl+h/j/k/l moves between nvim splits and hands off to Rex panes at the edge.
+-- Rex's init.lua forwards these keys to nvim whenever nvim is in the foreground.
+if vim.env.REX_BLOCK ~= nil then
+	local rex_bin = vim.env.REX_BIN_DIR and (vim.env.REX_BIN_DIR .. '/rex') or 'rex'
+	for key, dir in pairs({ h = 'left', j = 'down', k = 'up', l = 'right' }) do
+		keymap('n', '<C-' .. key .. '>', function()
+			local win = vim.api.nvim_get_current_win()
+			vim.cmd('wincmd ' .. key)
+			if vim.api.nvim_get_current_win() == win then
+				vim.system({ rex_bin, 'focus', dir, '-s', vim.env.REX_SESSION })
+			end
+		end, { desc = 'Move to split / Rex pane ' .. dir })
+	end
+end
+
 keymap('n', '<C-\\>', '<C-w>p', { desc = 'Move to previous split' })
 
 -- keymap('n', '<leader>o', ':update<CR> :source<CR>') -- source file inline (most useful for editing neovim config file
