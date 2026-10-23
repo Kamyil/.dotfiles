@@ -33,6 +33,7 @@ let
     "second-brain/.obsidian" = "obsidian";
     ".omp/agent/AGENTS.md" = "omp/agent/AGENTS.md";
     ".omp/agent/skills" = "omp/agent/skills";
+    ".omp/agent/mcp.json" = "omp/agent/mcp.json";
     ".omp/agent/themes" = "pi/agent/themes";
     "second-brain/.obsidian.vimrc" = "obsidian/obsidian.vimrc";
   };

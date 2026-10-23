@@ -6,6 +6,8 @@ alias o='omp'
 alias or='omp --resume'
 alias ompr='omr --resume'
 alias oc='opencode'
+# Claude Code shares omp's repo-managed MCP servers; ~/.claude.json is app state.
+alias claude='claude --mcp-config="$HOME/.dotfiles/omp/agent/mcp.json"'
 alias lg='lazygit'
 alias ldk='lazydocker'
 alias ls='eza --no-filesize --long --color=always --icons=always --no-user'
