@@ -236,6 +236,11 @@ run = ['layout floating']
 if.app-id = 'com.dygmalab.bazecor'
 run = ['layout floating']
 
+# Godot (editor and running games share this id): games want their own window size
+[[on-window-detected]]
+if.app-id = 'org.godotengine.godot'
+run = ['layout floating']
+
 [[on-window-detected]]
 if.window-title-regex-substring = '^weekly-note'
 run = ['move-node-to-workspace N']
