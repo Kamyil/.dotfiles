@@ -349,6 +349,7 @@ in
               "libreoffice"
               "love"
               "godot-mono"
+              "blender"
               # godot-mono dependency; listed so bundle cleanup keeps it
               "dotnet-sdk"
               "stats"

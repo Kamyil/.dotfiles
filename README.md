@@ -116,6 +116,8 @@ The primary macOS browser is **Helium**, installed outside this flake. Chromium,
 
 macOS Homebrew is used for GUI applications and tools that are unavailable or inconvenient in the current Nix package set. The authoritative list is in [`nix/macos.nix`](nix/macos.nix); `onActivation.cleanup = "uninstall"` removes casks that are no longer declared, so hand-installed apps should be adopted there as casks or `masApps`.
 
+Blender is installed through the Homebrew cask on macOS and the Linux Home Manager package list on NixOS.
+
 ### NixOS-specific
 
 | Role | Tool(s) | macOS counterpart |

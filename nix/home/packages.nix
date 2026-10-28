@@ -121,6 +121,7 @@ in
       qutebrowser
       beekeeper-studio
       sweethome3d.application
+      blender
       obs-studio
       tldrawOffline
       # macOS gets the godot-mono Homebrew cask (not in the Darwin binary cache)
