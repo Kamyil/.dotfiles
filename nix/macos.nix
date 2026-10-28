@@ -25,6 +25,7 @@ let
 
   # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
+  claude-code-overlay = import ./overlays/claude-code.nix;
   omp-overlay = import ./overlays/omp.nix;
   tldrawOffline = darwinPkgs.callPackage ./packages/tldraw-offline.nix { };
 
@@ -34,6 +35,7 @@ let
       rust-overlay.overlays.default
       opencode-overlay
       omp-overlay
+      claude-code-overlay
     ];
     config.allowUnfree = true;
   };

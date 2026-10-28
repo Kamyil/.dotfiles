@@ -79,6 +79,7 @@ nix eval --raw ./nix#nixosConfigurations.nixos.config.home-manager.users.kamil.p
 - Verify every local README link and Mermaid path exists.
 - Keep generated state ignored: `.DS_Store`, logs, Python bytecode, caches, backups, MRU files, and application state.
 - Never commit secrets, API keys, or `.env` contents.
+- `docs/WEAK_POINTS.md` tracks known repo weak points. Tick items you fix; append new problems you notice but don't fix.
 
 ## Style and Commits
 
