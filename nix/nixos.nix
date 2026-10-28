@@ -109,6 +109,8 @@ in
               trash-cli
               docker-buildx
               docker-compose
+              podman
+              podman-compose
               satty
               chromium
               nautilus

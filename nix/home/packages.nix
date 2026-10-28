@@ -1,12 +1,13 @@
 # Packages used by the interactive user on both macOS and NixOS.
-{ pkgs
-, lib
-, fff
-, lazyjira
-, hunk
-, herdr
-, himalaya-tui
-, ...
+{
+  pkgs,
+  lib,
+  fff,
+  lazyjira,
+  hunk,
+  herdr,
+  himalaya-tui,
+  ...
 }:
 
 let
@@ -18,12 +19,11 @@ let
   dotnetSdk = pkgs.dotnetCorePackages.sdk_10_0;
   cliampFixed =
     if pkgs.stdenv.isDarwin then
-      pkgs.cliamp.overrideAttrs
-        (oldAttrs: {
-          preCheck = (oldAttrs.preCheck or "") + ''
-            export TMPDIR=/tmp
-          '';
-        })
+      pkgs.cliamp.overrideAttrs (oldAttrs: {
+        preCheck = (oldAttrs.preCheck or "") + ''
+          export TMPDIR=/tmp
+        '';
+      })
     else
       pkgs.cliamp;
 in
@@ -96,8 +96,6 @@ in
       php
       bun
       wireshark-cli
-      podman
-      podman-compose
       ffmpeg
       yt-dlp
       postgresql

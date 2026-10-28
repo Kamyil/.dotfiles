@@ -106,27 +106,27 @@ For agentic work, **oh-my-pi (`omp`) is the primary harness** and **OpenCode is 
 | Window manager / compositor | Aerospace | Hyprland |
 | Desktop shell / status bar | SketchyBar | Quickshell |
 | Terminal apps | Kitty, WezTerm, Ghostty, Alacritty | Alacritty, Kitty, WezTerm (shared where enabled) |
-| Virtualization | Lima, Colima, QEMU, UTM | QEMU, Podman, Docker |
-| GUI application delivery | Homebrew brews and casks | Nix packages and NixOS modules |
+| Virtualization | OrbStack, QEMU, UTM | QEMU, Podman, Docker |
+| GUI application delivery | Homebrew brews, casks, and Mac App Store apps (`masApps`) | Nix packages and NixOS modules |
 | macOS automation | Hammerspoon | Hyprland scripts / systemd user services |
 | Audio transcription | Parakeet MLX (`transcribe <audio-file>`, TDT 0.6B v3) | NixOS uses the INT8 Parakeet v3 model through sherpa-onnx |
-| Desktop applications | Chromium, Firefox, Vivaldi, Signal, Obsidian, Postman, Raycast | Chromium, Firefox, Signal, Obsidian, qutebrowser (package availability differs) |
+| Desktop applications | Chromium, Firefox, Signal, Obsidian, Postman, Vicinae | Chromium, Firefox, Signal, Obsidian, qutebrowser (package availability differs) |
 
-The primary macOS browser is **Helium**, installed outside this flake. Chromium, Firefox, Vivaldi, and qutebrowser remain declaratively installed fallbacks.
+The primary macOS browser is **Helium**, installed outside this flake. Chromium, Firefox, and qutebrowser remain declaratively installed fallbacks.
 
-macOS Homebrew is used for GUI applications and tools that are unavailable or inconvenient in the current Nix package set. The authoritative list is in [`nix/macos.nix`](nix/macos.nix).
+macOS Homebrew is used for GUI applications and tools that are unavailable or inconvenient in the current Nix package set. The authoritative list is in [`nix/macos.nix`](nix/macos.nix); `onActivation.cleanup = "uninstall"` removes casks that are no longer declared, so hand-installed apps should be adopted there as casks or `masApps`.
 
 ### NixOS-specific
 
 | Role | Tool(s) | macOS counterpart |
 | --- | --- | --- |
 | Desktop compositor | Hyprland | Aerospace |
-| Desktop shell and launcher | Quickshell, Walker, Elephant | SketchyBar, Raycast |
+| Desktop shell and launcher | Quickshell, Walker, Elephant | SketchyBar, Vicinae |
 | Desktop notifications | Dunst | macOS Notification Center |
 | Lock screen and idle desktop | Hyprlock, Hypridle | macOS screen lock / system behavior |
 | Audio and graphics | PipeWire, Pulse compatibility, EasyEffects global processing, XWayland | CoreAudio and native macOS display stack |
 | Network and Bluetooth controls | Quickshell panels; impala and bluetuith as fallbacks | macOS system UI or third-party GUI tools |
-| Container stack | Docker, Podman, Compose, buildx | Docker/Podman plus Colima/Lima |
+| Container stack | Docker, Podman, Compose, buildx | OrbStack |
 | Linux development | gcc, nixd, nightly Rust, Zig, PHP, Go | clang/Xcode toolchain, rustup, same language tools |
 | Screenshot and clipboard | Omasnap, Satty fallback, grim, slurp, wl-clipboard | macOS screenshot and clipboard tools |
 | GUI files and media | Thunar with GVfs, Tumbler, and video thumbnails; imv for images; mpv for video/WebM (`Super+E` or `finder`) | Finder, Preview, QuickTime Player |

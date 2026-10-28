@@ -132,6 +132,8 @@ in
             curl
             wget
             tldrawOffline
+            # The flameshot cask is disabled (fails Gatekeeper); nixpkgs builds it.
+            flameshot
           ];
 
           # Route only .lan queries through the DNS server reachable over WireGuard.
@@ -239,10 +241,35 @@ in
             # End Nix
           '';
 
+          # Vicinae (Homebrew cask) is the launcher; start it at login through
+          # LaunchServices so its Accessibility grant follows the app bundle.
+          launchd.user.agents.flameshot.serviceConfig = {
+            ProgramArguments = [ "/Applications/Nix Apps/flameshot.app/Contents/MacOS/flameshot" ];
+            RunAtLoad = true;
+            ProcessType = "Interactive";
+          };
+
+          launchd.user.agents.vicinae.serviceConfig = {
+            ProgramArguments = [
+              "/usr/bin/open"
+              "-a"
+              "Vicinae"
+            ];
+            RunAtLoad = true;
+            ProcessType = "Interactive";
+          };
+
           # macOS system defaults
           system.defaults = {
             dock = {
               autohide = true;
+              autohide-delay = 0.0;
+              autohide-time-modifier = 0.15;
+              expose-animation-duration = 0.1;
+              launchanim = false;
+              mineffect = "scale";
+              # AeroSpace expects stable workspace order.
+              mru-spaces = false;
               show-recents = false;
               tilesize = 48;
             };
@@ -256,6 +283,30 @@ in
               KeyRepeat = 2;
               InitialKeyRepeat = 15;
               ApplePressAndHoldEnabled = false;
+              NSAutomaticWindowAnimationsEnabled = false;
+              NSDocumentSaveNewDocumentsToCloud = false;
+              NSWindowResizeTime = 0.001;
+            };
+            # AeroSpace owns tiling; disable the competing built-in window manager.
+            WindowManager = {
+              GloballyEnabled = false;
+              EnableStandardClickToShowDesktop = false;
+              EnableTilingByEdgeDrag = false;
+              EnableTopTilingByEdgeDrag = false;
+              EnableTilingOptionAccelerator = false;
+            };
+            CustomUserPreferences = {
+              "com.apple.finder".DisableAllAnimations = true;
+              "com.apple.desktopservices" = {
+                DSDontWriteNetworkStores = true;
+                DSDontWriteUSBStores = true;
+              };
+              "com.apple.assistant.support"."Assistant Enabled" = false;
+              "com.apple.Siri".StatusMenuVisible = false;
+              "com.apple.AdLib".allowApplePersonalizedAdvertising = false;
+              "com.apple.CrashReporter".DialogType = "none";
+              "com.apple.ImageCapture".disableHotPlug = true;
+              "com.apple.lookup.shared".LookupSuggestionsDisabled = true;
             };
           };
 
@@ -274,6 +325,11 @@ in
               # Force prevents Brew Bundle's default adoption path from recursively
               # chmodding an existing signed app bundle.
               cask "helium-browser", args: { force: true }
+              # Hand-installed copies are older than the casks, which blocks adoption;
+              # force replaces them with the cask version.
+              cask "requestly", args: { force: true }
+              cask "keepassxc", args: { force: true }
+              cask "balenaetcher", args: { force: true }
             '';
             brews = [
               "sketchybar"
@@ -288,7 +344,6 @@ in
               # Keep these that aren't available in nixpkgs or ARM macOS
               "firefox"
               "spotify"
-              "vivaldi"
               "libreoffice"
               "love"
               "godot-mono"
@@ -297,11 +352,9 @@ in
               "stats"
               "macs-fan-control"
               "utm"
-              "podman-desktop"
               "qmk-toolbox"
               "ytmdesktop-youtube-music"
               "aerospace"
-              "raycast"
               "signal"
               "obsidian"
               "font-sketchybar-app-font"
@@ -312,7 +365,40 @@ in
               "opencode-desktop"
               "emacs-app"
               "sweet-home3d"
+              # Previously installed by hand; adopted so bundle cleanup owns them
+              "orbstack"
+              "steam"
+              "gog-galaxy"
+              "chatgpt"
+              "zed"
+              "cmux"
+              "dbeaver-community"
+              "tableplus"
+              "figma"
+              "affinity"
+              "native-access"
+              "qgis"
+              "betterdisplay"
+              "hammerspoon"
+              "handy"
+              "protonvpn"
+              "disk-drill"
+              "drivedx"
+              "xquartz"
+              "porting-kit"
+              "vicinae"
             ];
+            # Mac App Store apps; requires being signed in to the App Store
+            masApps = {
+              "Xcode" = 497799835;
+              "Logic Pro" = 634148309;
+              "iMovie" = 408981434;
+              "Pages" = 409201541;
+              "Numbers" = 409203825;
+              "Slack" = 803453959;
+              "PDF Converter" = 1596442275;
+              "Pages Creator Studio" = 361309726;
+            };
           };
         }
       )
@@ -404,11 +490,8 @@ in
             # macOS-specific packages; cross-platform packages live in home/packages.nix.
             home.packages =
               (with pkgs; [
-                docker
                 gcc
                 opencode
-                lima
-                colima
                 trash-cli
                 cowsay
                 figlet
