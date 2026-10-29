@@ -114,6 +114,7 @@ in
       tldr
       watchexec
       firefox
+      jetbrains.datagrip
       dig
       roslyn-ls
     ]
