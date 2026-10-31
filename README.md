@@ -110,6 +110,7 @@ For agentic work, **oh-my-pi (`omp`) is the primary harness** and **OpenCode is 
 | GUI application delivery | Homebrew brews, casks, and Mac App Store apps (`masApps`) | Nix packages and NixOS modules |
 | macOS automation | Hammerspoon | Hyprland scripts / systemd user services |
 | Audio transcription | Parakeet MLX (`transcribe <audio-file>`, TDT 0.6B v3) | NixOS uses the INT8 Parakeet v3 model through sherpa-onnx |
+| Voice dictation | Hex (`anomalyco/tap/hex` cask) | Hex from the upstream flake's Home Manager module; hold `F9` in Hyprland |
 | Desktop applications | Chromium, Firefox, Signal, Obsidian, Postman, Vicinae | Chromium, Firefox, Signal, Obsidian, qutebrowser (package availability differs) |
 
 The primary macOS browser is **Helium**, installed outside this flake. Chromium, Firefox, and qutebrowser remain declaratively installed fallbacks.

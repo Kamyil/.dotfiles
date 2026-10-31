@@ -388,6 +388,29 @@
         "type": "github"
       }
     },
+    "hex": {
+      "inputs": {
+        "home-manager": [
+          "home-manager"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793281822,
+        "narHash": "sha256-MQ04RtoWY+rt+nNIE5IlJ8ePGJMMvVWZRwIuUn2HGn0=",
+        "owner": "anomalyco",
+        "repo": "hex",
+        "rev": "48b5884246672aa37bc36ceadb362640e88d8880",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anomalyco",
+        "repo": "hex",
+        "type": "github"
+      }
+    },
     "himalaya-tui": {
       "inputs": {
         "fenix": "fenix",
@@ -746,6 +769,7 @@
         "fff": "fff",
         "helium": "helium",
         "herdr": "herdr",
+        "hex": "hex",
         "himalaya-tui": "himalaya-tui",
         "home-manager": "home-manager",
         "hunk": "hunk",

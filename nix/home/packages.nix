@@ -31,7 +31,6 @@ in
   home.packages =
     with pkgs;
     [
-      zennotes-desktop
       ripgrep
       codex
       diskonaut

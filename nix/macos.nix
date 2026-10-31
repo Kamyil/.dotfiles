@@ -26,6 +26,7 @@ let
   # Local overlays
   opencode-overlay = import ./overlays/opencode.nix;
   claude-code-overlay = import ./overlays/claude-code.nix;
+  codex-overlay = import ./overlays/codex.nix;
   omp-overlay = import ./overlays/omp.nix;
   tldrawOffline = darwinPkgs.callPackage ./packages/tldraw-offline.nix { };
 
@@ -33,6 +34,7 @@ let
     system = darwinSystem;
     overlays = [
       rust-overlay.overlays.default
+      codex-overlay
       opencode-overlay
       omp-overlay
       claude-code-overlay
@@ -324,6 +326,7 @@ in
               tap "steveyegge/beads", trusted: true
               tap "steipete/tap", trusted: true
               tap "cloudmanic/spice-edit", trusted: true
+              tap "anomalyco/tap", trusted: true
               # Force prevents Brew Bundle's default adoption path from recursively
               # chmodding an existing signed app bundle.
               cask "helium-browser", args: { force: true }
@@ -368,6 +371,7 @@ in
               "opencode-desktop"
               "emacs-app"
               "sweet-home3d"
+              "t3-code@nightly"
               # Previously installed by hand; adopted so bundle cleanup owns them
               "orbstack"
               "steam"
@@ -383,7 +387,7 @@ in
               "qgis"
               "betterdisplay"
               "hammerspoon"
-              "handy"
+              "anomalyco/tap/hex"
               "protonvpn"
               "disk-drill"
               "drivedx"

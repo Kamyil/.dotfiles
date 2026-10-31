@@ -325,3 +325,7 @@ hl.bind("XF86AudioMute", hl.dsp.exec_cmd("pamixer --toggle-mute"))
 
 -- GUI file explorer for drag-and-drop workflows.
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("thunar"))
+
+-- Hex dictation: hold F9 to dictate. Unmodified keys avoid leaking held
+-- modifiers into Hex's paste.
+hl.bind("F9", hl.dsp.global("hex:dictation"))

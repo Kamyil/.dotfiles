@@ -2,43 +2,6 @@
   "$schema": "https://opencode.ai/config.json",
   "skills": {},
   "provider": {
-    "zai coding plan": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "Z.AI GLM",
-      "options": {
-        "baseURL": "https://api.z.ai/api/paas/v4/"
-      },
-      "models": {
-        "glm-4.7": {
-          "name": "GLM-4.7",
-          "variants": {
-            "extra-high": {
-              "thinking": {
-                "type": "enabled",
-                "budgetTokens": 64000
-              }
-            },
-            "high": {
-              "thinking": {
-                "type": "enabled",
-                "budgetTokens": 32000
-              }
-            },
-            "fast": {
-              "thinking": {
-                "type": "disabled"
-              }
-            }
-          }
-        },
-        "glm-4.7-flashx": {
-          "name": "GLM-4.7-FlashX"
-        },
-        "glm-4.7-flash": {
-          "name": "GLM-4.7-Flash"
-        }
-      }
-    }
   },
   "mcp": {
     "fff": {
@@ -71,12 +34,5 @@
       "type": "remote",
       "url": "https://mcp.exa.ai/mcp"
     }
-  },
-  "instructions": [
-    "beads.md"
-  ],
-  "width": 930,
-  "software_mode": false,
-  "maximized": false,
-  "height": 1137
+  }
 }

@@ -68,6 +68,23 @@ rex.action{
 }
 
 rex.action{
+  name = "new_floating_pane",
+  title = "New Floating Pane",
+  run = function(ctx, args)
+    local fg = foreground(ctx)
+    local _, err = rex.session.new_layer{
+      bounds = { 0.15, 0.15, 0.7, 0.7 },
+      focus = true,
+      layout = rex.layout.block{
+        flavor = shell,
+        options = { cwd = fg and fg.cwd },
+      },
+    }
+    if err ~= nil then error(err, 0) end
+  end,
+}
+
+rex.action{
   name = "edit_scrollback",
   title = "Edit Scrollback in Neovim",
   run = function(ctx, args)
@@ -144,6 +161,7 @@ rex.bind(P .. "shift+tab", "pane.focus_previous")
 
 bind_all({ P .. "v", "ctrl+alt+d", "ctrl+/" }, "pane.split.right")
 bind_all({ P .. "-", "ctrl+alt+shift+d", "ctrl+shift+/" }, "pane.split.down")
+rex.bind("ctrl+shift+f", "new_floating_pane")
 bind_all({ P .. "x", "ctrl+x" }, "pane.close")
 bind_all({ P .. "z", "ctrl+alt+z", "ctrl+z" }, "pane.zoom")
 rex.bind("ctrl+f", "client.find.open") -- closest thing to herdr copy_mode

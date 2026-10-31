@@ -18,6 +18,7 @@
   helium,
   chatgpt-desktop-app,
   zennotes,
+  hex,
   ...
 }:
 
@@ -31,6 +32,7 @@ in
       {
         nixpkgs.overlays = [
           rust-overlay.overlays.default
+          (import ./overlays/codex.nix)
           (_final: _prev: {
             zennotes-desktop = zennotes.packages.${system}.zennotes-desktop;
           })
@@ -81,6 +83,7 @@ in
         home-manager.sharedModules = [
           nix-index-database.homeModules.default
           sops-nix.homeManagerModules.sops
+          hex.homeManagerModules.hex
         ];
         home-manager.extraSpecialArgs = {
           inherit
@@ -100,6 +103,12 @@ in
 
           home.homeDirectory = lib.mkForce "/home/kamil";
           home.enableNixpkgsReleaseCheck = false;
+
+          # Hex dictation runs as a user service bound to uwsm's graphical-session.target.
+          programs.hex = {
+            enable = true;
+            autostart = true;
+          };
 
           home.packages =
             (with pkgs; [

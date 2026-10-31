@@ -78,7 +78,7 @@ unified_sidebar = true  # merge the note list into the sidebar tree
 
 [typography]
 interface_font = "Berkeley Mono"  # app chrome font; empty = system default
-text_font = "ComicMonoNF"  # editor + preview font; empty = system default
+text_font = "Libron"  # editor + preview font; empty = system default
 mono_font = "Berkeley Mono"  # code / monospace font; empty = system default
 
 [view]
