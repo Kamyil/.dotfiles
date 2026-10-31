@@ -16,6 +16,7 @@
   hunk,
   lumen,
   herdr,
+  herdr-gpui,
   himalaya-tui,
   ...
 }:
@@ -327,6 +328,7 @@ in
               tap "steipete/tap", trusted: true
               tap "cloudmanic/spice-edit", trusted: true
               tap "anomalyco/tap", trusted: true
+              tap "penso/tap", trusted: true
               # Force prevents Brew Bundle's default adoption path from recursively
               # chmodding an existing signed app bundle.
               cask "helium-browser", args: { force: true }
@@ -394,6 +396,7 @@ in
               "xquartz"
               "porting-kit"
               "vicinae"
+              "penso/tap/herdr-gpui"
             ];
             # Mac App Store apps; requires being signed in to the App Store
             masApps = {
@@ -437,6 +440,7 @@ in
             hunk
             lumen
             herdr
+            herdr-gpui
             himalaya-tui
             ;
         };

@@ -14,6 +14,7 @@
   hunk,
   lumen,
   herdr,
+  herdr-gpui,
   himalaya-tui,
   helium,
   chatgpt-desktop-app,
@@ -94,6 +95,7 @@ in
             hunk
             lumen
             herdr
+            herdr-gpui
             himalaya-tui
             ;
         };

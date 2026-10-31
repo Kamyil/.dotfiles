@@ -6,6 +6,7 @@
   lazyjira,
   hunk,
   herdr,
+  herdr-gpui,
   himalaya-tui,
   ...
 }:
@@ -117,6 +118,7 @@ in
       roslyn-ls
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
+      herdr-gpui.packages.${pkgs.stdenv.hostPlatform.system}.default
       qutebrowser
       beekeeper-studio
       sweethome3d.application

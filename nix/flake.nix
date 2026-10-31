@@ -45,6 +45,8 @@
 
     herdr.url = "github:ogulcancelik/herdr/v0.9.0";
     herdr.inputs.nixpkgs.follows = "nixpkgs";
+    herdr-gpui.url = "github:penso/herdr-gpui";
+    herdr-gpui.inputs.nixpkgs.follows = "nixpkgs";
     himalaya-tui.url = "github:pimalaya/himalaya-tui";
     himalaya-tui.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -84,6 +86,7 @@
       hunk,
       lumen,
       herdr,
+      herdr-gpui,
       himalaya-tui,
       helium,
       chatgpt-desktop-app,
@@ -131,6 +134,7 @@
           hunk
           lumen
           herdr
+          herdr-gpui
           himalaya-tui
           helium
           chatgpt-desktop-app
@@ -157,6 +161,7 @@
           hunk
           lumen
           herdr
+          herdr-gpui
           himalaya-tui
           ;
       };
