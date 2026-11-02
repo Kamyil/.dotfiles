@@ -6,6 +6,7 @@
   lazyjira,
   hunk,
   herdr,
+  herdr-gpui,
   himalaya-tui,
   ...
 }:
@@ -31,7 +32,6 @@ in
   home.packages =
     with pkgs;
     [
-      zennotes-desktop
       ripgrep
       codex
       diskonaut
@@ -119,6 +119,7 @@ in
       roslyn-ls
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
+      herdr-gpui.packages.${pkgs.stdenv.hostPlatform.system}.default
       qutebrowser
       beekeeper-studio
       sweethome3d.application

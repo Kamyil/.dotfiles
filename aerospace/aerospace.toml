@@ -77,9 +77,9 @@ inner.vertical = 10
 # Bottom gap = 26px for sketchybar (matching waybar on NixOS)
 # Top gap = 0 (no gap needed at top since bar is at bottom)
 outer.top = [{monitor."PL2483H" = 15}, { monitor."LG HDR 4K" = 25 }, { monitor."Built-in Retina Display" = 5 }, 0]
-# outer.right = [{monitor."PL2483H" = 35}, { monitor."LG HDR 4K" = 25 }, { monitor."Built-in Retina Display" = 5 }, 0]
-# outer.bottom = [{monitor."PL2483H" = 15}, { monitor."LG HDR 4K" = 25 }, { monitor."Built-in Retina Display" = 5 }, 0]
-# outer.left = [{monitor."PL2483H" = 35}, { monitor."LG HDR 4K" = 25 }, { monitor."Built-in Retina Display" = 5 }, 0]
+outer.right = [{monitor."PL2483H" = 35}, { monitor."LG HDR 4K" = 25 }, { monitor."Built-in Retina Display" = 10 }, 0]
+outer.bottom = [{monitor."PL2483H" = 15}, { monitor."LG HDR 4K" = 25 }, { monitor."Built-in Retina Display" = 10 }, 0]
+outer.left = [{monitor."PL2483H" = 35}, { monitor."LG HDR 4K" = 25 }, { monitor."Built-in Retina Display" = 10 }, 0]
 
 # See https://nikitabobko.github.io/AeroSpace/guide#exec-env-vars
 [exec] # Again, you don't need to copy all config sections to your config.
@@ -116,7 +116,7 @@ cmd-shift-n = 'exec-and-forget ~/.dotfiles/scripts/open-weekly-note.sh'
 # alt-enter = 'exec-and-forget open -n /System/Applications/Utilities/Terminal.app'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#layout
-# cmd-slash = 'layout tiles horizontal vertical'
+cmd-comma = 'layout tiles horizontal vertical'
 # cmd-comma = 'layout accordion horizontal vertical'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#focus

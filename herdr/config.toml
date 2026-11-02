@@ -23,7 +23,7 @@ mouse_capture = true
 right_click_passthrough_modifier = "ctrl"
 redraw_on_focus_gained = false
 mouse_scroll_lines = 5
-tab_bar_position = "bottom"
+tab_bar_position = "top"
 sidebar_collapsed_mode = "hidden"
 
 # tab_bar_right = [
@@ -37,8 +37,9 @@ sidebar_collapsed_mode = "hidden"
 
 
 status_indicators = "symbols"
+hide_tab_bar_when_single_tab = false
 [ui.toast]
-delivery = "system"
+delivery = "herdr"
 delay_seconds = 2
 
 [ui.toast.clipboard]
@@ -179,11 +180,11 @@ type = "shell"
 command = "herdr pane resize --current --direction right --amount 0.05"
 description = "resize pane right"
 
-[[keys.command]]
-key = "ctrl+s"
-type = "shell"
-command = "~/.dotfiles/scripts/herdr-second-brain-toggle.sh"
-description = "toggle second-brain workspace"
+# [[keys.command]]
+# key = "ctrl+s"
+# type = "shell"
+# command = "~/.dotfiles/scripts/herdr-second-brain-toggle.sh"
+# description = "toggle second-brain workspace"
 [[keys.command]]
 key = "ctrl+h"
 type = "shell"
