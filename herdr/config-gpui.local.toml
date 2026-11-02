@@ -1,0 +1,42 @@
+# Herdr UI overrides. Saved changes reload automatically.
+# Unset keys inherit config-gpui.toml; tables merge key by key.
+
+# New installs start with the roomy rounded sidebar. Remove this line for
+# the managed default, or pick another layout listed in config-gpui.toml.
+layout = "comfortable-rounded"
+theme = "Black Metal (Burzum)"
+show_gpu_load = true
+status_icons = "braille"
+tab_layout = "outline"
+contrast = "high"
+show_sidebar_gpu_load = false
+agents_placement = "nested"
+confirm_close_pane = false
+
+[terminal]
+family = "Berkeley Mono"
+padding_x = 0
+padding_y = 10
+
+[sidebar]
+family = "Berkeley Mono"
+select = "row"
+
+[tabs]
+family = "Berkeley Mono"
+
+[ui]
+family = "Berkeley Mono"
+
+[status_bar]
+usage = "detailed"
+theme = "label"
+
+[backdrop]
+opacity = 1.0
+
+[sound]
+volume = 84
+
+[updates]
+channel = "beta"
