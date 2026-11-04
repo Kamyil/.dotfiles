@@ -19,3 +19,6 @@ Known problems in this repository. Tick an item when it is fixed.
       `path '/nix/store/rajfap2y…-source.drv' is not valid` while evaluating the
       NixOS configuration. This is local store corruption, not a config error;
       `nix-store --verify --check-contents --repair` should clear it.
+- [ ] Codex overlay bumps can leave a stale per-platform hash (0.164.0 shipped
+      with an outdated `x86_64-unknown-linux-musl` hash, breaking `nrs` on
+      NixOS). Overlay updates should prefetch every platform's assets.

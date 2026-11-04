@@ -11,7 +11,7 @@ let
       throw "codex overlay: unsupported system ${prev.stdenv.hostPlatform.system}";
   hashes = {
     aarch64-apple-darwin = "sha256-qoKZwWnYARGqwFVDrSYhyb2+25vCUskF/j9aW6+aQUI=";
-    x86_64-unknown-linux-musl = "sha256-KaUHoqP9j2zZS5a3YtKB0pnRXXkC3uYTLTFLeM+RCOs=";
+    x86_64-unknown-linux-musl = "sha256-kN0LA7KK/Lf6czpPc7QT2ykWpHNH79Q/tmnMHHdO6OQ=";
   };
   hostHashes = {
     aarch64-apple-darwin = "sha256-e8PKaXVnvIhKdiM5mcRssisCOwny1NSrNRjxNUxk5BU=";
