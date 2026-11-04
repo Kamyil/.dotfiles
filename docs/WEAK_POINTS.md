@@ -29,3 +29,9 @@ Known problems in this repository. Tick an item when it is fixed.
 - [ ] Codex overlay bumps can leave a stale per-platform hash (0.164.0 shipped
       with an outdated `x86_64-unknown-linux-musl` hash, breaking `nrs` on
       NixOS). Overlay updates should prefetch every platform's assets.
+- [ ] The official Herdr app and herdr-core (`nix/packages/herdr-app.nix`,
+      `nix/packages/herdr-core.nix`) are prebuilt release binaries pinned by
+      hand from `releases.herdr.dev/{app,core}/latest.json`; there is no
+      upstream flake or update script. The app's built-in self-updater cannot
+      write into the Nix store, so updates must be bumped here. macOS has no
+      declarative Herdr app install (no Homebrew cask exists yet).

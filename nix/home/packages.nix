@@ -6,7 +6,6 @@
   lazyjira,
   hunk,
   herdr,
-  herdr-gpui,
   himalaya-tui,
   ...
 }:
@@ -15,6 +14,8 @@ let
   tldrawOffline = pkgs.callPackage ../packages/tldraw-offline.nix { };
   diskonaut = pkgs.callPackage ../packages/diskonaut.nix { };
   slk = pkgs.callPackage ../packages/slk.nix { };
+  herdrApp = pkgs.callPackage ../packages/herdr-app.nix { };
+  herdrCore = pkgs.callPackage ../packages/herdr-core.nix { };
   # Godot 4 .NET projects. On macOS the godot-mono cask pulls in Homebrew's
   # dotnet-sdk, so Nix provides the SDK only on Linux to keep a single one.
   dotnetSdk = pkgs.dotnetCorePackages.sdk_10_0;
@@ -119,7 +120,8 @@ in
       roslyn-ls
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
-      herdr-gpui.packages.${pkgs.stdenv.hostPlatform.system}.default
+      herdrApp
+      herdrCore
       qutebrowser
       beekeeper-studio
       sweethome3d.application
