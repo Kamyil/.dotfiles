@@ -111,6 +111,17 @@ in
           programs.hex = {
             enable = true;
             autostart = true;
+            # HEX's oxc dependencies require a newer rustc than nixpkgs ships.
+            package =
+              let
+                rustToolchain = pkgs.rust-bin.stable."1.97.1".minimal;
+              in
+              hex.packages.${system}.hex.override {
+                rustPlatform = pkgs.makeRustPlatform {
+                  cargo = rustToolchain;
+                  rustc = rustToolchain;
+                };
+              };
           };
 
           # Vicinae replaces the Quickshell launcher on Super+Space. Its settings
