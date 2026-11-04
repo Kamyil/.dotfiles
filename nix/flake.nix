@@ -60,6 +60,8 @@
     hex.url = "github:anomalyco/hex";
     hex.inputs.nixpkgs.follows = "nixpkgs";
     hex.inputs.home-manager.follows = "home-manager";
+
+    vicinae.url = "github:vicinaehq/vicinae";
     # Add private fonts
     # berkeley-font = {
     #   url = "path:///home/kamil/.local/share/fonts";
@@ -92,6 +94,7 @@
       chatgpt-desktop-app,
       zennotes,
       hex,
+      vicinae,
       ...
     }:
     let
@@ -140,6 +143,7 @@
           chatgpt-desktop-app
           zennotes
           hex
+          vicinae
           ;
       };
 

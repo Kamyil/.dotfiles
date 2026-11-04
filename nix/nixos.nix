@@ -20,6 +20,7 @@
   chatgpt-desktop-app,
   zennotes,
   hex,
+  vicinae,
   ...
 }:
 
@@ -110,6 +111,14 @@ in
           programs.hex = {
             enable = true;
             autostart = true;
+          };
+
+          # Vicinae replaces the Quickshell launcher on Super+Space. Its settings
+          # stay GUI-managed in ~/.config/vicinae/settings.json.
+          programs.vicinae = {
+            enable = true;
+            package = vicinae.packages.${system}.default;
+            systemd.enable = true;
           };
 
           home.packages =

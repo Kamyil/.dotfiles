@@ -209,7 +209,7 @@ local mainMod = "SUPER"
 
 -- Core applications
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("kitty"))
-hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("quickshell ipc call launcher toggle"))
+hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("vicinae toggle"))
 hl.bind(mainMod .. " + ALT + Space", hl.dsp.exec_cmd("quickshell ipc call themes togglePicker"))
 hl.bind(mainMod .. " + CTRL + Space", hl.dsp.exec_cmd("quickshell ipc call wallpapers togglePicker"))
 hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd("quickshell ipc call picker emoji"))

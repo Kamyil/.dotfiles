@@ -111,7 +111,7 @@ For agentic work, **oh-my-pi (`omp`) is the primary harness** and **OpenCode is 
 | macOS automation | Hammerspoon | Hyprland scripts / systemd user services |
 | Audio transcription | Parakeet MLX (`transcribe <audio-file>`, TDT 0.6B v3) | NixOS uses the INT8 Parakeet v3 model through sherpa-onnx |
 | Voice dictation | Hex (`anomalyco/tap/hex` cask) | Hex from the upstream flake's Home Manager module; hold `F9` in Hyprland |
-| Desktop applications | Chromium, Firefox, Signal, Obsidian, Postman, Vicinae | Chromium, Firefox, Signal, Obsidian, qutebrowser (package availability differs) |
+| Desktop applications | Chromium, Firefox, Signal, Obsidian, Postman, Vicinae | Chromium, Firefox, Signal, Obsidian, qutebrowser, Vicinae (package availability differs) |
 
 The primary macOS browser is **Helium**, installed outside this flake. Chromium, Firefox, and qutebrowser remain declaratively installed fallbacks.
 
@@ -124,7 +124,7 @@ Blender is installed through the Homebrew cask on macOS and the Linux Home Manag
 | Role | Tool(s) | macOS counterpart |
 | --- | --- | --- |
 | Desktop compositor | Hyprland | Aerospace |
-| Desktop shell and launcher | Quickshell, Walker, Elephant | SketchyBar, Vicinae |
+| Desktop shell and launcher | Quickshell, Vicinae (`Super+Space`, Home Manager `programs.vicinae` from the upstream flake), Walker and Elephant for Omarchy menus | SketchyBar, Vicinae |
 | Desktop notifications | Dunst | macOS Notification Center |
 | Lock screen and idle desktop | Hyprlock, Hypridle | macOS screen lock / system behavior |
 | Audio and graphics | PipeWire, Pulse compatibility, EasyEffects global processing, XWayland | CoreAudio and native macOS display stack |

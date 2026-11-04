@@ -291,21 +291,6 @@ ShellRoot {
     }
 
 
-    IpcHandler {
-        target: "launcher"
-        function toggle(): void {
-            if (launcherWindow.visible)
-                launcherWindow.visible = false
-            else
-                root.showOverlay("launcher")
-        }
-        function show(): void {
-            root.showOverlay("launcher")
-        }
-        function hide(): void {
-            launcherWindow.visible = false
-        }
-    }
     function lockSession(): void {
         if (!lockProcess.running)
             lockProcess.running = true
@@ -364,10 +349,7 @@ ShellRoot {
             Hyprland.monitorFor(candidate) === Hyprland.focusedMonitor)
         const target = cursorScreen || focusedScreen || Quickshell.screens[0] || null
 
-        if (name === "launcher") {
-            launcherWindow.screen = target
-            launcherWindow.visible = true
-        } else if (name === "tools") {
+        if (name === "tools") {
             toolsWindow.screen = target
             toolsWindow.visible = true
             Qt.callLater(() => toolsContent.reset())
@@ -432,7 +414,6 @@ ShellRoot {
                 color: "transparent"
 
                 property string activePanel: ""
-                property bool panelReturnToLauncher: false
                 property Item panelAnchor: null
                 readonly property var audioSink: Pipewire.defaultAudioSink
                 readonly property int volume: audioSink && audioSink.audio ? Math.round(audioSink.audio.volume * 100) : 0
@@ -510,7 +491,7 @@ ShellRoot {
                 }
 
 
-                function togglePanel(name, item, returnToLauncher) {
+                function togglePanel(name, item) {
                     if (activePanel === name) {
                         activePanel = ""
                         panel.visible = false
@@ -518,7 +499,6 @@ ShellRoot {
                     }
                     panel.visible = false
                     activePanel = name
-                    panelReturnToLauncher = returnToLauncher === true
                     panelAnchor = item
                     panel.anchor.item = item
                     panel.visible = true
@@ -654,9 +634,8 @@ ShellRoot {
                         }
                         BarButton {
                             icon: "󰍉"
-                            active: launcherWindow.visible
                             accessibleName: "Application launcher"
-                            onClicked: launcherWindow.visible = !launcherWindow.visible
+                            onClicked: Quickshell.execDetached(["vicinae", "toggle"])
                         }
                         BarButton {
                             icon: "󰚩"
@@ -1260,12 +1239,8 @@ ShellRoot {
                     Shortcut {
                         sequence: "Escape"
                         onActivated: {
-                            const returnToLauncher = bar.panelReturnToLauncher
-                            bar.panelReturnToLauncher = false
                             panel.visible = false
                             bar.activePanel = ""
-                            if (returnToLauncher)
-                                launcherWindow.visible = true
                         }
                     }
                 }
@@ -1367,42 +1342,6 @@ ShellRoot {
             }
         }
     }
-    PanelWindow {
-        id: launcherWindow
-        visible: false
-        screen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
-        anchors { top: true; bottom: true; left: true; right: true }
-        exclusiveZone: 0
-        color: Qt.rgba(0, 0, 0, 0.45)
-        WlrLayershell.layer: WlrLayer.Overlay
-        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: launcherWindow.visible = false
-        }
-        ApplicationLauncher {
-            id: launcherContent
-            anchors.centerIn: parent
-            width: 620
-            height: Math.min(520, launcherWindow.height - 80)
-            opacity: launcherWindow.visible ? 1 : 0
-            scale: launcherWindow.visible ? 1 : 0.97
-            onCloseRequested: launcherWindow.visible = false
-            onActionRequested: action => {
-                bar.togglePanel(action, launcherContent, true)
-                launcherWindow.visible = false
-            }
-        }
-        onVisibleChanged: if (visible) launcherContent.reset()
-    }
-
-    HyprlandFocusGrab {
-        windows: [launcherWindow]
-        active: launcherWindow.visible
-        onCleared: launcherWindow.visible = false
-    }
-
     PanelWindow {
         id: pickerWindow
         visible: false
