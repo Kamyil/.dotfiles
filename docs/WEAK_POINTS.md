@@ -35,3 +35,7 @@ Known problems in this repository. Tick an item when it is fixed.
       upstream flake or update script. The app's built-in self-updater cannot
       write into the Nix store, so updates must be bumped here. macOS has no
       declarative Herdr app install (no Homebrew cask exists yet).
+- [ ] Herdr app keybindings and settings (`~/.config/herdr-app/keys.json`,
+      `settings.json`) live outside the repo: the app rewrites its home
+      folder in place, so a repository symlink would be replaced. Only the
+      theme is reproducible, via `scripts/herdr-theme`.

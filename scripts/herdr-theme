@@ -22,3 +22,23 @@ if updated != config:
     temporary = config_path.with_suffix(".toml.tmp")
     temporary.write_text(updated)
     temporary.replace(config_path)
+
+# The Herdr app reads full terminal palettes from themes/<name>.json and
+# reloads them live; settings.json selects "dotfiles".
+app_home = Path(os.environ.get("HERDR_APP_HOME", Path.home() / ".config/herdr-app"))
+if app_home.is_dir():
+    ansi_names = ["black", "red", "green", "yellow", "blue", "purple", "aqua", "white"]
+    app_theme = {
+        "background": palette["background"],
+        "foreground": palette["foreground"],
+        "selection": palette["selection"],
+        "cursor": palette["foreground"],
+        "ansi": [palette[name] for name in ansi_names]
+        + [palette[f"bright_{name}"] for name in ansi_names],
+        "colors": {"accent": palette["accent"]},
+    }
+    theme_path = app_home / "themes/dotfiles.json"
+    theme_path.parent.mkdir(exist_ok=True)
+    temporary = theme_path.with_suffix(".json.tmp")
+    temporary.write_text(json.dumps(app_theme, indent=2) + "\n")
+    temporary.replace(theme_path)
