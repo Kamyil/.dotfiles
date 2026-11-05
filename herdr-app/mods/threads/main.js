@@ -220,12 +220,13 @@ export default class Threads extends View {
     );
     const ordered = [...shown.filter((th) => this.pins.has(keyOf(th))), ...shown.filter((th) => !this.pins.has(keyOf(th)))].slice(0, LIMIT);
 
-    const toggleTool = (id) => () => {
+    // Handlers notify through their own cx: render's goes stale once it returns.
+    const toggleTool = (id) => (_e, cx) => {
       this.hidden.has(id) ? this.hidden.delete(id) : this.hidden.add(id);
       this.save();
       cx.notify();
     };
-    const set = (fn) => () => {
+    const set = (fn) => (_e, cx) => {
       fn();
       this.save();
       cx.notify();
