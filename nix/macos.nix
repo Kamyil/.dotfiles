@@ -29,6 +29,8 @@ let
   codex-overlay = import ./overlays/codex.nix;
   omp-overlay = import ./overlays/omp.nix;
   tldrawOffline = darwinPkgs.callPackage ./packages/tldraw-offline.nix { };
+  herdrApp = darwinPkgs.callPackage ./packages/herdr-app.nix { };
+  herdrCore = darwinPkgs.callPackage ./packages/herdr-core.nix { };
 
   darwinPkgs = import nixpkgs {
     system = darwinSystem;
@@ -136,6 +138,9 @@ in
             curl
             wget
             tldrawOffline
+            # Herdr.app and Herdr Core.app land in /Applications/Nix Apps.
+            herdrApp
+            herdrCore
             # The flameshot cask is disabled (fails Gatekeeper); nixpkgs builds it.
             flameshot
           ];

@@ -7,6 +7,10 @@
 let
   version = "0.1.18";
   sources = {
+    aarch64-darwin = {
+      target = "macos-aarch64";
+      hash = "sha256-d9ivCS4lrmUPRCTW2tJ1FPaRahHYB/sHUoWM0nwh5Pw=";
+    };
     aarch64-linux = {
       target = "linux-aarch64";
       hash = "sha256-zzM5PPlQu3Y3NNw+FmEKudr4SSORpO8N5WAmzX91KFM=";
@@ -17,6 +21,7 @@ let
     };
   };
   source = sources.${stdenvNoCC.hostPlatform.system};
+  isDarwin = stdenvNoCC.hostPlatform.isDarwin;
 in
 stdenvNoCC.mkDerivation {
   pname = "herdr-core";
@@ -28,10 +33,26 @@ stdenvNoCC.mkDerivation {
   };
 
   sourceRoot = ".";
+  # On macOS the core runs from its signed Herdr Core.app bundle, so local
+  # network and microphone permissions attach to it; keep the bundle intact.
+  dontFixup = isDarwin;
 
   installPhase = ''
     runHook preInstall
-    install -Dm755 herdr-core "$out/bin/herdr-core"
+  ''
+  + (
+    if isDarwin then
+      ''
+        mkdir -p "$out/Applications" "$out/bin"
+        cp -R "Herdr Core.app" "$out/Applications/"
+        ln -s "../Applications/Herdr Core.app/Contents/MacOS/herdr-core" "$out/bin/herdr-core"
+      ''
+    else
+      ''
+        install -Dm755 herdr-core "$out/bin/herdr-core"
+      ''
+  )
+  + ''
     ln -s herdr-core "$out/bin/hc"
     runHook postInstall
   '';
