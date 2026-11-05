@@ -9,14 +9,19 @@ whose content changes. Start Herdr once first so its defaults exist.
   top of the app's defaults.
 - layouts/main-nav.json, layouts/terminals-nav.json: Herdr's shipped main and
   terminals layouts plus an empty floating block holding the nav mod, which
-  owns Ctrl+h/j/k/l. Regenerated from the shipped files, so re-running picks
-  up Herdr's layout updates.
+  owns Ctrl+h/j/k/l. terminals-nav also moves the tab bar to the bottom.
+  Regenerated from the shipped files, so re-running picks up Herdr's layout
+  updates.
+- mods/<name>-square: square-cornered copies of the shipped mods the nav
+  layouts show (every .rounded*() call set to 0), which those layouts use
+  along with radius 0. Herdr's own popup and dialog frames stay rounded.
 - settings.json and the nav layouts use themes/dotfiles.json in dark mode,
   which scripts/herdr-theme writes from the current dotfiles palette.
 - mods/nav comes from nix/symlinks.nix (herdr-app/mods/nav); this only checks it.
 """
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -25,7 +30,51 @@ repo = Path(__file__).resolve().parent.parent
 app_home = Path(os.environ.get("HERDR_APP_HOME", Path.home() / ".config/herdr-app"))
 state = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "dotfiles-theme"
 nav_layouts = {"main-nav": "main", "terminals-nav": "terminals"}
+# Root children of these layouts that move to the end (bottom of a column).
+move_last = {"terminals-nav": {"tabs"}}
+square_suffix = "-square"
+rounded_call = re.compile(r"\.rounded(?:_[a-z]+)?\([^()]*\)")
 light_fallback = "paper"
+
+
+def squared(node, mods):
+    """Zero every radius in a layout tree and point shipped mods at square copies."""
+    if isinstance(node, list):
+        return [squared(child, mods) for child in node]
+    if not isinstance(node, dict):
+        return node
+    result = {}
+    for key, value in node.items():
+        if key == "radius":
+            result[key] = 0
+        elif key == "mod" and isinstance(value, str) and (app_home / "mods" / value).is_dir() and not (app_home / "mods" / value).is_symlink():
+            mods.add(value)
+            result[key] = value + square_suffix
+        else:
+            result[key] = squared(value, mods)
+    return result
+
+
+def write_square_mod(name, names):
+    source = app_home / "mods" / name
+    target = app_home / "mods" / (name + square_suffix)
+    if target.is_symlink():
+        sys.exit(f"herdr-app-setup: {target} is a symlink; refusing to overwrite it")
+    target.mkdir(exist_ok=True)
+    for path in source.iterdir():
+        if path.suffix != ".js" and path.name != "mod.json":
+            continue
+        if path.suffix == ".js":
+            text = rounded_call.sub(".rounded(0)", path.read_text())
+            for other in names:
+                text = re.sub(rf'(mod:\s*)"{re.escape(other)}"', rf'\1"{other}{square_suffix}"', text)
+        else:
+            text = path.read_text()
+        out = target / path.name
+        if not out.exists() or out.read_text() != text:
+            out.write_text(text)
+            print(f"updated {out}")
+    # Icons stay in the shipped folder; the code addresses them as mods/<name>/.
 
 
 def load(path):
@@ -64,14 +113,25 @@ for section, bindings in spec.get("set", {}).items():
     keys.setdefault(section, {}).update(bindings)
 save(app_home / "keys.json", keys)
 
+square_mods = set()
+layouts = {}
 for name, base in nav_layouts.items():
-    layout = load(app_home / "layouts" / f"{base}.json")
+    layout = squared(load(app_home / "layouts" / f"{base}.json"), square_mods)
     floating = [block for block in layout.get("floating", []) if block.get("id") != "nav"]
     floating.append({"id": "nav", "content": {"mod": "nav"}, "edge": "bottom", "align": "end"})
     layout["floating"] = floating
+    last = move_last.get(name, set())
+    children = layout.get("children", [])
+    layout["children"] = [c for c in children if c.get("id") not in last] + [c for c in children if c.get("id") in last]
     shipped_theme = layout.get("theme")
     light = shipped_theme if isinstance(shipped_theme, str) else light_fallback
     layout["theme"] = {"light": light, "dark": "dotfiles"}
+    layouts[name] = layout
+
+# Copies first, so a layout never names a mod that doesn't exist yet.
+for mod in sorted(square_mods):
+    write_square_mod(mod, square_mods)
+for name, layout in layouts.items():
     save(app_home / "layouts" / f"{name}.json", layout)
 
 settings = load(app_home / "settings.json")
