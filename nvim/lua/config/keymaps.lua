@@ -278,6 +278,22 @@ if vim.env.REX_BLOCK ~= nil then
 	end
 end
 
+-- Herdr app: Ctrl+h/j/k/l moves between nvim splits and hands off to Herdr panes at the edge.
+-- The app's `nav` mod (~/.config/herdr-app/mods/nav) forwards these keys to nvim and moves
+-- focus directly for every other program.
+-- The Herdr TUI (HERDR_PANE_ID) keeps using nvim-herdr-navigation.
+if vim.env.HC_TERMINAL_ID ~= nil and vim.env.HERDR_PANE_ID == nil and vim.fn.executable('herdr-app') == 1 then
+	for key, dir in pairs({ h = 'left', j = 'down', k = 'up', l = 'right' }) do
+		keymap('n', '<C-' .. key .. '>', function()
+			local win = vim.api.nvim_get_current_win()
+			vim.cmd('wincmd ' .. key)
+			if vim.api.nvim_get_current_win() == win then
+				vim.system({ 'herdr-app', 'do', 'pane.go', '--direction', dir })
+			end
+		end, { desc = 'Move to split / Herdr pane ' .. dir })
+	end
+end
+
 keymap('n', '<C-\\>', '<C-w>p', { desc = 'Move to previous split' })
 
 -- keymap('n', '<leader>o', ':update<CR> :source<CR>') -- source file inline (most useful for editing neovim config file

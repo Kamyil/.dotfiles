@@ -39,3 +39,11 @@ Known problems in this repository. Tick an item when it is fixed.
       `settings.json`) live outside the repo: the app rewrites its home
       folder in place, so a repository symlink would be replaced. Only the
       theme is reproducible, via `scripts/herdr-theme`.
+- [ ] `nvim/lua/config/keymaps.lua` is tab-indented and fails
+      `stylua --check --config-path nvim/.stylua.toml` (spaces, width 2).
+- [ ] `nvim/lua/config/plugins.lua` declares `lmilojevicc/herdr-splits.nvim`
+      twice with identical settings.
+- [ ] Herdr app Ctrl+h/j/k/l navigation depends on files outside the repo:
+      the `nav` mod (`~/.config/herdr-app/mods/nav`), its key bindings, and the
+      personal `main-nav` layout (a clone of `main` holding the mod in an empty
+      floating block). The clone no longer receives Herdr's updates to `main`.
