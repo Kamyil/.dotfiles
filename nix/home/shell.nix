@@ -100,7 +100,6 @@ in
       })
     ];
 
-
     # History configuration
     history = {
       size = 999;
@@ -174,7 +173,10 @@ in
 
       # Source external files if they exist
       [ -f "$HOME/.config/broot/launcher/bash/br" ] && source "$HOME/.config/broot/launcher/bash/br"
-      [ -f "$HOME/.dotfiles/scripts/fzf-git.sh" ] && source "$HOME/.dotfiles/scripts/fzf-git.sh"
+      # Sourced from a function so it sees no arguments: given the shell's own
+      # (zsh -ic 'cmd' zsh args, as Herdr starts tabs), it runs them as its
+      # subcommands and exits the shell.
+      [ -f "$HOME/.dotfiles/scripts/fzf-git.sh" ] && () { source "$HOME/.dotfiles/scripts/fzf-git.sh"; }
 
       # Enable colors and prompt substitution
       autoload -U colors && colors

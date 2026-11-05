@@ -62,3 +62,12 @@ Known problems in this repository. Tick an item when it is fixed.
       Herdr's shipped mods by regex. A future mod that rounds corners another
       way (a computed radius, a styled `Button`) stays rounded, and Herdr's own
       popup and dialog frames are not covered.
+- [ ] `scripts/agent-threads` reads Claude Code and omp session files by
+      their current, undocumented JSONL layout, and OpenCode's
+      `session list --format json` fields (`directory`, `time.updated`) are
+      guessed: no OpenCode sessions existed to test against. A format change
+      silently drops threads from the Herdr `threads` sidebar.
+- [x] `scripts/fzf-git.sh` exited every interactive zsh started with
+      positional arguments (`zsh -ic 'cmd' zsh args`, how Herdr starts tabs):
+      sourced, it took them as its own subcommands. Fixed: `nix/home/shell.nix`
+      sources it from an anonymous function.

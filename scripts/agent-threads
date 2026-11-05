@@ -1,0 +1,166 @@
+#!/usr/bin/env python3
+"""Print coding-agent threads from Claude Code, OpenCode and omp as JSON.
+
+One list, newest first: {tool, id, title, folder, missing, updated, argv}.
+`updated` is in epoch milliseconds; `argv` resumes the thread when run in
+`folder`; `missing` marks a folder that no longer exists. The Herdr app's
+threads mod (herdr-app/mods/threads) shows this list.
+
+Claude Code sessions can be tens of MiB, so their titles are cached by file
+size and mtime in $XDG_CACHE_HOME/agent-threads.json.
+"""
+import json
+import os
+import shlex
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+home = Path.home()
+cache_path = Path(os.environ.get("XDG_CACHE_HOME", home / ".cache")) / "agent-threads.json"
+claude_root = home / ".claude/projects"
+omp_root = home / ".omp/agent/sessions"
+
+
+def resume(command, *args):
+    """argv running command through an interactive zsh, so aliases (claude's
+    --mcp-config) apply: Herdr runs a tab's argv as "$@", which skips them."""
+    return ["zsh", "-ic", " ".join([command, *map(shlex.quote, args)])]
+
+
+def text_of(content):
+    """The first plain text of a message's content, or None."""
+    if isinstance(content, str):
+        return content
+    for part in content or []:
+        if isinstance(part, dict) and part.get("type") == "text" and part.get("text"):
+            return part["text"]
+    return None
+
+
+def first_line(text):
+    for line in (text or "").splitlines():
+        line = line.strip()
+        # Skip Claude's injected command and caveat blocks.
+        if line and not line.startswith("<"):
+            return line[:200]
+    return None
+
+
+def claude_thread(path):
+    title = ai_title = prompt = folder = None
+    with path.open("rb") as lines:
+        for raw in lines:
+            if b'"custom-title"' in raw or b'"ai-title"' in raw:
+                entry = json.loads(raw)
+                if entry.get("type") == "custom-title":
+                    title = entry.get("customTitle") or title
+                elif entry.get("type") == "ai-title":
+                    ai_title = entry.get("aiTitle") or ai_title
+            elif folder is None and b'"cwd"' in raw:
+                folder = json.loads(raw).get("cwd")
+            if prompt is None and b'"type":"user"' in raw:
+                entry = json.loads(raw)
+                if not entry.get("isSidechain"):
+                    prompt = first_line(text_of(entry.get("message", {}).get("content")))
+    if not (title or ai_title or prompt) or not folder:
+        return None
+    return {"title": title or ai_title or prompt, "folder": folder}
+
+
+def claude_threads(cache):
+    fresh = {}
+    for path in claude_root.glob("*/*.jsonl"):
+        stat = path.stat()
+        key = str(path)
+        stamp = [stat.st_size, stat.st_mtime_ns]
+        cached = cache.get(key)
+        if cached and cached["stamp"] == stamp:
+            info = cached["info"]
+        else:
+            try:
+                info = claude_thread(path)
+            except (OSError, ValueError):
+                info = None
+        fresh[key] = {"stamp": stamp, "info": info}
+        if info:
+            yield {
+                "tool": "claude",
+                "id": path.stem,
+                "title": info["title"],
+                "folder": info["folder"],
+                "updated": stat.st_mtime_ns // 1_000_000,
+                "argv": resume("claude --resume", path.stem),
+            }
+    cache.clear()
+    cache.update(fresh)
+
+
+def omp_threads():
+    for path in omp_root.glob("*/*.jsonl"):
+        title = session = None
+        try:
+            with path.open() as lines:
+                for number, line in enumerate(lines):
+                    entry = json.loads(line)
+                    kind = entry.get("type")
+                    if kind == "title":
+                        title = entry.get("title")
+                    elif kind == "session":
+                        session = entry
+                    elif kind == "message" and not title and entry.get("message", {}).get("role") == "user":
+                        title = first_line(text_of(entry["message"].get("content")))
+                    if (title and session) or number > 50:
+                        break
+        except (OSError, ValueError):
+            continue
+        if not session or not session.get("cwd"):
+            continue
+        yield {
+            "tool": "omp",
+            "id": session.get("id") or path.stem,
+            "title": title or "Untitled",
+            "folder": session["cwd"],
+            "updated": path.stat().st_mtime_ns // 1_000_000,
+            "argv": resume("omp --resume", str(path)),
+        }
+
+
+def opencode_threads():
+    if not shutil.which("opencode"):
+        return
+    try:
+        result = subprocess.run(["opencode", "session", "list", "--format", "json"], capture_output=True, text=True, timeout=20)
+        sessions = json.loads(result.stdout or "[]")
+    except (OSError, ValueError, subprocess.TimeoutExpired):
+        return
+    for session in sessions if isinstance(sessions, list) else []:
+        folder = session.get("directory") or session.get("cwd")
+        if not session.get("id") or not folder:
+            continue
+        updated = session.get("updated") or (session.get("time") or {}).get("updated") or 0
+        yield {
+            "tool": "opencode",
+            "id": session["id"],
+            "title": session.get("title") or "Untitled",
+            "folder": folder,
+            "updated": int(updated),
+            "argv": resume("opencode -s", session["id"]),
+        }
+
+
+try:
+    cache = json.loads(cache_path.read_text())
+except (OSError, ValueError):
+    cache = {}
+threads = [*claude_threads(cache), *omp_threads(), *opencode_threads()]
+try:
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    cache_path.write_text(json.dumps(cache))
+except OSError:
+    pass
+for thread in threads:
+    thread["missing"] = not os.path.isdir(thread["folder"])
+threads.sort(key=lambda thread: thread["updated"], reverse=True)
+json.dump(threads, sys.stdout, ensure_ascii=False)

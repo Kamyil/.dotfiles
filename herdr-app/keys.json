@@ -180,6 +180,14 @@
       "ctrl-j": "nav.down",
       "ctrl-k": "nav.up",
       "ctrl-l": "nav.right"
+    },
+    "layout:threads": {
+      "ctrl-f": "nav.scrollback",
+      "ctrl-shift-e": "layout.toggle:threads",
+      "ctrl-h": "nav.left",
+      "ctrl-j": "nav.down",
+      "ctrl-k": "nav.up",
+      "ctrl-l": "nav.right"
     }
   }
 }

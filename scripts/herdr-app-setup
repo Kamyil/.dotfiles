@@ -11,12 +11,15 @@ whose content changes. Start Herdr once first so its defaults exist.
   terminals layouts plus an empty floating block holding the nav mod, which
   owns Ctrl+h/j/k/l. Regenerated from the shipped files, so re-running picks
   up Herdr's layout updates.
+- layouts/threads.json: terminals-nav with the threads mod as a left sidebar
+  listing Claude Code, OpenCode and omp threads (scripts/agent-threads).
 - mods/<name>-square: square-cornered copies of the shipped mods the nav
   layouts show (every .rounded*() call set to 0), which those layouts use
   along with radius 0. Herdr's own popup and dialog frames stay rounded.
 - settings.json and the nav layouts use themes/dotfiles.json in dark mode,
   which scripts/herdr-theme writes from the current dotfiles palette.
-- mods/nav comes from nix/symlinks.nix (herdr-app/mods/nav); this only checks it.
+- mods/nav and mods/threads come from nix/symlinks.nix (herdr-app/mods/*);
+  this only checks them.
 """
 import json
 import os
@@ -29,7 +32,9 @@ from pathlib import Path
 repo = Path(__file__).resolve().parent.parent
 app_home = Path(os.environ.get("HERDR_APP_HOME", Path.home() / ".config/herdr-app"))
 state = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "dotfiles-theme"
-nav_layouts = {"main-nav": "main", "terminals-nav": "terminals"}
+nav_layouts = {"main-nav": "main", "terminals-nav": "terminals", "threads": "terminals"}
+linked_mods = ["nav", "threads"]
+threads_sidebar = {"id": "threads", "type": "block", "size": {"px": 300}, "min": 220, "max": 520, "content": {"mod": "threads"}}
 square_suffix = "-square"
 rounded_call = re.compile(r"\.rounded(?:_[a-z]+)?\([^()]*\)")
 light_fallback = "paper"
@@ -96,11 +101,12 @@ missing = [str(path) for path in required if not path.exists()]
 if missing:
     sys.exit("herdr-app-setup: start Herdr once first; missing " + ", ".join(missing))
 
-# The nav layouts show the nav mod; without it Herdr rejects them and lists neither.
-nav_mod = app_home / "mods/nav"
-expected = repo / "herdr-app/mods/nav"
-if not nav_mod.is_symlink() or nav_mod.resolve() != expected.resolve():
-    sys.exit(f"herdr-app-setup: {nav_mod} is not linked to {expected}; apply the flake (nrs), then re-run")
+# The layouts below show these mods; without one Herdr rejects them and lists none.
+for mod in linked_mods:
+    linked = app_home / "mods" / mod
+    expected = repo / "herdr-app/mods" / mod
+    if not linked.is_symlink() or linked.resolve() != expected.resolve():
+        sys.exit(f"herdr-app-setup: {linked} is not linked to {expected}; apply the flake (nrs), then re-run")
 
 theme_palette = state / "current/theme.json"
 if theme_palette.exists():
@@ -124,6 +130,11 @@ for name, base in nav_layouts.items():
     floating = [block for block in layout.get("floating", []) if block.get("id") != "nav"]
     floating.append({"id": "nav", "content": {"mod": "nav"}, "edge": "bottom", "align": "end"})
     layout["floating"] = floating
+    if name == "threads":
+        layout["children"] = [
+            {"id": "body", "type": "row", "gap": layout.get("gap", 8), "children": [threads_sidebar, child]} if child.get("id") == "main" else child
+            for child in layout.get("children", [])
+        ]
     shipped_theme = layout.get("theme")
     light = shipped_theme if isinstance(shipped_theme, str) else light_fallback
     layout["theme"] = {"light": light, "dark": "dotfiles"}
