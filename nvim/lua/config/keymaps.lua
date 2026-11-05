@@ -292,6 +292,20 @@ if vim.env.HC_TERMINAL_ID ~= nil and vim.env.HERDR_PANE_ID == nil and vim.fn.exe
 			end
 		end, { desc = 'Move to split / Herdr pane ' .. dir })
 	end
+
+	-- The nav mod sends these keys over this socket rather than `hc keys`, which holds a
+	-- key back until the screen settles (seconds while LSP servers start).
+	local socket_file = vim.fn.stdpath('state') .. '/herdr/' .. vim.env.HC_TERMINAL_ID
+	vim.fn.mkdir(vim.fn.fnamemodify(socket_file, ':h'), 'p')
+	vim.fn.writefile({ vim.v.servername }, socket_file)
+	vim.api.nvim_create_autocmd('VimLeavePre', {
+		callback = function()
+			local ok, lines = pcall(vim.fn.readfile, socket_file)
+			if ok and lines[1] == vim.v.servername then
+				vim.fn.delete(socket_file)
+			end
+		end,
+	})
 end
 
 keymap('n', '<C-\\>', '<C-w>p', { desc = 'Move to previous split' })
