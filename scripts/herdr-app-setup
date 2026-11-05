@@ -15,7 +15,8 @@ whose content changes. Start Herdr once first so its defaults exist.
   Herdr's spaces list, the threads mod (Claude Code, OpenCode and omp threads,
   scripts/agent-threads) and the usage mod (Claude Code and Codex plan usage,
   scripts/agent-usage), top to bottom. The tab bar sits over the panes only
-  and drops its space chip (mods/terminals-bar-square-threads).
+  and drops its space chip and macOS window-button inset
+  (mods/terminals-bar-square-threads).
 - mods/<name>-square: square-cornered copies of the shipped mods the nav
   layouts show (every .rounded*() call set to 0), which those layouts use
   along with radius 0. Herdr's own popup and dialog frames stay rounded.
@@ -64,9 +65,17 @@ square_suffix = "-square"
 rounded_call = re.compile(r"\.rounded(?:_[a-z]+)?\([^()]*\)")
 light_fallback = "paper"
 # The threads layout's tab bar drops the space chip; the sidebar's spaces list
-# already shows and switches the space.
+# already shows and switches the space. It also drops the macOS inset for the
+# window buttons, which sit over the full-height sidebar there instead.
 bar_mod = "terminals-bar"
-threads_bar = ("-threads", [('.id("tm-space")', '.id("tm-space")\n          .hidden()')])
+macos_inset = '.when(w.platform === "macos" && w.titlebar === "none" && !w.fullscreen, (el) => el.pl(72))'
+threads_bar = (
+    "-threads",
+    [
+        ('.id("tm-space")', '.id("tm-space")\n          .hidden()'),
+        (macos_inset, ""),
+    ],
+)
 
 
 def squared(node, mods):
