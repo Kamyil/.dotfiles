@@ -52,6 +52,9 @@ def threads_sidebar(gap):
     }
 
 
+# The terminals look marks the focused pane with a border barely lighter than
+# the rest; the theme accent stands out without shouting.
+pane_focus = {"width": 1, "color": "accent"}
 square_suffix = "-square"
 rounded_call = re.compile(r"\.rounded(?:_[a-z]+)?\([^()]*\)")
 light_fallback = "paper"
@@ -73,6 +76,18 @@ def squared(node, mods):
         else:
             result[key] = squared(value, mods)
     return result
+
+
+def pane_looks(node):
+    """Every tab block's pane look ({"tab": ..., "pane": {...}}) in a layout tree."""
+    if isinstance(node, list):
+        for child in node:
+            yield from pane_looks(child)
+    elif isinstance(node, dict):
+        if "tab" in node and isinstance(node.get("pane"), dict):
+            yield node["pane"]
+        for value in node.values():
+            yield from pane_looks(value)
 
 
 def write_square_mod(name, names):
@@ -147,6 +162,8 @@ for name, base in nav_layouts.items():
     floating = [block for block in layout.get("floating", []) if block.get("id") != "nav"]
     floating.append({"id": "nav", "content": {"mod": "nav"}, "edge": "bottom", "align": "end"})
     layout["floating"] = floating
+    for pane in pane_looks(layout):
+        pane["focus"] = dict(pane_focus)
     if name == "threads":
         layout["children"] = [
             {"id": "body", "type": "row", "gap": layout.get("gap", 8), "children": [threads_sidebar(layout.get("gap", 8)), child]} if child.get("id") == "main" else child
