@@ -55,7 +55,9 @@ def threads_sidebar(gap):
 
 
 # The terminals look marks the focused pane with a border barely lighter than
-# the rest; the theme accent stands out without shouting.
+# the rest; the theme accent stands out without shouting. The look's own accent
+# (a bright blue) is dropped so the dotfiles theme's, from the current palette
+# (scripts/herdr-theme), shows through.
 pane_focus = {"width": 1, "color": "accent"}
 square_suffix = "-square"
 rounded_call = re.compile(r"\.rounded(?:_[a-z]+)?\([^()]*\)")
@@ -166,6 +168,7 @@ for name, base in nav_layouts.items():
     layout["floating"] = floating
     for pane in pane_looks(layout):
         pane["focus"] = dict(pane_focus)
+    layout.get("colors", {}).pop("accent", None)
     if name == "threads":
         layout["children"] = [
             {"id": "body", "type": "row", "gap": layout.get("gap", 8), "children": [squared(threads_sidebar(layout.get("gap", 8)), square_mods), child]} if child.get("id") == "main" else child
