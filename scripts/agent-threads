@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 """Print coding-agent threads from Claude Code, OpenCode and omp as JSON.
 
-One list, newest first: {tool, id, title, folder, missing, updated, argv}.
-`updated` is in epoch milliseconds; `argv` resumes the thread when run in
-`folder`; `missing` marks a folder that no longer exists. The Herdr app's
-threads mod (herdr-app/mods/threads) shows this list.
+One list, newest first: {tool, id, title, folder, missing, updated, argv,
+terminal}. `updated` is in epoch milliseconds; `argv` resumes the thread when
+run in `folder`; `missing` marks a folder that no longer exists; `terminal` is
+the address of the live Herdr terminal running the thread, or null. The Herdr
+app's threads mod (herdr-app/mods/threads) shows this list and reads the
+terminal's agent status live.
+
+A terminal is matched to its thread by the agent's foreground pid: Claude Code
+names its session in ~/.claude/sessions/<pid>.json, and a resumed omp or
+OpenCode carries it on its command line. Anything else takes the newest
+unclaimed thread of its tool in its folder.
 
 Claude Code sessions can be tens of MiB, so their titles are cached by file
 size and mtime in $XDG_CACHE_HOME/agent-threads.json.
@@ -20,6 +27,7 @@ from pathlib import Path
 home = Path.home()
 cache_path = Path(os.environ.get("XDG_CACHE_HOME", home / ".cache")) / "agent-threads.json"
 claude_root = home / ".claude/projects"
+claude_sessions = home / ".claude/sessions"
 omp_root = home / ".omp/agent/sessions"
 
 
@@ -150,6 +158,73 @@ def opencode_threads():
         }
 
 
+# OSC 7501 app names, as Herdr reports them, by thread tool.
+agent_tools = {"claude-code": "claude", "claude": "claude", "opencode": "opencode", "omp": "omp", "pi": "omp"}
+
+
+def hc_json(*args):
+    try:
+        result = subprocess.run(["hc", *args, "--json"], capture_output=True, text=True, timeout=5)
+        return json.loads(result.stdout)
+    except (OSError, ValueError, subprocess.TimeoutExpired):
+        return None
+
+
+def session_of(tool, pid, argv):
+    """The thread id a running agent has open, if it says."""
+    if tool == "claude":
+        try:
+            return json.loads((claude_sessions / f"{pid}.json").read_text()).get("sessionId")
+        except (OSError, ValueError):
+            return None
+    for flag in ("--resume", "-s", "--session"):
+        if flag in argv[:-1]:
+            value = argv[argv.index(flag) + 1]
+            return omp_session(Path(value)) if tool == "omp" else value
+    if tool == "omp":
+        # omp keeps its session file open (Linux only: /proc).
+        try:
+            for fd in Path(f"/proc/{pid}/fd").iterdir():
+                target = Path(os.readlink(fd))
+                if target.suffix == ".jsonl" and omp_root in target.parents:
+                    return omp_session(target)
+        except OSError:
+            pass
+    return None
+
+
+def omp_session(path):
+    """An omp session file is named <timestamp>_<session id>.jsonl."""
+    return path.stem.rpartition("_")[2]
+
+
+def link_terminals(threads):
+    """Set each thread's `terminal` to the live Herdr agent terminal running it."""
+    for thread in threads:
+        thread["terminal"] = None
+    if not shutil.which("hc"):
+        return
+    listing = hc_json("ls") or {}
+    by_key = {(thread["tool"], thread["id"]): thread for thread in threads}
+    unmatched = []
+    for entry in listing.get("terminals", []):
+        tool = agent_tools.get(entry.get("agent") or "")
+        if entry.get("state") != "live" or not entry.get("status") or not tool:
+            continue
+        foreground = (hc_json("get", entry["address"]) or {}).get("foreground") or {}
+        session = session_of(tool, foreground.get("pid"), foreground.get("argv") or [])
+        thread = by_key.get((tool, session))
+        if thread and not thread["terminal"]:
+            thread["terminal"] = entry["address"]
+        else:
+            unmatched.append((tool, foreground.get("cwd") or entry.get("cwd"), entry["address"]))
+    for tool, folder, address in unmatched:
+        # threads is newest first, so this is the most recently written one.
+        thread = next((t for t in threads if t["tool"] == tool and t["folder"] == folder and not t["terminal"]), None)
+        if thread:
+            thread["terminal"] = address
+
+
 try:
     cache = json.loads(cache_path.read_text())
 except (OSError, ValueError):
@@ -163,4 +238,5 @@ except OSError:
 for thread in threads:
     thread["missing"] = not os.path.isdir(thread["folder"])
 threads.sort(key=lambda thread: thread["updated"], reverse=True)
+link_terminals(threads)
 json.dump(threads, sys.stdout, ensure_ascii=False)

@@ -3,10 +3,13 @@
 // Search filters by title, folder and tool. Pinned threads lead the list.
 // Settling a thread moves it to the Settled archive, where it can be unsettled;
 // a settled thread that sees new activity comes back by itself.
+// A thread running in a Herdr terminal shows that agent's live status (working,
+// needs you, done while you weren't looking, idle), and clicking it focuses the
+// terminal instead of resuming the thread again.
 // Shown by the threads layout (scripts/herdr-app-setup).
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { exec, focused, spaces, home, run, theme, notify } from "herdr";
+import { exec, focused, spaces, agents, home, run, theme, notify } from "herdr";
 
 const TOOLS = [
   { id: "claude", label: "Claude", icon: "icons/claude.svg", color: "#d97757" },
@@ -15,6 +18,7 @@ const TOOLS = [
 ];
 const UI = "mods/workspace-chrome";
 const REFRESH_MS = 20000;
+const STATUS_LABEL = { working: "Working", blocked: "Needs you", done: "Done", idle: "Idle" };
 const LIMIT = 200;
 
 function ago(ms) {
@@ -44,6 +48,9 @@ export default class Threads extends View {
     this.archive = false;
     this.hovered = null;
     this.query = "";
+    // Agent terminals a refresh has already tried to match; a new one refreshes early.
+    this.tried = new Set();
+    this.stale = false;
     this.search = InputState.new({ placeholder: "Search threads" });
     this.search.on("change", (_e, cx) => {
       this.query = this.search.value();
@@ -51,18 +58,21 @@ export default class Threads extends View {
     });
     cx.spawn(async (cx) => {
       for (;;) {
+        this.stale = false;
+        const seen = agents().map((a) => a.address);
         try {
           const r = await exec(`${home()}/.dotfiles/scripts/agent-threads`);
           if (r.code === 0) {
             this.threads = JSON.parse(r.stdout);
             this.error = null;
+            this.tried = new Set(seen);
             this.wake();
           } else this.error = r.stderr.trim().split("\n").pop() || `exit ${r.code}`;
         } catch (e) {
           this.error = String(e);
         }
         cx.notify();
-        await cx.sleep(REFRESH_MS);
+        for (let waited = 0; waited < REFRESH_MS && !this.stale; waited += 2000) await cx.sleep(2000);
       }
     });
     cx.timer.every(60000, (cx) => cx.notify());
@@ -88,7 +98,11 @@ export default class Threads extends View {
     if (changed) this.save();
   }
 
-  open(thread) {
+  open(thread, live) {
+    if (live) {
+      run("agent.focus", { terminal: live.address });
+      return;
+    }
     if (thread.missing) {
       notify({ title: "Folder is gone", body: tidy(thread.folder), level: "warning" });
       return;
@@ -147,7 +161,16 @@ export default class Threads extends View {
       .child(svg(`${UI}/${icon}.svg`).size(13));
   }
 
-  row(th, now, t) {
+  // Working spins; blocked asks; done is a filled dot; idle a ring.
+  status(st, t) {
+    if (st === "working") return svg(`${UI}/spinner.svg`).size(12).flex_none().text_color(t.working).spin(900);
+    if (st === "blocked")
+      return div().flex_none().px(5).h(16).flex().items_center().bg(t.blocked + "26").text_size(10).font_semibold().text_color(t.blocked).child("Needs you");
+    if (st === "done") return div().size(7).mx(2).flex_none().rounded(4).bg(t.done);
+    return div().size(7).mx(2).flex_none().rounded(4).border(1.5).border_color(t.idle ?? t.dim);
+  }
+
+  row(th, live, now, t) {
     const tool = TOOLS.find((x) => x.id === th.tool) ?? TOOLS[0];
     const key = keyOf(th);
     const pinned = this.pins.has(key);
@@ -167,15 +190,21 @@ export default class Threads extends View {
         else if (this.hovered === key) this.hovered = null;
         cx.notify();
       })
-      .on_click(() => this.open(th))
-      .tooltip(`${tool.label} · ${tidy(th.folder)}${th.missing ? " (gone)" : ""}`)
+      .on_click(() => this.open(th, live))
+      .tooltip(`${tool.label} · ${tidy(th.folder)}${th.missing ? " (gone)" : ""}${live ? ` · ${STATUS_LABEL[live.status] ?? live.status} in ${live.space_name} / ${live.tab_name}` : ""}`)
       .child(svg(tool.icon).size(14).mt(2).flex_none().text_color(tool.color ?? t.foreground))
       .child(
         v_flex()
           .flex_1()
           .min_w(0)
           .gap(2)
-          .child(div().text_size(12.5).truncate().text_color(th.missing ? t.dim : t.foreground).child(th.title))
+          .child(
+            h_flex()
+              .gap(6)
+              .items_center()
+              .child(div().flex_1().min_w(0).text_size(12.5).truncate().text_color(th.missing ? t.dim : t.foreground).child(th.title))
+              .when(Boolean(live), (el) => el.child(this.status(live?.status, t))),
+          )
           .child(
             h_flex()
               .gap(6)
@@ -205,6 +234,8 @@ export default class Threads extends View {
     const t = theme();
     const now = Date.now();
     const root = focused()?.cwd ?? spaces().find((s) => s.active)?.folder;
+    const running = new Map(agents().map((a) => [a.address, a]));
+    if ([...running.keys()].some((address) => !this.tried.has(address))) this.stale = true;
     const words = this.query.toLowerCase().split(/\s+/).filter(Boolean);
     const matches = (th) => {
       const hay = `${th.title} ${tidy(th.folder)} ${th.tool}`.toLowerCase();
@@ -303,6 +334,6 @@ export default class Threads extends View {
       )
       .when(Boolean(this.error), (el) => el.child(div().px(10).py(8).text_size(11.5).text_color(t.blocked).child(this.error)))
       .when(ordered.length === 0 && !this.error, (el) => el.child(div().px(10).py(8).text_size(12).text_color(t.dim).child(empty)))
-      .child(v_flex().id("th-list").flex_1().min_h(0).overflow_y_scrollbar().children(ordered.map((th) => this.row(th, now, t))));
+      .child(v_flex().id("th-list").flex_1().min_h(0).overflow_y_scrollbar().children(ordered.map((th) => this.row(th, running.get(th.terminal), now, t))));
   }
 }

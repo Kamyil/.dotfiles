@@ -79,3 +79,11 @@ Known problems in this repository. Tick an item when it is fixed.
       error until Claude Code next runs. The macOS keychain lookup is untested.
 - [ ] Threads sidebar pins and settled threads live in the threads mod's
       `localStorage`, per machine and outside the repository.
+- [ ] Threads sidebar agent status links a thread to its Herdr terminal
+      through Claude Code's undocumented `~/.claude/sessions/<pid>.json`,
+      omp's open session file (`/proc`, so Linux only), or a resumed
+      OpenCode's command line; otherwise the newest thread of its tool in its
+      folder, which can be the wrong one. omp shows no status at all: its
+      only integration (`~/.omp/agent/extensions/herdr-omp-agent-state.ts`)
+      is the old Herdr TUI's socket protocol, and omp doesn't report OSC 7501
+      to the Herdr app. OpenCode is untested.
