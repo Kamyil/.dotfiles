@@ -168,12 +168,14 @@
       "ctrl-z": "pane.zoom"
     },
     "layout:main-nav": {
+      "ctrl-f": "nav.scrollback",
       "ctrl-h": "nav.left",
       "ctrl-j": "nav.down",
       "ctrl-k": "nav.up",
       "ctrl-l": "nav.right"
     },
     "layout:terminals-nav": {
+      "ctrl-f": "nav.scrollback",
       "ctrl-h": "nav.left",
       "ctrl-j": "nav.down",
       "ctrl-k": "nav.up",
