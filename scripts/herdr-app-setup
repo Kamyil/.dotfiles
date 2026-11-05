@@ -11,10 +11,11 @@ whose content changes. Start Herdr once first so its defaults exist.
   terminals layouts plus an empty floating block holding the nav mod, which
   owns Ctrl+h/j/k/l. Regenerated from the shipped files, so re-running picks
   up Herdr's layout updates.
-- layouts/threads.json: terminals-nav with a left sidebar: Herdr's spaces
-  list, the threads mod (Claude Code, OpenCode and omp threads,
+- layouts/threads.json: terminals-nav with a full-height left sidebar:
+  Herdr's spaces list, the threads mod (Claude Code, OpenCode and omp threads,
   scripts/agent-threads) and the usage mod (Claude Code and Codex plan usage,
-  scripts/agent-usage), top to bottom.
+  scripts/agent-usage), top to bottom. The tab bar sits over the panes only
+  and drops its space chip (mods/terminals-bar-square-threads).
 - mods/<name>-square: square-cornered copies of the shipped mods the nav
   layouts show (every .rounded*() call set to 0), which those layouts use
   along with radius 0. Herdr's own popup and dialog frames stay rounded.
@@ -62,6 +63,10 @@ pane_focus = {"width": 1, "color": "accent"}
 square_suffix = "-square"
 rounded_call = re.compile(r"\.rounded(?:_[a-z]+)?\([^()]*\)")
 light_fallback = "paper"
+# The threads layout's tab bar drops the space chip; the sidebar's spaces list
+# already shows and switches the space.
+bar_mod = "terminals-bar"
+threads_bar = ("-threads", [('.id("tm-space")', '.id("tm-space")\n          .hidden()')])
 
 
 def squared(node, mods):
@@ -94,9 +99,10 @@ def pane_looks(node):
             yield from pane_looks(value)
 
 
-def write_square_mod(name, names):
+def write_square_mod(name, names, variant="", edits=()):
+    """Write mods/<name>-square<variant>; edits are (old, new) swaps in its main.js."""
     source = app_home / "mods" / name
-    target = app_home / "mods" / (name + square_suffix)
+    target = app_home / "mods" / (name + square_suffix + variant)
     if target.is_symlink():
         sys.exit(f"herdr-app-setup: {target} is a symlink; refusing to overwrite it")
     target.mkdir(exist_ok=True)
@@ -107,6 +113,10 @@ def write_square_mod(name, names):
             text = rounded_call.sub(".rounded(0)", path.read_text())
             for other in names:
                 text = re.sub(rf'(mod:\s*)"{re.escape(other)}"', rf'\1"{other}{square_suffix}"', text)
+            for old, new in edits if path.name == "main.js" else ():
+                if text.count(old) != 1:
+                    sys.exit(f"herdr-app-setup: {old!r} is not in {path} exactly once; Herdr changed the mod")
+                text = text.replace(old, new)
         else:
             text = path.read_text()
         out = target / path.name
@@ -170,10 +180,14 @@ for name, base in nav_layouts.items():
         pane["focus"] = dict(pane_focus)
     layout.get("colors", {}).pop("accent", None)
     if name == "threads":
-        layout["children"] = [
-            {"id": "body", "type": "row", "gap": layout.get("gap", 8), "children": [squared(threads_sidebar(layout.get("gap", 8)), square_mods), child]} if child.get("id") == "main" else child
-            for child in layout.get("children", [])
-        ]
+        # The sidebar runs the window's full height and the tab bar sits in a
+        # column over the panes only, so the tabs line up with the panes.
+        gap = layout.get("gap", 8)
+        workspace = {"id": "workspace", "type": "column", "gap": gap, "children": layout.get("children", [])}
+        for child in workspace["children"]:
+            if child.get("content", {}).get("mod") == bar_mod + square_suffix:
+                child["content"]["mod"] = bar_mod + square_suffix + threads_bar[0]
+        layout["children"] = [{"id": "body", "type": "row", "gap": gap, "children": [squared(threads_sidebar(gap), square_mods), workspace]}]
     shipped_theme = layout.get("theme")
     light = shipped_theme if isinstance(shipped_theme, str) else light_fallback
     layout["theme"] = {"light": light, "dark": "dotfiles"}
@@ -182,6 +196,8 @@ for name, base in nav_layouts.items():
 # Copies first, so a layout never names a mod that doesn't exist yet.
 for mod in sorted(square_mods):
     write_square_mod(mod, square_mods)
+if bar_mod in square_mods:
+    write_square_mod(bar_mod, square_mods, *threads_bar)
 for name, layout in layouts.items():
     save(app_home / "layouts" / f"{name}.json", layout)
 
