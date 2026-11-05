@@ -127,6 +127,7 @@ in
       sweethome3d.application
       blender
       obs-studio
+      libreoffice
       tldrawOffline
       # macOS gets the godot-mono Homebrew cask (not in the Darwin binary cache)
       godot-mono
