@@ -45,5 +45,6 @@ Known problems in this repository. Tick an item when it is fixed.
       twice with identical settings.
 - [ ] Herdr app Ctrl+h/j/k/l navigation depends on files outside the repo:
       the `nav` mod (`~/.config/herdr-app/mods/nav`), its key bindings, and the
-      personal `main-nav` layout (a clone of `main` holding the mod in an empty
-      floating block). The clone no longer receives Herdr's updates to `main`.
+      personal `main-nav` and `terminals-nav` layouts (clones of `main` and
+      `terminals` holding the mod in an empty floating block). The clones no
+      longer receive Herdr's updates to the shipped layouts.
