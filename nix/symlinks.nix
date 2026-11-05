@@ -16,6 +16,7 @@ let
     ".config/kitty" = "kitty";
     ".config/foot" = "foot";
     ".config/herdr" = "herdr";
+    ".config/herdr-app/mods/nav" = "herdr-app/mods/nav";
     ".config/rex" = "rex";
     ".config/neomutt/neomuttrc" = "neomutt/neomuttrc";
     ".config/neomutt/mailcap" = "neomutt/mailcap";

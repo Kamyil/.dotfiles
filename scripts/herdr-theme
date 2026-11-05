@@ -5,23 +5,30 @@ import re
 import sys
 from pathlib import Path
 
-palette_path = Path(sys.argv[1])
-config_path = Path(os.environ.get("HERDR_CONFIG_PATH", Path.home() / ".config/herdr/config.toml"))
+# Usage: herdr-theme [--app-only] <theme.json>
+# --app-only skips the Herdr TUI config (scripts/herdr-app-setup uses it).
+args = sys.argv[1:]
+app_only = "--app-only" in args
+args = [arg for arg in args if arg != "--app-only"]
+palette_path = Path(args[0])
 palette = json.loads(palette_path.read_text())
-theme = palette.get("herdr_theme", "terminal")
-config = config_path.read_text()
-updated, count = re.subn(
-    r'(?m)^(\[theme\]\n)name = "[^"]*"',
-    rf'\1name = "{theme}"',
-    config,
-    count=1,
-)
-if count != 1:
-    raise SystemExit(f"Could not find [theme] name in {config_path}")
-if updated != config:
-    temporary = config_path.with_suffix(".toml.tmp")
-    temporary.write_text(updated)
-    temporary.replace(config_path)
+
+if not app_only:
+    config_path = Path(os.environ.get("HERDR_CONFIG_PATH", Path.home() / ".config/herdr/config.toml"))
+    theme = palette.get("herdr_theme", "terminal")
+    config = config_path.read_text()
+    updated, count = re.subn(
+        r'(?m)^(\[theme\]\n)name = "[^"]*"',
+        rf'\1name = "{theme}"',
+        config,
+        count=1,
+    )
+    if count != 1:
+        raise SystemExit(f"Could not find [theme] name in {config_path}")
+    if updated != config:
+        temporary = config_path.with_suffix(".toml.tmp")
+        temporary.write_text(updated)
+        temporary.replace(config_path)
 
 # The Herdr app reads full terminal palettes from themes/<name>.json and
 # reloads them live; settings.json selects "dotfiles".

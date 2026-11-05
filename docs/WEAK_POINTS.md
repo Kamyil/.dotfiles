@@ -33,18 +33,27 @@ Known problems in this repository. Tick an item when it is fixed.
       `nix/packages/herdr-core.nix`) are prebuilt release binaries pinned by
       hand from `releases.herdr.dev/{app,core}/latest.json`; there is no
       upstream flake or update script. The app's built-in self-updater cannot
-      write into the Nix store, so updates must be bumped here. macOS has no
-      declarative Herdr app install (no Homebrew cask exists yet).
-- [ ] Herdr app keybindings and settings (`~/.config/herdr-app/keys.json`,
+      write into the Nix store, so updates must be bumped here. The macOS
+      packages (Herdr.app, Herdr Core.app in /Applications/Nix Apps) were
+      written on NixOS and have not been run on the Mac yet; whether macOS
+      keeps Herdr Core.app's local network and microphone permissions from the
+      Nix store is untested.
+- [x] Herdr app keybindings and settings (`~/.config/herdr-app/keys.json`,
       `settings.json`) live outside the repo: the app rewrites its home
-      folder in place, so a repository symlink would be replaced. Only the
-      theme is reproducible, via `scripts/herdr-theme`.
+      folder in place, so a repository symlink would be replaced. Fixed:
+      `scripts/herdr-app-setup` merges `herdr-app/keys.json` and the theme
+      into them.
 - [ ] `nvim/lua/config/keymaps.lua` is tab-indented and fails
       `stylua --check --config-path nvim/.stylua.toml` (spaces, width 2).
 - [ ] `nvim/lua/config/plugins.lua` declares `lmilojevicc/herdr-splits.nvim`
       twice with identical settings.
-- [ ] Herdr app Ctrl+h/j/k/l navigation depends on files outside the repo:
+- [x] Herdr app Ctrl+h/j/k/l navigation depends on files outside the repo:
       the `nav` mod (`~/.config/herdr-app/mods/nav`), its key bindings, and the
       personal `main-nav` and `terminals-nav` layouts (clones of `main` and
       `terminals` holding the mod in an empty floating block). The clones no
-      longer receive Herdr's updates to the shipped layouts.
+      longer receive Herdr's updates to the shipped layouts. Fixed: the mod is
+      linked from `herdr-app/mods/nav`, and `scripts/herdr-app-setup`
+      regenerates both layouts from the shipped ones.
+- [ ] `scripts/herdr-app-setup` is manual: run it after the first Herdr
+      start on a machine and after Herdr updates its shipped layouts. Re-running
+      resets theme picks on the `-nav` layouts to the dotfiles theme.

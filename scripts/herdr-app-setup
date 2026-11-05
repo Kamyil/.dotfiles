@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+"""Apply the repository's Herdr app setup to ~/.config/herdr-app.
+
+The app rewrites its home folder in place, so instead of symlinking its files
+this merges the tracked pieces into them. Safe to re-run; it only writes files
+whose content changes. Start Herdr once first so its defaults exist.
+
+- keys.json: herdr-app/keys.json removes ("unset") and binds ("set") keys on
+  top of the app's defaults.
+- layouts/main-nav.json, layouts/terminals-nav.json: Herdr's shipped main and
+  terminals layouts plus an empty floating block holding the nav mod, which
+  owns Ctrl+h/j/k/l. Regenerated from the shipped files, so re-running picks
+  up Herdr's layout updates.
+- settings.json and the nav layouts use themes/dotfiles.json in dark mode,
+  which scripts/herdr-theme writes from the current dotfiles palette.
+- mods/nav comes from nix/symlinks.nix (herdr-app/mods/nav); this only checks it.
+"""
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+repo = Path(__file__).resolve().parent.parent
+app_home = Path(os.environ.get("HERDR_APP_HOME", Path.home() / ".config/herdr-app"))
+state = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "dotfiles-theme"
+nav_layouts = {"main-nav": "main", "terminals-nav": "terminals"}
+light_fallback = "paper"
+
+
+def load(path):
+    return json.loads(path.read_text())
+
+
+def save(path, data):
+    text = json.dumps(data, indent=2, ensure_ascii=True) + "\n"
+    if path.exists() and path.read_text() == text:
+        return False
+    temporary = path.with_name(path.name + ".tmp")
+    temporary.write_text(text)
+    temporary.replace(path)
+    print(f"updated {path}")
+    return True
+
+
+required = [app_home / "keys.json", app_home / "settings.json"]
+required += [app_home / "layouts" / f"{base}.json" for base in nav_layouts.values()]
+missing = [str(path) for path in required if not path.exists()]
+if missing:
+    sys.exit("herdr-app-setup: start Herdr once first; missing " + ", ".join(missing))
+
+theme_palette = state / "current/theme.json"
+if theme_palette.exists():
+    subprocess.run([str(repo / "scripts/herdr-theme"), "--app-only", str(theme_palette)], check=True)
+else:
+    print(f"herdr-app-setup: no {theme_palette}; run `theme <name>` to write themes/dotfiles.json")
+
+spec = load(repo / "herdr-app/keys.json")
+keys = load(app_home / "keys.json")
+for section, chords in spec.get("unset", {}).items():
+    for chord in chords:
+        keys.get(section, {}).pop(chord, None)
+for section, bindings in spec.get("set", {}).items():
+    keys.setdefault(section, {}).update(bindings)
+save(app_home / "keys.json", keys)
+
+for name, base in nav_layouts.items():
+    layout = load(app_home / "layouts" / f"{base}.json")
+    floating = [block for block in layout.get("floating", []) if block.get("id") != "nav"]
+    floating.append({"id": "nav", "content": {"mod": "nav"}, "edge": "bottom", "align": "end"})
+    layout["floating"] = floating
+    shipped_theme = layout.get("theme")
+    light = shipped_theme if isinstance(shipped_theme, str) else light_fallback
+    layout["theme"] = {"light": light, "dark": "dotfiles"}
+    save(app_home / "layouts" / f"{name}.json", layout)
+
+settings = load(app_home / "settings.json")
+settings["theme"] = {"light": light_fallback, "dark": "dotfiles"}
+save(app_home / "settings.json", settings)
+
+nav_mod = app_home / "mods/nav"
+expected = repo / "herdr-app/mods/nav"
+if not nav_mod.is_symlink() or nav_mod.resolve() != expected.resolve():
+    print(f"herdr-app-setup: {nav_mod} is not linked to {expected}; apply the flake (nrs) to link it")
+
+# Show a nav layout in a running window that is still on a shipped one.
+status = subprocess.run(["herdr-app", "status"], capture_output=True, text=True)
+if status.returncode == 0:
+    shown = json.loads(status.stdout).get("layout")
+    if shown not in nav_layouts:
+        subprocess.run(["herdr-app", "do", "layout.switch", "--name", "main-nav"], check=False, stdout=subprocess.DEVNULL)
+        print(f"switched the running window from {shown} to main-nav")
