@@ -9,9 +9,8 @@ whose content changes. Start Herdr once first so its defaults exist.
   top of the app's defaults.
 - layouts/main-nav.json, layouts/terminals-nav.json: Herdr's shipped main and
   terminals layouts plus an empty floating block holding the nav mod, which
-  owns Ctrl+h/j/k/l. terminals-nav also moves the tab bar to the bottom.
-  Regenerated from the shipped files, so re-running picks up Herdr's layout
-  updates.
+  owns Ctrl+h/j/k/l. Regenerated from the shipped files, so re-running picks
+  up Herdr's layout updates.
 - mods/<name>-square: square-cornered copies of the shipped mods the nav
   layouts show (every .rounded*() call set to 0), which those layouts use
   along with radius 0. Herdr's own popup and dialog frames stay rounded.
@@ -24,14 +23,13 @@ import os
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 repo = Path(__file__).resolve().parent.parent
 app_home = Path(os.environ.get("HERDR_APP_HOME", Path.home() / ".config/herdr-app"))
 state = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "dotfiles-theme"
 nav_layouts = {"main-nav": "main", "terminals-nav": "terminals"}
-# Root children of these layouts that move to the end (bottom of a column).
-move_last = {"terminals-nav": {"tabs"}}
 square_suffix = "-square"
 rounded_call = re.compile(r"\.rounded(?:_[a-z]+)?\([^()]*\)")
 light_fallback = "paper"
@@ -98,6 +96,12 @@ missing = [str(path) for path in required if not path.exists()]
 if missing:
     sys.exit("herdr-app-setup: start Herdr once first; missing " + ", ".join(missing))
 
+# The nav layouts show the nav mod; without it Herdr rejects them and lists neither.
+nav_mod = app_home / "mods/nav"
+expected = repo / "herdr-app/mods/nav"
+if not nav_mod.is_symlink() or nav_mod.resolve() != expected.resolve():
+    sys.exit(f"herdr-app-setup: {nav_mod} is not linked to {expected}; apply the flake (nrs), then re-run")
+
 theme_palette = state / "current/theme.json"
 if theme_palette.exists():
     subprocess.run([str(repo / "scripts/herdr-theme"), "--app-only", str(theme_palette)], check=True)
@@ -120,9 +124,6 @@ for name, base in nav_layouts.items():
     floating = [block for block in layout.get("floating", []) if block.get("id") != "nav"]
     floating.append({"id": "nav", "content": {"mod": "nav"}, "edge": "bottom", "align": "end"})
     layout["floating"] = floating
-    last = move_last.get(name, set())
-    children = layout.get("children", [])
-    layout["children"] = [c for c in children if c.get("id") not in last] + [c for c in children if c.get("id") in last]
     shipped_theme = layout.get("theme")
     light = shipped_theme if isinstance(shipped_theme, str) else light_fallback
     layout["theme"] = {"light": light, "dark": "dotfiles"}
@@ -138,10 +139,10 @@ settings = load(app_home / "settings.json")
 settings["theme"] = {"light": light_fallback, "dark": "dotfiles"}
 save(app_home / "settings.json", settings)
 
-nav_mod = app_home / "mods/nav"
-expected = repo / "herdr-app/mods/nav"
-if not nav_mod.is_symlink() or nav_mod.resolve() != expected.resolve():
-    print(f"herdr-app-setup: {nav_mod} is not linked to {expected}; apply the flake (nrs) to link it")
+# Herdr keeps the last good file and explains a rejected one in <name>.error.
+time.sleep(1.5)
+for error in sorted((app_home / "layouts").glob("*.error")) + sorted(app_home.glob("*.error")):
+    print(f"herdr-app-setup: Herdr rejected a file, see {error}:\n{error.read_text().strip()}", file=sys.stderr)
 
 # Show a nav layout in a running window that is still on a shipped one.
 status = subprocess.run(["herdr-app", "status"], capture_output=True, text=True)
