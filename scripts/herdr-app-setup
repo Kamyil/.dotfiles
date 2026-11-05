@@ -11,9 +11,10 @@ whose content changes. Start Herdr once first so its defaults exist.
   terminals layouts plus an empty floating block holding the nav mod, which
   owns Ctrl+h/j/k/l. Regenerated from the shipped files, so re-running picks
   up Herdr's layout updates.
-- layouts/threads.json: terminals-nav with a left sidebar: the threads mod
-  (Claude Code, OpenCode and omp threads, scripts/agent-threads) above the
-  usage mod (Claude Code and Codex plan usage, scripts/agent-usage).
+- layouts/threads.json: terminals-nav with a left sidebar: Herdr's spaces
+  list, the threads mod (Claude Code, OpenCode and omp threads,
+  scripts/agent-threads) and the usage mod (Claude Code and Codex plan usage,
+  scripts/agent-usage), top to bottom.
 - mods/<name>-square: square-cornered copies of the shipped mods the nav
   layouts show (every .rounded*() call set to 0), which those layouts use
   along with radius 0. Herdr's own popup and dialog frames stay rounded.
@@ -46,6 +47,7 @@ def threads_sidebar(gap):
         "min": 220,
         "max": 520,
         "children": [
+            {"id": "spaces", "type": "block", "size": {"px": 200}, "min": 90, "border": {"width": 1, "color": "border"}, "content": {"mod": "spaces"}},
             {"id": "thread-list", "type": "block", "content": {"mod": "threads"}},
             {"id": "usage", "type": "block", "size": {"px": 232}, "min": 120, "content": {"mod": "usage"}},
         ],
@@ -166,7 +168,7 @@ for name, base in nav_layouts.items():
         pane["focus"] = dict(pane_focus)
     if name == "threads":
         layout["children"] = [
-            {"id": "body", "type": "row", "gap": layout.get("gap", 8), "children": [threads_sidebar(layout.get("gap", 8)), child]} if child.get("id") == "main" else child
+            {"id": "body", "type": "row", "gap": layout.get("gap", 8), "children": [squared(threads_sidebar(layout.get("gap", 8)), square_mods), child]} if child.get("id") == "main" else child
             for child in layout.get("children", [])
         ]
     shipped_theme = layout.get("theme")
