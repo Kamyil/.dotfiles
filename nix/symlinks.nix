@@ -18,6 +18,7 @@ let
     ".config/herdr" = "herdr";
     ".config/herdr-app/mods/nav" = "herdr-app/mods/nav";
     ".config/herdr-app/mods/threads" = "herdr-app/mods/threads";
+    ".config/herdr-app/mods/usage" = "herdr-app/mods/usage";
     ".config/rex" = "rex";
     ".config/neomutt/neomuttrc" = "neomutt/neomuttrc";
     ".config/neomutt/mailcap" = "neomutt/mailcap";

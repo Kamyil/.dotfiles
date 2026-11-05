@@ -71,3 +71,11 @@ Known problems in this repository. Tick an item when it is fixed.
       positional arguments (`zsh -ic 'cmd' zsh args`, how Herdr starts tabs):
       sourced, it took them as its own subcommands. Fixed: `nix/home/shell.nix`
       sources it from an anonymous function.
+- [ ] `scripts/agent-usage` reads Claude Code usage from the undocumented
+      endpoint behind its `/usage` (`api.anthropic.com/api/oauth/usage`,
+      `anthropic-beta: oauth-2025-04-20`) with Claude Code's own OAuth token,
+      and Codex usage through omp's sign-in. Either can break on an upstream
+      change; the token is never refreshed here, so usage shows a sign-in
+      error until Claude Code next runs. The macOS keychain lookup is untested.
+- [ ] Threads sidebar pins and settled threads live in the threads mod's
+      `localStorage`, per machine and outside the repository.

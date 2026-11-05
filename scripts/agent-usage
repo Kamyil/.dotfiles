@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+"""Print Claude Code and Codex plan usage as JSON.
+
+{updated, providers: [{id, name, plan, limits: [{label, percent, resets}], error}]}
+`updated` and `resets` are epoch milliseconds; `percent` is 0-100 used. The
+Herdr app's usage mod (herdr-app/mods/usage) shows this.
+
+Claude Code: the usage endpoint behind its /usage, with the OAuth token Claude
+Code keeps in ~/.claude/.credentials.json (macOS: the login keychain). The
+token is only read, never refreshed: Claude Code refreshes it itself, and a
+refresh here would rotate the refresh token from under it.
+Codex: `omp usage`, signed in through omp.
+"""
+import json
+import shutil
+import subprocess
+import sys
+import time
+import urllib.error
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
+from pathlib import Path
+
+CLAUDE_WINDOWS = [
+    ("five_hour", "5h"),
+    ("seven_day", "Week"),
+    ("seven_day_opus", "Week · Opus"),
+    ("seven_day_sonnet", "Week · Sonnet"),
+]
+CODEX_WINDOWS = {"5h": "5h", "7d": "Week"}
+
+
+def millis(iso):
+    return int(datetime.fromisoformat(iso).timestamp() * 1000) if iso else None
+
+
+def claude_oauth():
+    path = Path.home() / ".claude/.credentials.json"
+    if path.exists():
+        return json.loads(path.read_text())["claudeAiOauth"]
+    if sys.platform == "darwin":
+        result = subprocess.run(
+            ["security", "find-generic-password", "-s", "Claude Code-credentials", "-w"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if result.returncode == 0:
+            return json.loads(result.stdout)["claudeAiOauth"]
+    raise RuntimeError("not signed in to Claude Code")
+
+
+def claude_usage():
+    result = {"id": "claude", "name": "Claude Code", "plan": "", "limits": [], "error": None}
+    try:
+        oauth = claude_oauth()
+        result["plan"] = oauth.get("subscriptionType") or ""
+        if oauth.get("expiresAt", 0) < time.time() * 1000:
+            raise RuntimeError("sign-in expired: start claude to renew it")
+        request = urllib.request.Request(
+            "https://api.anthropic.com/api/oauth/usage",
+            headers={"Authorization": f"Bearer {oauth['accessToken']}", "anthropic-beta": "oauth-2025-04-20"},
+        )
+        with urllib.request.urlopen(request, timeout=15) as response:
+            usage = json.load(response)
+        for key, label in CLAUDE_WINDOWS:
+            window = usage.get(key)
+            if isinstance(window, dict) and window.get("utilization") is not None:
+                result["limits"].append(
+                    {"label": label, "percent": float(window["utilization"]), "resets": millis(window.get("resets_at"))}
+                )
+    except urllib.error.HTTPError as error:
+        result["error"] = "sign-in expired: start claude to renew it" if error.code == 401 else f"HTTP {error.code}"
+    except Exception as error:
+        result["error"] = str(error) or type(error).__name__
+    return result
+
+
+def codex_usage():
+    result = {"id": "codex", "name": "Codex", "plan": "", "limits": [], "error": None}
+    try:
+        if not shutil.which("omp"):
+            raise RuntimeError("omp not found")
+        process = subprocess.run(
+            ["omp", "usage", "--json", "--provider", "openai-codex"], capture_output=True, text=True, timeout=45
+        )
+        if process.returncode != 0:
+            raise RuntimeError(process.stderr.strip().splitlines()[-1] if process.stderr.strip() else "omp usage failed")
+        reports = json.loads(process.stdout).get("reports") or []
+        if not reports:
+            raise RuntimeError("not signed in to Codex in omp")
+        report = reports[0]
+        result["plan"] = (report.get("metadata") or {}).get("planType") or ""
+        for limit in report.get("limits") or []:
+            window = limit.get("window") or {}
+            fraction = (limit.get("amount") or {}).get("usedFraction")
+            if fraction is None:
+                continue
+            result["limits"].append(
+                {
+                    "label": CODEX_WINDOWS.get(window.get("id")) or window.get("label") or "Limit",
+                    "percent": round(float(fraction) * 100, 1),
+                    "resets": window.get("resetsAt"),
+                }
+            )
+    except Exception as error:
+        result["error"] = str(error) or type(error).__name__
+    return result
+
+
+with ThreadPoolExecutor() as pool:
+    providers = [future.result() for future in [pool.submit(claude_usage), pool.submit(codex_usage)]]
+json.dump({"updated": int(time.time() * 1000), "providers": providers}, sys.stdout)
