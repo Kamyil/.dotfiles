@@ -17,7 +17,9 @@ whose content changes. Start Herdr once first so its defaults exist.
   scripts/agent-usage), top to bottom. The tab bar sits over the panes only
   and drops its space chip and macOS window-button inset
   (mods/terminals-bar-square-threads). Its spaces list tints each machine's
-  group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red.
+  group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red,
+  and puts CPU, GPU (malinka: SoC temperature), RAM and disk bars in each
+  machine header (herdr-app/machine-stats.js).
 - layouts/quest.json: the threads layout dressed as a game HUD for Godot work
   (dark stone, gold): the sidebar's threads and usage mods in their hud skin
   (Quest log, Mana), and around the panes the hud mod's roles: a hotbar of
@@ -102,6 +104,22 @@ group_tint = (
     ".bg(tints[m ?? (window().platform === \"macos\" ? \"macos\" : \"thinkpad\")] ?? \"#00000000\").children(items)];\n"
     "    const machineNames = [null, ...remote];"
 )
+# Each machine header also shows CPU, GPU (a Pi: SoC temperature), RAM and
+# disk bars from herdr-app/machine-stats.js, copied in as stats.js.
+# They poll only once a second machine is known, every 5s with the window in front.
+machine_stats = repo / "herdr-app/machine-stats.js"
+herdr_import = 'import { spaces, machines, panes, run, openOverlay, exec, hc, theme, shared, setShared, watchFolder, window, layout } from "herdr";'
+machines_timer = "cx.timer.every(15000, cx => this.refreshMachines(cx));"
+add_button = '.when(connected, el => el.child(div().id(`machine-add-${m ?? "local"}`)'
+machine_stats_edits = [
+    (herdr_import, herdr_import + '\nimport MachineStats from "./stats.js";'),
+    (
+        machines_timer,
+        machines_timer + "\n    this.stats = new MachineStats();\n"
+        "    cx.timer.every(1000, cx => this.machines.length && this.stats.poll([null, ...this.machines.filter(k => k.state === \"connected\").map(k => k.name)], cx));",
+    ),
+    (add_button, ".when(connected, el => el.child(this.stats.view(m, t)))\n          " + add_button),
+]
 threads_spaces = (
     "-threads",
     [
@@ -111,6 +129,7 @@ threads_spaces = (
             "return [head, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : empty])];",
             "return tinted(m, [head, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : empty])]);",
         ),
+        *machine_stats_edits,
     ],
 )
 
@@ -182,8 +201,9 @@ def pane_looks(node):
             yield from pane_looks(value)
 
 
-def write_square_mod(name, names, variant="", edits=()):
-    """Write mods/<name>-square<variant>; edits are (old, new) swaps in its main.js."""
+def write_square_mod(name, names, variant="", edits=(), extra=None):
+    """Write mods/<name>-square<variant>; edits are (old, new) swaps in its main.js,
+    extra maps more file names to sources copied in beside it."""
     source = app_home / "mods" / name
     target = app_home / "mods" / (name + square_suffix + variant)
     if target.is_symlink():
@@ -203,6 +223,12 @@ def write_square_mod(name, names, variant="", edits=()):
         else:
             text = path.read_text()
         out = target / path.name
+        if not out.exists() or out.read_text() != text:
+            out.write_text(text)
+            print(f"updated {out}")
+    for file_name, source_path in (extra or {}).items():
+        out = target / file_name
+        text = source_path.read_text()
         if not out.exists() or out.read_text() != text:
             out.write_text(text)
             print(f"updated {out}")
@@ -296,7 +322,7 @@ for mod in sorted(square_mods):
 if bar_mod in square_mods:
     write_square_mod(bar_mod, square_mods, *threads_bar)
 if spaces_mod in square_mods:
-    write_square_mod(spaces_mod, square_mods, *threads_spaces)
+    write_square_mod(spaces_mod, square_mods, *threads_spaces, {"stats.js": machine_stats})
 for name, layout in layouts.items():
     save(app_home / "layouts" / f"{name}.json", layout)
 
