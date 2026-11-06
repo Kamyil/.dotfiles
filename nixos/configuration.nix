@@ -118,6 +118,17 @@ in
   boot.blacklistedKernelModules = [ "iwlwifi" ];
 
   networking.hostName = "nixos"; # Define your hostname.
+
+  # Advertise this laptop as nixos.local for stable LAN access from macOS.
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    allowInterfaces = [ "wlp0s20f0u1" ];
+    publish = {
+      enable = true;
+      addresses = true;
+    };
+  };
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
