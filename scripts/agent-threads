@@ -16,13 +16,25 @@ matched; the mod runs this script on each machine to show its threads.
 
 Claude Code sessions can be tens of MiB, so their titles are cached by file
 size and mtime in $XDG_CACHE_HOME/agent-threads.json.
+
+Each thread also carries `pinned` and `settled` (when it was settled, ms, or
+null), kept per machine in $XDG_STATE_HOME/agent-threads/marks.json so every
+Herdr window showing this machine's threads agrees:
+
+  agent-threads --mark pin|unpin|settle|unsettle <tool:id>
+  agent-threads --import '{"pins": [...], "settled": {key: ms}}'
+
+Settling unpins. A settled thread written to more than a minute after it was
+settled comes back by itself.
 """
+import fcntl
 import json
 import os
 import shlex
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 home = Path.home()
@@ -30,6 +42,48 @@ cache_path = Path(os.environ.get("XDG_CACHE_HOME", home / ".cache")) / "agent-th
 claude_root = home / ".claude/projects"
 claude_sessions = home / ".claude/sessions"
 omp_root = home / ".omp/agent/sessions"
+marks_path = Path(os.environ.get("XDG_STATE_HOME", home / ".local/state")) / "agent-threads/marks.json"
+
+
+class Marks:
+    """marks.json under an exclusive lock, written back only when changed."""
+
+    def __enter__(self):
+        marks_path.parent.mkdir(parents=True, exist_ok=True)
+        self.lock = open(marks_path.with_suffix(".lock"), "w")
+        fcntl.flock(self.lock, fcntl.LOCK_EX)
+        try:
+            data = json.loads(marks_path.read_text())
+        except (OSError, ValueError):
+            data = {}
+        self.pins = set(data.get("pins") or [])
+        self.settled = dict(data.get("settled") or {})
+        self.before = self.dump()
+        return self
+
+    def dump(self):
+        return json.dumps({"pins": sorted(self.pins), "settled": self.settled}, sort_keys=True)
+
+    def __exit__(self, *_):
+        text = self.dump()
+        if text != self.before:
+            temporary = marks_path.with_suffix(".tmp")
+            temporary.write_text(text + "\n")
+            temporary.replace(marks_path)
+        self.lock.close()
+
+    def apply(self, action, key, now):
+        if action == "pin":
+            self.pins.add(key)
+        elif action == "unpin":
+            self.pins.discard(key)
+        elif action == "settle":
+            self.settled[key] = now
+            self.pins.discard(key)
+        elif action == "unsettle":
+            self.settled.pop(key, None)
+        else:
+            sys.exit(f"agent-threads: unknown mark {action!r}")
 
 
 def resume(command, *args):
@@ -227,6 +281,21 @@ def link_terminals(threads):
             thread["terminal"] = address
 
 
+if sys.argv[1:2] == ["--mark"] and len(sys.argv) == 4:
+    with Marks() as marks:
+        marks.apply(sys.argv[2], sys.argv[3], int(time.time() * 1000))
+    sys.exit(0)
+if sys.argv[1:2] == ["--import"] and len(sys.argv) == 3:
+    given = json.loads(sys.argv[2])
+    with Marks() as marks:
+        marks.pins.update(given.get("pins") or [])
+        for key, at in (given.get("settled") or {}).items():
+            marks.settled[key] = max(at, marks.settled.get(key, 0))
+        marks.pins -= marks.settled.keys()
+    sys.exit(0)
+if sys.argv[1:]:
+    sys.exit("usage: agent-threads [--mark pin|unpin|settle|unsettle <tool:id> | --import <json>]")
+
 try:
     cache = json.loads(cache_path.read_text())
 except (OSError, ValueError):
@@ -241,4 +310,13 @@ for thread in threads:
     thread["missing"] = not os.path.isdir(thread["folder"])
 threads.sort(key=lambda thread: thread["updated"], reverse=True)
 link_terminals(threads)
+with Marks() as marks:
+    for thread in threads:
+        key = f"{thread['tool']}:{thread['id']}"
+        at = marks.settled.get(key)
+        if at and thread["updated"] > at + 60000:
+            del marks.settled[key]
+            at = None
+        thread["settled"] = at
+        thread["pinned"] = key in marks.pins
 json.dump(threads, sys.stdout, ensure_ascii=False)

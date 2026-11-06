@@ -2,7 +2,9 @@
 // newest first. Clicking one opens a tab in its folder with the thread resumed.
 // Search filters by title, folder and tool. Pinned threads lead the list.
 // Settling a thread moves it to the Settled archive, where it can be unsettled;
-// a settled thread that sees new activity comes back by itself.
+// a settled thread that sees new activity comes back by itself. Pins and settled
+// threads live with the thread's machine (the script's --mark), so every window
+// showing that machine agrees.
 // A thread running in a Herdr terminal shows that agent's live status (working,
 // needs you, done while you weren't looking, idle), and clicking it focuses the
 // terminal instead of resuming the thread again.
@@ -44,6 +46,7 @@ const inside = (folder, root) => root && (folder === root || folder.startsWith(r
 const machineKey = (m) => m ?? "";
 const machineLabel = (m) => (m ? m[0].toUpperCase() + m.slice(1) : home().startsWith("/Users/") ? "Mac" : "Local");
 const keyOf = (th) => `${th.tool}:${th.id}`;
+const SCRIPT = '"$HOME/.dotfiles/scripts/agent-threads"';
 const load = (name, empty) => JSON.parse(localStorage.getItem(name) ?? "null") ?? empty;
 
 export default class Threads extends View {
@@ -52,8 +55,7 @@ export default class Threads extends View {
     this.errors = {}; // machine key -> last failure
     this.machine = localStorage.getItem("machine") || null;
     this.hidden = new Set(load("hidden", []));
-    this.pins = new Set(load("pins", []));
-    this.settled = load("settled", {}); // key -> settled at (ms)
+    this.gen = {}; // machine key -> marks made, so a list fetched before one is dropped
     this.archive = false;
     this.hovered = null;
     this.query = "";
@@ -73,7 +75,6 @@ export default class Threads extends View {
         const names = [null, ...machines().filter((m) => m.name && m.layout !== "unavailable").map((m) => m.name)];
         await Promise.all(names.map((m) => this.fetch(m, cx)));
         this.tried = new Set(seen);
-        this.wake();
         for (let waited = 0; waited < REFRESH_MS && !this.stale; waited += 2000) await cx.sleep(2000);
       }
     });
@@ -83,8 +84,11 @@ export default class Threads extends View {
   // One machine's threads; its terminals' addresses get the machine/ prefix agents() uses.
   async fetch(m, cx) {
     const key = machineKey(m);
+    const gen = this.gen[key];
     try {
-      const r = await exec("sh", ["-c", '"$HOME/.dotfiles/scripts/agent-threads"'], { on: m });
+      if (!m) await this.importLocal();
+      const r = await exec("sh", ["-c", SCRIPT], { on: m });
+      if (gen !== this.gen[key]) return;
       if (r.code === 0) {
         const list = JSON.parse(r.stdout);
         for (const th of list) {
@@ -100,28 +104,37 @@ export default class Threads extends View {
     cx.notify();
   }
 
-  get threads() {
-    return Object.values(this.byMachine).flat();
+  // Pins and settled threads this window kept itself before they moved to the
+  // script: this computer's own threads then, so they go to this computer's marks.
+  async importLocal() {
+    const pins = load("pins", []);
+    const settled = load("settled", {});
+    if (!pins.length && !Object.keys(settled).length) return;
+    const r = await exec("sh", ["-c", `${SCRIPT} --import "$1"`, "sh", JSON.stringify({ pins, settled })]);
+    if (r.code !== 0) return;
+    localStorage.removeItem("pins");
+    localStorage.removeItem("settled");
   }
 
   save() {
     localStorage.setItem("machine", machineKey(this.machine));
     localStorage.setItem("hidden", JSON.stringify([...this.hidden]));
-    localStorage.setItem("pins", JSON.stringify([...this.pins]));
-    localStorage.setItem("settled", JSON.stringify(this.settled));
   }
 
-  // Unsettle threads that were resumed and used after settling.
-  wake() {
-    let changed = false;
-    for (const th of this.threads) {
-      const at = this.settled[keyOf(th)];
-      if (at && th.updated > at + 60000) {
-        delete this.settled[keyOf(th)];
-        changed = true;
+  // Shown at once, written on the thread's machine, then that machine re-read.
+  mark(th, action, cx) {
+    const m = th.machine ?? null;
+    const key = machineKey(m);
+    this.gen[key] = (this.gen[key] ?? 0) + 1;
+    cx.spawn(async (cx) => {
+      try {
+        const r = await exec("sh", ["-c", `${SCRIPT} --mark "$1" "$2"`, "sh", action, keyOf(th)], { on: m });
+        if (r.code !== 0) notify({ title: "Couldn't save that", body: r.stderr.trim().split("\n").pop() || `exit ${r.code}`, level: "warning" });
+      } catch (e) {
+        notify({ title: "Couldn't save that", body: String(e), level: "warning" });
       }
-    }
-    if (changed) this.save();
+      await this.fetch(m, cx);
+    });
   }
 
   open(thread, live) {
@@ -152,18 +165,18 @@ export default class Threads extends View {
     run("tab.new", { space: space.id, folder: thread.folder, argv: thread.argv });
   }
 
-  togglePin(key) {
-    this.pins.has(key) ? this.pins.delete(key) : this.pins.add(key);
-    this.save();
+  togglePin(th, cx) {
+    th.pinned = !th.pinned;
+    this.mark(th, th.pinned ? "pin" : "unpin", cx);
   }
 
-  toggleSettled(key) {
-    if (this.settled[key]) delete this.settled[key];
+  toggleSettled(th, cx) {
+    if (th.settled) th.settled = null;
     else {
-      this.settled[key] = Date.now();
-      this.pins.delete(key);
+      th.settled = Date.now();
+      th.pinned = false;
     }
-    this.save();
+    this.mark(th, th.settled ? "settle" : "unsettle", cx);
   }
 
   chip(id, label, on, onClick, t) {
@@ -195,7 +208,7 @@ export default class Threads extends View {
       .tooltip(tip)
       .on_click((_e, cx) => {
         cx.stop_propagation();
-        onClick();
+        onClick(cx);
         // The row may move away from under the pointer, and no hover-out comes.
         this.hovered = null;
         cx.notify();
@@ -215,7 +228,7 @@ export default class Threads extends View {
   row(th, live, now, t) {
     const tool = TOOLS.find((x) => x.id === th.tool) ?? TOOLS[0];
     const key = keyOf(th);
-    const pinned = this.pins.has(key);
+    const pinned = Boolean(th.pinned);
     const hovered = this.hovered === key;
     return h_flex()
       .id(`th-${key}`)
@@ -262,11 +275,11 @@ export default class Threads extends View {
           h_flex()
             .flex_none()
             .gap(2)
-            .when(!this.archive, (el) => el.child(this.action(`pin-${key}`, pinned ? "pin-off" : "pin", pinned ? "Unpin" : "Pin to the top", () => this.togglePin(key), t)))
+            .when(!this.archive, (el) => el.child(this.action(`pin-${key}`, pinned ? "pin-off" : "pin", pinned ? "Unpin" : "Pin to the top", (cx) => this.togglePin(th, cx), t)))
             .child(
               this.archive
-                ? this.action(`settle-${key}`, "archive", "Unsettle", () => this.toggleSettled(key), t)
-                : this.action(`settle-${key}`, "circle-check", "Settle", () => this.toggleSettled(key), t),
+                ? this.action(`settle-${key}`, "archive", "Unsettle", (cx) => this.toggleSettled(th, cx), t)
+                : this.action(`settle-${key}`, "circle-check", "Settle", (cx) => this.toggleSettled(th, cx), t),
             ),
         ),
       );
@@ -287,14 +300,14 @@ export default class Threads extends View {
       return words.every((w) => hay.includes(w));
     };
     const mine = this.byMachine[machineKey(machine)] ?? [];
-    const settledCount = mine.filter((th) => this.settled[keyOf(th)]).length;
+    const settledCount = mine.filter((th) => th.settled).length;
     const shown = mine.filter(
       (th) =>
         !this.hidden.has(th.tool) &&
-        Boolean(this.settled[keyOf(th)]) === this.archive &&
+        Boolean(th.settled) === this.archive &&
         matches(th),
     );
-    const ordered = [...shown.filter((th) => this.pins.has(keyOf(th))), ...shown.filter((th) => !this.pins.has(keyOf(th)))].slice(0, LIMIT);
+    const ordered = [...shown.filter((th) => th.pinned), ...shown.filter((th) => !th.pinned)].slice(0, LIMIT);
 
     // Handlers notify through their own cx: render's goes stale once it returns.
     const toggleTool = (id) => (_e, cx) => {
