@@ -234,6 +234,28 @@ in
   services.gvfs.enable = true;
   services.udisks2.enable = true;
 
+  # Mount on access, without making boot depend on the Pi or its VPN.
+  # Credentials stay outside the repository and the world-readable Nix store.
+  fileSystems."/mnt/keepass" = {
+    device = "//10.10.0.1/keepass";
+    fsType = "cifs";
+    options = [
+      "credentials=/etc/keepass/credentials"
+      "uid=1000"
+      "gid=1000"
+      "file_mode=0600"
+      "dir_mode=0700"
+      "vers=3.1.1"
+      "nosuid"
+      "nodev"
+      "noexec"
+      "_netdev"
+      "noauto"
+      "x-systemd.automount"
+      "x-systemd.mount-timeout=15s"
+    ];
+  };
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 

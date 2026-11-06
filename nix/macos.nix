@@ -499,6 +499,30 @@ in
             home.homeDirectory = lib.mkForce "/Users/kamil";
             home.enableNixpkgsReleaseCheck = false;
 
+            # Mount in the login session so NetFS can use the user's Keychain.
+            launchd.agents.keepass-mount = {
+              enable = true;
+              config = {
+                ProgramArguments = [
+                  "/bin/sh"
+                  "-c"
+                  ''
+                    /sbin/mount | /usr/bin/grep -q ' on /Volumes/keepass (smbfs' && exit 0
+                    /usr/bin/nc -z -G 5 10.10.0.1 445 || exit 1
+                    exec /usr/bin/osascript -e 'mount volume "smb://kamil@10.10.0.1/keepass"'
+                  ''
+                ];
+                RunAtLoad = true;
+                WatchPaths = [
+                  "/etc/resolv.conf"
+                  "/var/run/malinka-wireguard-wake"
+                  "/var/run/wireguard/malinka.name"
+                ];
+                StandardOutPath = "/Users/kamil/Library/Logs/keepass-mount.log";
+                StandardErrorPath = "/Users/kamil/Library/Logs/keepass-mount.log";
+              };
+            };
+
             # macOS-specific packages; cross-platform packages live in home/packages.nix.
             home.packages =
               (with pkgs; [

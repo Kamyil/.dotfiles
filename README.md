@@ -59,6 +59,79 @@ Link definitions live in [`nix/symlinks.nix`](nix/symlinks.nix):
 
 Edit a linked config directly. Rebuild only after changing packages or links.
 
+## KeePassXC on malinka
+
+The authoritative database is `//10.10.0.1/keepass/passwords.kdbx`.
+Connect the malinka WireGuard tunnel before opening it. No database copies
+or synchronization jobs are created by this configuration.
+
+### ThinkPad
+
+NixOS mounts the share on demand at `/mnt/keepass`. Boot does not wait for
+the Pi. A mount attempt times out after 15 seconds if the Pi is unavailable.
+The numeric address avoids depending on split DNS.
+
+Create the credentials file once, outside this repository:
+
+```sh
+sudo install -d -m 0700 /etc/keepass
+sudo test -e /etc/keepass/credentials || sudo install -m 0600 /dev/null /etc/keepass/credentials
+sudoedit /etc/keepass/credentials
+```
+
+Enter these two lines in the editor, substituting your **SMB password**:
+
+```ini
+username=kamil
+password=YOUR_SMB_PASSWORD
+```
+
+Never put that file or its contents in Git or a Nix expression.
+Apply the configuration:
+
+```sh
+sudo nixos-rebuild switch --flake ~/.dotfiles/nix#nixos
+stat /mnt/keepass/passwords.kdbx
+findmnt /mnt/keepass
+```
+
+Open `/mnt/keepass/passwords.kdbx` in KeePassXC and use that entry thereafter.
+If a mount failed while the VPN was down, reconnect and retry. To clear a
+failed unit immediately, run `sudo systemctl reset-failed mnt-keepass.mount`.
+
+### Mac
+
+Connect to `smb://kamil@10.10.0.1/keepass` once using Finder's Connect to
+Server, and save the SMB password in Keychain. The IP-based URL may need a
+separate saved credential from an existing `malinka.lan` connection.
+
+After `sudo darwin-rebuild switch --flake ~/.dotfiles/nix`, the user launch
+agent `org.nix-community.home.keepass-mount` mounts the share at login and
+on the existing VPN wake/network events. It skips an already mounted
+`/Volumes/keepass` and checks SMB reachability before asking NetFS to mount.
+It does not start the VPN itself.
+
+Open `/Volumes/keepass/passwords.kdbx` in KeePassXC. To trigger mounting
+manually after connecting the VPN:
+
+```sh
+launchctl kickstart gui/$(id -u)/org.nix-community.home.keepass-mount
+stat /Volumes/keepass/passwords.kdbx
+```
+
+Mount errors appear in `~/Library/Logs/keepass-mount.log`.
+
+### Existing databases and backups
+
+Before switching, compare any local database with the Pi database in
+KeePassXC and merge missing changes deliberately. This setup does not
+overwrite or delete `~/passwords.kdbx`, or change KeePassXC's saved history.
+Remove stale recent-file entries after checking their contents.
+
+Avoid editing from both computers at once. Automatic mounting does not
+resolve concurrent edits. Keep versioned backups on the Pi; this client
+configuration does not install a server backup job.
+
 ## Repository layout
 
 ```text
