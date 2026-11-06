@@ -20,7 +20,9 @@ whose content changes. Start Herdr once first so its defaults exist.
   group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red,
   and puts CPU, GPU (malinka: SoC temperature), RAM and disk bars in each
   machine header (herdr-app/machine-stats.js). Each space's row ends with an
-  icon per coding agent running in it (herdr-app/space-agents.js).
+  icon per coding agent running in it (herdr-app/space-agents.js), and a
+  space whose project has a favicon or app icon shows it in place of its
+  letter square (herdr-app/space-favicons.js).
 - layouts/quest.json: the threads layout dressed as a game HUD for Godot work
   (dark stone, gold): the sidebar's threads and usage mods in their hud skin
   (Quest log, Mana), and around the panes the hud mod's roles: a hotbar of
@@ -142,6 +144,23 @@ space_agents_edits = [
         ".child(g ? this.gitTail(g, tree, w.name, t, marks) : h_flex().flex_1().justify_end().when(Boolean(marks), (el) => el.child(marks))),",
     ),
 ]
+# Each space whose project has a favicon or app icon shows it in place of its
+# letter square, from herdr-app/space-favicons.js, copied in as favicons.js.
+space_favicons = repo / "herdr-app/space-favicons.js"
+git_poll = "cx.timer.every(250, (cx) => this.checkNew(cx));"
+letter_head = ".when(!tree, el => el.child(h_flex().size(18)"
+letter_tail = '.child([...w.name][0]?.toUpperCase() ?? "?")))'
+space_favicons_edits = [
+    (herdr_import, herdr_import + '\nimport Favicons from "./favicons.js";'),
+    (
+        git_poll,
+        git_poll + "\n    this.favicons = new Favicons();\n"
+        "    cx.timer.every(2000, (cx) => this.favicons.poll(spaces(), panes(), cx));",
+    ),
+    (rows_read, rows_read + "\n    this.ps = panes();"),
+    (letter_head, ".when(!tree, el => el.child(this.favicons.mark(w, this.ps ?? panes(), h_flex().size(18)"),
+    (letter_tail, letter_tail + ")"),
+]
 threads_spaces = (
     "-threads",
     [
@@ -153,6 +172,7 @@ threads_spaces = (
         ),
         *machine_stats_edits,
         *space_agents_edits,
+        *space_favicons_edits,
     ],
 )
 
@@ -345,7 +365,7 @@ for mod in sorted(square_mods):
 if bar_mod in square_mods:
     write_square_mod(bar_mod, square_mods, *threads_bar)
 if spaces_mod in square_mods:
-    write_square_mod(spaces_mod, square_mods, *threads_spaces, {"stats.js": machine_stats, "agents.js": space_agents})
+    write_square_mod(spaces_mod, square_mods, *threads_spaces, {"stats.js": machine_stats, "agents.js": space_agents, "favicons.js": space_favicons})
 for name, layout in layouts.items():
     save(app_home / "layouts" / f"{name}.json", layout)
 
