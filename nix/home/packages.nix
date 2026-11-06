@@ -12,7 +12,6 @@
 
 let
   tldrawOffline = pkgs.callPackage ../packages/tldraw-offline.nix { };
-  diskonaut = pkgs.callPackage ../packages/diskonaut.nix { };
   slk = pkgs.callPackage ../packages/slk.nix { };
   herdrApp = pkgs.callPackage ../packages/herdr-app.nix { };
   herdrCore = pkgs.callPackage ../packages/herdr-core.nix { };
@@ -35,7 +34,7 @@ in
     [
       ripgrep
       codex
-      diskonaut
+      dua
       slk
       aerc
       neomutt
