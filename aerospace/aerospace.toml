@@ -116,7 +116,7 @@ cmd-shift-n = 'exec-and-forget ~/.dotfiles/scripts/open-weekly-note.sh'
 # alt-enter = 'exec-and-forget open -n /System/Applications/Utilities/Terminal.app'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#layout
-cmd-comma = 'layout tiles horizontal vertical'
+cmd-ctrl-equal = 'layout tiles horizontal vertical'
 # cmd-comma = 'layout accordion horizontal vertical'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#focus
