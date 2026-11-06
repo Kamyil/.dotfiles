@@ -4,40 +4,52 @@
 // mods/spaces-square-threads as agents.js.
 //
 // The icon is the pane's own from Herdr's program table, Claude Code's in the
-// orange the threads and usage mods draw it in. A working agent is drawn full
-// strength, an idle one dimmed, one waiting on you (blocked) with a dot.
+// orange the threads and usage mods draw it in, with a status dot: yellow
+// working, green idle or done, red blocked (waiting on you). Hovering names
+// its thread (the agent's terminal title) and status; clicking goes to it.
 import { div, svg, image } from "gpui-kit";
 import { h_flex } from "gpui-base";
-import { panes } from "herdr";
+import { panes, run } from "herdr";
 
 const COLORS = { claude: "#d97757" };
+const STATUS = { working: "working", blocked: "needs you", done: "done", idle: "idle" };
+// Leading spinner and status glyphs some agents put in their title.
+const clean = (s) => (s ?? "").replace(/^[^\p{L}\p{N}]+/u, "").trim();
 
-// Space id -> its agents' panes, one per harness (the busiest), in tab order.
+// Space id -> its agents' panes, in tab order.
 export function agentsBySpace(spaceList) {
   const tabOf = {};
   for (const s of spaceList) for (const t of s.tabs ?? []) tabOf[t.id] = s.id;
-  const rank = { blocked: 3, working: 2, done: 1 };
   const out = {};
   for (const p of panes()) {
     const space = tabOf[p.tab];
-    if (!space || !p.program?.agent || !p.program.icon) continue;
-    const mine = (out[space] ??= new Map());
-    const had = mine.get(p.program.key);
-    if (!had || (rank[p.status] ?? 0) > (rank[had.status] ?? 0)) mine.set(p.program.key, p);
+    if (space && p.program?.agent && p.program.icon) (out[space] ??= []).push(p);
   }
-  return Object.fromEntries(Object.entries(out).map(([k, v]) => [k, [...v.values()]]));
+  return out;
+}
+
+function threadName(p) {
+  const title = clean(p.title);
+  const pr = p.program;
+  return title && title !== pr.name && title.toLowerCase() !== pr.key && !/^[~/]/.test(title) ? title : null;
 }
 
 export function agentMarks(list, t, id) {
   if (!list?.length) return null;
-  return h_flex().id(`space-agents-${id}`).flex_none().gap(4).items_center()
-    .tooltip(list.map((p) => `${p.program.name}: ${p.status ?? "idle"}`).join("\n"))
-    .children(list.map((p) => {
-      const pr = p.program;
-      const glyph = pr.tint ? svg(pr.icon).size(13).text_color(COLORS[pr.key] ?? pr.color ?? t.foreground) : image(pr.icon).size(13);
-      return div().relative().flex_none()
-        .when(p.status !== "working" && p.status !== "blocked", (el) => el.opacity(0.55))
-        .child(glyph)
-        .when(p.status === "blocked", (el) => el.child(div().absolute().top(-2).right(-2).size(5).bg(t.blocked)));
-    }));
+  const dot = { working: t.ansi3, blocked: t.ansi1 };
+  return h_flex().flex_none().gap(5).items_center().children(list.map((p) => {
+    const pr = p.program;
+    const glyph = pr.tint ? svg(pr.icon).size(13).text_color(COLORS[pr.key] ?? pr.color ?? t.foreground) : image(pr.icon).size(13);
+    const tip = [threadName(p) ?? pr.name, `${pr.name} · ${STATUS[p.status] ?? "idle"}`].join("\n");
+    return div().id(`space-agent-${id}-${p.pane}`).relative().flex_none().cursor_pointer()
+      .tooltip(tip)
+      // The row selects its space on mouse up after its own mouse down; keep it out.
+      .on_mouse_down("left", (_e, cx) => cx.stop_propagation())
+      .on_click((_e, cx) => {
+        cx.stop_propagation();
+        run("pane.focus", { pane: p.pane });
+      })
+      .child(glyph)
+      .child(div().absolute().bottom(-1).right(-2).size(5).rounded(0).bg(dot[p.status] ?? t.ansi2));
+  }));
 }

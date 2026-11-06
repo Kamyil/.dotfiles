@@ -121,7 +121,8 @@ machine_stats_edits = [
     ),
     (add_button, ".when(connected, el => el.child(this.stats.view(m, t)))\n          " + add_button),
 ]
-# Each space's row also ends with an icon per coding agent running in it, from
+# Each space's row also ends with an icon per coding agent running in it (a
+# status dot, its thread on hover, click to go there), from
 # herdr-app/space-agents.js, copied in as agents.js.
 space_agents = repo / "herdr-app/space-agents.js"
 agents_import = 'import { agentsBySpace, agentMarks } from "./agents.js";'
