@@ -11,7 +11,8 @@ terminal's agent status live.
 A terminal is matched to its thread by the agent's foreground pid: Claude Code
 names its session in ~/.claude/sessions/<pid>.json, and a resumed omp or
 OpenCode carries it on its command line. Anything else takes the newest
-unclaimed thread of its tool in its folder.
+unclaimed thread of its tool in its folder. Only this machine's terminals are
+matched; the mod runs this script on each machine to show its threads.
 
 Claude Code sessions can be tens of MiB, so their titles are cached by file
 size and mtime in $XDG_CACHE_HOME/agent-threads.json.
@@ -209,7 +210,8 @@ def link_terminals(threads):
     unmatched = []
     for entry in listing.get("terminals", []):
         tool = agent_tools.get(entry.get("agent") or "")
-        if entry.get("state") != "live" or not entry.get("status") or not tool:
+        # Another machine's terminals (machine/t1) run that machine's threads.
+        if entry.get("state") != "live" or not entry.get("status") or not tool or "/" in entry["address"]:
             continue
         foreground = (hc_json("get", entry["address"]) or {}).get("foreground") or {}
         session = session_of(tool, foreground.get("pid"), foreground.get("argv") or [])

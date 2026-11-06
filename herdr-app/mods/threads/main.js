@@ -6,11 +6,15 @@
 // A thread running in a Herdr terminal shows that agent's live status (working,
 // needs you, done while you weren't looking, idle), and clicking it focuses the
 // terminal instead of resuming the thread again.
+// The machine chips switch between this computer's threads and each connected
+// machine's: the script runs there through Herdr's connection (exec's `on`),
+// and a thread opens in a space on its machine. A machine whose script fails
+// (no dotfiles there) gets no chip.
 // Shown by the threads layout (scripts/herdr-app-setup), and by the quest
 // layout with props { skin: "hud" }: a Quest log title, same list.
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { exec, focused, spaces, agents, home, run, theme, notify, props } from "herdr";
+import { exec, spaces, machines, agents, home, run, theme, notify, props } from "herdr";
 
 const TOOLS = [
   { id: "claude", label: "Claude", icon: "icons/claude.svg", color: "#d97757" },
@@ -32,17 +36,21 @@ function ago(ms) {
   return d < 60 ? `${d}d` : `${Math.floor(d / 30)}mo`;
 }
 
-const tidy = (folder) => (folder.startsWith(home()) ? "~" + folder.slice(home().length) : folder);
+// Any machine's home (/Users/x, /home/x) shows as ~.
+const tidy = (folder) => (folder.startsWith(home()) ? "~" + folder.slice(home().length) : folder.replace(/^\/(?:Users|home)\/[^/]+(?=\/|$)/, "~"));
 const project = (folder) => tidy(folder).split("/").filter(Boolean).pop() ?? "~";
 const inside = (folder, root) => root && (folder === root || folder.startsWith(root.replace(/\/$/, "") + "/"));
+// Machines are named as `hc machine ls` does; null (this computer) as "" in storage.
+const machineKey = (m) => m ?? "";
+const machineLabel = (m) => (m ? m[0].toUpperCase() + m.slice(1) : home().startsWith("/Users/") ? "Mac" : "Local");
 const keyOf = (th) => `${th.tool}:${th.id}`;
 const load = (name, empty) => JSON.parse(localStorage.getItem(name) ?? "null") ?? empty;
 
 export default class Threads extends View {
   init(_props, cx) {
-    this.threads = [];
-    this.error = null;
-    this.here = localStorage.getItem("here") === "true";
+    this.byMachine = {}; // machine key -> its threads, once its script answered
+    this.errors = {}; // machine key -> last failure
+    this.machine = localStorage.getItem("machine") || null;
     this.hidden = new Set(load("hidden", []));
     this.pins = new Set(load("pins", []));
     this.settled = load("settled", {}); // key -> settled at (ms)
@@ -62,26 +70,42 @@ export default class Threads extends View {
       for (;;) {
         this.stale = false;
         const seen = agents().map((a) => a.address);
-        try {
-          const r = await exec(`${home()}/.dotfiles/scripts/agent-threads`);
-          if (r.code === 0) {
-            this.threads = JSON.parse(r.stdout);
-            this.error = null;
-            this.tried = new Set(seen);
-            this.wake();
-          } else this.error = r.stderr.trim().split("\n").pop() || `exit ${r.code}`;
-        } catch (e) {
-          this.error = String(e);
-        }
-        cx.notify();
+        const names = [null, ...machines().filter((m) => m.name && m.layout !== "unavailable").map((m) => m.name)];
+        await Promise.all(names.map((m) => this.fetch(m, cx)));
+        this.tried = new Set(seen);
+        this.wake();
         for (let waited = 0; waited < REFRESH_MS && !this.stale; waited += 2000) await cx.sleep(2000);
       }
     });
     cx.timer.every(60000, (cx) => cx.notify());
   }
 
+  // One machine's threads; its terminals' addresses get the machine/ prefix agents() uses.
+  async fetch(m, cx) {
+    const key = machineKey(m);
+    try {
+      const r = await exec("sh", ["-c", '"$HOME/.dotfiles/scripts/agent-threads"'], { on: m });
+      if (r.code === 0) {
+        const list = JSON.parse(r.stdout);
+        for (const th of list) {
+          th.machine = m;
+          if (m && th.terminal) th.terminal = `${m}/${th.terminal}`;
+        }
+        this.byMachine[key] = list;
+        delete this.errors[key];
+      } else this.errors[key] = r.stderr.trim().split("\n").pop() || `exit ${r.code}`;
+    } catch (e) {
+      this.errors[key] = String(e);
+    }
+    cx.notify();
+  }
+
+  get threads() {
+    return Object.values(this.byMachine).flat();
+  }
+
   save() {
-    localStorage.setItem("here", String(this.here));
+    localStorage.setItem("machine", machineKey(this.machine));
     localStorage.setItem("hidden", JSON.stringify([...this.hidden]));
     localStorage.setItem("pins", JSON.stringify([...this.pins]));
     localStorage.setItem("settled", JSON.stringify(this.settled));
@@ -109,7 +133,23 @@ export default class Threads extends View {
       notify({ title: "Folder is gone", body: tidy(thread.folder), level: "warning" });
       return;
     }
-    run("terminal.open", { argv: thread.argv, folder: thread.folder, place: "tab" });
+    // A tab in a space on its machine: the shown one, else one whose folder holds
+    // the thread's, else its first; with none, a new space there.
+    const m = thread.machine ?? null;
+    const all = spaces();
+    const theirs = all.filter((s) => (s.machine ?? null) === m);
+    const shown = theirs.find((s) => s.active);
+    if (shown) {
+      run("terminal.open", { argv: thread.argv, folder: thread.folder, place: "tab" });
+      return;
+    }
+    const space = theirs.find((s) => s.folder && inside(thread.folder, s.folder)) ?? theirs[0];
+    if (!space) {
+      run("space.new", { machine: m ?? "", folder: thread.folder, argv: thread.argv });
+      return;
+    }
+    run("space.select", { id: space.id });
+    run("tab.new", { space: space.id, folder: thread.folder, argv: thread.argv });
   }
 
   togglePin(key) {
@@ -235,7 +275,10 @@ export default class Threads extends View {
   render(cx) {
     const t = theme();
     const now = Date.now();
-    const root = focused()?.cwd ?? spaces().find((s) => s.active)?.folder;
+    // Machines whose script answered; the chosen one falls back to this computer.
+    const known = [null, ...Object.keys(this.byMachine).filter(Boolean).sort()];
+    const machine = known.includes(this.machine) ? this.machine : null;
+    const error = this.errors[machineKey(machine)];
     const running = new Map(agents().map((a) => [a.address, a]));
     if ([...running.keys()].some((address) => !this.tried.has(address))) this.stale = true;
     const words = this.query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -243,11 +286,11 @@ export default class Threads extends View {
       const hay = `${th.title} ${tidy(th.folder)} ${th.tool}`.toLowerCase();
       return words.every((w) => hay.includes(w));
     };
-    const settledCount = this.threads.filter((th) => this.settled[keyOf(th)]).length;
-    const shown = this.threads.filter(
+    const mine = this.byMachine[machineKey(machine)] ?? [];
+    const settledCount = mine.filter((th) => this.settled[keyOf(th)]).length;
+    const shown = mine.filter(
       (th) =>
         !this.hidden.has(th.tool) &&
-        (!this.here || inside(th.folder, root)) &&
         Boolean(this.settled[keyOf(th)]) === this.archive &&
         matches(th),
     );
@@ -268,9 +311,9 @@ export default class Threads extends View {
       ? "No matching threads."
       : this.archive
         ? "Nothing settled yet."
-        : this.here
-          ? `No threads in ${tidy(root ?? "~")}.`
-          : "No threads yet.";
+        : this.byMachine[machineKey(machine)]
+          ? `No threads on ${machineLabel(machine)} yet.`
+          : `Loading ${machineLabel(machine)}…`;
 
     return v_flex()
       .size_full()
@@ -338,15 +381,14 @@ export default class Threads extends View {
               .child(
                 h_flex()
                   .gap(4)
-                  .child(this.chip("all", "All", !this.here, set(() => (this.here = false)), t))
-                  .child(this.chip("here", "Here", this.here, set(() => (this.here = true)), t)),
+                  .children(known.map((m) => this.chip(`machine-${machineKey(m) || "local"}`, machineLabel(m), m === machine, set(() => (this.machine = m)), t))),
               )
               .child(this.chip("settled", `Settled ${settledCount}`, this.archive, set(() => (this.archive = !this.archive)), t)),
           )
           .child(h_flex().gap(4).children(TOOLS.map((x) => this.chip(x.id, x.label, !this.hidden.has(x.id), toggleTool(x.id), t)))),
       )
-      .when(Boolean(this.error), (el) => el.child(div().px(10).py(8).text_size(11.5).text_color(t.blocked).child(this.error)))
-      .when(ordered.length === 0 && !this.error, (el) => el.child(div().px(10).py(8).text_size(12).text_color(t.dim).child(empty)))
+      .when(Boolean(error), (el) => el.child(div().px(10).py(8).text_size(11.5).text_color(t.blocked).child(error)))
+      .when(ordered.length === 0 && !error, (el) => el.child(div().px(10).py(8).text_size(12).text_color(t.dim).child(empty)))
       .child(v_flex().id("th-list").flex_1().min_h(0).overflow_y_scrollbar().children(ordered.map((th) => this.row(th, running.get(th.terminal), now, t))));
   }
 }
