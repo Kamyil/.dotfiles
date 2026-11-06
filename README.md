@@ -156,7 +156,7 @@ The package sets are intentionally split into common, macOS, and NixOS layers. â
 | Role | Tool(s) | Configuration |
 | --- | --- | --- |
 | Shell and prompt | zsh, Starship, Atuin | [`zsh`](nix/shared.nix), [`starship/`](starship), [`atuin/`](atuin) |
-| Editor and terminal workflow | Neovim, Kitty, herdr, Herdr app | [`nvim/`](nvim), [`kitty/`](kitty), [`herdr/`](herdr), [`herdr-app/`](herdr-app) (apply with [`scripts/herdr-app-setup`](scripts/herdr-app-setup) after Herdr's first start; the `threads` layout lists agent threads with their live Herdr agent status from [`scripts/agent-threads`](scripts/agent-threads) and plan usage from [`scripts/agent-usage`](scripts/agent-usage)) |
+| Editor and terminal workflow | Neovim, Kitty, herdr, Herdr app | [`nvim/`](nvim), [`kitty/`](kitty), [`herdr/`](herdr), [`herdr-app/`](herdr-app) (apply with [`scripts/herdr-app-setup`](scripts/herdr-app-setup) after Herdr's first start; the `threads` layout lists agent threads with their live Herdr agent status from [`scripts/agent-threads`](scripts/agent-threads) and plan usage from [`scripts/agent-usage`](scripts/agent-usage); the `quest` layout is the same sidebar dressed as a game HUD, with Play/Stop for the focused Godot project, its run log and commit XP from [`herdr-app/mods/hud`](herdr-app/mods/hud)) |
 | Files and text | ripgrep, fd, eza, bat, jq, yq, yazi, tree | mostly command-line defaults; [`bat/`](bat) |
 | Git and review | Git, Git Extras, tig, lazygit, difftastic, hunk, lumen | [`lazygit/`](lazygit), [`hunk/`](hunk) |
 | Agentic coding | oh-my-pi (`omp`) primary; OpenCode fallback | [`pi/`](pi), [`omp/`](omp) (incl. MCP servers), [`opencode/`](opencode) |

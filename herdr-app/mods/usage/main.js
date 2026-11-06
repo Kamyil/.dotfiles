@@ -2,10 +2,11 @@
 // its layout block, refreshing in the background, and shows the last result
 // (kept in localStorage) at once after a restart: no cold fetch on open.
 // Click the header to refresh now. Shown by the threads layout
-// (scripts/herdr-app-setup).
+// (scripts/herdr-app-setup). The quest layout gives props { skin: "hud" }:
+// limits show as mana left instead of usage.
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { exec, home, theme } from "herdr";
+import { exec, home, theme, props } from "herdr";
 
 const ICONS = { claude: { icon: "icons/claude.svg", color: "#d97757" }, codex: { icon: "mods/usage/codex.svg" } };
 const REFRESH_MS = 5 * 60000;
@@ -22,6 +23,7 @@ const ago = (ms) => (ms < 60000 ? "now" : `${until(ms)} ago`);
 
 export default class Usage extends View {
   init(_props, cx) {
+    this.hud = props()?.skin === "hud";
     this.data = JSON.parse(localStorage.getItem("usage") ?? "null");
     this.busy = false;
     this.error = null;
@@ -60,6 +62,7 @@ export default class Usage extends View {
   bar(limit, now, t) {
     const pct = Math.max(0, Math.min(100, limit.percent));
     const color = pct >= 90 ? t.blocked : pct >= 70 ? t.working : t.accent;
+    if (this.hud) return this.mana(limit, pct, now, t);
     return v_flex()
       .gap(3)
       .child(
@@ -70,6 +73,22 @@ export default class Usage extends View {
           .when(Boolean(limit.resets), (el) => el.child(div().w(64).text_right().text_color(t.dim).child(until(limit.resets - now)))),
       )
       .child(div().h(4).bg(t.hover).child(div().h_full().w(`${pct}%`).bg(color)));
+  }
+
+  // The hud skin: what's left of a limit, as a mana bar that drains.
+  mana(limit, pct, now, t) {
+    const left = 100 - Math.round(pct);
+    const color = left <= 10 ? "#c2413a" : left <= 30 ? "#e0a84a" : "#3f7fd9";
+    return v_flex()
+      .gap(3)
+      .child(
+        h_flex()
+          .text_size(11)
+          .child(div().flex_1().text_color(t.dim).child(limit.label))
+          .child(div().text_color(t.foreground).child(`${left}% left`))
+          .when(Boolean(limit.resets), (el) => el.child(div().w(64).text_right().text_color(t.dim).child(until(limit.resets - now)))),
+      )
+      .child(div().h(7).border_1().border_color(t.border).bg("#0b0907").child(div().h_full().w(`${left}%`).bg(color)));
   }
 
   render(cx) {
@@ -95,7 +114,12 @@ export default class Usage extends View {
           .hover((s) => s.bg(t.hover))
           .on_click((_e, cx) => this.refresh(cx))
           .tooltip("Refresh")
-          .child(div().flex_1().text_size(11.5).font_medium().text_color(t.dim).child("Usage"))
+          .when(this.hud, (el) => el.gap(7).child(svg("mods/hud/icons/potion.svg").size(13).flex_none().text_color(t.accent)))
+          .child(
+            this.hud
+              ? div().flex_1().text_size(11.5).font_bold().text_color(t.accent).child("MANA")
+              : div().flex_1().text_size(11.5).font_medium().text_color(t.dim).child("Usage"),
+          )
           .child(div().text_size(11).text_color(t.dim).child(status)),
       )
       .when(Boolean(this.error), (el) => el.child(div().px(10).pt(8).text_size(11).text_color(t.blocked).child(this.error)))

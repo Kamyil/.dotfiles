@@ -16,13 +16,27 @@ whose content changes. Start Herdr once first so its defaults exist.
   scripts/agent-threads) and the usage mod (Claude Code and Codex plan usage,
   scripts/agent-usage), top to bottom. The tab bar sits over the panes only
   and drops its space chip and macOS window-button inset
-  (mods/terminals-bar-square-threads).
+  (mods/terminals-bar-square-threads). Its spaces list tints each machine's
+  group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red,
+  and puts CPU, GPU (malinka: SoC temperature), RAM and disk bars in each
+  machine header (herdr-app/machine-stats.js). Each space's row ends with an
+  icon per coding agent running in it (herdr-app/space-agents.js).
+- layouts/quest.json: the threads layout dressed as a game HUD for Godot work
+  (dark stone, gold): the sidebar's threads and usage mods in their hud skin
+  (Quest log, Mana), and around the panes the hud mod's roles: a hotbar of
+  tabs with Play/Stop for the Godot project in focus (F5/F8), the game's run
+  log (hidden until Play, Ctrl+Shift+G) and a strip with commit XP, streak and
+  session timer (herdr-app/mods/hud).
 - mods/<name>-square: square-cornered copies of the shipped mods the nav
   layouts show (every .rounded*() call set to 0), which those layouts use
   along with radius 0. Herdr's own popup and dialog frames stay rounded.
+- The nav layouts park macOS's window buttons off the window
+  (traffic_lights at -200, -200): Herdr can't turn them off, but it doesn't
+  clamp where they go. The square tab bar copies drop the 72px inset left for
+  them. Close and minimise with keys (Cmd+Q, Cmd+M, Alt+Space q).
 - settings.json and the nav layouts use themes/dotfiles.json in dark mode,
   which scripts/herdr-theme writes from the current dotfiles palette.
-- mods/nav, mods/threads and mods/usage come from nix/symlinks.nix (herdr-app/mods/*);
+- mods/nav, mods/threads, mods/usage and mods/hud come from nix/symlinks.nix (herdr-app/mods/*);
   this only checks them.
 """
 import json
@@ -36,11 +50,12 @@ from pathlib import Path
 repo = Path(__file__).resolve().parent.parent
 app_home = Path(os.environ.get("HERDR_APP_HOME", Path.home() / ".config/herdr-app"))
 state = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "dotfiles-theme"
-nav_layouts = {"main-nav": "main", "terminals-nav": "terminals", "threads": "terminals"}
-linked_mods = ["nav", "threads", "usage"]
+nav_layouts = {"main-nav": "main", "terminals-nav": "terminals", "threads": "terminals", "quest": "terminals"}
+linked_mods = ["nav", "threads", "usage", "hud"]
 
 
-def threads_sidebar(gap):
+def threads_sidebar(gap, skin=None):
+    props = {"props": {"skin": skin}} if skin else {}
     return {
         "id": "threads",
         "type": "column",
@@ -50,8 +65,8 @@ def threads_sidebar(gap):
         "max": 520,
         "children": [
             {"id": "spaces", "type": "block", "size": {"px": 200}, "min": 90, "border": {"width": 1, "color": "border"}, "content": {"mod": "spaces"}},
-            {"id": "thread-list", "type": "block", "content": {"mod": "threads"}},
-            {"id": "usage", "type": "block", "size": {"px": 232}, "min": 120, "content": {"mod": "usage"}},
+            {"id": "thread-list", "type": "block", "content": {"mod": "threads", **props}},
+            {"id": "usage", "type": "block", "size": {"px": 232}, "min": 120, "content": {"mod": "usage", **props}},
         ],
     }
 
@@ -64,18 +79,119 @@ pane_focus = {"width": 1, "color": "accent"}
 square_suffix = "-square"
 rounded_call = re.compile(r"\.rounded(?:_[a-z]+)?\([^()]*\)")
 light_fallback = "paper"
-# The threads layout's tab bar drops the space chip; the sidebar's spaces list
-# already shows and switches the space. It also drops the macOS inset for the
-# window buttons, which sit over the full-height sidebar there instead.
+# macOS always draws the window buttons, but Herdr doesn't clamp where; off
+# the window's top-left corner they're out of sight. The tabs mod sizes its
+# inset from this and falls to its minimum; the bar's fixed inset goes below.
+hidden_traffic_lights = [-200, -200]
+# The square tab bars drop the macOS inset for those buttons. The threads
+# layout's also drops the space chip; the sidebar's spaces list already shows
+# and switches the space.
 bar_mod = "terminals-bar"
 macos_inset = '.when(w.platform === "macos" && w.titlebar === "none" && !w.fullscreen, (el) => el.pl(72))'
+bar_edits = [(macos_inset, "")]
 threads_bar = (
     "-threads",
+    [('.id("tm-space")', '.id("tm-space")\n          .hidden()'), *bar_edits],
+)
+# The threads layout's spaces list tints each machine's group, header and
+# spaces alike: the Mac gray, the NixOS thinkpad light blue, malinka red.
+# "This computer" takes its own platform's tint. Only once a second machine is
+# known; a lone computer's list has no groups.
+spaces_mod = "spaces"
+machine_tints = {"macos": "#a0a4ab1c", "thinkpad": "#6cb6ff1f", "malinka": "#ff5c5c1f"}
+group_tint = (
+    "const tints = " + json.dumps(machine_tints) + ";\n"
+    "    const tinted = (m, items) => [v_flex().id(`machine-group-${m ?? \"local\"}`).flex_none().mb(6).pb(2)"
+    ".bg(tints[m ?? (window().platform === \"macos\" ? \"macos\" : \"thinkpad\")] ?? \"#00000000\").children(items)];\n"
+    "    const machineNames = [null, ...remote];"
+)
+# Each machine header also shows CPU, GPU (a Pi: SoC temperature), RAM and
+# disk bars from herdr-app/machine-stats.js, copied in as stats.js.
+# They poll only once a second machine is known, every 5s with the window in front.
+machine_stats = repo / "herdr-app/machine-stats.js"
+herdr_import = 'import { spaces, machines, panes, run, openOverlay, exec, hc, theme, shared, setShared, watchFolder, window, layout } from "herdr";'
+machines_timer = "cx.timer.every(15000, cx => this.refreshMachines(cx));"
+add_button = '.when(connected, el => el.child(div().id(`machine-add-${m ?? "local"}`)'
+machine_stats_edits = [
+    (herdr_import, herdr_import + '\nimport MachineStats from "./stats.js";'),
+    (
+        machines_timer,
+        machines_timer + "\n    this.stats = new MachineStats();\n"
+        "    cx.timer.every(1000, cx => this.machines.length && this.stats.poll([null, ...this.machines.filter(k => k.state === \"connected\").map(k => k.name)], cx));",
+    ),
+    (add_button, ".when(connected, el => el.child(this.stats.view(m, t)))\n          " + add_button),
+]
+# Each space's row also ends with an icon per coding agent running in it (a
+# status dot, its thread on hover, click to go there), from
+# herdr-app/space-agents.js, copied in as agents.js.
+space_agents = repo / "herdr-app/space-agents.js"
+agents_import = 'import { agentsBySpace, agentMarks } from "./agents.js";'
+rows_read = "const rows = this.ordered();"
+git_tail = "gitTail(g, tree, name, t) {"
+tail_where = ".when(Boolean(where), (el) => el.child(div().min_w(0).truncate().child(where)))"
+row_head = "row({ w, i, g, tree }, t) {"
+row_tail = ".child(g ? this.gitTail(g, tree, w.name, t) : div().flex_1()),"
+space_agents_edits = [
+    (herdr_import, herdr_import + "\n" + agents_import),
+    (rows_read, rows_read + "\n    this.agents = agentsBySpace(spaces());"),
+    (git_tail, "gitTail(g, tree, name, t, marks) {"),
+    (tail_where, tail_where + "\n      .when(Boolean(marks), (el) => el.child(marks))"),
+    (row_head, row_head + "\n    const marks = agentMarks(this.agents?.[w.id], t, w.id);"),
+    (
+        row_tail,
+        ".child(g ? this.gitTail(g, tree, w.name, t, marks) : h_flex().flex_1().justify_end().when(Boolean(marks), (el) => el.child(marks))),",
+    ),
+]
+threads_spaces = (
+    "-threads",
     [
-        ('.id("tm-space")', '.id("tm-space")\n          .hidden()'),
-        (macos_inset, ""),
+        ("const machineNames = [null, ...remote];", group_tint),
+        ("if (!collapsed && rebuilt) return [head];", "if (!collapsed && rebuilt) return tinted(m, [head]);"),
+        (
+            "return [head, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : empty])];",
+            "return tinted(m, [head, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : empty])]);",
+        ),
+        *machine_stats_edits,
+        *space_agents_edits,
     ],
 )
+
+
+# The quest layout's HUD look (herdr-app/mods/hud/game.js has the same palette):
+# warm stone chrome with bronze edges and a gold accent. The terminals keep
+# the dotfiles theme and their own background.
+quest_colors = {
+    "background": "#0e0c0a",
+    "surface": "#15110d",
+    "raised": "#211a13",
+    "hover": "#ffffff0a",
+    "border": "#3a2d1c",
+    "foreground": "#ece1c8",
+    "muted": "#c3b498",
+    "dim": "#9c8b6c",
+    "selection": "#4a3720",
+    "accent": "#d6a54a",
+}
+quest_pane = {"border": {"width": 1, "color": "#3a2d1c"}, "focus": {"width": 1, "color": "#d6a54a"}}
+
+
+def quest_workspace(gap, children):
+    """Hotbar, the panes, the run log (hidden until Play) and the XP strip."""
+    panes = [child for child in children if "tab" in child.get("content", {})]
+    if len(panes) != 1:
+        sys.exit("herdr-app-setup: the terminals layout no longer has exactly one pane block; Herdr changed it")
+    hud = lambda role: {"mod": "hud", "props": {"role": role}}
+    return {
+        "id": "workspace",
+        "type": "column",
+        "gap": gap,
+        "children": [
+            {"id": "hotbar", "type": "block", "size": {"px": 38}, "window_drag": True, "content": hud("bar")},
+            panes[0],
+            {"id": "run-log", "type": "block", "size": {"px": 220}, "min": 90, "max": 600, "hidden": True, "content": hud("log")},
+            {"id": "xp", "type": "block", "size": {"px": 30}, "content": hud("xp")},
+        ],
+    }
 
 
 def squared(node, mods):
@@ -108,8 +224,9 @@ def pane_looks(node):
             yield from pane_looks(value)
 
 
-def write_square_mod(name, names, variant="", edits=()):
-    """Write mods/<name>-square<variant>; edits are (old, new) swaps in its main.js."""
+def write_square_mod(name, names, variant="", edits=(), extra=None):
+    """Write mods/<name>-square<variant>; edits are (old, new) swaps in its main.js,
+    extra maps more file names to sources copied in beside it."""
     source = app_home / "mods" / name
     target = app_home / "mods" / (name + square_suffix + variant)
     if target.is_symlink():
@@ -129,6 +246,12 @@ def write_square_mod(name, names, variant="", edits=()):
         else:
             text = path.read_text()
         out = target / path.name
+        if not out.exists() or out.read_text() != text:
+            out.write_text(text)
+            print(f"updated {out}")
+    for file_name, source_path in (extra or {}).items():
+        out = target / file_name
+        text = source_path.read_text()
         if not out.exists() or out.read_text() != text:
             out.write_text(text)
             print(f"updated {out}")
@@ -188,6 +311,16 @@ for name, base in nav_layouts.items():
     for pane in pane_looks(layout):
         pane["focus"] = dict(pane_focus)
     layout.get("colors", {}).pop("accent", None)
+    if "traffic_lights" in layout:
+        layout["traffic_lights"] = list(hidden_traffic_lights)
+    if name == "quest":
+        gap = layout.get("gap", 8)
+        workspace = quest_workspace(gap, layout.get("children", []))
+        for pane in pane_looks(workspace):
+            pane.update(json.loads(json.dumps(quest_pane)))
+        layout["children"] = [{"id": "body", "type": "row", "gap": gap, "children": [squared(threads_sidebar(gap, "hud"), square_mods), workspace]}]
+        layout["colors"] = {**layout.get("colors", {}), **quest_colors}
+        layout["background"] = quest_colors["background"]
     if name == "threads":
         # The sidebar runs the window's full height and the tab bar sits in a
         # column over the panes only, so the tabs line up with the panes.
@@ -196,7 +329,11 @@ for name, base in nav_layouts.items():
         for child in workspace["children"]:
             if child.get("content", {}).get("mod") == bar_mod + square_suffix:
                 child["content"]["mod"] = bar_mod + square_suffix + threads_bar[0]
-        layout["children"] = [{"id": "body", "type": "row", "gap": gap, "children": [squared(threads_sidebar(gap), square_mods), workspace]}]
+        sidebar = squared(threads_sidebar(gap), square_mods)
+        for child in sidebar["children"]:
+            if child["content"]["mod"] == spaces_mod + square_suffix:
+                child["content"]["mod"] += threads_spaces[0]
+        layout["children"] = [{"id": "body", "type": "row", "gap": gap, "children": [sidebar, workspace]}]
     shipped_theme = layout.get("theme")
     light = shipped_theme if isinstance(shipped_theme, str) else light_fallback
     layout["theme"] = {"light": light, "dark": "dotfiles"}
@@ -204,9 +341,11 @@ for name, base in nav_layouts.items():
 
 # Copies first, so a layout never names a mod that doesn't exist yet.
 for mod in sorted(square_mods):
-    write_square_mod(mod, square_mods)
+    write_square_mod(mod, square_mods, "", bar_edits if mod == bar_mod else ())
 if bar_mod in square_mods:
     write_square_mod(bar_mod, square_mods, *threads_bar)
+if spaces_mod in square_mods:
+    write_square_mod(spaces_mod, square_mods, *threads_spaces, {"stats.js": machine_stats, "agents.js": space_agents})
 for name, layout in layouts.items():
     save(app_home / "layouts" / f"{name}.json", layout)
 

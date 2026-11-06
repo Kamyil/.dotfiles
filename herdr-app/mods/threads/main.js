@@ -6,10 +6,11 @@
 // A thread running in a Herdr terminal shows that agent's live status (working,
 // needs you, done while you weren't looking, idle), and clicking it focuses the
 // terminal instead of resuming the thread again.
-// Shown by the threads layout (scripts/herdr-app-setup).
+// Shown by the threads layout (scripts/herdr-app-setup), and by the quest
+// layout with props { skin: "hud" }: a Quest log title, same list.
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { exec, focused, spaces, agents, home, run, theme, notify } from "herdr";
+import { exec, focused, spaces, agents, home, run, theme, notify, props } from "herdr";
 
 const TOOLS = [
   { id: "claude", label: "Claude", icon: "icons/claude.svg", color: "#d97757" },
@@ -51,7 +52,8 @@ export default class Threads extends View {
     // Agent terminals a refresh has already tried to match; a new one refreshes early.
     this.tried = new Set();
     this.stale = false;
-    this.search = InputState.new({ placeholder: "Search threads" });
+    this.hud = props()?.skin === "hud";
+    this.search = InputState.new({ placeholder: this.hud ? "Search quests" : "Search threads" });
     this.search.on("change", (_e, cx) => {
       this.query = this.search.value();
       cx.notify();
@@ -285,6 +287,17 @@ export default class Threads extends View {
           .gap(8)
           .border_b(1)
           .border_color(t.border)
+          .when(this.hud, (el) =>
+            el.child(
+              h_flex()
+                .gap(7)
+                .items_center()
+                .text_size(11.5)
+                .child(svg("mods/hud/icons/sword.svg").size(13).flex_none().text_color(t.accent))
+                .child(div().flex_1().font_bold().text_color(t.accent).child("QUEST LOG"))
+                .child(div().text_color(t.dim).child(`${shown.length} active`)),
+            ),
+          )
           .child(
             h_flex()
               .id("th-search")
