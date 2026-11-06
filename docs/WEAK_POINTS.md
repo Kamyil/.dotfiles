@@ -79,3 +79,10 @@ Known problems in this repository. Tick an item when it is fixed.
       error until Claude Code next runs. The macOS keychain lookup is untested.
 - [ ] Threads sidebar pins and settled threads live in the threads mod's
       `localStorage`, per machine and outside the repository.
+- [ ] `nix flake check --no-build ./nix` fails while checking
+      `nixosConfigurations.nixos` on the Mac with "path
+      '/nix/store/rajfap2ywa8n1akz7pasqs8y6ynpr474-source.drv' is not valid",
+      on a clean HEAD too; the Darwin configuration evaluates.
+- [ ] The quest layout's hud mod (`herdr-app/mods/hud`) runs the game as a
+      detached process tracked by pid in `shared("hud.run")` (Stop sends it
+      SIGTERM); F5/F8 in that layout no longer reach terminals.

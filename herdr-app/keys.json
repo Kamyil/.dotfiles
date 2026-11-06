@@ -188,6 +188,17 @@
       "ctrl-j": "nav.down",
       "ctrl-k": "nav.up",
       "ctrl-l": "nav.right"
+    },
+    "layout:quest": {
+      "ctrl-f": "nav.scrollback",
+      "ctrl-h": "nav.left",
+      "ctrl-j": "nav.down",
+      "ctrl-k": "nav.up",
+      "ctrl-l": "nav.right",
+      "ctrl-shift-e": "layout.toggle:threads",
+      "ctrl-shift-g": "layout.toggle:run-log",
+      "f5": "hud.play",
+      "f8": "hud.stop"
     }
   }
 }

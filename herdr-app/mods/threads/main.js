@@ -3,10 +3,11 @@
 // Search filters by title, folder and tool. Pinned threads lead the list.
 // Settling a thread moves it to the Settled archive, where it can be unsettled;
 // a settled thread that sees new activity comes back by itself.
-// Shown by the threads layout (scripts/herdr-app-setup).
+// Shown by the threads layout (scripts/herdr-app-setup), and by the quest
+// layout with props { skin: "hud" }: a Quest log title, same list.
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { exec, focused, spaces, home, run, theme, notify } from "herdr";
+import { exec, focused, spaces, home, run, theme, notify, props } from "herdr";
 
 const TOOLS = [
   { id: "claude", label: "Claude", icon: "icons/claude.svg", color: "#d97757" },
@@ -44,7 +45,8 @@ export default class Threads extends View {
     this.archive = false;
     this.hovered = null;
     this.query = "";
-    this.search = InputState.new({ placeholder: "Search threads" });
+    this.hud = props()?.skin === "hud";
+    this.search = InputState.new({ placeholder: this.hud ? "Search quests" : "Search threads" });
     this.search.on("change", (_e, cx) => {
       this.query = this.search.value();
       cx.notify();
@@ -254,6 +256,17 @@ export default class Threads extends View {
           .gap(8)
           .border_b(1)
           .border_color(t.border)
+          .when(this.hud, (el) =>
+            el.child(
+              h_flex()
+                .gap(7)
+                .items_center()
+                .text_size(11.5)
+                .child(svg("mods/hud/icons/sword.svg").size(13).flex_none().text_color(t.accent))
+                .child(div().flex_1().font_bold().text_color(t.accent).child("QUEST LOG"))
+                .child(div().text_color(t.dim).child(`${shown.length} active`)),
+            ),
+          )
           .child(
             h_flex()
               .id("th-search")
