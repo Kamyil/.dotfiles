@@ -16,7 +16,8 @@ whose content changes. Start Herdr once first so its defaults exist.
   scripts/agent-threads) and the usage mod (Claude Code and Codex plan usage,
   scripts/agent-usage), top to bottom. The tab bar sits over the panes only
   and drops its space chip and macOS window-button inset
-  (mods/terminals-bar-square-threads).
+  (mods/terminals-bar-square-threads). Its spaces list tints each machine's
+  group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red.
 - mods/<name>-square: square-cornered copies of the shipped mods the nav
   layouts show (every .rounded*() call set to 0), which those layouts use
   along with radius 0. Herdr's own popup and dialog frames stay rounded.
@@ -74,6 +75,29 @@ threads_bar = (
     [
         ('.id("tm-space")', '.id("tm-space")\n          .hidden()'),
         (macos_inset, ""),
+    ],
+)
+# The threads layout's spaces list tints each machine's group, header and
+# spaces alike: the Mac gray, the NixOS thinkpad light blue, malinka red.
+# "This computer" takes its own platform's tint. Only once a second machine is
+# known; a lone computer's list has no groups.
+spaces_mod = "spaces"
+machine_tints = {"macos": "#a0a4ab1c", "thinkpad": "#6cb6ff1f", "malinka": "#ff5c5c1f"}
+group_tint = (
+    "const tints = " + json.dumps(machine_tints) + ";\n"
+    "    const tinted = (m, items) => [v_flex().id(`machine-group-${m ?? \"local\"}`).flex_none().mb(6).pb(2)"
+    ".bg(tints[m ?? (window().platform === \"macos\" ? \"macos\" : \"thinkpad\")] ?? \"#00000000\").children(items)];\n"
+    "    const machineNames = [null, ...remote];"
+)
+threads_spaces = (
+    "-threads",
+    [
+        ("const machineNames = [null, ...remote];", group_tint),
+        ("if (!collapsed && rebuilt) return [head];", "if (!collapsed && rebuilt) return tinted(m, [head]);"),
+        (
+            "return [head, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : empty])];",
+            "return tinted(m, [head, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : empty])]);",
+        ),
     ],
 )
 
@@ -196,7 +220,11 @@ for name, base in nav_layouts.items():
         for child in workspace["children"]:
             if child.get("content", {}).get("mod") == bar_mod + square_suffix:
                 child["content"]["mod"] = bar_mod + square_suffix + threads_bar[0]
-        layout["children"] = [{"id": "body", "type": "row", "gap": gap, "children": [squared(threads_sidebar(gap), square_mods), workspace]}]
+        sidebar = squared(threads_sidebar(gap), square_mods)
+        for child in sidebar["children"]:
+            if child["content"]["mod"] == spaces_mod + square_suffix:
+                child["content"]["mod"] += threads_spaces[0]
+        layout["children"] = [{"id": "body", "type": "row", "gap": gap, "children": [sidebar, workspace]}]
     shipped_theme = layout.get("theme")
     light = shipped_theme if isinstance(shipped_theme, str) else light_fallback
     layout["theme"] = {"light": light, "dark": "dotfiles"}
@@ -207,6 +235,8 @@ for mod in sorted(square_mods):
     write_square_mod(mod, square_mods)
 if bar_mod in square_mods:
     write_square_mod(bar_mod, square_mods, *threads_bar)
+if spaces_mod in square_mods:
+    write_square_mod(spaces_mod, square_mods, *threads_spaces)
 for name, layout in layouts.items():
     save(app_home / "layouts" / f"{name}.json", layout)
 
