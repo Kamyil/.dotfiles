@@ -29,9 +29,10 @@ whose content changes. Start Herdr once first so its defaults exist.
   tabs with Play/Stop for the Godot project in focus (F5/F8), the game's run
   log (hidden until Play, Ctrl+Shift+G) and a strip with commit XP, streak and
   session timer (herdr-app/mods/hud).
-- mods/<name>-square: square-cornered copies of the shipped mods the nav
-  layouts show (every .rounded*() call set to 0), which those layouts use
-  along with radius 0. Herdr's own popup and dialog frames stay rounded.
+- mods/<name>-square: tighter-cornered copies of the shipped mods the nav
+  layouts show (every .rounded*() call capped at corner_radius, 5px, and
+  .rounded_full() made that radius), which those layouts use along with pane
+  radius corner_radius. Herdr's own popup and dialog frames keep their own.
 - The nav layouts park macOS's window buttons off the window
   (traffic_lights at -200, -200): Herdr can't turn them off, but it doesn't
   clamp where they go. The square tab bar copies drop the 72px inset left for
@@ -79,7 +80,23 @@ def threads_sidebar(gap, skin=None):
 # (scripts/herdr-theme), shows through.
 pane_focus = {"width": 1, "color": "accent"}
 square_suffix = "-square"
-rounded_call = re.compile(r"\.rounded(?:_[a-z]+)?\([^()]*\)")
+# Corners in the nav layouts: pane frames and every rounded thing the copied
+# mods draw (tabs, rows, buttons) use at most this many px. Small enough to
+# stay nearly square, enough to sit with macOS Sequoia's window corners.
+corner_radius = 5
+rounded_call = re.compile(r"\.rounded(_[a-z]+)?\(([^()]*)\)")
+
+
+def capped_corner(match):
+    """One .rounded*() call with its radius capped at corner_radius."""
+    side, value = match.group(1) or "", match.group(2).strip()
+    if side == "_full":
+        return f".rounded({corner_radius})"
+    try:
+        radius = min(float(value), corner_radius)
+    except ValueError:
+        radius = corner_radius
+    return f".rounded{side}({radius:g})"
 light_fallback = "paper"
 # macOS always draws the window buttons, but Herdr doesn't clamp where; off
 # the window's top-left corner they're out of sight. The tabs mod sizes its
@@ -215,7 +232,7 @@ def quest_workspace(gap, children):
 
 
 def squared(node, mods):
-    """Zero every radius in a layout tree and point shipped mods at square copies."""
+    """Cap every radius in a layout tree and point shipped mods at square copies."""
     if isinstance(node, list):
         return [squared(child, mods) for child in node]
     if not isinstance(node, dict):
@@ -223,7 +240,7 @@ def squared(node, mods):
     result = {}
     for key, value in node.items():
         if key == "radius":
-            result[key] = 0
+            result[key] = corner_radius
         elif key == "mod" and isinstance(value, str) and (app_home / "mods" / value).is_dir() and not (app_home / "mods" / value).is_symlink():
             mods.add(value)
             result[key] = value + square_suffix
@@ -256,7 +273,7 @@ def write_square_mod(name, names, variant="", edits=(), extra=None):
         if path.suffix != ".js" and path.name != "mod.json":
             continue
         if path.suffix == ".js":
-            text = rounded_call.sub(".rounded(0)", path.read_text())
+            text = rounded_call.sub(capped_corner, path.read_text())
             for other in names:
                 text = re.sub(rf'(mod:\s*)"{re.escape(other)}"', rf'\1"{other}{square_suffix}"', text)
             for old, new in edits if path.name == "main.js" else ():
