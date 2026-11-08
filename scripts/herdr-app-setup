@@ -15,7 +15,8 @@ whose content changes. Start Herdr once first so its defaults exist.
   Herdr's spaces list, the threads mod (Claude Code, OpenCode and omp threads,
   scripts/agent-threads) and the usage mod (Claude Code and Codex plan usage,
   scripts/agent-usage), top to bottom. The tab bar sits over the panes only
-  and drops its space chip and macOS window-button inset
+  and drops its space chip and macOS window-button inset; its tabs fill the
+  bar Safari style, splitting its width evenly and shrinking as more open
   (mods/terminals-bar-square-threads). Its spaces list tints each machine's
   group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red,
   and puts CPU, GPU (malinka: SoC temperature), RAM and disk bars in each
@@ -108,9 +109,19 @@ hidden_traffic_lights = [-200, -200]
 bar_mod = "terminals-bar"
 macos_inset = '.when(w.platform === "macos" && w.titlebar === "none" && !w.fullscreen, (el) => el.pl(72))'
 bar_edits = [(macos_inset, "")]
+# Its tabs fill the bar, Safari style: the tray runs up to the buttons and
+# splits its width evenly between the tabs, which shrink as more open. A
+# narrow tab drops its folder first, then truncates its name.
+fill_tabs = [
+    (".flex_shrink(1)\n        .w(260)\n        .min_w(0)", ".flex_1()\n        .min_w(0)"),
+    ("h_flex()\n          .flex_shrink(1)\n          .min_w(0)\n          .h(36)", "h_flex()\n          .flex_1()\n          .min_w(0)\n          .h(36)"),
+    ("      .child(div().flex_1())\n", ""),
+    ('div().flex_none().text_color(c.active ? C.text : "#c4c6ca")', 'div().min_w(0).truncate().text_color(c.active ? C.text : "#c4c6ca")'),
+    ("div().truncate().text_color(C.dim).child(where)", "div().min_w(0).flex_shrink(100).truncate().text_color(C.dim).child(where)"),
+]
 threads_bar = (
     "-threads",
-    [('.id("tm-space")', '.id("tm-space")\n          .hidden()'), *bar_edits],
+    [('.id("tm-space")', '.id("tm-space")\n          .hidden()'), *bar_edits, *fill_tabs],
 )
 # The threads layout's spaces list tints each machine's group, header and
 # spaces alike: the Mac gray, the NixOS thinkpad light blue, malinka red.
