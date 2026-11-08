@@ -7,7 +7,7 @@
 final: prev: {
   claude-code = prev.stdenvNoCC.mkDerivation rec {
     pname = "claude-code";
-    version = "2.1.304";
+    version = "2.1.319";
 
     src =
       let
@@ -19,10 +19,10 @@ final: prev: {
           else
             "linux-x64";
         hashes = {
-          "darwin-arm64" = "b9ac5374839f14abf3f1f45610637c332b5daee5ce0d1634726cef87aab78e6a";
-          "darwin-x64" = "f2ae409b46b1bdc1dec7afa12c6a094ff64e7d4ca272ca09f69dd0080c846703";
-          "linux-arm64" = "c487117526509ab6d2ee6013e14f181faf68d6d6afe6bb0d4b2b4a9feca5ecb3";
-          "linux-x64" = "ea0f135784631619a7a409d07322ecec964f9cc4fd377508ed1ba3f141f27912";
+          "darwin-arm64" = "1f53587e92dee8e089fa349188a4cda64fa34ace6e7b0ca2ee278ddaa3cc2ebd";
+          "darwin-x64" = "af6f1f5510ae98d56a155bf8f007aa9d5b44efccc9c10c8e10ef35039e95a940";
+          "linux-arm64" = "a7e687fd1cb054d651c7588223de3786c99d4c682365e3c3ae1e59ce7f3a591f";
+          "linux-x64" = "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed";
         };
       in
       prev.fetchurl {
