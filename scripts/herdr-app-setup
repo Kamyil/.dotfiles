@@ -20,7 +20,10 @@ whose content changes. Start Herdr once first so its defaults exist.
   (mods/terminals-bar-square-threads). Its spaces list tints each machine's
   group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red,
   and puts CPU, GPU (malinka: SoC temperature), RAM and disk bars in each
-  machine header (herdr-app/machine-stats.js). Each space's row ends with an
+  machine header (herdr-app/machine-stats.js). A space's branch shows as a
+  tinted badge with a branch glyph (on main/master, the glyph alone); pressing
+  it drops a searchable list of the space's branches to switch to
+  (herdr-app/mods/branches). Each space's row ends with an
   icon per coding agent running in it (herdr-app/space-agents.js), and a
   space whose project has a favicon or app icon shows it in place of its
   letter square (herdr-app/space-favicons.js).
@@ -42,7 +45,7 @@ whose content changes. Start Herdr once first so its defaults exist.
   them. Close and minimise with keys (Cmd+Q, Cmd+M, Alt+Space q).
 - settings.json and the nav layouts use themes/dotfiles.json in dark mode,
   which scripts/herdr-theme writes from the current dotfiles palette.
-- mods/nav, mods/threads, mods/usage and mods/hud come from nix/symlinks.nix (herdr-app/mods/*);
+- mods/nav, mods/threads, mods/usage, mods/hud and mods/branches come from nix/symlinks.nix (herdr-app/mods/*);
   this only checks them.
 """
 import json
@@ -57,7 +60,7 @@ repo = Path(__file__).resolve().parent.parent
 app_home = Path(os.environ.get("HERDR_APP_HOME", Path.home() / ".config/herdr-app"))
 state = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "dotfiles-theme"
 nav_layouts = {"main-nav": "main", "terminals-nav": "terminals", "threads": "terminals", "quest": "terminals"}
-linked_mods = ["nav", "threads", "usage", "hud"]
+linked_mods = ["nav", "threads", "usage", "hud", "branches"]
 
 
 def threads_sidebar(gap, mods, skin=None):
@@ -199,6 +202,40 @@ space_favicons_edits = [
     (letter_head, ".when(!tree, el => el.child(this.favicons.mark(w, this.ps ?? panes(), h_flex().size(18)"),
     (letter_tail, letter_tail + ")"),
 ]
+# A space's branch shows as a badge, a tinted pill with the git-branch glyph,
+# after its repo's name in plain dim text. Where the branch line hides the
+# branch (main/master, or the space's own name) a dim glyph stands in. Pressing
+# either drops the branches mod (herdr-app/mods/branches) at the pointer: the
+# space's branches, searchable, to switch to.
+where_line = 'const where = [repo, branch].filter(Boolean).join(" \\u00b7 ");'
+branch_menu = (
+    "  // The space's branches, dropped at the pointer, to switch to.\n"
+    "  branchMenu(w, branch) {\n"
+    "    const [on, cwd] = JSON.parse(where(w, panes()));\n"
+    '    openOverlay({ mod: "branches", kind: "popup", width: 340, height: 380, props: { cwd, on, branch } });\n'
+    "  }\n\n"
+    "  " + row_head
+)
+branch_press = '.cursor_pointer().on_mouse_down("left", (_e, cx) => { cx.stop_propagation(); this.branchMenu(w, raw); })'
+branch_badge = (
+    '.when(Boolean(repo), (el) => el.child(div().min_w(0).flex_shrink(100).truncate().child(repo)))\n'
+    "      .child(branch\n"
+    "        ? h_flex().id(`branch-${w.id}`).min_w(0).h(19).px(6).gap(4).items_center().rounded(4)"
+    '.bg(t.accent + "2e").border(1).border_color(t.accent + "59").text_size(11.5).font_medium().text_color(t.foreground)'
+    '.hover((s) => s.bg(t.accent + "4d").border_color(t.accent + "8c"))' + branch_press +
+    '.child(svg("mods/workspace-chrome/git-branch.svg").size(11).flex_none().text_color(t.accent))'
+    ".child(div().min_w(0).truncate().child(branch))\n"
+    "        : div().id(`branch-${w.id}`).flex_none().p(3).rounded(4).text_color(t.dim)"
+    ".hover((s) => s.bg(t.hover).text_color(t.foreground)).tooltip(`Switch branch (${raw})`)" + branch_press +
+    '.child(svg("mods/workspace-chrome/git-branch.svg").size(11)))'
+)
+branch_badge_edits = [
+    ("\n    " + where_line, ""),
+    (tail_where, branch_badge),
+    ("gitTail(g, tree, name, t, marks) {", "gitTail(g, tree, name, t, marks, w) {"),
+    ("  " + row_head, branch_menu),
+    ("this.gitTail(g, tree, w.name, t, marks)", "this.gitTail(g, tree, w.name, t, marks, w)"),
+]
 threads_spaces = (
     "-threads",
     [
@@ -211,6 +248,7 @@ threads_spaces = (
         *machine_stats_edits,
         *space_agents_edits,
         *space_favicons_edits,
+        *branch_badge_edits,
     ],
 )
 

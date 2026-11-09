@@ -21,6 +21,7 @@ let
     ".config/herdr-app/mods/usage" = "herdr-app/mods/usage";
     ".config/herdr-app/mods/transcript" = "herdr-app/mods/transcript";
     ".config/herdr-app/mods/hud" = "herdr-app/mods/hud";
+    ".config/herdr-app/mods/branches" = "herdr-app/mods/branches";
     ".config/rex" = "rex";
     ".config/neomutt/neomuttrc" = "neomutt/neomuttrc";
     ".config/neomutt/mailcap" = "neomutt/mailcap";
