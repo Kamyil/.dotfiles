@@ -8,6 +8,8 @@
 // terminal's screen and history read-only in nvim, zoomed over its tab.
 // Ctrl+Shift+G/F/S ("nav.git", "nav.shell", "nav.brain"): floating lazygit,
 // a floating shell and the second-brain space (floats.js).
+// Ctrl+Shift+N ("nav.transcript"): the experimental transcript mod beside the
+// focused pane, rendering that agent's session as Markdown.
 import { View, div } from "gpui-kit";
 import { focused, panes, run, exec, home, nextCommand, notify } from "herdr";
 import { toggleBrain, toggleFloat } from "./floats.js";
@@ -53,6 +55,10 @@ export default class Nav extends View {
     cx.spawn(async (cx) => {
       for (;;) {
         const dir = await nextCommand();
+        if (dir === "transcript") {
+          run("pane.split", { direction: "right", mod: "transcript" });
+          continue;
+        }
         if (dir === "scrollback") {
           openScrollback();
           continue;
