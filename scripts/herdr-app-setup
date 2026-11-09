@@ -20,7 +20,9 @@ whose content changes. Start Herdr once first so its defaults exist.
   (mods/terminals-bar-square-threads). Its spaces list tints each machine's
   group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red,
   and puts CPU, GPU (malinka: SoC temperature), RAM and disk bars in each
-  machine header (herdr-app/machine-stats.js). A space's branch shows as a
+  machine header (herdr-app/machine-stats.js), next to a "+" that makes a
+  space on that machine; the list's own "+" goes once it is grouped.
+  A space's branch shows as a
   tinted badge with a branch glyph; pressing it, or "Switch branch" in a git
   space's right-click menu (mods/menu-square-threads), drops a searchable
   list of the space's branches to switch to (herdr-app/mods/branches). Each
@@ -255,6 +257,33 @@ branch_badge_edits = [
     ("this.gitTail(g, tree, w.name, t, marks)", "this.gitTail(g, tree, w.name, t, marks, w)"),
     ('openOverlay({ mod: "menu",', f'openOverlay({{ mod: "{menu_mod}{square_suffix}{menu_threads[0]}",'),
 ]
+# New spaces start from their machine's header: its "+" becomes a plus icon
+# button naming the machine, and the list's own "+" goes once the list is
+# grouped (a lone computer's list, and the narrow rail, keep it).
+machine_add = (
+    add_button + ".flex_none().px(4).rounded(4).hover(s => s.bg(t.hover).text_color(t.foreground))\n"
+    '            .on_click((_e, cx) => { cx.stop_propagation(); run("space.new", { machine: m ?? "" }); }).child("+")))'
+)
+machine_add_button = (
+    add_button + ".size(20).flex_none().flex().items_center().justify_center().rounded(4)"
+    ".hover(s => s.bg(t.hover).text_color(t.foreground)).tooltip(`New space on ${m ?? \"this computer\"}`)\n"
+    '            .on_click((_e, cx) => { cx.stop_propagation(); run("space.new", { machine: m ?? "" }); })'
+    '.child(svg("mods/workspace-chrome/plus.svg").size(13))))'
+)
+list_header_add = '.child(div().id("space-new")'
+grouped_children = ".children(this.grouped(t, collapsed)));"
+render_start = "    return v_flex().size_full().min_h(0).bg(t.chrome).text_size(13)"
+per_machine_add_edits = [
+    (machine_add, machine_add_button),
+    ("    if (!remote.length) return", "    this.byMachine = remote.length > 0;\n    if (!remote.length) return"),
+    (render_start, "    const groups = this.grouped(t, collapsed);\n" + render_start),
+    (grouped_children, ".children(groups));"),
+    (list_header_add, '.when(collapsed || !this.byMachine, (el) => el.child(div().id("space-new")'),
+    (
+        '.on_click(() => run("space.new")).child(svg("mods/workspace-chrome/plus.svg").size(14))))',
+        '.on_click(() => run("space.new")).child(svg("mods/workspace-chrome/plus.svg").size(14)))))',
+    ),
+]
 threads_spaces = (
     "-threads",
     [
@@ -268,6 +297,7 @@ threads_spaces = (
         *space_agents_edits,
         *space_favicons_edits,
         *branch_badge_edits,
+        *per_machine_add_edits,
     ],
 )
 
