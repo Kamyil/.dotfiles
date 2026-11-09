@@ -33,7 +33,9 @@ whose content changes. Start Herdr once first so its defaults exist.
 - mods/<name>-square: tighter-cornered copies of the shipped mods the nav
   layouts show (every .rounded*() call capped at corner_radius, 5px, and
   .rounded_full() made that radius), which those layouts use along with pane
-  radius corner_radius. Herdr's own popup and dialog frames keep their own.
+  radius corner_radius. The threads sidebar's islands round at island_radius,
+  8px, to sit with the window's corners. Herdr's own popup and dialog frames
+  keep their own.
 - The nav layouts park macOS's window buttons off the window
   (traffic_lights at -200, -200): Herdr can't turn them off, but it doesn't
   clamp where they go. The square tab bar copies drop the 72px inset left for
@@ -58,9 +60,10 @@ nav_layouts = {"main-nav": "main", "terminals-nav": "terminals", "threads": "ter
 linked_mods = ["nav", "threads", "usage", "hud"]
 
 
-def threads_sidebar(gap, skin=None):
+def threads_sidebar(gap, mods, skin=None):
+    """The sidebar column, squared, its islands rounded at island_radius."""
     props = {"props": {"skin": skin}} if skin else {}
-    return {
+    sidebar = squared({
         "id": "threads",
         "type": "column",
         "gap": gap,
@@ -72,7 +75,10 @@ def threads_sidebar(gap, skin=None):
             {"id": "thread-list", "type": "block", "content": {"mod": "threads", **props}},
             {"id": "usage", "type": "block", "size": {"px": 232}, "min": 120, "content": {"mod": "usage", **props}},
         ],
-    }
+    }, mods)
+    for island in sidebar["children"]:
+        island["radius"] = island_radius
+    return sidebar
 
 
 # The terminals look marks the focused pane with a border barely lighter than
@@ -85,6 +91,10 @@ square_suffix = "-square"
 # mods draw (tabs, rows, buttons) use at most this many px. Small enough to
 # stay nearly square, enough to sit with macOS Sequoia's window corners.
 corner_radius = 5
+# The sidebar's islands sit in the window's left corners, 6px (the layout's
+# padding) inside macOS's ~10px window radius; at corner_radius they read as
+# sharper than the window around them, so they round a little more.
+island_radius = 8
 rounded_call = re.compile(r"\.rounded(_[a-z]+)?\(([^()]*)\)")
 
 
@@ -366,7 +376,7 @@ for name, base in nav_layouts.items():
         workspace = quest_workspace(gap, layout.get("children", []))
         for pane in pane_looks(workspace):
             pane.update(json.loads(json.dumps(quest_pane)))
-        layout["children"] = [{"id": "body", "type": "row", "gap": gap, "children": [squared(threads_sidebar(gap, "hud"), square_mods), workspace]}]
+        layout["children"] = [{"id": "body", "type": "row", "gap": gap, "children": [threads_sidebar(gap, square_mods, "hud"), workspace]}]
         layout["colors"] = {**layout.get("colors", {}), **quest_colors}
         layout["background"] = quest_colors["background"]
     if name == "threads":
@@ -377,7 +387,7 @@ for name, base in nav_layouts.items():
         for child in workspace["children"]:
             if child.get("content", {}).get("mod") == bar_mod + square_suffix:
                 child["content"]["mod"] = bar_mod + square_suffix + threads_bar[0]
-        sidebar = squared(threads_sidebar(gap), square_mods)
+        sidebar = threads_sidebar(gap, square_mods)
         for child in sidebar["children"]:
             if child["content"]["mod"] == spaces_mod + square_suffix:
                 child["content"]["mod"] += threads_spaces[0]

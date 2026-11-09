@@ -334,6 +334,9 @@ export default class Threads extends View {
       .bg(t.chrome)
       .border(1)
       .border_color(t.border)
+      // Matches the sidebar block's island_radius (scripts/herdr-app-setup).
+      .rounded(8)
+      .overflow_hidden()
       .child(
         v_flex()
           .flex_none()
