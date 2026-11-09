@@ -28,6 +28,40 @@ theme() {
 }
 
 _dotfiles_theme_load
+transcript() {
+  local direction="right"
+  local payload='{"direction":"right","mod":"transcript"}'
+
+  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    print -r -- "Usage: transcript [down | file.jsonl]"
+    return 0
+  fi
+  if ! command -v herdr-app >/dev/null 2>&1; then
+    print -u2 -- "transcript: herdr-app is not on PATH"
+    return 127
+  fi
+  if (( $# > 1 )); then
+    print -u2 -- "Usage: transcript [down | file.jsonl]"
+    return 2
+  fi
+
+  if [[ "$1" == "down" ]]; then
+    direction="down"
+    payload='{"direction":"down","mod":"transcript"}'
+  elif [[ -n "$1" ]]; then
+    if ! command -v jq >/dev/null 2>&1; then
+      print -u2 -- "transcript: jq is not on PATH"
+      return 127
+    fi
+    payload="$(jq -cn --arg direction "$direction" --arg file "${1:A}" \
+      '{direction:$direction,mod:"transcript",props:{file:$file}}')" || return
+    command herdr-app do pane.split "$payload"
+    return
+  fi
+
+  command herdr-app do pane.split "$payload"
+}
+
 
 gpom() {
   local remote_head branch

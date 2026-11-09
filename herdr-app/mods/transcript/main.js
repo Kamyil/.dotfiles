@@ -1,7 +1,7 @@
 // Experimental, read-only transcript beside a Claude Code or omp terminal.
 // It tails the agent's own JSONL; no input or agent bridge lives here.
 import { View, div } from "gpui-kit";
-import { v_flex, h_flex, TextView } from "gpui-base";
+import { v_flex, h_flex, TextView, v_virtual_list, Scrollbar, VirtualListScrollHandle } from "gpui-base";
 import { exec, focused, home, panes, props, theme } from "herdr";
 
 const POLL_MS = 1500;
@@ -41,6 +41,14 @@ function blocks(entry, source) {
   return { id: entry.uuid ?? entry.id ?? `${role}-${entry.timestamp ?? "entry"}`, role, items };
 }
 
+function itemHeight(message) {
+  const content = message.items.reduce((height, item) => {
+    if (item.kind !== "text") return height + 24;
+    return height + item.text.split("\n").reduce((lines, line) => lines + Math.max(1, Math.ceil(line.length / 48)), 0) * 19;
+  }, 0);
+  return Math.max(44, content + (message.role === "user" ? 36 : 24));
+}
+
 export default class Transcript extends View {
   init(_props, cx) {
     this.file = null;
@@ -50,6 +58,9 @@ export default class Transcript extends View {
     this.messages = [];
     this.error = null;
     this.changedAt = 0;
+    this.scroll = VirtualListScrollHandle.new();
+    this.following = true;
+    this.hasNew = false;
     cx.spawn(async (cx) => {
       for (;;) {
         await this.poll(cx);
@@ -94,6 +105,8 @@ export default class Transcript extends View {
 
   async poll(cx) {
     try {
+      const previousFile = this.file;
+      const previousLast = this.messages.at(-1)?.id;
       await this.discover();
       if (!this.file) {
         this.error = null;
@@ -113,6 +126,15 @@ export default class Transcript extends View {
           return []; // The final line may still be in flight.
         }
       });
+      const fileChanged = previousFile !== this.file;
+      const lastChanged = previousLast !== this.messages.at(-1)?.id;
+      if (fileChanged) this.following = true;
+      if (this.following) {
+        this.hasNew = false;
+        this.scroll.scroll_to_bottom();
+      } else if (previousLast && lastChanged) {
+        this.hasNew = true;
+      }
       this.changedAt = Date.now();
       this.error = null;
       cx.notify();
@@ -145,6 +167,13 @@ export default class Transcript extends View {
     const idle = !this.changedAt || Date.now() - this.changedAt > 10000;
     const state = this.file ? (idle ? "idle" : "live") : "waiting";
     const empty = this.error ?? (this.file ? "No user or assistant messages in the last 300 lines." : "No Claude or omp session found beside this pane.");
+    const feed = v_virtual_list(
+      "transcript-scroll",
+      this.messages.length,
+      this.messages.map(itemHeight),
+      (index) => this.messages[index].id,
+      (range) => this.messages.slice(range.start, range.end).map((message) => this.item(message, t)),
+    ).track_scroll(this.scroll);
 
     return v_flex()
       .size_full()
@@ -165,7 +194,45 @@ export default class Transcript extends View {
           .child(div().text_size(10.5).text_color(state === "live" ? t.accent : t.dim).child(state)),
       )
       .when(Boolean(this.error) || this.messages.length === 0, (el) => el.child(div().px(20).py(18).text_size(12).text_color(this.error ? t.blocked : t.dim).child(empty)))
-      .child(v_flex().id("transcript-scroll").flex_1().min_h(0).overflow_y_scrollbar().py(7).children(this.messages.map((message) => this.item(message, t))));
+      .child(
+        v_flex()
+          .relative()
+          .flex_1()
+          .min_h(0)
+          .py(7)
+          .on_scroll_wheel((event, cx) => {
+            const y = event.delta_lines?.y ?? event.delta.y;
+            if (y < 0 && this.following) {
+              this.following = false;
+              cx.notify();
+            }
+          })
+          .child(feed)
+          .child(Scrollbar.vertical("transcript-scroll").absolute().inset_0())
+          .when(this.hasNew, (el) => el.child(
+            div()
+              .absolute()
+              .right(14)
+              .bottom(12)
+              .px(11)
+              .py(6)
+              .rounded(12)
+              .bg(t.selected)
+              .border(1)
+              .border_color(t.border)
+              .text_size(11)
+              .text_color(t.foreground)
+              .cursor_pointer()
+              .hover((s) => s.bg(t.hover))
+              .on_click((_event, cx) => {
+                this.following = true;
+                this.hasNew = false;
+                this.scroll.scroll_to_bottom();
+                cx.notify();
+              })
+              .child("↓ New messages"),
+          )),
+      );
   }
 }
 
