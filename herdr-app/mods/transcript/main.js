@@ -41,12 +41,34 @@ function blocks(entry, source) {
   return { id: entry.uuid ?? entry.id ?? `${role}-${entry.timestamp ?? "entry"}`, role, items };
 }
 
-function itemHeight(message) {
-  const content = message.items.reduce((height, item) => {
-    if (item.kind !== "text") return height + 24;
-    return height + item.text.split("\n").reduce((lines, line) => lines + Math.max(1, Math.ceil(line.length / 48)), 0) * 19;
-  }, 0);
-  return Math.max(44, content + (message.role === "user" ? 36 : 24));
+// Rows the pane draws: one per text block, and one per run of tool calls and
+// thinking in between (they would otherwise be a wall of one-liners).
+function toRows(messages) {
+  const rows = [];
+  for (const message of messages) {
+    message.items.forEach((item, index) => {
+      if (item.kind === "text") {
+        if (item.text.trim()) rows.push({ id: `${message.id}-${index}`, kind: message.role, text: item.text });
+        return;
+      }
+      let run = rows.at(-1);
+      if (run?.kind !== "activity") rows.push((run = { id: `${message.id}-${index}`, kind: "activity", tools: [], thinking: 0 }));
+      if (item.kind === "thinking") run.thinking += 1;
+      else run.tools.push(item.text);
+    });
+  }
+  return rows;
+}
+
+const PAD_X = 28; // the pane's side margin
+const MAX_TOOLS = 4; // tool lines an activity row shows before "+N more"
+
+// A first guess until the hidden copy has been measured (a frame or two).
+function estimate(row, width) {
+  if (row.kind === "activity") return 20 + 20 * (Math.min(row.tools.length, MAX_TOOLS + 1) + (row.thinking && !row.tools.length ? 1 : 0));
+  const perLine = Math.max(20, Math.floor((width - 2 * PAD_X - 32) / 8));
+  const lines = row.text.split("\n").reduce((n, line) => n + Math.max(1, Math.ceil(line.length / perLine)), 0);
+  return lines * 26 + (row.kind === "user" ? 56 : 28);
 }
 
 export default class Transcript extends View {
@@ -56,6 +78,9 @@ export default class Transcript extends View {
     this.agent = null;
     this.raw = null;
     this.messages = [];
+    this.rows = [];
+    this.width = 0; // the list's width, from on_size_change
+    this.heights = new Map(); // row id -> measured height at this.width
     this.error = null;
     this.changedAt = 0;
     this.scroll = VirtualListScrollHandle.new();
@@ -106,7 +131,7 @@ export default class Transcript extends View {
   async poll(cx) {
     try {
       const previousFile = this.file;
-      const previousLast = this.messages.at(-1)?.id;
+      const previousLast = this.rows.at(-1)?.id;
       await this.discover();
       if (!this.file) {
         this.error = null;
@@ -126,8 +151,9 @@ export default class Transcript extends View {
           return []; // The final line may still be in flight.
         }
       });
+      this.rows = toRows(this.messages);
       const fileChanged = previousFile !== this.file;
-      const lastChanged = previousLast !== this.messages.at(-1)?.id;
+      const lastChanged = previousLast !== this.rows.at(-1)?.id;
       if (fileChanged) this.following = true;
       if (this.following) {
         this.hasNew = false;
@@ -144,22 +170,35 @@ export default class Transcript extends View {
     }
   }
 
-  item(message, t) {
-    const user = message.role === "user";
-    return v_flex()
-      .id(`message-${message.id}`)
-      .mx(user ? 12 : 20)
-      .my(7)
-      .px(user ? 14 : 0)
-      .py(user ? 11 : 5)
-      .gap(7)
-      .when(user, (el) => el.bg(t.hover).border(1).border_color(t.border).rounded(8))
-      .children(message.items.map((item, index) => {
-        const id = `${message.id}-${index}`;
-        if (item.kind === "text") return TextView.markdown(id, item.text).selectable().text_color(t.foreground);
-        if (item.kind === "thinking") return div().id(id).text_size(11).text_color(t.dim).child("thinking…");
-        return h_flex().id(id).gap(7).text_size(11).text_color(t.dim).child("›").child(item.text);
-      }));
+  // One row, at the list's width so Markdown wraps instead of running off.
+  row(row, t, prefix = "") {
+    const id = `${prefix}${row.id}`;
+    const base = div().id(`row-${id}`).w(this.width).px(PAD_X);
+    if (row.kind === "activity") {
+      const shown = row.tools.slice(0, MAX_TOOLS);
+      const more = row.tools.length - shown.length;
+      const note = [more > 0 && `+${more} more`, row.thinking && `thought ${row.thinking}×`].filter(Boolean).join(" · ");
+      return base.py(10).child(
+        v_flex()
+          .gap(2)
+          .pl(12)
+          .border_l(2)
+          .border_color(t.border)
+          .text_size(12)
+          .text_color(t.dim)
+          .children(shown.map((tool, index) => div().id(`${id}-tool-${index}`).h(20).overflow_hidden().text_ellipsis().whitespace_nowrap().child(`› ${tool}`)))
+          .when(Boolean(note), (el) => el.child(div().h(20).child(note))),
+      );
+    }
+    const text = TextView.markdown(`${id}-md`, row.text).selectable().w_full().text_color(t.foreground);
+    if (row.kind === "user") {
+      return base.pt(18).pb(10).child(div().w_full().px(16).py(12).bg(t.hover).border(1).border_color(t.border).rounded(10).child(text));
+    }
+    return base.py(10).child(text);
+  }
+
+  height(row) {
+    return this.heights.get(row.id) ?? estimate(row, this.width);
   }
 
   render(_cx) {
@@ -167,72 +206,101 @@ export default class Transcript extends View {
     const idle = !this.changedAt || Date.now() - this.changedAt > 10000;
     const state = this.file ? (idle ? "idle" : "live") : "waiting";
     const empty = this.error ?? (this.file ? "No user or assistant messages in the last 300 lines." : "No Claude or omp session found beside this pane.");
-    const feed = v_virtual_list(
-      "transcript-scroll",
-      this.messages.length,
-      this.messages.map(itemHeight),
-      (index) => this.messages[index].id,
-      (range) => this.messages.slice(range.start, range.end).map((message) => this.item(message, t)),
-    ).track_scroll(this.scroll);
+    const rows = this.rows;
+    // v_virtual_list places rows at the heights it is given, and Markdown
+    // heights can't be known up front, so each new row is first drawn hidden
+    // (outside the list, where handlers are allowed) and its size is kept.
+    const unmeasured = this.width ? rows.filter((row) => !this.heights.has(row.id)) : [];
 
+    const body = v_flex()
+      .id("transcript-body")
+      .relative()
+      .flex_1()
+      .min_h(0)
+      .overflow_hidden()
+      .on_size_change((size, cx) => {
+        if (Math.round(size.width) === this.width) return;
+        this.width = Math.round(size.width);
+        this.heights.clear(); // rewrapped: measure again
+        cx.notify();
+      })
+      .on_scroll_wheel((event, cx) => {
+        const y = event.delta_lines?.y ?? event.delta.y;
+        if (y < 0 && this.following) {
+          this.following = false;
+          cx.notify();
+        }
+      });
+
+    if (!this.width) return this.frame(t, state, empty, body);
+
+    return this.frame(t, state, empty, body
+      .child(
+        v_virtual_list(
+          "transcript-scroll",
+          rows.length,
+          rows.map((row) => this.height(row)),
+          (index) => rows[index].id,
+          (range) => rows.slice(range.start, range.end).map((row) => this.row(row, t)),
+        ).size_full().track_scroll(this.scroll),
+      )
+      .child(Scrollbar.vertical("transcript-scroll").absolute().inset_0())
+      .when(unmeasured.length > 0, (el) => el.child(
+        div().absolute().top(0).left(0).w(this.width).invisible().children(unmeasured.map((row) =>
+          div().id(`measure-${row.id}`).w(this.width).on_size_change((size, cx) => {
+            this.heights.set(row.id, Math.ceil(size.height));
+            if (this.following) this.scroll.scroll_to_bottom();
+            cx.notify();
+          }).child(this.row(row, t, "measure-")),
+        )),
+      ))
+      .when(this.hasNew, (el) => el.child(
+        div()
+          .id("transcript-new")
+          .absolute()
+          .right(18)
+          .bottom(14)
+          .px(12)
+          .py(6)
+          .rounded(14)
+          .bg(t.selected)
+          .border(1)
+          .border_color(t.border)
+          .text_size(11)
+          .text_color(t.foreground)
+          .cursor_pointer()
+          .hover((s) => s.bg(t.hover))
+          .on_click((_event, cx) => {
+            this.following = true;
+            this.hasNew = false;
+            this.scroll.scroll_to_bottom();
+            cx.notify();
+          })
+          .child("↓ New messages"),
+      )));
+  }
+
+  frame(t, state, empty, body) {
     return v_flex()
       .size_full()
       .min_h(0)
       .bg(t.chrome)
       .child(
         h_flex()
-          .h(38)
+          .h(40)
           .flex_none()
           .items_center()
-          .gap(9)
-          .px(12)
+          .gap(10)
+          .px(PAD_X - 8)
           .border_b(1)
           .border_color(t.border)
           .child(div().w(3).h(18).rounded(2).bg(this.source === "claude" ? "#d97757" : t.accent))
           .child(div().font_medium().text_color(t.foreground).child(this.agent ?? "Transcript"))
-          .child(div().flex_1().min_w(0).text_size(11).text_color(t.dim).overflow_hidden().child(baseName(this.file)))
+          .child(div().flex_1().min_w(0).text_size(11).text_color(t.dim).overflow_hidden().text_ellipsis().whitespace_nowrap().child(baseName(this.file)))
           .child(div().text_size(10.5).text_color(state === "live" ? t.accent : t.dim).child(state)),
       )
-      .when(Boolean(this.error) || this.messages.length === 0, (el) => el.child(div().px(20).py(18).text_size(12).text_color(this.error ? t.blocked : t.dim).child(empty)))
-      .child(
-        v_flex()
-          .relative()
-          .flex_1()
-          .min_h(0)
-          .py(7)
-          .on_scroll_wheel((event, cx) => {
-            const y = event.delta_lines?.y ?? event.delta.y;
-            if (y < 0 && this.following) {
-              this.following = false;
-              cx.notify();
-            }
-          })
-          .child(feed)
-          .child(Scrollbar.vertical("transcript-scroll").absolute().inset_0())
-          .when(this.hasNew, (el) => el.child(
-            div()
-              .absolute()
-              .right(14)
-              .bottom(12)
-              .px(11)
-              .py(6)
-              .rounded(12)
-              .bg(t.selected)
-              .border(1)
-              .border_color(t.border)
-              .text_size(11)
-              .text_color(t.foreground)
-              .cursor_pointer()
-              .hover((s) => s.bg(t.hover))
-              .on_click((_event, cx) => {
-                this.following = true;
-                this.hasNew = false;
-                this.scroll.scroll_to_bottom();
-                cx.notify();
-              })
-              .child("↓ New messages"),
-          )),
-      );
+      .when(Boolean(this.error) || this.rows.length === 0, (el) => el.child(div().px(PAD_X).py(18).text_size(12).text_color(this.error ? t.blocked : t.dim).child(empty)))
+      .child(body);
   }
 }
 
