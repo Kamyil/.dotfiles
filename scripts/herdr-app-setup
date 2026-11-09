@@ -20,7 +20,8 @@ whose content changes. Start Herdr once first so its defaults exist.
   (mods/terminals-bar-square-threads). Its spaces list tints each machine's
   group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red,
   and puts CPU, GPU (malinka: SoC temperature), RAM and disk bars in each
-  machine header (herdr-app/machine-stats.js). Each space's row ends with an
+  machine header (herdr-app/machine-stats.js). A space's branch shows as a
+  tinted badge with a branch glyph. Each space's row ends with an
   icon per coding agent running in it (herdr-app/space-agents.js), and a
   space whose project has a favicon or app icon shows it in place of its
   letter square (herdr-app/space-favicons.js).
@@ -199,6 +200,18 @@ space_favicons_edits = [
     (letter_head, ".when(!tree, el => el.child(this.favicons.mark(w, this.ps ?? panes(), h_flex().size(18)"),
     (letter_tail, letter_tail + ")"),
 ]
+# A space's branch shows as a badge, a tinted pill with the git-branch glyph,
+# after its repo's name in plain dim text. Only when the branch line has a
+# branch to show (not main/master, not the space's own name).
+where_line = 'const where = [repo, branch].filter(Boolean).join(" \\u00b7 ");'
+branch_badge = (
+    '.when(Boolean(repo), (el) => el.child(div().min_w(0).flex_shrink(100).truncate().child(repo)))\n'
+    "      .when(Boolean(branch), (el) => el.child(h_flex().min_w(0).h(19).px(6).gap(4).items_center().rounded(4)"
+    '.bg(t.accent + "2e").border(1).border_color(t.accent + "59").text_size(11.5).font_medium().text_color(t.foreground)'
+    '.child(svg("mods/workspace-chrome/git-branch.svg").size(11).flex_none().text_color(t.accent))'
+    ".child(div().min_w(0).truncate().child(branch))))"
+)
+branch_badge_edits = [("\n    " + where_line, ""),(tail_where, branch_badge)]
 threads_spaces = (
     "-threads",
     [
@@ -211,6 +224,7 @@ threads_spaces = (
         *machine_stats_edits,
         *space_agents_edits,
         *space_favicons_edits,
+        *branch_badge_edits,
     ],
 )
 
