@@ -21,9 +21,10 @@ whose content changes. Start Herdr once first so its defaults exist.
   group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red,
   and puts CPU, GPU (malinka: SoC temperature), RAM and disk bars in each
   machine header (herdr-app/machine-stats.js). A space's branch shows as a
-  tinted badge with a branch glyph (on main/master, the glyph alone); pressing
-  it drops a searchable list of the space's branches to switch to
-  (herdr-app/mods/branches). Each space's row ends with an
+  tinted badge with a branch glyph; pressing it, or "Switch branch" in a git
+  space's right-click menu (mods/menu-square-threads), drops a searchable
+  list of the space's branches to switch to (herdr-app/mods/branches). Each
+  space's row ends with an
   icon per coding agent running in it (herdr-app/space-agents.js), and a
   space whose project has a favicon or app icon shows it in place of its
   letter square (herdr-app/space-favicons.js).
@@ -203,10 +204,12 @@ space_favicons_edits = [
     (letter_tail, letter_tail + ")"),
 ]
 # A space's branch shows as a badge, a tinted pill with the git-branch glyph,
-# after its repo's name in plain dim text. Where the branch line hides the
-# branch (main/master, or the space's own name) a dim glyph stands in. Pressing
-# either drops the branches mod (herdr-app/mods/branches) at the pointer: the
-# space's branches, searchable, to switch to.
+# after its repo's name in plain dim text, when the branch line shows one (not
+# main/master, not the space's own name). Pressing it drops the branches mod
+# (herdr-app/mods/branches) at the pointer: the space's branches, searchable,
+# to switch to. A git space's context menu has the same as "Switch branch"
+# (menu_threads below), so main/master spaces get there too; the row's end
+# stays for agent icons.
 where_line = 'const where = [repo, branch].filter(Boolean).join(" \\u00b7 ");'
 branch_menu = (
     "  // The space's branches, dropped at the pointer, to switch to.\n"
@@ -219,15 +222,30 @@ branch_menu = (
 branch_press = '.cursor_pointer().on_mouse_down("left", (_e, cx) => { cx.stop_propagation(); this.branchMenu(w, raw); })'
 branch_badge = (
     '.when(Boolean(repo), (el) => el.child(div().min_w(0).flex_shrink(100).truncate().child(repo)))\n'
-    "      .child(branch\n"
-    "        ? h_flex().id(`branch-${w.id}`).min_w(0).h(19).px(6).gap(4).items_center().rounded(4)"
+    "      .when(Boolean(branch), (el) => el.child(h_flex().id(`branch-${w.id}`).min_w(0).h(19).px(6).gap(4).items_center().rounded(4)"
     '.bg(t.accent + "2e").border(1).border_color(t.accent + "59").text_size(11.5).font_medium().text_color(t.foreground)'
     '.hover((s) => s.bg(t.accent + "4d").border_color(t.accent + "8c"))' + branch_press +
     '.child(svg("mods/workspace-chrome/git-branch.svg").size(11).flex_none().text_color(t.accent))'
-    ".child(div().min_w(0).truncate().child(branch))\n"
-    "        : div().id(`branch-${w.id}`).flex_none().p(3).rounded(4).text_color(t.dim)"
-    ".hover((s) => s.bg(t.hover).text_color(t.foreground)).tooltip(`Switch branch (${raw})`)" + branch_press +
-    '.child(svg("mods/workspace-chrome/git-branch.svg").size(11)))'
+    ".child(div().min_w(0).truncate().child(branch))))"
+)
+# The threads spaces list's right-click menu: mods/menu-square-threads, the
+# shipped menu with "Switch branch" for a space in a git checkout.
+menu_mod = "menu"
+menu_threads = (
+    "-threads",
+    [
+        (
+            '["Rename", "space.rename", { id: tg.id }],',
+            '["Rename", "space.rename", { id: tg.id }],\n        ...(git ? [["Switch branch", "branches", { space: tg.id }]] : []),',
+        ),
+        ('command === "worktree" ? "git-branch"', 'command === "worktree" || command === "branches" ? "git-branch"'),
+        (
+            'if (it[1] === "worktree")',
+            'const space = it[1] === "branches" && spaces().find((s) => s.id === it[2].space);\n'
+            '    if (space) openOverlay({ mod: "branches", kind: "popup", width: 340, height: 380, props: { cwd: place(space), on: space.machine ?? null } });\n'
+            '    else if (it[1] === "worktree")',
+        ),
+    ],
 )
 branch_badge_edits = [
     ("\n    " + where_line, ""),
@@ -235,6 +253,7 @@ branch_badge_edits = [
     ("gitTail(g, tree, name, t, marks) {", "gitTail(g, tree, name, t, marks, w) {"),
     ("  " + row_head, branch_menu),
     ("this.gitTail(g, tree, w.name, t, marks)", "this.gitTail(g, tree, w.name, t, marks, w)"),
+    ('openOverlay({ mod: "menu",', f'openOverlay({{ mod: "{menu_mod}{square_suffix}{menu_threads[0]}",'),
 ]
 threads_spaces = (
     "-threads",
@@ -441,6 +460,7 @@ for mod in sorted(square_mods):
 if bar_mod in square_mods:
     write_square_mod(bar_mod, square_mods, *threads_bar)
 if spaces_mod in square_mods:
+    write_square_mod(menu_mod, square_mods, *menu_threads)
     write_square_mod(spaces_mod, square_mods, *threads_spaces, {"stats.js": machine_stats, "agents.js": space_agents, "favicons.js": space_favicons})
 for name, layout in layouts.items():
     save(app_home / "layouts" / f"{name}.json", layout)
