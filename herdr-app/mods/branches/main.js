@@ -11,7 +11,8 @@ import { v_flex, h_flex, InputState, Input } from "gpui-base";
 import { exec, theme, notify, props, closeOverlay, home } from "herdr";
 
 const UI = "mods/workspace-chrome";
-const FORMAT = "%(HEAD)%09%(refname)%09%(committerdate:unix)%09%(worktreepath)";
+const LIST_MAX = 320;
+const FORMAT ="%(HEAD)%09%(refname)%09%(committerdate:unix)%09%(worktreepath)";
 
 function ago(s) {
   const m = Math.floor((Date.now() / 1000 - s) / 60);
@@ -159,8 +160,7 @@ export default class Branches extends View {
     return v_flex()
       .id("branches")
       .track_focus(this.handle)
-      .size_full()
-      .min_h(0)
+      .w_full()
       .p(8)
       .gap(6)
       .bg(t.popover)
@@ -191,6 +191,8 @@ export default class Branches extends View {
           .when(this.busy, (el) => el.child(svg(`${UI}/spinner.svg`).size(12).flex_none().text_color(t.dim).spin(900))),
       )
       .when(Boolean(note), (el) => el.child(div().px(8).py(4).text_color(this.error ? t.blocked : t.dim).child(note)))
-      .child(v_flex().id("br-list").flex_1().min_h(0).overflow_y_scrollbar().children(list.map((b, i) => this.row(b, i, t))));
+      // A popup is as tall as what it holds, so the list sets its own height:
+      // a flex_1 list there gets none and shows nothing.
+      .child(v_flex().id("br-list").max_h(LIST_MAX).overflow_y_scrollbar().children(list.map((b, i) => this.row(b, i, t))));
   }
 }
