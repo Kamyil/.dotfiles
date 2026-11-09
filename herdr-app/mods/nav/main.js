@@ -10,9 +10,12 @@
 // a floating shell and the second-brain space (floats.js).
 // Ctrl+Shift+N ("nav.transcript"): the experimental transcript mod beside the
 // focused pane, rendering that agent's session as Markdown.
+// Ctrl+Shift+P / Ctrl+Shift+O ("nav.pin", "nav.pin-global"): a shell pinned
+// under the panes of every tab in this space, or of every space (pins.js).
 import { View, div } from "gpui-kit";
 import { focused, panes, run, exec, home, nextCommand, notify } from "herdr";
 import { toggleBrain, toggleFloat } from "./floats.js";
+import { navFromPin, syncPins, togglePin } from "./pins.js";
 import * as fs from "fs/promises";
 
 const VIM = /^(n?vim?|neovim|gvim|view)$/i;
@@ -63,9 +66,11 @@ export default class Nav extends View {
           openScrollback();
           continue;
         }
-        if (dir === "git" || dir === "shell" || dir === "brain") {
+        if (dir === "git" || dir === "shell" || dir === "brain" || dir === "pin" || dir === "pin-global") {
           try {
             if (dir === "brain") toggleBrain();
+            else if (dir === "pin") await togglePin("space");
+            else if (dir === "pin-global") await togglePin("global");
             else await toggleFloat(dir);
           } catch (error) {
             notify({ title: `nav.${dir} failed`, body: String(error?.message ?? error), level: "error" });
@@ -73,6 +78,7 @@ export default class Nav extends View {
           continue;
         }
         if (!VIM_KEYS[dir]) continue;
+        if (navFromPin(dir)) continue;
         const f = focused();
         const pane = f && panes().find((p) => p.pane === f.pane);
         const terminal = f && (f.terminal ?? pane?.terminal);
@@ -84,6 +90,11 @@ export default class Nav extends View {
   }
 
   render() {
+    try {
+      syncPins();
+    } catch (error) {
+      console.log(`nav: syncing pins failed: ${error?.message ?? error}`);
+    }
     return div();
   }
 }

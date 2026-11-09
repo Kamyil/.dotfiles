@@ -161,6 +161,8 @@
       "ctrl-shift-f": "nav.shell",
       "ctrl-shift-g": "nav.git",
       "ctrl-shift-n": "nav.transcript",
+      "ctrl-shift-o": "nav.pin-global",
+      "ctrl-shift-p": "nav.pin",
       "ctrl-shift-h": "tab.prev",
       "ctrl-shift-j": "space.next",
       "ctrl-shift-k": "space.prev",

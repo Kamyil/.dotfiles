@@ -36,6 +36,11 @@ whose content changes. Start Herdr once first so its defaults exist.
   tabs with Play/Stop for the Godot project in focus (F5/F8), the game's run
   log (hidden until Play, Ctrl+Shift+G) and a strip with commit XP, streak and
   session timer (herdr-app/mods/hud).
+- Every nav layout: a hidden "pins" row under the tab block with two
+  terminal blocks, "pin-space" (a shell pinned to the shown space's tabs,
+  Ctrl+Shift+P) and "pin-global" (one shell in every space, Ctrl+Shift+O).
+  The nav mod (herdr-app/mods/nav/pins.js) starts the shells, puts the shown
+  space's address in and shows or hides them; "none" is a placeholder.
 - mods/<name>-square: tighter-cornered copies of the shipped mods the nav
   layouts show (every .rounded*() call capped at corner_radius, 5px, and
   .rounded_full() made that radius), which those layouts use along with pane
@@ -339,6 +344,34 @@ def quest_workspace(gap, children):
     }
 
 
+def with_pins(node, gap):
+    """Wrap the tab block in a column with the hidden pins row under it."""
+    for index, child in enumerate(node.get("children", [])):
+        if "tab" in child.get("content", {}):
+            look = child["content"].get("pane", {})
+            sizing = {key: child.pop(key) for key in ("size", "min", "max") if key in child}
+
+            def pin(pin_id):
+                return {
+                    "id": pin_id,
+                    "type": "block",
+                    "hidden": True,
+                    "content": {"terminal": "none"},
+                    "background": look.get("background", "background"),
+                    "border": look.get("border", {"width": 1, "color": "border"}),
+                    "focus": {"border": dict(pane_focus)},
+                    "radius": corner_radius,
+                    "padding": [4, 6],
+                }
+
+            pins = {"id": "pins", "type": "row", "gap": gap, "hidden": True, "size": {"px": 260}, "min": 80, "max": 900, "children": [pin("pin-space"), pin("pin-global")]}
+            node["children"][index] = {"id": "pinned", "type": "column", "gap": gap, **sizing, "children": [child, pins]}
+            return True
+        if with_pins(child, gap):
+            return True
+    return False
+
+
 def squared(node, mods):
     """Cap every radius in a layout tree and point shipped mods at square copies."""
     if isinstance(node, list):
@@ -479,6 +512,8 @@ for name, base in nav_layouts.items():
             if child["content"]["mod"] == spaces_mod + square_suffix:
                 child["content"]["mod"] += threads_spaces[0]
         layout["children"] = [{"id": "body", "type": "row", "gap": gap, "children": [sidebar, workspace]}]
+    if not with_pins(layout, layout.get("gap", 8)):
+        sys.exit(f"herdr-app-setup: the {name} layout has no tab block for the pins; Herdr changed it")
     shipped_theme = layout.get("theme")
     light = shipped_theme if isinstance(shipped_theme, str) else light_fallback
     layout["theme"] = {"light": light, "dark": "dotfiles"}

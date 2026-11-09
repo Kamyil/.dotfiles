@@ -72,8 +72,9 @@ function lazygit(at) {
   return ["env", `LG_CONFIG_FILE=${files.join(",")}`, "lazygit"];
 }
 
-async function start(argv, at, cwd) {
-  const args = ["run", "--json", "--bg", "--no-parent", "--cwd", cwd];
+export async function start(argv, at, cwd) {
+  const args = ["run", "--json", "--bg", "--no-parent"];
+  if (cwd) args.push("--cwd", cwd);
   if (at.machine) args.push("--on", at.machine);
   const r = await hc([...args, "--", ...argv]);
   const address = r.code === 0 ? JSON.parse(r.stdout).address : null;

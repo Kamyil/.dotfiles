@@ -104,3 +104,10 @@ Known problems in this repository. Tick an item when it is fixed.
       draggable windows: no command focuses a terminal inside an overlay, and
       only dialogs take the keyboard when they open. Whether one is open is
       read from `herdr-app status` (any layout overlay counts as one).
+- [ ] The nav mod's pinned terminals (`herdr-app/mods/nav/pins.js`) live in
+      layout terminal blocks, which show one fixed address: each space switch
+      between pinned spaces rewrites the shown layout with `layout.set`, and
+      re-running `scripts/herdr-app-setup` resets the blocks to the "none"
+      placeholder until the next render puts the address back. Ctrl+h/j/k/l
+      can't reach a pin from a pane (`pane.go` sees model panes only); the
+      pin keys focus it.
