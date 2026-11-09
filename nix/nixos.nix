@@ -20,6 +20,7 @@
   zennotes,
   hex,
   vicinae,
+  bootvine,
   ...
 }:
 
@@ -42,12 +43,17 @@ in
       disko.nixosModules.disko
       helium.nixosModules.default
       chatgpt-desktop-app.nixosModules.default
+      bootvine.nixosModules.default
       ../nixos/disk-config.nix
       ../nixos/configuration.nix
       sops-nix.nixosModules.sops
       home-manager.nixosModules.home-manager
       {
         programs.chatgpt-desktop-app.enable = true;
+      }
+      {
+        # Live systemd job tree on the boot console, from the initrd onward.
+        services.bootvine.enable = true;
       }
       {
         programs.helium = {

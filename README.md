@@ -209,6 +209,7 @@ Blender is installed through the Homebrew cask on macOS and the Linux Home Manag
 | Keyboard remapping | kmonad | macOS keyboard shortcuts / QMK Toolbox |
 | Linux fonts/cursors | JetBrains Mono, Lexend, Capitaine cursors | Nerd fonts and macOS font management |
 | Laptop firmware and power | fwupd, thermald, power-profiles-daemon | Vendor firmware tools and macOS power management |
+| Boot console | bootvine (`services.bootvine` from the upstream flake): live systemd job tree from the initrd, LUKS prompt included; mask with `systemd.mask=bootvine.service` at the boot menu | Apple boot screen |
 
 ## Installing NixOS from scratch
 
