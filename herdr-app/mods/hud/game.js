@@ -89,12 +89,12 @@ export async function play() {
   if (isRunning()) return stop().then(play);
   const project = await findProject();
   if (!project) {
-    notify({ title: "No Godot project here", body: "Focus a terminal inside a folder with project.godot.", level: "warning" });
+    notify({ title: "No Godot project here", body: "Focus a terminal inside a folder with project.godot.", level: "warning", timeout: 5000 });
     return;
   }
   const godot = await godotBinary();
   if (!godot) {
-    notify({ title: "Godot not found", body: "Install Godot in /Applications or put godot on PATH.", level: "error" });
+    notify({ title: "Godot not found", body: "Install Godot in /Applications or put godot on PATH.", level: "error", timeout: 8000 });
     return;
   }
   await fs.mkdir(STATE, { recursive: true }).catch(() => {});
@@ -104,7 +104,7 @@ export async function play() {
   const r = await exec("sh", ["-c", script, "hud", project, godot, log]).catch((e) => ({ code: 1, stderr: String(e) }));
   const pid = Number(r.stdout?.trim());
   if (r.code !== 0 || !pid) {
-    notify({ title: "Couldn't start the game", body: r.stderr?.trim() || "no pid", level: "error" });
+    notify({ title: "Couldn't start the game", body: r.stderr?.trim() || "no pid", level: "error", timeout: 8000 });
     return;
   }
   setShared("hud.run", { pid, project, log, started: Date.now(), ended: null });

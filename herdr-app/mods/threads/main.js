@@ -129,9 +129,9 @@ export default class Threads extends View {
     cx.spawn(async (cx) => {
       try {
         const r = await exec("sh", ["-c", `${SCRIPT} --mark "$1" "$2"`, "sh", action, keyOf(th)], { on: m });
-        if (r.code !== 0) notify({ title: "Couldn't save that", body: r.stderr.trim().split("\n").pop() || `exit ${r.code}`, level: "warning" });
+        if (r.code !== 0) notify({ title: "Couldn't save that", body: r.stderr.trim().split("\n").pop() || `exit ${r.code}`, level: "warning", timeout: 5000 });
       } catch (e) {
-        notify({ title: "Couldn't save that", body: String(e), level: "warning" });
+        notify({ title: "Couldn't save that", body: String(e), level: "warning", timeout: 5000 });
       }
       await this.fetch(m, cx);
     });
@@ -143,7 +143,7 @@ export default class Threads extends View {
       return;
     }
     if (thread.missing) {
-      notify({ title: "Folder is gone", body: tidy(thread.folder), level: "warning" });
+      notify({ title: "Folder is gone", body: tidy(thread.folder), level: "warning", timeout: 5000 });
       return;
     }
     // A tab in a space on its machine: the shown one, else one whose folder holds

@@ -99,7 +99,7 @@ export default class Xp {
     }
     if (now >= this.nextBreak) {
       const mins = Math.round((now - this.session.start) / 60000);
-      notify({ title: "Rest at the campfire", body: `${mins} minutes in. Stretch, drink some water.`, level: "info", timeout: 15000 });
+      notify({ title: "Rest at the campfire", body: `${mins} minutes in. Stretch, drink some water.`, level: "info", timeout: 8000 });
       sfx("rest");
       this.nextBreak = now + BREAK_MIN * 60000;
     }
@@ -128,7 +128,7 @@ export default class Xp {
     const { level } = levelOf(this.stats.xp);
     const seen = load("levels", {});
     if (seen[root] && level > seen[root]) {
-      notify({ title: `LEVEL UP! ${baseName(root)} is level ${level}`, body: "Keep committing, adventurer.", level: "success", timeout: 8000 });
+      notify({ title: `LEVEL UP! ${baseName(root)} is level ${level}`, body: "Keep committing, adventurer.", level: "success", timeout: 5000 });
       sfx("levelup");
     }
     if (seen[root] !== level) {
