@@ -6,8 +6,11 @@
 // key commands reach shown mods only.
 // Ctrl+f ("nav.scrollback"): the GUI has no copy mode, so open the focused
 // terminal's screen and history read-only in nvim, zoomed over its tab.
+// Ctrl+Shift+G/F/S ("nav.git", "nav.shell", "nav.brain"): floating lazygit,
+// a floating shell and the second-brain space (floats.js).
 import { View, div } from "gpui-kit";
-import { focused, panes, run, exec, home, nextCommand } from "herdr";
+import { focused, panes, run, exec, home, nextCommand, notify } from "herdr";
+import { toggleBrain, toggleFloat } from "./floats.js";
 import * as fs from "fs/promises";
 
 const VIM = /^(n?vim?|neovim|gvim|view)$/i;
@@ -52,6 +55,15 @@ export default class Nav extends View {
         const dir = await nextCommand();
         if (dir === "scrollback") {
           openScrollback();
+          continue;
+        }
+        if (dir === "git" || dir === "shell" || dir === "brain") {
+          try {
+            if (dir === "brain") toggleBrain();
+            else await toggleFloat(dir);
+          } catch (error) {
+            notify({ title: `nav.${dir} failed`, body: String(error?.message ?? error), level: "error" });
+          }
           continue;
         }
         if (!VIM_KEYS[dir]) continue;

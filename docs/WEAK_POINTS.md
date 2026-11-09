@@ -94,3 +94,13 @@ Known problems in this repository. Tick an item when it is fixed.
 - [ ] The quest layout's hud mod (`herdr-app/mods/hud`) runs the game as a
       detached process tracked by pid in `shared("hud.run")` (Stop sends it
       SIGTERM); F5/F8 in that layout no longer reach terminals.
+- [ ] The Herdr app doesn't hot-reload the linked mods (`herdr-app/mods/*`):
+      `~/.config/herdr-app/mods/<name>` reaches the repo through the Nix
+      store, and the app's watcher only sees changes under its own folder.
+      After editing one, `touch -h ~/.config/herdr-app/mods/<name>` (or
+      restart Herdr) to load it; `herdr-app check` reads the files directly
+      and passes either way.
+- [ ] The nav mod's floats (`herdr-app/mods/nav/floats.js`) are dialogs, not
+      draggable windows: no command focuses a terminal inside an overlay, and
+      only dialogs take the keyboard when they open. Whether one is open is
+      read from `herdr-app status` (any layout overlay counts as one).

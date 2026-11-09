@@ -1,0 +1,3 @@
+# Merged over ~/.config/lazygit/config.yml for Herdr's floating lazygit
+# (floats.js): Esc at the top level quits, which closes the float.
+quitOnTopLevelReturn: true
