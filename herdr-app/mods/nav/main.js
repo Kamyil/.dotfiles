@@ -16,11 +16,13 @@
 // each pin's header ("nav.unpin", "nav.unpin-global") sends it back to a tab.
 // Copies with props { role: "pin-head" } are those headers (pin-head.js):
 // they only draw, so the floating copy alone takes the keys.
+// Every render also names agent tabs after their thread (tab-titles.js).
 import { View, div } from "gpui-kit";
 import { focused, panes, run, exec, home, nextCommand, notify, props } from "herdr";
 import { toggleBrain, toggleFloat } from "./floats.js";
 import { navFromPin, pinPane, syncPins, togglePin, unpin } from "./pins.js";
 import PinHead from "./pin-head.js";
+import { syncTabTitles } from "./tab-titles.js";
 import * as fs from "fs/promises";
 
 const VIM = /^(n?vim?|neovim|gvim|view)$/i;
@@ -109,6 +111,11 @@ export default class Nav extends View {
       syncPins();
     } catch (error) {
       console.log(`nav: syncing pins failed: ${error?.message ?? error}`);
+    }
+    try {
+      syncTabTitles();
+    } catch (error) {
+      console.log(`nav: naming tabs failed: ${error?.message ?? error}`);
     }
     return div();
   }

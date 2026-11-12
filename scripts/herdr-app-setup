@@ -9,7 +9,8 @@ whose content changes. Start Herdr once first so its defaults exist.
   top of the app's defaults.
 - layouts/main-nav.json, layouts/terminals-nav.json: Herdr's shipped main and
   terminals layouts plus an empty floating block holding the nav mod, which
-  owns Ctrl+h/j/k/l. Regenerated from the shipped files, so re-running picks
+  owns Ctrl+h/j/k/l and names agent tabs after their thread
+  (herdr-app/mods/nav/tab-titles.js). Regenerated from the shipped files, so re-running picks
   up Herdr's layout updates.
 - layouts/threads.json: terminals-nav with a full-height left sidebar:
   Herdr's spaces list, the threads mod (Claude Code, OpenCode and omp threads,
