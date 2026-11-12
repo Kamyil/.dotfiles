@@ -54,11 +54,15 @@ whose content changes. Start Herdr once first so its defaults exist.
   (traffic_lights at -200, -200): Herdr can't turn them off, but it doesn't
   clamp where they go. The square tab bar copies drop the 72px inset left for
   them. Close and minimise with keys (Cmd+Q, Cmd+M, Alt+Space q).
+- programs.json, cards/: the tab bars' program tiles for Claude Code,
+  OpenCode, Neovim, shells and lazygit are app-icon cards
+  (herdr-app/cards/*.svg, herdr-app/programs.json), drawn at 20px.
 - settings.json and the nav layouts use themes/dotfiles.json in dark mode,
   which scripts/herdr-theme writes from the current dotfiles palette.
 - mods/nav, mods/threads, mods/usage, mods/hud and mods/branches come from nix/symlinks.nix (herdr-app/mods/*);
   this only checks them.
 """
+import hashlib
 import json
 import os
 import re
@@ -132,7 +136,17 @@ hidden_traffic_lights = [-200, -200]
 # and switches the space.
 bar_mod = "terminals-bar"
 macos_inset = '.when(w.platform === "macos" && w.titlebar === "none" && !w.fullscreen, (el) => el.pl(72))'
-bar_edits = [(macos_inset, "")]
+# A program whose icon is one of herdr-app/cards (programs.json) is a full
+# app-icon card: the tile draws it at 20px, without its chip and border.
+card_tile = [
+    ("  const g = p?.program;\n", '  const g = p?.program;\n  const card = Boolean(g?.icon?.startsWith("cards/"));\n'),
+    (
+        '    .border_1()\n    .border_color("#ffffff14")\n    .bg(g?.tile ?? C.chip)\n',
+        '    .when(!card, (el) => el.border_1().border_color("#ffffff14").bg(g?.tile ?? C.chip))\n',
+    ),
+    ("image(g.icon).w(15).h(15)", "image(g.icon).w(card ? 20 : 15).h(card ? 20 : 15)"),
+]
+bar_edits = [(macos_inset, ""), *card_tile]
 # Its tabs fill the bar, Safari style: the tray runs up to the buttons and
 # splits its width evenly between the tabs, which shrink as more open. A
 # narrow tab drops its folder first, then truncates its name.
@@ -155,9 +169,11 @@ pin_click = (
     '        cx.stop_propagation();\n        if (command === "nav.pin-pane") setShared("nav.pin-request", { ...args, at: Date.now() });\n        run(command, args);',
 )
 pin_icon = "mods/workspace-chrome/pin.svg"
+# Adds setShared to the mod's one herdr import, whatever else it imports.
+herdr_set_shared = (' } from "herdr";', ', setShared } from "herdr";')
 pane_edits = {
     "terminals-pane": [
-        ('import { panes, props, run, home } from "herdr";', 'import { panes, props, run, home, setShared } from "herdr";'),
+        herdr_set_shared,
         pin_click,
         (".child(svg(`mods/pane/${icon}.svg`)", '.child(svg(icon.includes("/") ? icon : `mods/pane/${icon}.svg`)'),
         (
@@ -166,7 +182,7 @@ pane_edits = {
         ),
     ],
     "pane": [
-        ('import { panes, props, run, theme, home } from "herdr";', 'import { panes, props, run, theme, home, setShared } from "herdr";'),
+        herdr_set_shared,
         pin_click,
         (".child(svg(`mods/pane/${icon}.svg`)", '.child(svg(icon.includes("/") ? icon : `mods/pane/${icon}.svg`)'),
         (
@@ -327,8 +343,8 @@ threads_spaces = (
         ("const machineNames = [null, ...remote];", group_tint),
         ("if (!collapsed && rebuilt) return [head];", "if (!collapsed && rebuilt) return tinted(m, [head]);"),
         (
-            "return [head, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : empty])];",
-            "return tinted(m, [head, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : empty])]);",
+            "return [cell(head), ...guidance, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : cell(empty)])];",
+            "return tinted(m, [cell(head), ...guidance, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : cell(empty)])]);",
         ),
         *machine_stats_edits,
         *space_agents_edits,
@@ -564,6 +580,34 @@ if spaces_mod in square_mods:
     write_square_mod(spaces_mod, square_mods, *threads_spaces, {"stats.js": machine_stats, "agents.js": space_agents, "favicons.js": space_favicons})
 for name, layout in layouts.items():
     save(app_home / "layouts" / f"{name}.json", layout)
+
+# Program icon cards: herdr-app/cards copied into the app home, and
+# herdr-app/programs.json's entries merged over programs.json's, field by field.
+# Herdr caches an image by its path, so each card is installed under its
+# content's hash (cards/claude-1a2b3c4d.svg): an edited card is a new path.
+cards = app_home / "cards"
+if cards.is_symlink():
+    sys.exit(f"herdr-app-setup: {cards} is a symlink; refusing to overwrite it")
+cards.mkdir(exist_ok=True)
+installed = {}
+for source in sorted((repo / "herdr-app/cards").glob("*.svg")):
+    data = source.read_bytes()
+    name = f"{source.stem}-{hashlib.sha1(data).hexdigest()[:8]}.svg"
+    installed[f"cards/{source.name}"] = f"cards/{name}"
+    out = cards / name
+    if not out.exists() or out.read_bytes() != data:
+        out.write_bytes(data)
+        print(f"updated {out}")
+for old in cards.glob("*.svg"):
+    if f"cards/{old.name}" not in installed.values():
+        old.unlink()
+        print(f"removed {old}")
+programs_path = app_home / "programs.json"
+programs = load(programs_path) if programs_path.exists() else {}
+for key, fields in load(repo / "herdr-app/programs.json")["programs"].items():
+    fields = {**fields, "icon": installed.get(fields.get("icon"), fields.get("icon"))}
+    programs.setdefault("programs", {}).setdefault(key, {}).update(fields)
+save(programs_path, programs)
 
 settings = load(app_home / "settings.json")
 settings["theme"] = {"light": light_fallback, "dark": "dotfiles"}

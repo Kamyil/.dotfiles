@@ -1,0 +1,9 @@
+{
+  "programs": {
+    "claude": { "icon": "cards/claude.svg", "tint": false },
+    "opencode": { "icon": "cards/opencode.svg", "tint": false },
+    "nvim": { "icon": "cards/nvim.svg", "tint": false },
+    "shell": { "icon": "cards/shell.svg", "tint": false },
+    "lazygit": { "icon": "cards/lazygit.svg", "tint": false }
+  }
+}
