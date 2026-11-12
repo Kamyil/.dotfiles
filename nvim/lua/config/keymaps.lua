@@ -293,6 +293,29 @@ if vim.env.HC_TERMINAL_ID ~= nil and vim.env.HERDR_PANE_ID == nil and vim.fn.exe
 		end, { desc = 'Move to split / Herdr pane ' .. dir })
 	end
 
+	-- Rendered Markdown in a Herdr pane beside nvim (~/.config/herdr-app/mods/md). It
+	-- shows the file on disk and re-renders on every save.
+	local function herdr_markdown_preview()
+		local file = vim.api.nvim_buf_get_name(0)
+		if file == '' then
+			vim.notify('Markdown preview: buffer has no file', vim.log.levels.WARN)
+			return
+		end
+		if vim.bo.modified then
+			vim.cmd('silent write')
+		end
+		local args = vim.json.encode({ direction = 'right', mod = 'md', props = { file = file } })
+		vim.system({ 'herdr-app', 'do', 'pane.split', args }, { text = true }, function(res)
+			if res.code ~= 0 then
+				vim.schedule(function()
+					vim.notify('Markdown preview: ' .. (res.stderr ~= '' and res.stderr or res.stdout), vim.log.levels.ERROR)
+				end)
+			end
+		end)
+	end
+	vim.api.nvim_create_user_command('HerdrMarkdownPreview', herdr_markdown_preview, { desc = 'Rendered Markdown in a Herdr pane' })
+	keymap('n', '<leader>mp', herdr_markdown_preview, { desc = '[M]arkdown [P]review in Herdr pane' })
+
 	-- The nav mod sends these keys over this socket rather than `hc keys`, which holds a
 	-- key back until the screen settles (seconds while LSP servers start).
 	local socket_file = vim.fn.stdpath('state') .. '/herdr/' .. vim.env.HC_TERMINAL_ID
