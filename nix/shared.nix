@@ -5,6 +5,7 @@
   imports = [
     ./home/links.nix
     ./home/packages.nix
+    ./home/second-brain-sync.nix
     ./home/shell.nix
     ./home/tmux.nix
   ];

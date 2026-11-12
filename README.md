@@ -167,6 +167,7 @@ The package sets are intentionally split into common, macOS, and NixOS layers. â
 | Terminal/workflow CLIs | herdr, worktrunk, lazyjira | [`herdr/`](herdr), [`worktrunk/`](worktrunk) |
 | Browser tooling | qutebrowser (available fallback) | Nix package; no repository-specific configuration |
 | Nix package discovery | nix-index, comma | Weekly prebuilt nix-index database |
+| Notes sync | Git on a timer (launchd / systemd user timer, every 10 min) | [`scripts/second-brain-sync.sh`](scripts/second-brain-sync.sh) commits `~/second-brain`, rebases on its upstream (`malinka`), and pushes; it notifies on conflicts and skips quietly when Malinka is unreachable. Timers in [`nix/home/second-brain-sync.nix`](nix/home/second-brain-sync.nix); logs in `~/Library/Logs/second-brain-sync.log` or `journalctl --user -u second-brain-sync` |
 
 SQL work is intentionally handled inside Neovim with the Dadbod plugins. Harlequin and Rainfrog were tried and removed from the package sets.
 
