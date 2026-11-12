@@ -108,6 +108,8 @@ Known problems in this repository. Tick an item when it is fixed.
       layout terminal blocks, which show one fixed address: each space switch
       between pinned spaces rewrites the shown layout with `layout.set`, and
       re-running `scripts/herdr-app-setup` resets the blocks to the "none"
-      placeholder until the next render puts the address back. Ctrl+h/j/k/l
-      can't reach a pin from a pane (`pane.go` sees model panes only); the
-      pin keys focus it.
+      placeholder until the next render puts the address back. No command
+      focuses a layout terminal block (`pane.focus {terminal}` fails or does
+      nothing), so a pin is entered by clicking it; Ctrl+h/j/k/l can't reach
+      one from a pane. The pin headers and pane pin buttons use Herdr's shipped
+      icons: an SVG in the linked nav folder didn't render.

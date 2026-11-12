@@ -36,11 +36,14 @@ whose content changes. Start Herdr once first so its defaults exist.
   tabs with Play/Stop for the Godot project in focus (F5/F8), the game's run
   log (hidden until Play, Ctrl+Shift+G) and a strip with commit XP, streak and
   session timer (herdr-app/mods/hud).
-- Every nav layout: a hidden "pins" row under the tab block with two
-  terminal blocks, "pin-space" (a shell pinned to the shown space's tabs,
-  Ctrl+Shift+P) and "pin-global" (one shell in every space, Ctrl+Shift+O).
-  The nav mod (herdr-app/mods/nav/pins.js) starts the shells, puts the shown
-  space's address in and shows or hides them; "none" is a placeholder.
+- Every nav layout: a hidden "pins" row under the tab block with two pins,
+  "pin-space" (a terminal pinned to the shown space's tabs, Ctrl+Shift+P)
+  and "pin-global" (one shell in every space, Ctrl+Shift+O), each a header
+  (the nav mod as pin-head: back to a tab, hide) over a terminal block
+  ("<pin>-term"). The nav mod (herdr-app/mods/nav/pins.js) starts the
+  shells, puts the shown space's address in and shows or hides them; "none"
+  is a placeholder. The square pane headers get a pin button that makes that
+  pane its space's pin.
 - mods/<name>-square: tighter-cornered copies of the shipped mods the nav
   layouts show (every .rounded*() call capped at corner_radius, 5px, and
   .rounded_full() made that radius), which those layouts use along with pane
@@ -144,6 +147,35 @@ threads_bar = (
     "-threads",
     [('.id("tm-space")', '.id("tm-space")\n          .hidden()'), *bar_edits, *fill_tabs],
 )
+# The square pane headers get a pin button before zoom: it names the pane in
+# shared("nav.pin-request") and runs nav.pin-pane (herdr-app/mods/nav/pins.js),
+# which makes that pane's terminal its space's pin. Mod panes get none.
+pin_click = (
+    "        cx.stop_propagation();\n        run(command, args);",
+    '        cx.stop_propagation();\n        if (command === "nav.pin-pane") setShared("nav.pin-request", { ...args, at: Date.now() });\n        run(command, args);',
+)
+pin_icon = "mods/workspace-chrome/pin.svg"
+pane_edits = {
+    "terminals-pane": [
+        ('import { panes, props, run, home } from "herdr";', 'import { panes, props, run, home, setShared } from "herdr";'),
+        pin_click,
+        (".child(svg(`mods/pane/${icon}.svg`)", '.child(svg(icon.includes("/") ? icon : `mods/pane/${icon}.svg`)'),
+        (
+            "      .child(this.button(`th-z-${pane}`",
+            f'      .when(Boolean(p.terminal), (el) => el.child(this.button(`th-p-${{pane}}`, "{pin_icon}", "nav.pin-pane", {{ pane }})))\n      .child(this.button(`th-z-${{pane}}`',
+        ),
+    ],
+    "pane": [
+        ('import { panes, props, run, theme, home } from "herdr";', 'import { panes, props, run, theme, home, setShared } from "herdr";'),
+        pin_click,
+        (".child(svg(`mods/pane/${icon}.svg`)", '.child(svg(icon.includes("/") ? icon : `mods/pane/${icon}.svg`)'),
+        (
+            "        .child(this.button(t, `ph-z-${pane}`",
+            f'        .when(Boolean(p.terminal), (el) => el.child(this.button(t, `ph-p-${{pane}}`, "{pin_icon}", "nav.pin-pane", {{ pane }})))\n        .child(this.button(t, `ph-z-${{pane}}`',
+        ),
+    ],
+}
+
 # The threads layout's spaces list tints each machine's group, header and
 # spaces alike: the Mac gray, the NixOS thinkpad light blue, malinka red.
 # "This computer" takes its own platform's tint. Only once a second machine is
@@ -351,20 +383,23 @@ def with_pins(node, gap):
             look = child["content"].get("pane", {})
             sizing = {key: child.pop(key) for key in ("size", "min", "max") if key in child}
 
-            def pin(pin_id):
+            def pin(pin_id, which):
+                head = {"mod": "nav", "props": {"role": "pin-head", "which": which}}
                 return {
                     "id": pin_id,
-                    "type": "block",
+                    "type": "column",
                     "hidden": True,
-                    "content": {"terminal": "none"},
                     "background": look.get("background", "background"),
                     "border": look.get("border", {"width": 1, "color": "border"}),
                     "focus": {"border": dict(pane_focus)},
                     "radius": corner_radius,
-                    "padding": [4, 6],
+                    "children": [
+                        {"id": f"{pin_id}-head", "type": "block", "size": {"px": 30}, "content": head},
+                        {"id": f"{pin_id}-term", "type": "block", "content": {"terminal": "none"}, "padding": [2, 6]},
+                    ],
                 }
 
-            pins = {"id": "pins", "type": "row", "gap": gap, "hidden": True, "size": {"px": 260}, "min": 80, "max": 900, "children": [pin("pin-space"), pin("pin-global")]}
+            pins = {"id": "pins", "type": "row", "gap": gap, "hidden": True, "size": {"px": 260}, "min": 80, "max": 900, "children": [pin("pin-space", "space"), pin("pin-global", "global")]}
             node["children"][index] = {"id": "pinned", "type": "column", "gap": gap, **sizing, "children": [child, pins]}
             return True
         if with_pins(child, gap):
@@ -521,7 +556,7 @@ for name, base in nav_layouts.items():
 
 # Copies first, so a layout never names a mod that doesn't exist yet.
 for mod in sorted(square_mods):
-    write_square_mod(mod, square_mods, "", bar_edits if mod == bar_mod else ())
+    write_square_mod(mod, square_mods, "", bar_edits if mod == bar_mod else pane_edits.get(mod, ()))
 if bar_mod in square_mods:
     write_square_mod(bar_mod, square_mods, *threads_bar)
 if spaces_mod in square_mods:

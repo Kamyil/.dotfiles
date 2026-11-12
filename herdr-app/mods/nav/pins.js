@@ -21,7 +21,14 @@
 // Pins are started like the floats (hc run, no herdr.space/tab labels), so
 // they never become tabs; their addresses live in shared state and outlive a
 // restart. Closing a space kills its pin.
-import { focused, home, layout, machines, run, setShared, shared, spaces, terminals } from "herdr";
+//
+// The pin button in each pane header ("nav.pin-pane", the pane in
+// shared("nav.pin-request")) makes that pane's terminal its space's pin: its
+// pane is parked and its herdr labels dropped, so it leaves its tab and keeps
+// running. A pin the space had already goes back to a tab first. Each pin's
+// header (pin-head.js) sends it back to a tab ("nav.unpin", "nav.unpin-global")
+// or hides it.
+import { focused, hc, home, layout, machines, notify, panes, run, setShared, shared, spaces, terminals } from "herdr";
 import { start } from "./floats.js";
 
 const STATE = "nav.pins";
@@ -96,7 +103,8 @@ export function syncPins() {
   const f = focused();
   if (f?.pane) lastPane[f.space] = f.pane;
   const tree = /** @type {any} */ (layout());
-  const blocks = ["pin-space", "pin-global"].map((id) => findNode(tree, id));
+  // The terminal sits in "<pin>-term"; "<pin>" (with its header) shows or hides.
+  const blocks = ["pin-space", "pin-global"].map((id) => findNode(tree, `${id}-term`));
   if (!findNode(tree, "pins") || blocks.some((b) => !b)) return;
   const want = wanted();
   const shown = blocks.map((b) => b.content?.terminal ?? null);
@@ -104,10 +112,11 @@ export function syncPins() {
   if (key === applied) return;
   applied = key;
   // Swap an address in only when it differs: a hidden block keeps its old one.
-  const stale = blocks.filter((b) => want[b.id] && b.content?.terminal !== want[b.id]);
+  const pinOf = (b) => b.id.replace(/-term$/, "");
+  const stale = blocks.filter((b) => want[pinOf(b)] && b.content?.terminal !== want[pinOf(b)]);
   if (stale.length) {
     const next = JSON.parse(JSON.stringify(tree));
-    for (const b of stale) findNode(next, b.id).content = { terminal: want[b.id] };
+    for (const b of stale) findNode(next, b.id).content = { terminal: want[pinOf(b)] };
     run("layout.set", { layout: next });
   }
   for (const id of ["pin-space", "pin-global"]) run(want[id] ? "layout.show" : "layout.hide", { id });
@@ -158,4 +167,61 @@ export function navFromPin(dir) {
   if (!onSpace && !onGlobal) return false;
   focusBack();
   return true;
+}
+
+// The pin's record for a header: the shown space's, or the global one.
+export function pinRecord(which) {
+  const s = state();
+  if (which === "global") return s.global;
+  const space = currentSpace();
+  return space ? s.spaces[space.id] ?? null : null;
+}
+
+// A new tab in the shown space; Herdr labels it there again.
+function toTab(address) {
+  run("terminal.keep", { terminal: address, place: "tab" });
+}
+
+export function unpin(which) {
+  const s = state();
+  const space = currentSpace();
+  const rec = which === "global" ? s.global : space ? s.spaces[space.id] : null;
+  if (!rec) return;
+  if (live(rec.address)) toTab(rec.address);
+  if (which === "global") save({ ...s, global: null });
+  else {
+    const rest = { ...s.spaces };
+    delete rest[space.id];
+    save({ ...s, spaces: rest });
+  }
+  syncPins();
+}
+
+export async function pinPane() {
+  // A header's click names its pane just before; otherwise the focused one.
+  const req = /** @type {any} */ (shared("nav.pin-request"));
+  const fresh = req && Date.now() - (req.at ?? 0) < 3000;
+  const target = fresh ? req.pane : focused()?.pane;
+  if (fresh) setShared("nav.pin-request", null);
+  const p = target && panes().find((x) => x.pane === target);
+  if (!p?.terminal) return;
+  const space = spaces().find((s) => (s.tabs ?? []).some((tab) => tab.id === p.tab));
+  if (!space) return;
+  // Parking a space's last pane would close the space, and prune() would
+  // kill its pin with it.
+  if ((space.tabs ?? []).reduce((n, tab) => n + (tab.panes ?? 0), 0) < 2) {
+    notify({ title: "Can't pin the space's only pane", body: "Open another tab or split first.", level: "warning" });
+    return;
+  }
+  const s = state();
+  const old = s.spaces[space.id];
+  if (old && old.address !== p.terminal && live(old.address)) toTab(old.address);
+  run("terminal.park", { terminal: p.terminal });
+  // Without its labels Herdr won't put it back in its tab on a restart.
+  const r = await hc(["label", p.terminal, "herdr.space=", "herdr.tab="]);
+  if (r.code !== 0) notify({ title: "Pinned, but its labels stayed", body: r.stderr.trim(), level: "warning" });
+  const latest = state();
+  const rec = { address: p.terminal, machine: space.machine, shown: true };
+  save({ ...latest, spaces: { ...latest.spaces, [space.id]: rec } });
+  syncPins();
 }

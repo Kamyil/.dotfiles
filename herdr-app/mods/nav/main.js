@@ -12,10 +12,15 @@
 // focused pane, rendering that agent's session as Markdown.
 // Ctrl+Shift+P / Ctrl+Shift+O ("nav.pin", "nav.pin-global"): a shell pinned
 // under the panes of every tab in this space, or of every space (pins.js).
+// The pane headers' pin button ("nav.pin-pane") pins that pane instead, and
+// each pin's header ("nav.unpin", "nav.unpin-global") sends it back to a tab.
+// Copies with props { role: "pin-head" } are those headers (pin-head.js):
+// they only draw, so the floating copy alone takes the keys.
 import { View, div } from "gpui-kit";
-import { focused, panes, run, exec, home, nextCommand, notify } from "herdr";
+import { focused, panes, run, exec, home, nextCommand, notify, props } from "herdr";
 import { toggleBrain, toggleFloat } from "./floats.js";
-import { navFromPin, syncPins, togglePin } from "./pins.js";
+import { navFromPin, pinPane, syncPins, togglePin, unpin } from "./pins.js";
+import PinHead from "./pin-head.js";
 import * as fs from "fs/promises";
 
 const VIM = /^(n?vim?|neovim|gvim|view)$/i;
@@ -53,8 +58,14 @@ function wantsKey(pane) {
   return VIM.test(pane.program.key) || VIM.test(pane.program.name);
 }
 
+const PIN_COMMANDS = ["pin", "pin-global", "pin-pane", "unpin", "unpin-global"];
+
 export default class Nav extends View {
-  init(_props, cx) {
+  init(p, cx) {
+    if ((props() ?? p)?.role === "pin-head") {
+      this.head = new PinHead();
+      return;
+    }
     cx.spawn(async (cx) => {
       for (;;) {
         const dir = await nextCommand();
@@ -66,11 +77,14 @@ export default class Nav extends View {
           openScrollback();
           continue;
         }
-        if (dir === "git" || dir === "shell" || dir === "brain" || dir === "pin" || dir === "pin-global") {
+        if (dir === "git" || dir === "shell" || dir === "brain" || PIN_COMMANDS.includes(dir)) {
           try {
             if (dir === "brain") toggleBrain();
             else if (dir === "pin") await togglePin("space");
             else if (dir === "pin-global") await togglePin("global");
+            else if (dir === "pin-pane") await pinPane();
+            else if (dir === "unpin") unpin("space");
+            else if (dir === "unpin-global") unpin("global");
             else await toggleFloat(dir);
           } catch (error) {
             notify({ title: `nav.${dir} failed`, body: String(error?.message ?? error), level: "error" });
@@ -89,7 +103,8 @@ export default class Nav extends View {
     });
   }
 
-  render() {
+  render(cx) {
+    if (this.head) return this.head.render(cx);
     try {
       syncPins();
     } catch (error) {
