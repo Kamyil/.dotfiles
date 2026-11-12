@@ -14,11 +14,12 @@ whose content changes. Start Herdr once first so its defaults exist.
   up Herdr's layout updates.
 - layouts/threads.json: terminals-nav with a full-height left sidebar:
   Herdr's spaces list, the threads mod (Claude Code, OpenCode and omp threads,
-  scripts/agent-threads) and the usage mod (Claude Code and Codex plan usage,
-  scripts/agent-usage), top to bottom. The tab bar sits over the panes only
+  scripts/agent-threads), top to bottom; the usage mod (Claude Code and Codex
+  plan usage, scripts/agent-usage) sits in the title strip as a line of meters. The tab bar sits over the panes only
   and drops its space chip and macOS window-button inset; its tabs fill the
   bar Safari style, splitting its width evenly and shrinking as more open
-  (mods/terminals-bar-square-threads). Its spaces list tints each machine's
+  (mods/terminals-bar-square-threads); dragging a tab slides it into a new
+  place, Rex style (herdr-app/tab-drag.js). Its spaces list tints each machine's
   group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red,
   and puts CPU, GPU (malinka: SoC temperature), RAM and disk bars in each
   machine header (herdr-app/machine-stats.js), next to a "+" that makes a
@@ -54,7 +55,11 @@ whose content changes. Start Herdr once first so its defaults exist.
 - The nav layouts park macOS's window buttons off the window
   (traffic_lights at -200, -200): Herdr can't turn them off, but it doesn't
   clamp where they go. The square tab bar copies drop the 72px inset left for
-  them. Close and minimise with keys (Cmd+Q, Cmd+M, Alt+Space q).
+  them. Close and minimise with keys (Cmd+Q, Cmd+M, Alt+Space q). The
+  threads layout brings them back in a title strip across the top
+  (herdr-app/mods/nav/title-strip.js) that also holds the space name, the
+  usage meters and the palette and new-tab buttons; its tabs get their own row below the ~28pt
+  band where macOS drags the window, so they can be dragged.
 - programs.json, cards/: the tab bars' program tiles for Claude Code,
   OpenCode, Neovim, shells and lazygit are app-icon cards
   (herdr-app/cards/*.svg, herdr-app/programs.json), drawn at 20px.
@@ -79,8 +84,10 @@ nav_layouts = {"main-nav": "main", "terminals-nav": "terminals", "threads": "ter
 linked_mods = ["nav", "threads", "usage", "hud", "branches"]
 
 
-def threads_sidebar(gap, mods, skin=None):
-    """The sidebar column, squared, its islands rounded at island_radius."""
+def threads_sidebar(gap, mods, skin=None, usage=True):
+    """The sidebar column, squared, its islands rounded at island_radius;
+    usage=False leaves out the usage block (the threads layout's title strip
+    shows it)."""
     props = {"props": {"skin": skin}} if skin else {}
     sidebar = squared({
         "id": "threads",
@@ -95,6 +102,8 @@ def threads_sidebar(gap, mods, skin=None):
             {"id": "usage", "type": "block", "size": {"px": 232}, "min": 120, "content": {"mod": "usage", **props}},
         ],
     }, mods)
+    if not usage:
+        sidebar["children"] = [c for c in sidebar["children"] if c["id"] != "usage"]
     for island in sidebar["children"]:
         island["radius"] = island_radius
     return sidebar
@@ -132,6 +141,26 @@ light_fallback = "paper"
 # the window's top-left corner they're out of sight. The tabs mod sizes its
 # inset from this and falls to its minimum; the bar's fixed inset goes below.
 hidden_traffic_lights = [-200, -200]
+# The threads layout brings them back, in its title strip: macOS moves the
+# window on any drag in a hidden title bar's top ~28pt, whatever Herdr draws
+# there, so that band holds the window buttons, the space name and the
+# palette and new-tab buttons (herdr-app/mods/nav/title-strip.js), and the
+# tabs get their own row below it, where they can be dragged. With the
+# root's 6px padding, a 22px strip ends at 28; the buttons sit on its middle.
+threads_traffic_lights = [14, 10]
+# Left to right: the window buttons' room and the space (nav, side "left"),
+# the usage meters (usage, place "strip"; the threads sidebar drops its usage
+# block for them), then the palette and new-tab buttons (nav, side "right").
+title_strip = {
+    "id": "title-strip",
+    "type": "row",
+    "size": {"px": 22},
+    "children": [
+        {"id": "title-left", "type": "block", "window_drag": True, "content": {"mod": "nav", "props": {"role": "title-strip", "side": "left"}}},
+        {"id": "title-usage", "type": "block", "size": {"px": 470}, "window_drag": True, "content": {"mod": "usage", "props": {"place": "strip"}}},
+        {"id": "title-right", "type": "block", "size": {"px": 64}, "window_drag": True, "content": {"mod": "nav", "props": {"role": "title-strip", "side": "right"}}},
+    ],
+}
 # The square tab bars drop the macOS inset for those buttons. The threads
 # layout's also drops the space chip; the sidebar's spaces list already shows
 # and switches the space.
@@ -147,7 +176,44 @@ card_tile = [
     ),
     ("image(g.icon).w(15).h(15)", "image(g.icon).w(card ? 20 : 15).h(card ? 20 : 15)"),
 ]
-bar_edits = [(macos_inset, ""), *card_tile]
+# Herdr's bar only selects tabs. herdr-app/tab-drag.js makes them draggable,
+# Rex style: the bar's class extends its TabDrag, each tab takes its place
+# from it, and the bar follows and drops the drag (see that file).
+reorder_tabs = [
+    (
+        "export default class TerminalsBar extends View {\n",
+        (repo / "herdr-app/tab-drag.js").read_text() + "export default class TerminalsBar extends TabDrag {\n",
+    ),
+    ("    const tab = (c) => {\n", "    const tab = (c, ghost = false) => {\n"),
+    (
+        "      return own(h_flex())\n        .id(`tm-${c.id}`)",
+        "      return h_flex()\n        .id(ghost ? `tm-ghost-${this.gen ?? 0}` : `tm-${c.id}-${this.gen ?? 0}`)",
+    ),
+    ('        .on_click(() => run("tab.select", { id: c.id }))\n', ""),
+    ("        .child(tile(t, p))\n", "        .child(tile(t, p))\n        .when(true, (el) => this.placed(el, c, ghost, space.tabs))\n"),
+    (
+        "          .bg(C.tray)\n          .children(space.tabs.map(tab)),",
+        """          .bg(C.tray)
+          .relative()
+          .children(space.tabs.map((c) => tab(c)))
+          .when(Boolean(this.drag?.moved), (el) => {
+            const lifted = space.tabs.find((c) => c.id === this.drag.id);
+            return lifted ? el.child(tab(lifted, true)) : el;
+          }),""",
+    ),
+    (
+        "    return h_flex()\n      .size_full()\n      .gap(8)\n      .items_center()\n",
+        """    return h_flex()
+      .size_full()
+      .gap(8)
+      .items_center()
+      .on_mouse_move((e, cx) => this.follow(e, cx, space.tabs))
+      .on_mouse_up("left", (_e, cx) => this.drop(cx, space.tabs))
+      .on_mouse_down_out((_e, cx) => this.drop(cx, space.tabs, false))
+""",
+    ),
+]
+bar_edits = [(macos_inset, ""), *card_tile, *reorder_tabs]
 # Its tabs fill the bar, Safari style: the tray runs up to the buttons and
 # splits its width evenly between the tabs, which shrink as more open. A
 # narrow tab drops its folder first, then truncates its name.
@@ -160,7 +226,16 @@ fill_tabs = [
 ]
 threads_bar = (
     "-threads",
-    [('.id("tm-space")', '.id("tm-space")\n          .hidden()'), *bar_edits, *fill_tabs],
+    [
+        ('.id("tm-space")', '.id("tm-space")\n          .hidden()'),
+        (
+            '      .child(iconButton("tm-keys", "command", () => run("app.palette")))\n'
+            '      .child(iconButton("tm-new", "plus", () => run("tab.new", { space: space.id })))\n',
+            "",
+        ),
+        *bar_edits,
+        *fill_tabs,
+    ],
 )
 # The square pane headers get a pin button before zoom: it names the pane in
 # shared("nav.pin-request") and runs nav.pin-pane (herdr-app/mods/nav/pins.js),
@@ -559,11 +634,12 @@ for name, base in nav_layouts.items():
         for child in workspace["children"]:
             if child.get("content", {}).get("mod") == bar_mod + square_suffix:
                 child["content"]["mod"] = bar_mod + square_suffix + threads_bar[0]
-        sidebar = threads_sidebar(gap, square_mods)
+        sidebar = threads_sidebar(gap, square_mods, usage=False)
         for child in sidebar["children"]:
             if child["content"]["mod"] == spaces_mod + square_suffix:
                 child["content"]["mod"] += threads_spaces[0]
-        layout["children"] = [{"id": "body", "type": "row", "gap": gap, "children": [sidebar, workspace]}]
+        layout["children"] = [dict(title_strip), {"id": "body", "type": "row", "gap": gap, "children": [sidebar, workspace]}]
+        layout["traffic_lights"] = list(threads_traffic_lights)
     if not with_pins(layout, layout.get("gap", 8)):
         sys.exit(f"herdr-app-setup: the {name} layout has no tab block for the pins; Herdr changed it")
     shipped_theme = layout.get("theme")
