@@ -60,6 +60,9 @@
     hex.inputs.home-manager.follows = "home-manager";
 
     vicinae.url = "github:vicinaehq/vicinae";
+
+    bootvine.url = "git+https://codeberg.org/wvhulle/bootvine";
+    bootvine.inputs.nixpkgs.follows = "nixpkgs";
     # Add private fonts
     # berkeley-font = {
     #   url = "path:///home/kamil/.local/share/fonts";
@@ -92,6 +95,7 @@
       zennotes,
       hex,
       vicinae,
+      bootvine,
       ...
     }:
     let
@@ -140,6 +144,7 @@
           zennotes
           hex
           vicinae
+          bootvine
           ;
       };
 
