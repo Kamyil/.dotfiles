@@ -3,8 +3,7 @@
 // (kept in localStorage) at once after a restart: no cold fetch on open.
 // Click the header to refresh now. Shown by the threads layout
 // (scripts/herdr-app-setup). The quest layout gives props { skin: "hud" }:
-// limits show as mana left instead of usage. The threads layout's title strip
-// gives props { place: "strip" }: one line of small meters (strip()).
+// limits show as mana left instead of usage.
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { exec, home, theme, props } from "herdr";
@@ -25,7 +24,6 @@ const ago = (ms) => (ms < 60000 ? "now" : `${until(ms)} ago`);
 export default class Usage extends View {
   init(_props, cx) {
     this.hud = props()?.skin === "hud";
-    this.inStrip = props()?.place === "strip";
     this.data = JSON.parse(localStorage.getItem("usage") ?? "null");
     this.busy = false;
     this.error = null;
@@ -93,71 +91,11 @@ export default class Usage extends View {
       .child(div().h(7).border_1().border_color(t.border).bg("#0b0907").child(div().h_full().w(`${left}%`).bg(color)));
   }
 
-  // The title strip's line: per provider its icon, then each limit's label, a
-  // small bar and its percent; the reset times, plan and age in its tooltip.
-  // A click refreshes. The strip is a window_drag block, so presses stay here.
-  strip(providers, now, status, t) {
-    const meter = (l) => {
-      const pct = Math.max(0, Math.min(100, l.percent));
-      const color = pct >= 90 ? t.blocked : pct >= 70 ? t.working : t.accent;
-      return h_flex()
-        .gap(5)
-        .items_center()
-        .child(div().text_color(t.dim).child(l.label))
-        .child(div().w(34).h(4).rounded(2).bg(t.hover).overflow_hidden().child(div().h_full().w(`${pct}%`).bg(color)))
-        .child(div().min_w(24).text_color(t.foreground).child(`${Math.round(pct)}%`));
-    };
-    const tip = (p) =>
-      [
-        `${p.name}${p.plan ? ` ${p.plan}` : ""}`,
-        ...p.limits.map((l) => `${l.label} ${Math.round(l.percent)}%${l.resets ? `, resets in ${until(l.resets - now)}` : ""}`),
-        p.error && !p.stale ? p.error : p.stale ? "stale" : null,
-        `updated ${status}`,
-      ]
-        .filter(Boolean)
-        .join("\n");
-    return h_flex()
-      .id("usage-strip")
-      .size_full()
-      .justify_end()
-      .items_center()
-      .gap(8)
-      .px(6)
-      .text_size(11)
-      .cursor_pointer()
-      .on_mouse_down("left", (_e, cx) => cx.stop_propagation())
-      .on_mouse_down("right", (_e, cx) => cx.stop_propagation())
-      .on_click((_e, cx) => this.refresh(cx))
-      .when(Boolean(this.error), (el) => el.child(div().id("usage-error").size(6).rounded(3).bg(t.blocked).tooltip(this.error)))
-      .children(
-        providers.map((p) =>
-          h_flex()
-            .id(`usage-${p.id}`)
-            .h(18)
-            .gap(8)
-            .items_center()
-            .px(7)
-            .rounded(5)
-            .border_1()
-            // A chip per provider, tinted with its icon's color where it has one.
-            .border_color(ICONS[p.id]?.color ? `${ICONS[p.id].color}59` : t.border)
-            .bg(ICONS[p.id]?.color ? `${ICONS[p.id].color}14` : t.raised)
-            .hover((s) => s.bg(ICONS[p.id]?.color ? `${ICONS[p.id].color}29` : t.hover))
-            .tooltip(tip(p))
-            .when(this.busy || p.stale, (el) => el.opacity(0.6))
-            .child(svg(ICONS[p.id]?.icon ?? "icons/agent.svg").size(12).flex_none().text_color(ICONS[p.id]?.color ?? t.foreground))
-            .when(Boolean(p.error) && !p.stale && !p.limits.length, (el) => el.child(div().text_color(t.blocked).child("error")))
-            .children(p.limits.map(meter)),
-        ),
-      );
-  }
-
   render(cx) {
     const t = theme();
     const now = Date.now();
     const providers = this.data?.providers ?? [];
     const status = this.busy ? "refreshing…" : this.data ? ago(now - this.data.updated) : "";
-    if (this.inStrip) return this.strip(providers, now, status, t);
 
     return v_flex()
       .size_full()

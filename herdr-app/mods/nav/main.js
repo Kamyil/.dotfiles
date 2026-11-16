@@ -15,15 +15,13 @@
 // The pane headers' pin button ("nav.pin-pane") pins that pane instead, and
 // each pin's header ("nav.unpin", "nav.unpin-global") sends it back to a tab.
 // Copies with props { role: "pin-head" } are those headers (pin-head.js):
-// they only draw, so the floating copy alone takes the keys. So does the
-// threads layout's title strip, props { role: "title-strip" } (title-strip.js).
+// they only draw, so the floating copy alone takes the keys.
 // Every render also names agent tabs after their thread (tab-titles.js).
 import { View, div } from "gpui-kit";
 import { focused, panes, run, exec, home, nextCommand, notify, props } from "herdr";
 import { toggleBrain, toggleFloat } from "./floats.js";
 import { navFromPin, pinPane, syncPins, togglePin, unpin } from "./pins.js";
 import PinHead from "./pin-head.js";
-import TitleStrip from "./title-strip.js";
 import { syncTabTitles } from "./tab-titles.js";
 import * as fs from "fs/promises";
 
@@ -66,9 +64,8 @@ const PIN_COMMANDS = ["pin", "pin-global", "pin-pane", "unpin", "unpin-global"];
 
 export default class Nav extends View {
   init(p, cx) {
-    const role = (props() ?? p)?.role;
-    if (role === "pin-head" || role === "title-strip") {
-      this.head = role === "pin-head" ? new PinHead() : new TitleStrip();
+    if ((props() ?? p)?.role === "pin-head") {
+      this.head = new PinHead();
       return;
     }
     cx.spawn(async (cx) => {
