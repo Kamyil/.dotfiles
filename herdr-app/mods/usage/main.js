@@ -7,8 +7,8 @@
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { exec, home, theme, props } from "herdr";
+import { programIcon } from "./program-icons.js";
 
-const ICONS = { claude: { icon: "icons/claude.svg", color: "#d97757" }, codex: { icon: "mods/usage/codex.svg" } };
 const REFRESH_MS = 5 * 60000;
 
 function until(ms) {
@@ -143,7 +143,7 @@ export default class Usage extends View {
                   h_flex()
                     .gap(7)
                     .items_center()
-                    .child(svg(ICONS[p.id]?.icon ?? "icons/agent.svg").size(13).flex_none().text_color(ICONS[p.id]?.color ?? t.foreground))
+                    .child(programIcon(p.id, 13, { icon: "icons/agent.svg", tint: true, color: t.foreground }))
                     .child(div().text_size(12).text_color(t.foreground).child(p.name))
                     .child(div().flex_1().text_size(11).text_color(t.dim).child(p.plan))
                     .when(Boolean(p.stale), (el) => el.child(div().text_size(11).text_color(t.dim).child("stale"))),

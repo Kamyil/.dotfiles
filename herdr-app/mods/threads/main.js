@@ -17,6 +17,7 @@
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
 import { exec, spaces, machines, agents, home, run, theme, notify, props } from "herdr";
+import { programIcon } from "./program-icons.js";
 
 const TOOLS = [
   { id: "claude", label: "Claude", icon: "icons/claude.svg", color: "#d97757" },
@@ -247,7 +248,7 @@ export default class Threads extends View {
       })
       .on_click(() => this.open(th, live))
       .tooltip(`${tool.label} · ${tidy(th.folder)}${th.missing ? " (gone)" : ""}${live ? ` · ${STATUS_LABEL[live.status] ?? live.status} in ${live.space_name} / ${live.tab_name}` : ""}`)
-      .child(svg(tool.icon).size(14).mt(2).flex_none().text_color(tool.color ?? t.foreground))
+      .child(programIcon(tool.id, 14, { icon: tool.icon, tint: true, color: tool.color ?? t.foreground }).mt(2))
       .child(
         v_flex()
           .flex_1()

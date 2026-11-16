@@ -3,12 +3,13 @@
 
 Run scripts/herdr-app-setup first. --check prepares and validates the replacement
 without writing to the app home. --home supports an isolated repository fixture.
-Only the threads bar, its layout height and artwork are changed.
+Updates the threads bar, its artwork and sidebar program-icon adapters.
 """
 import argparse
 import hashlib
 import json
 import os
+import runpy
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -34,6 +35,7 @@ def compile_bar(text, assets):
     before, separator, _ = text.partition("export default class TerminalsBar extends TabDrag {")
     if not separator:
         raise ValueError("Herdr changed the threads bar class")
+    before = replace_once(before, "const DRAG_PAD = 3;", "const DRAG_PAD = 0;")
     before = replace_once(before, ".h(30)\n        .w(this.width(c))", ".h(this.artTabHeight ?? TAB_HEIGHT)\n        .w(this.width(c))")
     helper = MARKER + "const TAB_ART = " + json.dumps(assets, indent=2) + ";\n"
     helper += (REPO / "herdr-app/tab-art.js").read_text() + END
@@ -70,6 +72,11 @@ def prepare(home):
         effects[role] = path
         copies.append((home / path, data))
     assets["__effects"] = effects
+    module = runpy.run_path(str(REPO / "scripts/herdr-program-icons-build"))["render"]()
+    spaces_mod = home / "mods/spaces-square-threads"
+    if spaces_mod.is_dir():
+        copies.append((spaces_mod / "agents.js", (REPO / "herdr-app/space-agents.js").read_bytes()))
+        copies.append((spaces_mod / "program-icons.js", module.encode()))
     return target, original, source, compile_bar(source, assets), list(dict(copies).items())
 
 
@@ -143,6 +150,11 @@ def main():
         temporary.write_text(result)
         temporary.replace(target)
     set_height({"px": 52})
+    # Linked mods are outside the app watcher's tree: touch the links themselves.
+    for name in ("threads", "usage"):
+        link = args.home / "mods" / name
+        if link.is_symlink() and link.resolve() == (REPO / "herdr-app/mods" / name).resolve():
+            os.utime(link, None, follow_symlinks=False)
     print(f"installed illustrated threads tabs: {target}")
 
 

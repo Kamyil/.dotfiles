@@ -5,6 +5,7 @@ Build-time requirements: Pillow and ImageMagick. Runtime: native SVG and PNG onl
 """
 import json
 import math
+import runpy
 import subprocess
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -138,6 +139,7 @@ def main():
         page.paste(source, (0, 32))
         page.save(output, optimize=True)
     paths = {ROOT / entry[role] for entry in entries for role in ('icon', 'background')}
+    runpy.run_path(str(ROOT.parents[1] / 'scripts/herdr-program-icons-build'), run_name='__main__')
     print(f'{len(entries)} programs, {len(families)} generated scene families, {sum(p.stat().st_size for p in paths):,} unique runtime bytes; contact sheets built')
 
 

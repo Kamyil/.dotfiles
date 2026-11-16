@@ -56,6 +56,9 @@ class ArtworkTests(unittest.TestCase):
             elsewhere = home / "mods/terminals-bar-square/main.js"
             elsewhere.parent.mkdir()
             elsewhere.write_text("other layout untouched")
+            spaces = home / "mods/spaces-square-threads"
+            spaces.mkdir()
+            (spaces / "agents.js").write_text("old agent marks")
 
             def install(*args):
                 return subprocess.run([str(INSTALL), "--home", str(home), *args], check=True, capture_output=True)
@@ -79,6 +82,8 @@ class ArtworkTests(unittest.TestCase):
             self.assertIn(before[start:end].replace(".h(30)\n        .w(this.width(c))", ".h(this.artTabHeight ?? TAB_HEIGHT)\n        .w(this.width(c))"), after)
             self.assertEqual(untouched.read_text(), '{"programs":{"custom":{"match":["my-tool"]}}}\n')
             self.assertEqual(elsewhere.read_text(), "other layout untouched")
+            self.assertEqual((spaces / "agents.js").read_text(), (REPO / "herdr-app/space-agents.js").read_text())
+            self.assertEqual((spaces / "program-icons.js").read_text(), (REPO / "herdr-app/mods/threads/program-icons.js").read_text())
             self.assertEqual(len(list((home / "cards/illustrated").glob("*.png"))), 15)
             self.assertGreaterEqual(len(list((home / "cards/illustrated").glob("*.svg"))), 120)
             install()

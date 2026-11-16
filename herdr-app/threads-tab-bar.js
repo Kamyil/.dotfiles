@@ -16,7 +16,7 @@ export default class TerminalsBar extends TabDrag {
       if (activeIndex >= 0) this.artScroll.scroll_to_item(activeIndex);
     }
     const all = panes();
-    const tabHeight = Math.max(24, Math.min(TAB_HEIGHT, (this.artBarHeight ?? 48) - 6));
+    const tabHeight = Math.max(24, Math.min(TAB_HEIGHT, this.artBarHeight ?? TAB_HEIGHT));
     this.artTabHeight = tabHeight;
     const w = win() ?? {};
     const tab = (c, ghost = false) => {
@@ -50,7 +50,7 @@ export default class TerminalsBar extends TabDrag {
     };
 
     const overflow = space.tabs.length * (TAB_WIDTH + DRAG_GAP) + DRAG_PAD * 2 > (this.artViewportWidth ?? Infinity);
-    const edge = (side) => div().absolute().top(3).bottom(3).w(18)
+    const edge = (side) => div().absolute().top(0).bottom(0).w(18)
       .when(side === "left", (el) => el.left(0))
       .when(side === "right", (el) => el.right(0))
       .child(image(TAB_EFFECTS[side]).absolute().inset_0().w(18).h(TAB_HEIGHT));
@@ -73,7 +73,7 @@ export default class TerminalsBar extends TabDrag {
             if (activeIndex >= 0) this.artScroll.scroll_to_item(activeIndex);
             cx.notify();
           })
-          .p(3).gap(3).rounded(5).bg(C.tray)
+          .gap(3).bg("#00000000")
           .children(space.tabs.map((c) => tab(c)))
           .when(Boolean(this.drag?.moved), (el) => {
             const lifted = space.tabs.find((c) => c.id === this.drag.id);

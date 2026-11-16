@@ -102,10 +102,23 @@ function prune() {
 export function syncPins() {
   const f = focused();
   if (f?.pane) lastPane[f.space] = f.pane;
-  const tree = /** @type {any} */ (layout());
+  let tree = /** @type {any} */ (layout());
+  if (!findNode(tree, "pins")) return;
+  // Herdr drops a terminal block whose shell exits (`exit` in a pin), which
+  // left the pins row stuck on screen, empty. Put the block back.
+  const lost = ["pin-space", "pin-global"].filter((id) => findNode(tree, id) && !findNode(tree, `${id}-term`));
+  if (lost.length) {
+    tree = JSON.parse(JSON.stringify(tree));
+    for (const id of lost) {
+      const pin = findNode(tree, id);
+      pin.children = [...(pin.children ?? []), { id: `${id}-term`, type: "block", content: { terminal: "none" }, padding: [2, 6] }];
+    }
+    run("layout.set", { layout: tree });
+    applied = null;
+  }
   // The terminal sits in "<pin>-term"; "<pin>" (with its header) shows or hides.
   const blocks = ["pin-space", "pin-global"].map((id) => findNode(tree, `${id}-term`));
-  if (!findNode(tree, "pins") || blocks.some((b) => !b)) return;
+  if (blocks.some((b) => !b)) return;
   const want = wanted();
   const shown = blocks.map((b) => b.content?.terminal ?? null);
   const key = JSON.stringify([shared("layout"), want, shown]);
