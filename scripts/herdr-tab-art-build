@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""Build portrait scenery and labeled sheets from the full catalog.
+
+Build-time requirements: Pillow and ImageMagick. Runtime: native SVG and PNG only.
+"""
+import json
+import math
+import subprocess
+import xml.etree.ElementTree as ET
+from pathlib import Path
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+
+ROOT = Path(__file__).resolve().parent.parent / 'herdr-app/artwork'
+FONT = ImageFont.load_default(size=15)
+SMALL = ImageFont.load_default(size=11)
+BG = '#0d121b'
+FG = '#f4efdf'
+
+
+def glyph(entry, size):
+    original_path = ROOT / entry.get('glyph', entry['icon'])
+    document = ET.fromstring(original_path.read_text())
+    document.set('width', str(size))
+    document.set('height', str(size))
+    document.set('fill', entry['color'])
+    for element in document.iter():
+        for attr in ('fill', 'stroke'):
+            if attr in element.attrib and element.attrib[attr] != 'none':
+                element.set(attr, entry['color'])
+    source = ROOT / '.check' / (entry['key'] + '-review.svg')
+    out = source.with_suffix('.png')
+    text = ET.tostring(document, encoding='unicode')
+    if not source.exists() or source.read_text() != text:
+        source.write_text(text)
+    if not out.exists() or out.stat().st_mtime_ns < source.stat().st_mtime_ns:
+        subprocess.run(['magick', '-background', 'none', str(source), '-resize', f'{size}x{size}', str(out)], check=True, capture_output=True)
+    image = Image.open(out).convert('RGBA')
+    bbox = image.getchannel('A').getbbox()
+    if not bbox:
+        raise ValueError(f"Empty program mark: {entry['key']}")
+    left, top, right, bottom = bbox
+    cx, cy = (left + right) / 2, (top + bottom) / 2
+    edge = max(right - left, bottom - top) * 1.10
+    # Trim intrinsic logo padding, retaining identical paths and aspect ratio.
+    raw = ET.fromstring(original_path.read_text())
+    vx, vy, vw, vh = map(float, raw.get('viewBox').split())
+    scale = min(image.width / vw, image.height / vh)
+    ox, oy = (image.width - vw * scale) / 2, (image.height - vh * scale) / 2
+    view = [vx + (cx - edge / 2 - ox) / scale, vy + (cy - edge / 2 - oy) / scale, edge / scale, edge / scale]
+    raw.set('viewBox', ' '.join(f'{value:.5f}' for value in view))
+    raw.set('width', '24')
+    raw.set('height', '24')
+    marks = ROOT / 'marks'
+    marks.mkdir(exist_ok=True)
+    ET.register_namespace('', 'http://www.w3.org/2000/svg')
+    (marks / (entry['key'] + '.svg')).write_text(ET.tostring(raw, encoding='unicode') + '\n')
+    return image.crop((round(cx - edge / 2), round(cy - edge / 2), round(cx + edge / 2), round(cy + edge / 2))).resize((size, size), Image.Resampling.LANCZOS)
+
+
+def portrait(entry, size, logo):
+    height = round(size[0] * 84 / 180)
+    scene = Image.open(ROOT / entry['background']).convert('RGBA').resize((size[0], height), Image.Resampling.LANCZOS)
+    top = (height - size[1]) // 2
+    scene = scene.crop((0, top, size[0], top + size[1]))
+    # A review composite of the native bottom scrim, never a runtime filter.
+    shade = Image.new('RGBA', size)
+    pixels = shade.load()
+    for y in range(size[1]):
+        alpha = round(235 * (y / max(1, size[1] - 1)) ** 1.8)
+        for x in range(size[0]):
+            pixels[x, y] = (9, 14, 22, alpha)
+    scene = Image.alpha_composite(scene, shade)
+    scale = size[0] / 180
+    icon = logo.resize((round(22 * scale), round(22 * scale)), Image.Resampling.LANCZOS)
+    scene.alpha_composite(icon, (round(9 * scale), round(9 * scale)))
+    draw = ImageDraw.Draw(scene)
+    font = ImageFont.load_default(size=max(10, round(13 * scale)))
+    draw.text((round(42 * scale), round(13 * scale)), entry['key'], font=font, fill=FG)
+    return scene.convert('RGB')
+
+
+def main():
+    catalog = json.loads((ROOT / 'catalog.json').read_text())
+    (ROOT / '.check').mkdir(exist_ok=True)
+    effects = ROOT / 'effects'
+    effects.mkdir(exist_ok=True)
+    label = Image.new('RGBA', (2, 336))
+    for y in range(336):
+        for x in range(2):
+            label.putpixel((x, y), (9, 14, 22, round(242 * (y / 335) ** 1.8)))
+    label.save(effects / 'label.png', optimize=True)
+    for side in ['left', 'right']:
+        edge = Image.new('RGBA', (72, 336))
+        for x in range(72):
+            alpha = round(230 * ((1 - x / 71) if side == 'left' else x / 71) ** 1.5)
+            for y in range(336):
+                edge.putpixel((x, y), (16, 21, 30, alpha))
+        edge.save(effects / (side + '.png'), optimize=True)
+    for family in catalog['sceneFamilies']:
+        with Image.open(ROOT / f'sources/{family}-background.png') as source:
+            ImageOps.fit(source.convert('RGB'), (720, 336), Image.Resampling.LANCZOS, centering=(1, .5)).save(ROOT / f'backgrounds/{family}.png', optimize=True)
+    entries = catalog['programs']
+    columns = 6
+    cell_w, cell_h = 220, 172
+    rows = math.ceil(len(entries) / columns)
+    sheet = Image.new('RGB', (columns * cell_w + 24, rows * cell_h + 80), BG)
+    draw = ImageDraw.Draw(sheet)
+    draw.text((12, 12), f'Threads / all {len(entries)} program identities / simple logos + illustrated scenes', fill=FG, font=FONT)
+    draw.text((12, 34), '180 x 42 actual logical size; 24px vector mark; separate 4x review pages', fill='#a7b4c7', font=SMALL)
+    large_pages = []
+    for index, entry in enumerate(entries):
+        logo = glyph(entry, 128)
+        x, y = 12 + (index % columns) * cell_w, 64 + (index // columns) * cell_h
+        draw.text((x, y), entry['key'], fill=FG, font=FONT)
+        card = portrait(entry, (180, 42), logo)
+        sheet.paste(card, (x, y + 22))
+        for offset, edge in [(0, 24), (38, 32), (86, 64)]:
+            small = logo.resize((edge, edge), Image.Resampling.LANCZOS)
+            sheet.paste(small, (x + offset, y + 88), small)
+        if index % 12 == 0:
+            large_pages.append(Image.new('RGB', (3 * 744, 4 * 212), BG))
+        page = large_pages[-1]
+        px, py = (index % 12 % 3) * 744 + 12, (index % 12 // 3) * 212 + 12
+        ImageDraw.Draw(page).text((px, py), entry['key'], fill=FG, font=FONT)
+        page.paste(portrait(entry, (720, 168), logo), (px, py + 24))
+    sheet.save(ROOT / 'review/contact-sheet.png', optimize=True)
+    for i, page in enumerate(large_pages):
+        page.save(ROOT / f'review/contact-sheet-large-{i+1:02}.png', optimize=True)
+    # Actual source scenes at full source resolution, paged without resampling.
+    families = catalog['sceneFamilies']
+    for index, family in enumerate(families):
+        output = ROOT / f'review/scene-full-{family}.png'
+        if output.exists() and output.stat().st_mtime_ns > (ROOT / f'sources/{family}-background.png').stat().st_mtime_ns:
+            continue
+        source = Image.open(ROOT / f'sources/{family}-background.png').convert('RGB')
+        page = Image.new('RGB', (source.width, source.height + 32), BG)
+        ImageDraw.Draw(page).text((12, 8), family + ' / full-resolution generated source', fill=FG, font=FONT)
+        page.paste(source, (0, 32))
+        page.save(output, optimize=True)
+    paths = {ROOT / entry[role] for entry in entries for role in ('icon', 'background')}
+    print(f'{len(entries)} programs, {len(families)} generated scene families, {sum(p.stat().st_size for p in paths):,} unique runtime bytes; contact sheets built')
+
+
+if __name__ == '__main__':
+    main()

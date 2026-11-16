@@ -2,6 +2,11 @@
 
 Known problems in this repository. Tick an item when it is fixed.
 
+- [ ] Herdr's public `ScrollHandle` exposes selection reveal but no live offset.
+      The illustrated threads bar therefore shades both edges when overflowing;
+      it cannot yet hide an individual fade exactly at that end of the native
+      scroll range. Native scrolling and selected-tab reveal still work.
+
 - [ ] `nrs` hides the real Homebrew Bundle error. nh prints only stderr, while
       `brew bundle` reports failures on stdout. A failed cleanup shows only
       "Skipping … not installed" warnings. Reproduce with

@@ -10,6 +10,10 @@ __pycache__/
 *.py[cod]
 *.log
 
+# Herdr artwork validation fixtures and private live-window captures
+herdr-app/artwork/.check/
+herdr-app/artwork/review/live-*.png
+
 lazygit/state.yml
 hunk/state.json
 wezterm/workspaces.mru

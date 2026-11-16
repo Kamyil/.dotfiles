@@ -1,0 +1,1112 @@
+{
+  "programs": [
+    {
+      "key": "amp",
+      "name": "Amp",
+      "icon": "marks/amp.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/amp.svg"
+    },
+    {
+      "key": "ansible",
+      "name": "Ansible",
+      "icon": "marks/ansible.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/ansible.svg"
+    },
+    {
+      "key": "antigravity",
+      "name": "Antigravity",
+      "icon": "marks/antigravity.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/antigravity.svg"
+    },
+    {
+      "key": "apt",
+      "name": "Debian",
+      "icon": "marks/apt.svg",
+      "background": "backgrounds/nix.png",
+      "scene": "nix",
+      "color": "#91d5fc",
+      "glyph": "glyphs/apt.svg"
+    },
+    {
+      "key": "astro",
+      "name": "Astro",
+      "icon": "marks/astro.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/astro.svg"
+    },
+    {
+      "key": "biome",
+      "name": "Biome",
+      "icon": "marks/biome.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/biome.svg"
+    },
+    {
+      "key": "brew",
+      "name": "Homebrew",
+      "icon": "marks/brew.svg",
+      "background": "backgrounds/nix.png",
+      "scene": "nix",
+      "color": "#91d5fc",
+      "glyph": "glyphs/brew.svg"
+    },
+    {
+      "key": "bun",
+      "name": "Bun",
+      "icon": "marks/bun.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/bun.svg"
+    },
+    {
+      "key": "caddy",
+      "name": "Caddy",
+      "icon": "marks/caddy.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/caddy.svg"
+    },
+    {
+      "key": "cargo",
+      "name": "Rust",
+      "icon": "marks/cargo.svg",
+      "background": "backgrounds/claude.png",
+      "scene": "claude",
+      "color": "#f3aa80",
+      "glyph": "glyphs/cargo.svg"
+    },
+    {
+      "key": "claude",
+      "name": "Claude Code",
+      "icon": "marks/claude.svg",
+      "background": "backgrounds/claude.png",
+      "scene": "claude",
+      "color": "#f3aa80",
+      "glyph": "glyphs/claude.svg"
+    },
+    {
+      "key": "cmake",
+      "name": "CMake",
+      "icon": "marks/cmake.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/cmake.svg"
+    },
+    {
+      "key": "codex",
+      "name": "Codex",
+      "icon": "marks/codex.svg",
+      "background": "backgrounds/codex.png",
+      "scene": "codex",
+      "color": "#b8b2f1",
+      "glyph": "glyphs/codex.svg"
+    },
+    {
+      "key": "command-code",
+      "name": "Command Code",
+      "icon": "marks/command-code.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/command-code.svg"
+    },
+    {
+      "key": "composer",
+      "name": "Composer",
+      "icon": "marks/composer.svg",
+      "background": "backgrounds/codex.png",
+      "scene": "codex",
+      "color": "#b8b2f1",
+      "glyph": "glyphs/composer.svg"
+    },
+    {
+      "key": "copilot",
+      "name": "GithubCopilot",
+      "icon": "marks/copilot.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/copilot.svg"
+    },
+    {
+      "key": "crush",
+      "name": "crush",
+      "icon": "marks/crush.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/crush.svg"
+    },
+    {
+      "key": "curl",
+      "name": "curl",
+      "icon": "marks/curl.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/curl.svg"
+    },
+    {
+      "key": "cursor",
+      "name": "Cursor",
+      "icon": "marks/cursor.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/cursor.svg"
+    },
+    {
+      "key": "dart",
+      "name": "Dart",
+      "icon": "marks/dart.svg",
+      "background": "backgrounds/codex.png",
+      "scene": "codex",
+      "color": "#b8b2f1",
+      "glyph": "glyphs/dart.svg"
+    },
+    {
+      "key": "deno",
+      "name": "Deno",
+      "icon": "marks/deno.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/deno.svg"
+    },
+    {
+      "key": "django-admin",
+      "name": "Django",
+      "icon": "marks/django-admin.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/django-admin.svg"
+    },
+    {
+      "key": "dnf",
+      "name": "Fedora",
+      "icon": "marks/dnf.svg",
+      "background": "backgrounds/nix.png",
+      "scene": "nix",
+      "color": "#91d5fc",
+      "glyph": "glyphs/dnf.svg"
+    },
+    {
+      "key": "docker",
+      "name": "Docker",
+      "icon": "marks/docker.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/docker.svg"
+    },
+    {
+      "key": "dotnet",
+      "name": ".NET",
+      "icon": "marks/dotnet.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/dotnet.svg"
+    },
+    {
+      "key": "dsh-tui",
+      "name": "DeepSeek",
+      "icon": "marks/dsh-tui.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/dsh-tui.svg"
+    },
+    {
+      "key": "electron",
+      "name": "Electron",
+      "icon": "marks/electron.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/electron.svg"
+    },
+    {
+      "key": "emacs",
+      "name": "GNU Emacs",
+      "icon": "marks/emacs.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/emacs.svg"
+    },
+    {
+      "key": "erl",
+      "name": "Erlang",
+      "icon": "marks/erl.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/erl.svg"
+    },
+    {
+      "key": "esbuild",
+      "name": "esbuild",
+      "icon": "marks/esbuild.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/esbuild.svg"
+    },
+    {
+      "key": "eslint",
+      "name": "ESLint",
+      "icon": "marks/eslint.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/eslint.svg"
+    },
+    {
+      "key": "expo",
+      "name": "Expo",
+      "icon": "marks/expo.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/expo.svg"
+    },
+    {
+      "key": "fastapi",
+      "name": "FastAPI",
+      "icon": "marks/fastapi.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/fastapi.svg"
+    },
+    {
+      "key": "ffmpeg",
+      "name": "FFmpeg",
+      "icon": "marks/ffmpeg.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/ffmpeg.svg"
+    },
+    {
+      "key": "flask",
+      "name": "Flask",
+      "icon": "marks/flask.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/flask.svg"
+    },
+    {
+      "key": "flutter",
+      "name": "Flutter",
+      "icon": "marks/flutter.svg",
+      "background": "backgrounds/codex.png",
+      "scene": "codex",
+      "color": "#b8b2f1",
+      "glyph": "glyphs/flutter.svg"
+    },
+    {
+      "key": "fly",
+      "name": "Fly.io",
+      "icon": "marks/fly.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/fly.svg"
+    },
+    {
+      "key": "gcloud",
+      "name": "Google Cloud",
+      "icon": "marks/gcloud.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/gcloud.svg"
+    },
+    {
+      "key": "gemini",
+      "name": "Google Gemini",
+      "icon": "marks/gemini.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/gemini.svg"
+    },
+    {
+      "key": "gh",
+      "name": "GitHub",
+      "icon": "marks/gh.svg",
+      "background": "backgrounds/git.png",
+      "scene": "git",
+      "color": "#eea16d",
+      "glyph": "glyphs/gh.svg"
+    },
+    {
+      "key": "ghci",
+      "name": "Haskell",
+      "icon": "marks/ghci.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/ghci.svg"
+    },
+    {
+      "key": "git",
+      "name": "Git",
+      "icon": "marks/git.svg",
+      "background": "backgrounds/git.png",
+      "scene": "git",
+      "color": "#eea16d",
+      "glyph": "glyphs/git.svg"
+    },
+    {
+      "key": "glab",
+      "name": "GitLab",
+      "icon": "marks/glab.svg",
+      "background": "backgrounds/git.png",
+      "scene": "git",
+      "color": "#eea16d",
+      "glyph": "glyphs/glab.svg"
+    },
+    {
+      "key": "go",
+      "name": "Go",
+      "icon": "marks/go.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/go.svg"
+    },
+    {
+      "key": "gradle",
+      "name": "Gradle",
+      "icon": "marks/gradle.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/gradle.svg"
+    },
+    {
+      "key": "grok",
+      "name": "Grok",
+      "icon": "marks/grok.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/grok.svg"
+    },
+    {
+      "key": "helm",
+      "name": "Helm",
+      "icon": "marks/helm.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/helm.svg"
+    },
+    {
+      "key": "hermes",
+      "name": "Hermes Agent",
+      "icon": "marks/hermes.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/hermes.svg"
+    },
+    {
+      "key": "htop",
+      "name": "htop",
+      "icon": "marks/htop.svg",
+      "background": "backgrounds/htop.png",
+      "scene": "htop",
+      "color": "#8cdba8",
+      "glyph": "glyphs/htop.svg"
+    },
+    {
+      "key": "hx",
+      "name": "Helix",
+      "icon": "marks/hx.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/hx.svg"
+    },
+    {
+      "key": "iex",
+      "name": "Elixir",
+      "icon": "marks/iex.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/iex.svg"
+    },
+    {
+      "key": "java",
+      "name": "OpenJDK",
+      "icon": "marks/java.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/java.svg"
+    },
+    {
+      "key": "jest",
+      "name": "Jest",
+      "icon": "marks/jest.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/jest.svg"
+    },
+    {
+      "key": "julia",
+      "name": "Julia",
+      "icon": "marks/julia.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/julia.svg"
+    },
+    {
+      "key": "jupyter",
+      "name": "Jupyter",
+      "icon": "marks/jupyter.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/jupyter.svg"
+    },
+    {
+      "key": "kimi",
+      "name": "Kimi",
+      "icon": "marks/kimi.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/kimi.svg"
+    },
+    {
+      "key": "kiro",
+      "name": "kiro",
+      "icon": "marks/kiro.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/kiro.svg"
+    },
+    {
+      "key": "kotlin",
+      "name": "Kotlin",
+      "icon": "marks/kotlin.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/kotlin.svg"
+    },
+    {
+      "key": "kubectl",
+      "name": "Kubernetes",
+      "icon": "marks/kubectl.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/kubectl.svg"
+    },
+    {
+      "key": "lazygit",
+      "name": "lazygit",
+      "icon": "marks/lazygit.svg",
+      "background": "backgrounds/lazygit.png",
+      "scene": "lazygit",
+      "color": "#e5a0c4",
+      "glyph": "glyphs/lazygit.svg"
+    },
+    {
+      "key": "less",
+      "name": "less",
+      "icon": "marks/less.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/less.svg"
+    },
+    {
+      "key": "lua",
+      "name": "Lua",
+      "icon": "marks/lua.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/lua.svg"
+    },
+    {
+      "key": "make",
+      "name": "make",
+      "icon": "marks/make.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/make.svg"
+    },
+    {
+      "key": "mastracode",
+      "name": "mastracode",
+      "icon": "marks/mastracode.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/mastracode.svg"
+    },
+    {
+      "key": "mongosh",
+      "name": "MongoDB",
+      "icon": "marks/mongosh.svg",
+      "background": "backgrounds/htop.png",
+      "scene": "htop",
+      "color": "#8cdba8",
+      "glyph": "glyphs/mongosh.svg"
+    },
+    {
+      "key": "muse",
+      "name": "Meta",
+      "icon": "marks/muse.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/muse.svg"
+    },
+    {
+      "key": "mvn",
+      "name": "Apache Maven",
+      "icon": "marks/mvn.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/mvn.svg"
+    },
+    {
+      "key": "mysql",
+      "name": "MySQL",
+      "icon": "marks/mysql.svg",
+      "background": "backgrounds/htop.png",
+      "scene": "htop",
+      "color": "#8cdba8",
+      "glyph": "glyphs/mysql.svg"
+    },
+    {
+      "key": "nano",
+      "name": "nano",
+      "icon": "marks/nano.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/nano.svg"
+    },
+    {
+      "key": "netlify",
+      "name": "Netlify",
+      "icon": "marks/netlify.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/netlify.svg"
+    },
+    {
+      "key": "next",
+      "name": "Next.js",
+      "icon": "marks/next.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/next.svg"
+    },
+    {
+      "key": "nginx",
+      "name": "NGINX",
+      "icon": "marks/nginx.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/nginx.svg"
+    },
+    {
+      "key": "nix",
+      "name": "NixOS",
+      "icon": "marks/nix.svg",
+      "background": "backgrounds/nix.png",
+      "scene": "nix",
+      "color": "#91d5fc",
+      "glyph": "glyphs/nix.svg"
+    },
+    {
+      "key": "node",
+      "name": "Node.js",
+      "icon": "marks/node.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/node.svg"
+    },
+    {
+      "key": "npm",
+      "name": "npm",
+      "icon": "marks/npm.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/npm.svg"
+    },
+    {
+      "key": "nuxt",
+      "name": "Nuxt",
+      "icon": "marks/nuxt.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/nuxt.svg"
+    },
+    {
+      "key": "nvim",
+      "name": "Neovim",
+      "icon": "marks/nvim.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/nvim.svg"
+    },
+    {
+      "key": "ocaml",
+      "name": "OCaml",
+      "icon": "marks/ocaml.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/ocaml.svg"
+    },
+    {
+      "key": "ollama",
+      "name": "Ollama",
+      "icon": "marks/ollama.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/ollama.svg"
+    },
+    {
+      "key": "omp",
+      "name": "omp",
+      "icon": "marks/omp.svg",
+      "background": "backgrounds/omp.png",
+      "scene": "omp",
+      "color": "#9cc8f4",
+      "glyph": "glyphs/omp.svg"
+    },
+    {
+      "key": "opencode",
+      "name": "opencode",
+      "icon": "marks/opencode.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/opencode.svg"
+    },
+    {
+      "key": "pacman",
+      "name": "Arch Linux",
+      "icon": "marks/pacman.svg",
+      "background": "backgrounds/nix.png",
+      "scene": "nix",
+      "color": "#91d5fc",
+      "glyph": "glyphs/pacman.svg"
+    },
+    {
+      "key": "perl",
+      "name": "Perl",
+      "icon": "marks/perl.svg",
+      "background": "backgrounds/codex.png",
+      "scene": "codex",
+      "color": "#b8b2f1",
+      "glyph": "glyphs/perl.svg"
+    },
+    {
+      "key": "php",
+      "name": "PHP",
+      "icon": "marks/php.svg",
+      "background": "backgrounds/codex.png",
+      "scene": "codex",
+      "color": "#b8b2f1",
+      "glyph": "glyphs/php.svg"
+    },
+    {
+      "key": "pi",
+      "name": "pi",
+      "icon": "marks/pi.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/pi.svg"
+    },
+    {
+      "key": "pig",
+      "name": "PiG",
+      "icon": "marks/pig.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/pig.svg"
+    },
+    {
+      "key": "pnpm",
+      "name": "pnpm",
+      "icon": "marks/pnpm.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/pnpm.svg"
+    },
+    {
+      "key": "podman",
+      "name": "Podman",
+      "icon": "marks/podman.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/podman.svg"
+    },
+    {
+      "key": "poetry",
+      "name": "Poetry",
+      "icon": "marks/poetry.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/poetry.svg"
+    },
+    {
+      "key": "prettier",
+      "name": "Prettier",
+      "icon": "marks/prettier.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/prettier.svg"
+    },
+    {
+      "key": "prime-agent",
+      "name": "prime-agent",
+      "icon": "marks/prime-agent.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/prime-agent.svg"
+    },
+    {
+      "key": "prisma",
+      "name": "Prisma",
+      "icon": "marks/prisma.svg",
+      "background": "backgrounds/htop.png",
+      "scene": "htop",
+      "color": "#8cdba8",
+      "glyph": "glyphs/prisma.svg"
+    },
+    {
+      "key": "psql",
+      "name": "PostgreSQL",
+      "icon": "marks/psql.svg",
+      "background": "backgrounds/htop.png",
+      "scene": "htop",
+      "color": "#8cdba8",
+      "glyph": "glyphs/psql.svg"
+    },
+    {
+      "key": "pytest",
+      "name": "Pytest",
+      "icon": "marks/pytest.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/pytest.svg"
+    },
+    {
+      "key": "python",
+      "name": "Python",
+      "icon": "marks/python.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/python.svg"
+    },
+    {
+      "key": "qoder",
+      "name": "Qoder",
+      "icon": "marks/qoder.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/qoder.svg"
+    },
+    {
+      "key": "r",
+      "name": "R",
+      "icon": "marks/r.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/r.svg"
+    },
+    {
+      "key": "redis-cli",
+      "name": "Redis",
+      "icon": "marks/redis-cli.svg",
+      "background": "backgrounds/htop.png",
+      "scene": "htop",
+      "color": "#8cdba8",
+      "glyph": "glyphs/redis-cli.svg"
+    },
+    {
+      "key": "rg",
+      "name": "rg",
+      "icon": "marks/rg.svg",
+      "background": "backgrounds/codex.png",
+      "scene": "codex",
+      "color": "#b8b2f1",
+      "glyph": "glyphs/rg.svg"
+    },
+    {
+      "key": "ruby",
+      "name": "Ruby",
+      "icon": "marks/ruby.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/ruby.svg"
+    },
+    {
+      "key": "ruff",
+      "name": "Ruff",
+      "icon": "marks/ruff.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/ruff.svg"
+    },
+    {
+      "key": "scala",
+      "name": "Scala",
+      "icon": "marks/scala.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/scala.svg"
+    },
+    {
+      "key": "shell",
+      "name": "shell",
+      "icon": "marks/shell.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/shell.svg"
+    },
+    {
+      "key": "sqlite3",
+      "name": "SQLite",
+      "icon": "marks/sqlite3.svg",
+      "background": "backgrounds/opencode.png",
+      "scene": "opencode",
+      "color": "#cbd8e5",
+      "glyph": "glyphs/sqlite3.svg"
+    },
+    {
+      "key": "ssh",
+      "name": "ssh",
+      "icon": "marks/ssh.svg",
+      "background": "backgrounds/htop.png",
+      "scene": "htop",
+      "color": "#8cdba8",
+      "glyph": "glyphs/ssh.svg"
+    },
+    {
+      "key": "supabase",
+      "name": "Supabase",
+      "icon": "marks/supabase.svg",
+      "background": "backgrounds/htop.png",
+      "scene": "htop",
+      "color": "#8cdba8",
+      "glyph": "glyphs/supabase.svg"
+    },
+    {
+      "key": "swift",
+      "name": "Swift",
+      "icon": "marks/swift.svg",
+      "background": "backgrounds/shell.png",
+      "scene": "shell",
+      "color": "#c8b1ef",
+      "glyph": "glyphs/swift.svg"
+    },
+    {
+      "key": "tauri",
+      "name": "Tauri",
+      "icon": "marks/tauri.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/tauri.svg"
+    },
+    {
+      "key": "terraform",
+      "name": "Terraform",
+      "icon": "marks/terraform.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/terraform.svg"
+    },
+    {
+      "key": "tmux",
+      "name": "tmux",
+      "icon": "marks/tmux.svg",
+      "background": "backgrounds/htop.png",
+      "scene": "htop",
+      "color": "#8cdba8",
+      "glyph": "glyphs/tmux.svg"
+    },
+    {
+      "key": "tsc",
+      "name": "TypeScript",
+      "icon": "marks/tsc.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/tsc.svg"
+    },
+    {
+      "key": "turbo",
+      "name": "Turborepo",
+      "icon": "marks/turbo.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/turbo.svg"
+    },
+    {
+      "key": "uv",
+      "name": "uv",
+      "icon": "marks/uv.svg",
+      "background": "backgrounds/task.png",
+      "scene": "task",
+      "color": "#e0c280",
+      "glyph": "glyphs/uv.svg"
+    },
+    {
+      "key": "vercel",
+      "name": "Vercel",
+      "icon": "marks/vercel.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/vercel.svg"
+    },
+    {
+      "key": "vim",
+      "name": "Vim",
+      "icon": "marks/vim.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/vim.svg"
+    },
+    {
+      "key": "vite",
+      "name": "Vite",
+      "icon": "marks/vite.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/vite.svg"
+    },
+    {
+      "key": "vitest",
+      "name": "Vitest",
+      "icon": "marks/vitest.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/vitest.svg"
+    },
+    {
+      "key": "webpack",
+      "name": "Webpack",
+      "icon": "marks/webpack.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/webpack.svg"
+    },
+    {
+      "key": "wrangler",
+      "name": "Cloudflare",
+      "icon": "marks/wrangler.svg",
+      "background": "backgrounds/docker.png",
+      "scene": "docker",
+      "color": "#7dc5ed",
+      "glyph": "glyphs/wrangler.svg"
+    },
+    {
+      "key": "yarn",
+      "name": "Yarn",
+      "icon": "marks/yarn.svg",
+      "background": "backgrounds/nvim.png",
+      "scene": "nvim",
+      "color": "#8fda7f",
+      "glyph": "glyphs/yarn.svg"
+    },
+    {
+      "key": "zig",
+      "name": "Zig",
+      "icon": "marks/zig.svg",
+      "background": "backgrounds/claude.png",
+      "scene": "claude",
+      "color": "#f3aa80",
+      "glyph": "glyphs/zig.svg"
+    }
+  ],
+  "fallbacks": [
+    "program",
+    "agent"
+  ],
+  "scope": "all shipped SVG program identities plus omp",
+  "sceneFamilies": [
+    "nvim",
+    "git",
+    "lazygit",
+    "docker",
+    "nix",
+    "htop",
+    "task",
+    "claude",
+    "codex",
+    "opencode",
+    "omp",
+    "shell"
+  ]
+}

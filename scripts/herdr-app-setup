@@ -17,8 +17,8 @@ whose content changes. Start Herdr once first so its defaults exist.
   scripts/agent-threads) and the usage mod (Claude Code and Codex plan usage,
   scripts/agent-usage), top to bottom. The tab bar sits over the panes only
   and drops its space chip and macOS window-button inset; its tabs fill the
-  bar Safari style, splitting its width evenly and shrinking as more open
-  (mods/terminals-bar-square-threads); dragging a tab slides it into a new
+  bar with illustrated 180 × 42px tabs and horizontal scrolling with edge fades
+  (mods/terminals-bar-square-threads, scripts/herdr-tab-art-setup); dragging a tab slides it into a new
   place, Rex style (herdr-app/tab-drag.js). Its spaces list tints each machine's
   group (mods/spaces-square-threads): Mac gray, thinkpad light blue, malinka red,
   and puts CPU, GPU (malinka: SoC temperature), RAM and disk bars in each
@@ -615,6 +615,7 @@ for name, base in nav_layouts.items():
         for child in workspace["children"]:
             if child.get("content", {}).get("mod") == bar_mod + square_suffix:
                 child["content"]["mod"] = bar_mod + square_suffix + threads_bar[0]
+                child["size"] = {"px": 52}
         sidebar = threads_sidebar(gap, square_mods)
         for child in sidebar["children"]:
             if child["content"]["mod"] == spaces_mod + square_suffix:
@@ -633,6 +634,7 @@ for mod in sorted(square_mods):
     write_square_mod(mod, square_mods, "", bar_edits if mod == bar_mod else pane_edits.get(mod, ()))
 if bar_mod in square_mods:
     write_square_mod(bar_mod, square_mods, *threads_bar)
+    subprocess.run([str(repo / "scripts/herdr-tab-art-setup"), "--home", str(app_home)], check=True)
 if spaces_mod in square_mods:
     write_square_mod(menu_mod, square_mods, *menu_threads)
     write_square_mod(spaces_mod, square_mods, *threads_spaces, {"stats.js": machine_stats, "agents.js": space_agents, "favicons.js": space_favicons})

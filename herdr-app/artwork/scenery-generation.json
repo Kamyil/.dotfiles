@@ -1,0 +1,30 @@
+{
+  "workflow": "built-in image_gen",
+  "entries": [
+    {
+      "key": "nix",
+      "prompt": "A premium PC-game painted environment background only, no logo, no text, no UI or frame. Panoramic 2:1 composition for an illustrated terminal tab. Deep midnight navy mountains, a beautifully lit icy blue rock spire on far right, layered snow-covered slate ridges, cool cyan edge light, distant mist, tiny controlled snow particles. Upper-left dark empty space for a simple logo, bottom-left nearly black calm region for a live label. Rich painterly detail on the right, clear large broad shapes, deep atmospheric depth, sophisticated material richness, not neon.",
+      "outputHint": "Generated images are saved to /Users/kamil/.codex/generated_images/01a1e4f3-f346-77b2-83ca-c4eb7cba0e55 as /Users/kamil/.codex/generated_images/01a1e4f3-f346-77b2-83ca-c4eb7cba0e55/exec-80a52ebd-30f8-43b8-bfff-0cd832425732.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "key": "git",
+      "prompt": "A premium PC-game painted environment background only, no logo, no text, no UI or frame. Panoramic 2:1 composition. A dark graphite woodland with copper and burnt-orange autumn maple leaves entering from top right, layered slate ledges and warm directional light catching leaf edges, rich shadows and a little soft mist. Left third mostly dark for a simple logo, bottom-left nearly black calm region for a live label. Painterly, controlled saturation, beautiful realistic materials, details concentrated far right, not glossy mobile art.",
+      "outputHint": "Generated images are saved to /Users/kamil/.codex/generated_images/01a1e4f3-f346-77b2-83ca-c4eb7cba0e55 as /Users/kamil/.codex/generated_images/01a1e4f3-f346-77b2-83ca-c4eb7cba0e55/exec-d91b98fc-571a-4bf3-88f3-6530fb16c2c9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "key": "docker",
+      "prompt": "A premium PC-game painted environment background only, no logo, no text, no UI or frame. Panoramic 2:1 composition. Deep ocean-blue underwater cargo landscape, beautiful broad steel-blue shipping containers at far right, distant blue rock forms and soft cyan light filtering down through water, layered atmospheric depth. Left third dark empty for a simple logo, bottom-left nearly black calm region for live label. Rich painterly materials, broad readable details on right, restrained color, no excessive bloom.",
+      "outputHint": "Generated images are saved to /Users/kamil/.codex/generated_images/01a1e4f3-f346-77b2-83ca-c4eb7cba0e55 as /Users/kamil/.codex/generated_images/01a1e4f3-f346-77b2-83ca-c4eb7cba0e55/exec-662fc237-e27d-4f9e-a8b9-499610ed9f6b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "key": "htop",
+      "prompt": "A premium PC-game painted environment background only, no logo, no text, no UI or frame. Panoramic 2:1 composition. An atmospheric dark emerald industrial machinery room, chunky dark green copper pipes crossing at far right, subtle green light reflected on aged metal and deep layered shadow, very restrained thin steam. Left third dark empty for a simple logo, bottom-left nearly black calm for live label. Rich painterly industrial materials, broad readable shapes concentrated on right, no neon or plastic.",
+      "outputHint": "Generated images are saved to /Users/kamil/.codex/generated_images/01a1e4f3-f346-77b2-83ca-c4eb7cba0e55 as /Users/kamil/.codex/generated_images/01a1e4f3-f346-77b2-83ca-c4eb7cba0e55/exec-86c3b8de-d52e-4d52-a1f4-6b3a5adba4a4.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "key": "task",
+      "prompt": "A premium PC-game painted environment background only, no logo, no text, no UI or frame. Panoramic 2:1 composition. Dark warm slate and amber study, beautiful rolled parchment scroll and folded ochre maps at far right, subtle gold light from off-frame top left, rich warm shadows and aged polished wood. No written markings, no legible symbols. Left third dark empty for simple logo, bottom-left nearly black calm for live label. Rich painterly materials, broad readable detail on right, not glossy mobile art.",
+      "outputHint": "Generated images are saved to /Users/kamil/.codex/generated_images/01a1e4f3-f346-77b2-83ca-c4eb7cba0e55 as /Users/kamil/.codex/generated_images/01a1e4f3-f346-77b2-83ca-c4eb7cba0e55/exec-5a01eea3-ba08-437e-8b7c-c69911e399a2.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+"""Install illustrated, fixed-width tabs into the generated threads bar only.
+
+Run scripts/herdr-app-setup first. --check prepares and validates the replacement
+without writing to the app home. --home supports an isolated repository fixture.
+Only the threads bar, its layout height and artwork are changed.
+"""
+import argparse
+import hashlib
+import json
+import os
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+MARKER = "// BEGIN DOTFILES THREADS ART\n"
+END = "// END DOTFILES THREADS ART\n"
+
+
+def replace_once(text, old, new):
+    if text.count(old) != 1:
+        raise ValueError(f"Herdr threads bar changed: expected exactly one {old!r}")
+    return text.replace(old, new, 1)
+
+
+def compile_bar(text, assets):
+    """Keep upstream controls and drag logic; use the shared portrait renderer."""
+    if MARKER in text:
+        raise ValueError("compile_bar requires the original generated threads bar")
+    text = replace_once(text, 'import { View, div, svg, image } from "gpui-kit";',
+                        'import { View, div, svg, image } from "gpui-kit";')
+    text = replace_once(text, 'import { h_flex } from "gpui-base";',
+                        'import { h_flex, ScrollHandle } from "gpui-base";')
+    before, separator, _ = text.partition("export default class TerminalsBar extends TabDrag {")
+    if not separator:
+        raise ValueError("Herdr changed the threads bar class")
+    before = replace_once(before, ".h(30)\n        .w(this.width(c))", ".h(this.artTabHeight ?? TAB_HEIGHT)\n        .w(this.width(c))")
+    helper = MARKER + "const TAB_ART = " + json.dumps(assets, indent=2) + ";\n"
+    helper += (REPO / "herdr-app/tab-art.js").read_text() + END
+    return before + helper + (REPO / "herdr-app/threads-tab-bar.js").read_text()
+
+
+def prepare(home):
+    mod = home / "mods/terminals-bar-square-threads"
+    target = mod / "main.js"
+    original = mod / "main.before-tab-art.js"
+    current = target.read_text()
+    source = original.read_text() if MARKER in current else current
+    catalog = json.loads((REPO / "herdr-app/artwork/catalog.json").read_text())
+    assets, copies = {}, []
+    for entry in catalog["programs"]:
+        paths = {}
+        for role in ("icon", "background"):
+            path = REPO / "herdr-app/artwork" / entry[role]
+            data = path.read_bytes()
+            if path.suffix == ".png" and not data.startswith(b"\x89PNG\r\n\x1a\n"):
+                raise ValueError(f"Invalid PNG: {path}")
+            if path.suffix == ".svg" and ET.fromstring(data).tag != "{http://www.w3.org/2000/svg}svg":
+                raise ValueError(f"Invalid SVG: {path}")
+            digest = hashlib.sha256(data).hexdigest()[:12]
+            name = f"{role}-{digest}{path.suffix}"
+            paths[role] = "cards/illustrated/" + name
+            copies.append((home / paths[role], data))
+        assets[entry["key"]] = {**paths, "color": entry["color"]}
+    effects = {}
+    for role in ("label", "left", "right"):
+        data = (REPO / f"herdr-app/artwork/effects/{role}.png").read_bytes()
+        digest = hashlib.sha256(data).hexdigest()[:12]
+        path = f"cards/illustrated/{role}-{digest}.png"
+        effects[role] = path
+        copies.append((home / path, data))
+    assets["__effects"] = effects
+    return target, original, source, compile_bar(source, assets), list(dict(copies).items())
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--home", type=Path, default=Path(os.environ.get("HERDR_APP_HOME", Path.home() / ".config/herdr-app")))
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--restore", action="store_true", help="restore the pre-art threads bar; artwork files may remain cached")
+    args = parser.parse_args()
+    target = args.home / "mods/terminals-bar-square-threads/main.js"
+    original = target.with_name("main.before-tab-art.js")
+    layout_path = args.home / "layouts/threads.json"
+    height_backup = target.with_name("tabs.before-tab-art.json")
+    for path in (target, original, layout_path, height_backup):
+        if any(parent.is_symlink() for parent in [path, *path.parents]):
+            parser.exit(1, f"herdr-tab-art-setup: refusing symlink at or above {path}\n")
+    if layout_path.exists():
+        json.loads(layout_path.read_text())
+
+    def resize_tabs(node, size):
+        if isinstance(node, list):
+            for child in node:
+                resize_tabs(child, size)
+        elif isinstance(node, dict):
+            if node.get("content", {}).get("mod") == "terminals-bar-square-threads":
+                if not height_backup.exists() and not args.restore:
+                    height_backup.write_text(json.dumps(node.get("size", {"px": 38})))
+                node["size"] = size
+            for value in node.values():
+                resize_tabs(value, size)
+
+    def set_height(size):
+        if not layout_path.exists():
+            return
+        layout = json.loads(layout_path.read_text())
+        resize_tabs(layout, size)
+        data = json.dumps(layout, indent=2) + "\n"
+        if layout_path.read_text() != data:
+            temporary = layout_path.with_suffix(".tmp")
+            temporary.write_text(data)
+            temporary.replace(layout_path)
+
+    if args.restore:
+        if args.check:
+            parser.error("--restore and --check cannot be combined")
+        if not original.exists():
+            parser.error("no pre-art threads bar saved")
+        target.write_text(original.read_text())
+        if height_backup.exists():
+            set_height(json.loads(height_backup.read_text()))
+        print(f"restored {target}")
+        return
+    try:
+        target, original, source, result, copies = prepare(args.home)
+    except (OSError, ValueError, KeyError) as error:
+        parser.exit(1, f"herdr-tab-art-setup: {error}\n")
+    if args.check:
+        print(f"validated {len(copies)} artwork assets and threads bar patches (no writes)")
+        return
+    # Refuse links: installation must never mutate a shipped or linked source.
+    for path in [target, original, layout_path, height_backup, *(path for path, _ in copies)]:
+        if any(parent.is_symlink() for parent in [path, *path.parents] if parent != args.home.parent):
+            parser.exit(1, f"herdr-tab-art-setup: refusing symlink at or above {path}\n")
+    for path, data in copies:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if not path.exists() or path.read_bytes() != data:
+            path.write_bytes(data)
+    original.write_text(source)
+    if target.read_text() != result:
+        temporary = target.with_suffix(".tmp")
+        temporary.write_text(result)
+        temporary.replace(target)
+    set_height({"px": 52})
+    print(f"installed illustrated threads tabs: {target}")
+
+
+if __name__ == "__main__":
+    main()
