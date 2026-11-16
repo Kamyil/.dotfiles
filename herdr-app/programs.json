@@ -4,6 +4,8 @@
     "opencode": { "icon": "cards/opencode.svg", "tint": false },
     "nvim": { "icon": "cards/nvim.svg", "tint": false },
     "shell": { "icon": "cards/shell.svg", "tint": false },
-    "lazygit": { "icon": "cards/lazygit.svg", "tint": false }
+    "lazygit": { "icon": "cards/lazygit.svg", "tint": false },
+    "codex": { "icon": "cards/codex.svg", "tint": false },
+    "omp": { "name": "omp", "icon": "cards/omp.svg", "tint": false, "match": ["omp"] }
   }
 }
