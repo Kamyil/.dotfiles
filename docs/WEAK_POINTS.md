@@ -31,9 +31,10 @@ Known problems in this repository. Tick an item when it is fixed.
 - [ ] Vicinae settings (`~/.config/vicinae/settings.json`) live outside the
       repo because Vicinae rewrites the file from its GUI. Theme, font, and
       keybinding choices are not versioned.
-- [ ] Codex overlay bumps can leave a stale per-platform hash (0.164.0 shipped
+- [x] Codex overlay bumps can leave a stale per-platform hash (0.164.0 shipped
       with an outdated `x86_64-unknown-linux-musl` hash, breaking `nrs` on
-      NixOS). Overlay updates should prefetch every platform's assets.
+      NixOS). `scripts/update-codex-overlay.sh` now prefetches CLI and code-mode
+      host assets for every supported platform before updating the overlay.
 - [ ] The official Herdr app and herdr-core (`nix/packages/herdr-app.nix`,
       `nix/packages/herdr-core.nix`) are prebuilt release binaries pinned by
       hand from `releases.herdr.dev/{app,core}/latest.json`; there is no
