@@ -39,6 +39,7 @@ flowchart TD
 - **Local overlays:** packages for `opencode`, `omp`, `claude-code`, `codex`, and `vercel` in `nix/overlays/`. Bump the release-binary overlays with `scripts/update-opencode-overlay.sh`, `scripts/update-omp-overlay.sh`, `scripts/update-claude-code-overlay.sh`, and [`scripts/update-codex-overlay.sh`](scripts/update-codex-overlay.sh) (each takes `<version|latest>`). The Codex updater refreshes both CLI and code-mode host hashes for every supported platform before writing the overlay.
 - **Herdr app and core:** release-binary packages in [`nix/packages/herdr-app.nix`](nix/packages/herdr-app.nix) and [`nix/packages/herdr-core.nix`](nix/packages/herdr-core.nix). Bump them with `scripts/update-herdr-packages.sh <app|core> <version|latest>`, or `scripts/update-herdr-packages.sh all` for both at latest.
   After installing a new app release, launch it once to refresh its bundled mods, then rerun [`scripts/herdr-app-setup`](scripts/herdr-app-setup) to regenerate the custom layouts and mods.
+  On macOS, Threads uses Herdr's native window blur behind the tab strip and panel gaps; tabs, sidebar panels, and terminals stay opaque.
 
 ## How live configuration reload works
 

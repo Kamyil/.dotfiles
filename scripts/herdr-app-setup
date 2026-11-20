@@ -622,6 +622,11 @@ for name, base in nav_layouts.items():
                 child["content"]["mod"] += threads_spaces[0]
         layout["children"] = [{"id": "body", "type": "row", "gap": gap, "children": [sidebar, workspace]}]
         layout["traffic_lights"] = list(threads_traffic_lights)
+        if sys.platform == "darwin":
+            # Tint the window once, below the layout's opaque tabs and panels.
+            layout["window_blur"] = True
+            layout["background"] = "#00000000"
+            layout["colors"]["background"] = "#13161990"
     if not with_pins(layout, layout.get("gap", 8)):
         sys.exit(f"herdr-app-setup: the {name} layout has no tab block for the pins; Herdr changed it")
     shipped_theme = layout.get("theme")
