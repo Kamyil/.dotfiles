@@ -1,10 +1,67 @@
+const THREADS_BAR = "terminals-bar-square-threads";
+const POSITION = "threads.tab_bar_position";
+
+function tabBarPosition() {
+  return shared(POSITION) === "bottom" ? "bottom" : "top";
+}
+
+function positionTabBar(position) {
+  const tree = layout();
+  const column = tree?.children?.find((child) => child.id === "body")
+    ?.children?.find((child) => child.id === "workspace");
+  const children = column?.children;
+  const index = children?.findIndex((child) => child.content?.mod === THREADS_BAR) ?? -1;
+  if (index < 0 || index === (position === "top" ? 0 : children.length - 1)) return;
+  const [bar] = children.splice(index, 1);
+  if (position === "top") children.unshift(bar);
+  else children.push(bar);
+  run("layout.set", { layout: tree });
+}
+
+function openThreadsSettings() {
+  openOverlay({ mod: THREADS_BAR, kind: "popup", width: 172, props: { threadsSettings: true } });
+}
+
+function threadsSettings() {
+  const t = theme();
+  const selected = tabBarPosition();
+  return v_flex().w_full().p(5).bg(t.popover).text_size(13)
+    .child(div().px(8).py(5).text_color(t.muted).child("Tab bar position"))
+    .children(["top", "bottom"].map((position) => h_flex()
+      .id(`threads-position-${position}`).h(30).px(8).rounded(6)
+      .items_center().justify_between().cursor_pointer().text_color(t.foreground)
+      .when(position === selected, (el) => el.bg(t.selected))
+      .hover((s) => s.bg(t.hover))
+      .on_click(() => {
+        closeOverlay(props().overlay);
+        setShared(POSITION, position);
+      })
+      .child(position === "top" ? "Top" : "Bottom")
+      .child(position === selected ? "✓" : "")));
+}
+
 // The portrait treatment is exclusive to threads. TabDrag above remains the
 // original shared implementation, with only its lifted tab height adapted.
 export default class TerminalsBar extends TabDrag {
-  init() { this.artScroll = ScrollHandle.new(); }
+  init(_props, cx) {
+    if (props()?.threadsSettings) return;
+    this.artScroll = ScrollHandle.new();
+    cx.spawn(async () => {
+      for (;;) {
+        const command = await nextCommand();
+        if (command === "toggle-tab-bar-position") {
+          setShared(POSITION, tabBarPosition() === "top" ? "bottom" : "top");
+        } else if (command === "settings") {
+          openThreadsSettings();
+        }
+      }
+    });
+  }
   close() { this.artScroll?.release(); }
 
   render() {
+    if (props()?.threadsSettings) return threadsSettings();
+    positionTabBar(tabBarPosition());
     const t = theme();
     const space = spaces().find((p) => p.active);
     if (!space) return div();
@@ -81,6 +138,8 @@ export default class TerminalsBar extends TabDrag {
             return index >= 0 ? el.child(tab(space.tabs[index], index, true)) : el;
           }))
         .when(overflow, (el) => el.child(edge("left")).child(edge("right"))))
+      .child(iconButton("tm-threads-settings", null, openThreadsSettings,
+        "mods/workspace-chrome/settings.svg").tooltip("Threads layout settings"))
       .child(iconButton("tm-keys", "command", () => run("app.palette")))
       .child(iconButton("tm-new", "plus", () => run("tab.new", { space: space.id })))
       .when(Boolean(w.buttons), (el) => el.child(h_flex().flex_none().gap(8)

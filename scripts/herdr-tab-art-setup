@@ -28,15 +28,18 @@ def compile_bar(text, assets):
     """Keep upstream controls and drag logic; use the shared portrait renderer."""
     if MARKER in text:
         raise ValueError("compile_bar requires the original generated threads bar")
-    text = replace_once(text, 'import { View, div, svg, image } from "gpui-kit";',
-                        'import { View, div, svg, image } from "gpui-kit";')
+    text = replace_once(text, 'import { spaces, panes, run, theme, home, openOverlay, window as win } from "herdr";',
+                        'import { spaces, panes, run, theme, home, openOverlay, window as win, closeOverlay, layout, nextCommand, props, setShared, shared } from "herdr";')
     text = replace_once(text, 'import { h_flex } from "gpui-base";',
-                        'import { h_flex, ScrollHandle } from "gpui-base";')
+                        'import { h_flex, v_flex, ScrollHandle } from "gpui-base";')
     before, separator, _ = text.partition("export default class TerminalsBar extends TabDrag {")
     if not separator:
         raise ValueError("Herdr changed the threads bar class")
     before = replace_once(before, "const DRAG_PAD = 3;", "const DRAG_PAD = 0;")
     before = replace_once(before, ".h(30)\n        .w(this.width(c))", ".h(this.artTabHeight ?? TAB_HEIGHT)\n        .w(this.width(c))")
+    # Reuse the shipped gear with the same styling as the other bar controls.
+    before = replace_once(before, "function iconButton(id, icon, onClick)", "function iconButton(id, icon, onClick, path = `mods/terminals-bar/${icon}.svg`)")
+    before = replace_once(before, "svg(`mods/terminals-bar/${icon}.svg`).size(17)", "svg(path).size(17)")
     helper = MARKER + "const TAB_ART = " + json.dumps(assets, indent=2) + ";\n"
     helper += (REPO / "herdr-app/tab-art.js").read_text() + END
     return before + helper + (REPO / "herdr-app/threads-tab-bar.js").read_text()
