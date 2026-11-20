@@ -15,7 +15,9 @@ whose content changes. Start Herdr once first so its defaults exist.
 - layouts/threads.json: terminals-nav with a full-height left sidebar:
   Herdr's spaces list, the threads mod (Claude Code, OpenCode and omp threads,
   scripts/agent-threads) and the usage mod (Claude Code and Codex plan usage,
-  scripts/agent-usage), top to bottom. The tab bar sits over the panes only
+  scripts/agent-usage), top to bottom. Click a provider section to open its
+  usage dashboard in the default browser, or click the Usage header to refresh.
+  The tab bar sits over the panes only
   and drops its space chip and macOS window-button inset; its tabs fill the
   bar with illustrated 180 × 42px tabs and horizontal scrolling with edge fades
   (mods/terminals-bar-square-threads, scripts/herdr-tab-art-setup); dragging a tab slides it into a new

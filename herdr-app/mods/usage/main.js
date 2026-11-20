@@ -6,10 +6,15 @@
 // limits show as mana left instead of usage.
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { exec, home, theme, props } from "herdr";
+import { window as appWindow, exec, home, theme, props } from "herdr";
 import { programIcon } from "./program-icons.js";
 
 const REFRESH_MS = 5 * 60000;
+const USAGE_URLS = new Map([
+  ["claude", "https://claude.ai/settings/usage"],
+  ["codex", "https://chatgpt.com/codex/cloud/settings/analytics#usage"],
+  ["opencode-go", "https://opencode.ai/console"],
+]);
 
 function until(ms) {
   const m = Math.max(0, Math.round(ms / 60000));
@@ -132,13 +137,23 @@ export default class Usage extends View {
           .flex_1()
           .min_h(0)
           .overflow_y_scrollbar()
-          .px(10)
-          .py(8)
-          .gap(12)
           .children(
-            providers.map((p) =>
-              v_flex()
+            providers.map((p) => {
+              const url = USAGE_URLS.get(p.id);
+              return v_flex()
+                .flex_none()
+                .px(10)
+                .py(7)
                 .gap(6)
+                .when(Boolean(url), (el) =>
+                  el.id(`usage-provider-${p.id}`)
+                    .cursor_pointer()
+                    .hover((s) => s.bg(t.hover))
+                    .tooltip(`Open ${p.name} usage in browser`)
+                    .on_click(() => {
+                      exec(appWindow().platform === "macos" ? "open" : "xdg-open", [url]);
+                    }),
+                )
                 .child(
                   h_flex()
                     .gap(7)
@@ -149,8 +164,8 @@ export default class Usage extends View {
                     .when(Boolean(p.stale), (el) => el.child(div().text_size(11).text_color(t.dim).child("stale"))),
                 )
                 .when(Boolean(p.error) && !p.stale, (el) => el.child(div().text_size(11).text_color(t.blocked).child(p.error)))
-                .children(p.limits.map((l) => this.bar(l, now, t))),
-            ),
+                .children(p.limits.map((l) => this.bar(l, now, t)));
+            }),
           ),
       );
   }
