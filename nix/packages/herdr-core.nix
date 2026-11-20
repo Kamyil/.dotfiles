@@ -5,19 +5,19 @@
 }:
 
 let
-  version = "0.1.20";
+  version = "0.1.21";
   sources = {
     aarch64-darwin = {
       target = "macos-aarch64";
-      hash = "sha256-5YmF0/726QnzPTxaRCbkiYyBVkpVfUY2WRzsnjoGryY=";
+      hash = "sha256-GrON2ScPY6j3lNbWDocC6w0chacr2oXXNeXupD8F/+0=";
     };
     aarch64-linux = {
       target = "linux-aarch64";
-      hash = "sha256-XzA3N50VzHbPxy0v0aQmLqHFsk3yeL98/Yrc/3uRSGI=";
+      hash = "sha256-6ESiv6tIoiYJdnnQdryDBC/lf8zvU4fvgC5bJOeLUpo=";
     };
     x86_64-linux = {
       target = "linux-x86_64";
-      hash = "sha256-rGuGiQxFGjdYRiCqpDi3G8DQvUMKLnwdfglfBSxBTnQ=";
+      hash = "sha256-eEJHVcEKQN3jigvbVcIKwZcG6a4F7Wj8Ks8fz/DZQcE=";
     };
   };
   source = sources.${stdenvNoCC.hostPlatform.system};

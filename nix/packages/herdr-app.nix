@@ -14,19 +14,19 @@
 }:
 
 let
-  version = "0.1.15";
+  version = "0.1.16";
   sources = {
     aarch64-darwin = {
       target = "macos-aarch64";
-      hash = "sha256-NjPqXYaOpBD4Tfu3eiYgXeMx9N9S/bP7AGsrOXhFhFk=";
+      hash = "sha256-mQAIderZMzoz9ctgJ0zNnPnT5HNg8DYTpGcpUQXHHAQ=";
     };
     aarch64-linux = {
       target = "linux-aarch64";
-      hash = "sha256-Dl/ZWgVkUuwx4y/mqlpHqLHUICCujzoQzaLgoQAdQSQ=";
+      hash = "sha256-7+708XWbDokA8gXCwisUKHoRL4dEBlObTqGzviS3NjE=";
     };
     x86_64-linux = {
       target = "linux-x86_64";
-      hash = "sha256-+Z4eBL6CwOELL2nudAPKNDhvSA2SUR31hlr0cD52Vd0=";
+      hash = "sha256-KC0mMhlrI4IGz+Zr+2HA+vKZyhyRhDvQdlIbvjZXEhY=";
     };
   };
   source = sources.${stdenv.hostPlatform.system};

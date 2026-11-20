@@ -248,10 +248,14 @@ pane_edits = {
 # known; a lone computer's list has no groups.
 spaces_mod = "spaces"
 machine_tints = {"macos": "#a0a4ab1c", "thinkpad": "#6cb6ff1f", "malinka": "#ff5c5c1f"}
+# Keep rows as direct scroll items so Herdr can reveal the active space.
 group_tint = (
     "const tints = " + json.dumps(machine_tints) + ";\n"
-    "    const tinted = (m, items) => [v_flex().id(`machine-group-${m ?? \"local\"}`).flex_none().mb(6).pb(2)"
-    ".bg(tints[m ?? (window().platform === \"macos\" ? \"macos\" : \"thinkpad\")] ?? \"#00000000\").children(items)];\n"
+    "    const tinted = (m, items) => {\n"
+    '      const color = tints[m ?? (window().platform === "macos" ? "macos" : "thinkpad")] ?? "#00000000";\n'
+    "      return items.map((item, i) => v_flex().flex_none().bg(color)\n"
+    "        .when(i === items.length - 1, el => el.mb(6).pb(2)).child(item));\n"
+    "    };\n"
     "    const machineNames = [null, ...remote];"
 )
 # Each machine header also shows CPU, GPU (a Pi: SoC temperature), RAM and
@@ -374,13 +378,9 @@ machine_add_button = (
     '.child(svg("mods/workspace-chrome/plus.svg").size(13))))'
 )
 list_header_add = '.child(div().id("space-new")'
-grouped_children = ".children(this.grouped(t, collapsed)));"
-render_start = "    return v_flex().size_full().min_h(0).bg(t.chrome).text_size(13)"
 per_machine_add_edits = [
     (machine_add, machine_add_button),
-    ("    if (!remote.length) return", "    this.byMachine = remote.length > 0;\n    if (!remote.length) return"),
-    (render_start, "    const groups = this.grouped(t, collapsed);\n" + render_start),
-    (grouped_children, ".children(groups));"),
+    ("    if (!remote.length) {", "    this.byMachine = remote.length > 0;\n    if (!remote.length) {"),
     (list_header_add, '.when(collapsed || !this.byMachine, (el) => el.child(div().id("space-new")'),
     (
         '.on_click(() => run("space.new")).child(svg("mods/workspace-chrome/plus.svg").size(14))))',
@@ -397,11 +397,11 @@ threads_spaces = (
     "-threads",
     [
         ("const machineNames = [null, ...remote];", group_tint),
-        ("if (!collapsed && rebuilt) return [head];", "if (!collapsed && rebuilt) return tinted(m, [head]);"),
         (
-            "return [cell(head), ...guidance, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : cell(empty)])];",
-            "return tinted(m, [cell(head), ...guidance, ...(folded ? [] : mine.length ? mine.map(draw) : [loading(m) ? loadingRow(m) : cell(empty)])]);",
+            "if (!collapsed && rebuilt) { before += 1; return [head]; }",
+            "if (!collapsed && rebuilt) { before += 1; return tinted(m, [head]); }",
         ),
+        ("      return items;", "      return tinted(m, items);"),
         *machine_stats_edits,
         *space_agents_edits,
         *space_favicons_edits,
