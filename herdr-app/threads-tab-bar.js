@@ -19,10 +19,11 @@ export default class TerminalsBar extends TabDrag {
     const tabHeight = Math.max(24, Math.min(TAB_HEIGHT, this.artBarHeight ?? TAB_HEIGHT));
     this.artTabHeight = tabHeight;
     const w = win() ?? {};
-    const tab = (c, ghost = false) => {
+    const tab = (c, index, ghost = false) => {
       const p = lead(all, c.id);
       const where = folder(p?.cwd);
-      const name = /^\d+$/.test(c.name) && p?.program?.name ? `${c.name} · ${p.program.name}` : c.name;
+      const title = /^\d+$/.test(c.name) ? p?.program?.name : c.name;
+      const label = title ? `${index + 1} · ${title}` : `${index + 1}`;
       return div()
         .id(ghost ? `tm-ghost-${this.gen ?? 0}` : `tm-${c.id}-${this.gen ?? 0}`)
         .relative().flex_none().w(TAB_WIDTH).min_w(TAB_WIDTH).max_w(TAB_WIDTH).h(tabHeight)
@@ -37,7 +38,7 @@ export default class TerminalsBar extends TabDrag {
         .child(h_flex().absolute().top(1).left(1).w(TAB_WIDTH - 2).h(tabHeight - 2).px(8).gap(7).items_center()
           .child(tabIllustration(t, p, c.active))
           .child(div().flex_1().min_w(0).truncate().text_size(13).line_height("16px")
-            .font_weight(600).text_color(c.active ? "#f2f4f8" : "#979eac").child(name))
+            .font_weight(600).text_color(c.active ? "#f2f4f8" : "#979eac").child(label))
           .child(div().flex_none().w(16).h(20)
           .id(`threads-close-${c.id}`)
           .flex().items_center().justify_center().rounded(3)
@@ -74,10 +75,10 @@ export default class TerminalsBar extends TabDrag {
             cx.notify();
           })
           .gap(3).bg("#00000000")
-          .children(space.tabs.map((c) => tab(c)))
+          .children(space.tabs.map((c, index) => tab(c, index)))
           .when(Boolean(this.drag?.moved), (el) => {
-            const lifted = space.tabs.find((c) => c.id === this.drag.id);
-            return lifted ? el.child(tab(lifted, true)) : el;
+            const index = space.tabs.findIndex((c) => c.id === this.drag.id);
+            return index >= 0 ? el.child(tab(space.tabs[index], index, true)) : el;
           }))
         .when(overflow, (el) => el.child(edge("left")).child(edge("right"))))
       .child(iconButton("tm-keys", "command", () => run("app.palette")))

@@ -15,8 +15,10 @@ height is half the portrait concept: 42 logical pixels.
   identical 1px slate frames (`#333d4c`) in every state. No active gold border or
   state-dependent border width. Foreground content shares one vertically centered
   flex row with a 16px label line height; there are no guessed text top offsets.
-  Numeric tabs retain their number with the detected program name beside it;
-  named tabs retain their name. Full name and cwd remain in the tooltip.
+  Every tab label starts with its one-based position in the current space,
+  matching the numbered tab shortcuts. Named tabs keep their title; unnamed
+  tabs show the detected program name when available. Full name and cwd remain
+  in the tooltip.
 - `scripts/herdr-tab-art-setup`: source adapters, content-addressed asset install,
   52px layout block (42px tab + tray/outer space), rollback and native scroll
   handle. It preserves the shared upstream drag implementation except its height.
