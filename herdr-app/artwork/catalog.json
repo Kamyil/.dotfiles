@@ -714,10 +714,11 @@
     {
       "key": "omp",
       "name": "omp",
-      "icon": "marks/omp.svg",
+      "icon": "marks/omp.png",
       "background": "backgrounds/omp.png",
       "scene": "omp",
       "color": "#9cc8f4",
+      "multicolor": true,
       "glyph": "glyphs/omp.svg"
     },
     {

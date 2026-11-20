@@ -26,7 +26,7 @@ def glyph(entry, size):
     document.set('fill', entry['color'])
     for element in document.iter():
         for attr in ('fill', 'stroke'):
-            if attr in element.attrib and element.attrib[attr] != 'none':
+            if not entry.get('multicolor') and attr in element.attrib and element.attrib[attr] != 'none':
                 element.set(attr, entry['color'])
     source = ROOT / '.check' / (entry['key'] + '-review.svg')
     out = source.with_suffix('.png')
@@ -55,7 +55,11 @@ def glyph(entry, size):
     marks.mkdir(exist_ok=True)
     ET.register_namespace('', 'http://www.w3.org/2000/svg')
     (marks / (entry['key'] + '.svg')).write_text(ET.tostring(raw, encoding='unicode') + '\n')
-    return image.crop((round(cx - edge / 2), round(cy - edge / 2), round(cx + edge / 2), round(cy + edge / 2))).resize((size, size), Image.Resampling.LANCZOS)
+    logo = image.crop((round(cx - edge / 2), round(cy - edge / 2), round(cx + edge / 2), round(cy + edge / 2))).resize((size, size), Image.Resampling.LANCZOS)
+
+    if entry.get('multicolor'):
+        logo.save(ROOT / entry['icon'], optimize=True)
+    return logo
 
 
 def portrait(entry, size, logo):

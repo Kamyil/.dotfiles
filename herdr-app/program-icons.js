@@ -3,7 +3,9 @@ import { div, svg, image } from "gpui-kit";
 
 export function programIcon(key, size, fallback = null) {
   const art = PROGRAM_ICONS[key];
-  if (art) return svg(art.icon).size(size).flex_none().text_color(art.color);
+  if (art) return art.multicolor
+    ? image(art.icon).size(size).flex_none()
+    : svg(art.icon).size(size).flex_none().text_color(art.color);
   if (!fallback?.icon) return div().size(size).flex_none();
   return fallback.tint
     ? svg(fallback.icon).size(size).flex_none().text_color(fallback.color ?? "#cbd8e5")

@@ -317,8 +317,9 @@ const PROGRAM_ICONS = {
     "color": "#cbd8e5"
   },
   "omp": {
-    "icon": "cards/illustrated/icon-50134d7673c5.svg",
-    "color": "#9cc8f4"
+    "icon": "cards/illustrated/icon-11b53a198c49.png",
+    "color": "#9cc8f4",
+    "multicolor": true
   },
   "opencode": {
     "icon": "cards/illustrated/icon-c474b4554dc1.svg",
@@ -490,7 +491,9 @@ import { div, svg, image } from "gpui-kit";
 
 export function programIcon(key, size, fallback = null) {
   const art = PROGRAM_ICONS[key];
-  if (art) return svg(art.icon).size(size).flex_none().text_color(art.color);
+  if (art) return art.multicolor
+    ? image(art.icon).size(size).flex_none()
+    : svg(art.icon).size(size).flex_none().text_color(art.color);
   if (!fallback?.icon) return div().size(size).flex_none();
   return fallback.tint
     ? svg(fallback.icon).size(size).flex_none().text_color(fallback.color ?? "#cbd8e5")

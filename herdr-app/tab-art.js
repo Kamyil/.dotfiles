@@ -33,7 +33,8 @@ function tabIllustration(t, p, active) {
     .flex()
     .items_center()
     .justify_center()
-    .child(svg(art.icon).w(22).h(22).text_color(art.color).opacity(active ? 1 : 0.45))
+    .child((art.multicolor ? image(art.icon) : svg(art.icon).text_color(art.color))
+      .w(22).h(22).opacity(active ? 1 : 0.45))
     .when(Boolean(dot), (el) => el.child(div()
       .absolute().top(0).right(0).w(8).h(8).rounded_full()
       .border_1().border_color(C.tray).bg(dot)));

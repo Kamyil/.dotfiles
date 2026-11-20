@@ -33,7 +33,12 @@ class ArtworkTests(unittest.TestCase):
         self.assertTrue(set(custom).issubset(expected))
         self.assertEqual(len(entries), len(expected))
         for entry in entries:
-            self.assertEqual(ET.parse(ROOT / entry["icon"]).getroot().tag, "{http://www.w3.org/2000/svg}svg")
+            if entry.get("multicolor"):
+                with Image.open(ROOT / entry["icon"]) as icon:
+                    icon.load()
+                    self.assertEqual(icon.size, (128, 128))
+            else:
+                self.assertEqual(ET.parse(ROOT / entry["icon"]).getroot().tag, "{http://www.w3.org/2000/svg}svg")
             for role, size in [("background", (720, 336))]:
                 with Image.open(ROOT / entry[role]) as image:
                     image.load()
@@ -84,8 +89,13 @@ class ArtworkTests(unittest.TestCase):
             self.assertEqual(elsewhere.read_text(), "other layout untouched")
             self.assertEqual((spaces / "agents.js").read_text(), (REPO / "herdr-app/space-agents.js").read_text())
             self.assertEqual((spaces / "program-icons.js").read_text(), (REPO / "herdr-app/mods/threads/program-icons.js").read_text())
-            self.assertEqual(len(list((home / "cards/illustrated").glob("*.png"))), 15)
-            self.assertGreaterEqual(len(list((home / "cards/illustrated").glob("*.svg"))), 120)
+            entries = json.loads((ROOT / "catalog.json").read_text())["programs"]
+            paths = {ROOT / e[role] for e in entries for role in ("icon", "background")}
+            paths.update((ROOT / "effects").glob("*.png"))
+            expected = {(p.suffix, p.read_bytes()) for p in paths}
+            installed = list((home / "cards/illustrated").iterdir())
+            self.assertEqual({(p.suffix, p.read_bytes()) for p in installed}, expected)
+            self.assertEqual(len(installed), len(expected))
             install()
             self.assertEqual(target.read_text(), after)
             install("--restore")

@@ -22,7 +22,7 @@ import { programIcon } from "./program-icons.js";
 const TOOLS = [
   { id: "claude", label: "Claude", icon: "icons/claude.svg", color: "#d97757" },
   { id: "opencode", label: "OpenCode", icon: "icons/opencode.svg" },
-  { id: "omp", label: "omp", icon: "icons/pi.svg" },
+  { id: "omp", label: "omp" },
 ];
 const UI = "mods/workspace-chrome";
 const REFRESH_MS = 20000;

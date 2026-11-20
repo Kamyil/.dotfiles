@@ -63,7 +63,7 @@ def prepare(home):
             name = f"{role}-{digest}{path.suffix}"
             paths[role] = "cards/illustrated/" + name
             copies.append((home / paths[role], data))
-        assets[entry["key"]] = {**paths, "color": entry["color"]}
+        assets[entry["key"]] = {**paths, "color": entry["color"], "multicolor": entry.get("multicolor", False), "plain": entry.get("plain", False)}
     effects = {}
     for role in ("label", "left", "right"):
         data = (REPO / f"herdr-app/artwork/effects/{role}.png").read_bytes()
