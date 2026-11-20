@@ -622,7 +622,7 @@ for name, base in nav_layouts.items():
         for child in workspace["children"]:
             if child.get("content", {}).get("mod") == bar_mod + square_suffix:
                 child["content"]["mod"] = bar_mod + square_suffix + threads_bar[0]
-                child["size"] = {"px": 52}
+                child.update(size={"px": 42}, min=42, max=42)
         sidebar = threads_sidebar(gap, square_mods)
         for child in sidebar["children"]:
             if child["content"]["mod"] == spaces_mod + square_suffix:

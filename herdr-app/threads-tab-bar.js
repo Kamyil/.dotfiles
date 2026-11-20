@@ -73,8 +73,7 @@ export default class TerminalsBar extends TabDrag {
       if (activeIndex >= 0) this.artScroll.scroll_to_item(activeIndex);
     }
     const all = panes();
-    const tabHeight = Math.max(24, Math.min(TAB_HEIGHT, this.artBarHeight ?? TAB_HEIGHT));
-    this.artTabHeight = tabHeight;
+    const tabHeight = TAB_HEIGHT;
     const w = win() ?? {};
     const tab = (c, index, ghost = false) => {
       const p = lead(all, c.id);
@@ -124,15 +123,10 @@ export default class TerminalsBar extends TabDrag {
       .child(image(TAB_EFFECTS[side]).absolute().inset_0().w(18).h(TAB_HEIGHT));
 
     return h_flex().size_full().min_w(0).gap(8).items_center()
-      .on_size_change((size, cx) => {
-        if (this.artBarHeight === size.height) return;
-        this.artBarHeight = size.height;
-        cx.notify();
-      })
       .on_mouse_move((e, cx) => this.follow(e, cx, space.tabs))
       .on_mouse_up("left", (_e, cx) => this.drop(cx, space.tabs))
       .on_mouse_down_out((_e, cx) => this.drop(cx, space.tabs, false))
-      .child(div().flex_1().min_w(0).h_full().min_h(0).relative()
+      .child(div().flex_1().min_w(0).h(tabHeight).relative()
         .child(h_flex().id("threads-art-scroll").size_full().min_w(0).relative()
           .overflow_x_scroll().track_scroll(this.artScroll)
           .on_size_change((size, cx) => {
@@ -141,7 +135,7 @@ export default class TerminalsBar extends TabDrag {
             if (activeIndex >= 0) this.artScroll.scroll_to_item(activeIndex);
             cx.notify();
           })
-          .gap(3).bg("#00000000")
+          .gap(DRAG_GAP).bg("#00000000")
           .children(space.tabs.map((c, index) => tab(c, index)))
           .when(Boolean(this.drag?.moved), (el) => {
             const index = space.tabs.findIndex((c) => c.id === this.drag.id);

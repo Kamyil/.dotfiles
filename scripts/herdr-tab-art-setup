@@ -36,7 +36,8 @@ def compile_bar(text, assets):
     if not separator:
         raise ValueError("Herdr changed the threads bar class")
     before = replace_once(before, "const DRAG_PAD = 3;", "const DRAG_PAD = 0;")
-    before = replace_once(before, ".h(30)\n        .w(this.width(c))", ".h(this.artTabHeight ?? TAB_HEIGHT)\n        .w(this.width(c))")
+    before = replace_once(before, "const DRAG_GAP = 3;", "const DRAG_GAP = 8;")
+    before = replace_once(before, ".h(30)\n        .w(this.width(c))", ".h(TAB_HEIGHT)\n        .w(this.width(c))")
     # Reuse the shipped gear with the same styling as the other bar controls.
     before = replace_once(before, "function iconButton(id, icon, onClick)", "function iconButton(id, icon, onClick, path = `mods/terminals-bar/${icon}.svg`)")
     before = replace_once(before, "svg(`mods/terminals-bar/${icon}.svg`).size(17)", "svg(path).size(17)")
@@ -106,6 +107,9 @@ def main():
                 resize_tabs(child, size)
         elif isinstance(node, dict):
             if node.get("content", {}).get("mod") == "terminals-bar-square-threads":
+                # The full Threads setup owns the height of a locked bar.
+                if isinstance(node.get("min"), (int, float)) and node["min"] == node.get("max"):
+                    return
                 if not height_backup.exists() and not args.restore:
                     height_backup.write_text(json.dumps(node.get("size", {"px": 38})))
                 node["size"] = size
@@ -153,7 +157,7 @@ def main():
         temporary = target.with_suffix(".tmp")
         temporary.write_text(result)
         temporary.replace(target)
-    set_height({"px": 52})
+    set_height({"px": 42})
     # Linked mods are outside the app watcher's tree: touch the links themselves.
     for name in ("threads", "usage"):
         link = args.home / "mods" / name
