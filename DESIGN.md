@@ -19,6 +19,8 @@ height is half the portrait concept: 42 logical pixels.
   matching the numbered tab shortcuts. Named tabs keep their title; unnamed
   tabs show the detected program name when available. Full name and cwd remain
   in the tooltip.
+  Shell tabs use a near-black horizontal gradient and a silver-to-steel-blue
+  prompt mark instead of painted scenery.
 - `scripts/herdr-tab-art-setup`: source adapters, content-addressed asset install,
   52px layout block (42px tab + tray/outer space), rollback and native scroll
   handle. It preserves the shared upstream drag implementation except its height.

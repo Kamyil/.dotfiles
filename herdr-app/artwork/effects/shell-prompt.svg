@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="-1.2 -1.2 26.4 26.4">
+  <defs>
+    <linearGradient id="prompt" gradientUnits="userSpaceOnUse" x1="4" y1="5" x2="20" y2="19">
+      <stop stop-color="#c3d0dc"/>
+      <stop offset="1" stop-color="#6689a6"/>
+    </linearGradient>
+  </defs>
+  <path d="M4 5l6 6-6 6m8 2h8" fill="none" stroke="url(#prompt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

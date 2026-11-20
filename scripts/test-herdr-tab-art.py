@@ -92,6 +92,7 @@ class ArtworkTests(unittest.TestCase):
             entries = json.loads((ROOT / "catalog.json").read_text())["programs"]
             paths = {ROOT / e[role] for e in entries for role in ("icon", "background")}
             paths.update((ROOT / "effects").glob("*.png"))
+            paths.update((ROOT / "effects").glob("*.svg"))
             expected = {(p.suffix, p.read_bytes()) for p in paths}
             installed = list((home / "cards/illustrated").iterdir())
             self.assertEqual({(p.suffix, p.read_bytes()) for p in installed}, expected)

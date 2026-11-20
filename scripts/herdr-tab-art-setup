@@ -65,11 +65,12 @@ def prepare(home):
             copies.append((home / paths[role], data))
         assets[entry["key"]] = {**paths, "color": entry["color"], "multicolor": entry.get("multicolor", False), "plain": entry.get("plain", False)}
     effects = {}
-    for role in ("label", "left", "right"):
-        data = (REPO / f"herdr-app/artwork/effects/{role}.png").read_bytes()
+    for filename in ("label.png", "left.png", "right.png", "shell-steel.svg", "shell-prompt.svg"):
+        source_path = REPO / "herdr-app/artwork/effects" / filename
+        data = source_path.read_bytes()
         digest = hashlib.sha256(data).hexdigest()[:12]
-        path = f"cards/illustrated/{role}-{digest}.png"
-        effects[role] = path
+        path = f"cards/illustrated/{source_path.stem}-{digest}{source_path.suffix}"
+        effects[source_path.stem] = path
         copies.append((home / path, data))
     assets["__effects"] = effects
     module = runpy.run_path(str(REPO / "scripts/herdr-program-icons-build"))["render"]()
