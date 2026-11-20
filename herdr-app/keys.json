@@ -173,6 +173,9 @@
       "ctrl-x": "pane.close",
       "ctrl-z": "pane.zoom"
     },
+    "terminal": {
+      "cmd-a": "terminal.select_all"
+    },
     "layout:main-nav": {
       "ctrl-f": "nav.scrollback",
       "ctrl-h": "nav.left",
