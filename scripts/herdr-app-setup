@@ -20,6 +20,10 @@ whose content changes. Start Herdr once first so its defaults exist.
   The tab bar spans only the panes and drops its space chip and macOS
   window-button inset. Its cog opens Threads settings: Tab bar position is
   Top or Bottom, saved across restarts (Ctrl+Shift+T toggles it in Threads).
+  Neovim tabs show the active file (or working folder if no path is published);
+  hover for the full path. The Neovim config publishes it via 'titlestring'.
+  SSH tabs show the alias typed in interactive zsh, without reading SSH config
+  or changing how SSH connects.
   The bar uses illustrated 180 × 42px tabs and horizontal scrolling with edge fades
   (mods/terminals-bar-square-threads, scripts/herdr-tab-art-setup); dragging a tab slides it into a new
   place, Rex style (herdr-app/tab-drag.js). Its spaces list tints each machine's

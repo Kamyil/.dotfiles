@@ -78,8 +78,18 @@ export default class TerminalsBar extends TabDrag {
     const w = win() ?? {};
     const tab = (c, index, ghost = false) => {
       const p = lead(all, c.id);
-      const where = folder(p?.cwd);
-      const title = /^\d+$/.test(c.name) ? p?.program?.name : c.name;
+      const nvimPath = p?.program?.key === "nvim"
+        ? p.title?.match(/^nvim: ((?:~)?\/.*)$/)?.[1] || p.cwd
+        : null;
+      const parts = nvimPath?.split("/").filter(Boolean);
+      const leaf = parts?.pop();
+      const parent = parts?.pop();
+      const pathLabel = leaf && parent ? `${leaf} · ${parent}` : leaf ?? nvimPath;
+      // Remote prompts can replace the local SSH title after login.
+      const sshAlias = p?.title?.match(/^ssh: ([a-zA-Z0-9_.-]+)$/)?.[1]
+        || (p?.program?.key === "ssh" ? p.title?.match(/^[a-zA-Z0-9_.-]+@([a-zA-Z0-9_.-]+):/)?.[1] : null);
+      const detail = sshAlias || nvimPath || folder(p?.cwd);
+      const title = /^\d+$/.test(c.name) ? sshAlias || pathLabel || p?.program?.name : c.name;
       const label = title ? `${index + 1} · ${title}` : `${index + 1}`;
       return div()
         .id(ghost ? `tm-ghost-${this.gen ?? 0}` : `tm-${c.id}-${this.gen ?? 0}`)
@@ -90,7 +100,7 @@ export default class TerminalsBar extends TabDrag {
         .hover((s) => s.border_color("#586273"))
         .on_mouse_down("right", () => openOverlay({ mod: "menu", kind: "popup", width: 200,
           props: { tab: "tab", target: { id: c.id, space: space.id } } }))
-        .tooltip(`${c.name}${where ? ` — ${where}` : ""}`)
+        .tooltip(detail ? `${c.name} — ${detail}` : c.name)
         .child(tabScenery(p, c.active, tabHeight))
         .child(h_flex().absolute().top(1).left(1).w(TAB_WIDTH - 2).h(tabHeight - 2).px(8).gap(7).items_center()
           .child(tabIllustration(t, p, c.active))

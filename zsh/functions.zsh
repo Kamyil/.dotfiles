@@ -215,10 +215,50 @@ c() {
   nvim "${selected:t}"
 }
 
+# Publish the destination typed on the command line, not the resolved hostname.
+_dotfiles_ssh_title_preexec() {
+  local -a args=("${(@z)1}")
+  [[ $args[1] == ssh ]] || return 0
+  shift args
+  local destination
+  while (( $#args )); do
+    case $args[1] in
+      --) destination=$args[2]; break ;;
+      -[BbcDEeFIiJLlmOoPpQRSWw]) shift 2 args || break ;;
+      -*) shift args ;;
+      *) destination=$args[1]; break ;;
+    esac
+  done
+  destination=${(Q)destination}
+  _dotfiles_ssh_title "${${destination#ssh://}##*@}"
+}
+
+_dotfiles_ssh_title() {
+  local destination=$1
+  [[ -t 1 ]] || return 0
+  [[ -n $destination && $destination != *[^a-zA-Z0-9_.-]* ]] || return 0
+  printf '\e]0;ssh: %s\a' "$destination"
+  typeset -g _dotfiles_ssh_title_active=1
+}
+
+_dotfiles_ssh_title_precmd() {
+  [[ -n $_dotfiles_ssh_title_active ]] || return 0
+  unset _dotfiles_ssh_title_active
+  printf '\e]0;\a'
+}
+
+if [[ -o interactive ]]; then
+  autoload -Uz add-zsh-hook
+  add-zsh-hook preexec _dotfiles_ssh_title_preexec
+  add-zsh-hook precmd _dotfiles_ssh_title_precmd
+fi
+
 sshf() {
   local selected_host
   selected_host=$(awk '/^Host / {print $2}' "$HOME/.ssh/config" | fzf)
-  [[ -n "$selected_host" ]] && ssh "$selected_host"
+  [[ -n "$selected_host" ]] || return 0
+  _dotfiles_ssh_title "$selected_host"
+  ssh "$selected_host"
 }
 
 remote_sshfs() {

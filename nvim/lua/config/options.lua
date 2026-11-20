@@ -8,6 +8,9 @@ vim.o.signcolumn =
 'yes'                                                  -- will use 3 columns to make line numbers have a little bit more margin
 vim.opt.cmdheight = 0								   -- hide command line to push status line to the bottom. Replace commandline with something else
 vim.o.termguicolors = true                             -- Enable nice colors
+-- Herdr Threads reads the active file from this terminal title.
+vim.o.title = true
+vim.o.titlestring = 'nvim: %F'
 vim.o.wrap = false                                     -- Disable line wrap
 vim.o.tabstop = 4                                      -- set Tabs as default (where Tab = 4 Spaces here)
 vim.opt.softtabstop = 4                                -- Number of spaces that a <Tab> counts for while performing editing operations
