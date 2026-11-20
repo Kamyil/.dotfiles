@@ -145,6 +145,12 @@ C_CACHE_FILE="$HOME/.cache/dotfiles-config-files"
 unalias c 2>/dev/null
 
 sd() {
+  _sd_pick
+}
+
+_sd_pick() {
+  local mode=${1:-cd}
+  local ssh_config="$HOME/.ssh/config"
   local dirs=()
   local base dir selected
 
@@ -164,9 +170,16 @@ sd() {
     source "$HOME/.zsh_personal_dirs"
     dirs+=("${PERSONAL_DIRS[@]}")
   fi
+  [[ "$mode" == nvim ]] && dirs=("$ssh_config" "${dirs[@]}")
 
   selected=$(printf '%s\n' "${dirs[@]}" | fzf)
-  [[ -n "$selected" ]] && cd "$selected"
+  [[ -n "$selected" ]] || return 1
+  if [[ "$mode" == nvim && "$selected" == "$ssh_config" ]]; then
+    nvim "$ssh_config"
+  else
+    cd "$selected" || return
+    [[ "$mode" != nvim ]] || nvim .
+  fi
 }
 
 c() {
@@ -233,7 +246,7 @@ remote_sshfs() {
   unmount_sshfs "$mount_point"
 }
 
-sdn() { sd && nvim . }
+sdn() { _sd_pick nvim }
 sdo() { sd && omp }
 
 db() {
