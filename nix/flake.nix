@@ -55,7 +55,7 @@
 
     zennotes.url = "github:ZenNotes/zennotes";
 
-    hex.url = "github:anomalyco/hex";
+    hex.url = "github:anomalyco/hex/v3.4.0";
     hex.inputs.nixpkgs.follows = "nixpkgs";
     hex.inputs.home-manager.follows = "home-manager";
 
