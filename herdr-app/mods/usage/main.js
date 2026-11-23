@@ -52,7 +52,9 @@ export default class Usage extends View {
       // Keep a provider's last numbers when only this fetch failed.
       for (const p of fresh.providers) {
         const old = this.data?.providers.find((o) => o.id === p.id);
-        if (p.error && !p.limits.length && old?.limits.length) Object.assign(p, { limits: old.limits, plan: old.plan, stale: true });
+        if (p.error && !p.limits.length && old?.limits.length) {
+          Object.assign(p, { limits: old.limits, plan: old.plan });
+        }
       }
       this.data = fresh;
       this.error = null;
@@ -140,6 +142,10 @@ export default class Usage extends View {
           .children(
             providers.map((p) => {
               const url = USAGE_URLS.get(p.id);
+              // A cached percentage belongs to its original quota window.
+              const limits = p.error || this.error
+                ? p.limits.filter((l) => l.resets > now)
+                : p.limits;
               return v_flex()
                 .flex_none()
                 .px(10)
@@ -161,10 +167,11 @@ export default class Usage extends View {
                     .child(programIcon(p.id, 13, { icon: "icons/agent.svg", tint: true, color: t.foreground }))
                     .child(div().text_size(12).text_color(t.foreground).child(p.name))
                     .child(div().flex_1().text_size(11).text_color(t.dim).child(p.plan))
-                    .when(Boolean(p.stale), (el) => el.child(div().text_size(11).text_color(t.dim).child("stale"))),
+                    .when(Boolean(p.error || this.error) && limits.length > 0, (el) =>
+                      el.child(div().text_size(11).text_color(t.dim).child("stale"))),
                 )
-                .when(Boolean(p.error) && !p.stale, (el) => el.child(div().text_size(11).text_color(t.blocked).child(p.error)))
-                .children(p.limits.map((l) => this.bar(l, now, t)));
+                .when(Boolean(p.error), (el) => el.child(div().text_size(11).text_color(t.blocked).child(p.error)))
+                .children(limits.map((l) => this.bar(l, now, t)));
             }),
           ),
       );
