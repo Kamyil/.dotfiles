@@ -15,19 +15,23 @@ const MAX = 40;
 // Titles that name the program rather than the thread.
 const GENERIC = /^(claude( code)?|opencode|omp|pi|codex|zsh|bash|fish|shell)$/i;
 
-function clean(title) {
-  const t = String(title ?? "")
-    .replace(/^[^\p{L}\p{N}]+/u, "")
-    .replace(/\s+/g, " ")
-    .trim();
-  return t.length > MAX ? `${t.slice(0, MAX - 1).trimEnd()}…` : t;
+function shorten(title) {
+  return title.length > MAX ? `${title.slice(0, MAX - 1).trimEnd()}…` : title;
 }
 
 function threadTitle(pane) {
-  if (!pane.terminal || !(pane.status || pane.program?.agent)) return "";
-  const t = clean(pane.title);
+  if (!pane.terminal || !(pane.status || pane.program?.agent || pane.program?.key === "omp")) return "";
+  const title = String(pane.title ?? "").replace(/\s+/g, " ").trim();
+  // OMP prefixes the session label with π and a changing run-state glyph.
+  const omp = title.match(/^π(?:\s+)?[:>!○◔◑◕●◉◐\u2800-\u28ff/|\\-](?: (.*))?$/u);
+  if (omp || title === "π") {
+    const label = omp?.[1] ?? "";
+    const folder = pane.cwd?.replace(/\/+$/, "").split("/").pop();
+    return label && label !== folder ? shorten(label) : "";
+  }
+  const t = title.replace(/^[^\p{L}\p{N}]+/u, "");
   if (!t || GENERIC.test(t) || t.toLowerCase() === String(pane.program?.name ?? "").toLowerCase()) return "";
-  return t;
+  return shorten(t);
 }
 
 let applied = null;

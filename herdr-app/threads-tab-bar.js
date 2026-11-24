@@ -88,7 +88,7 @@ export default class TerminalsBar extends TabDrag {
       const sshAlias = p?.title?.match(/^ssh: ([a-zA-Z0-9_.-]+)$/)?.[1]
         || (p?.program?.key === "ssh" ? p.title?.match(/^[a-zA-Z0-9_.-]+@([a-zA-Z0-9_.-]+):/)?.[1] : null);
       const detail = sshAlias || nvimPath || folder(p?.cwd);
-      const title = /^\d+$/.test(c.name) ? sshAlias || pathLabel || p?.program?.name : c.name;
+      const title = c.named ? c.name : sshAlias || pathLabel || p?.program?.name;
       const label = title ? `${index + 1} · ${title}` : `${index + 1}`;
       return div()
         .id(ghost ? `tm-ghost-${this.gen ?? 0}` : `tm-${c.id}-${this.gen ?? 0}`)

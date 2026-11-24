@@ -40,6 +40,7 @@ flowchart TD
 - **Herdr app and core:** release-binary packages in [`nix/packages/herdr-app.nix`](nix/packages/herdr-app.nix) and [`nix/packages/herdr-core.nix`](nix/packages/herdr-core.nix). Bump them with `scripts/update-herdr-packages.sh <app|core> <version|latest>`, or `scripts/update-herdr-packages.sh all` for both at latest.
   After installing a new app release, launch it once to refresh its bundled mods, then rerun [`scripts/herdr-app-setup`](scripts/herdr-app-setup) to regenerate the custom layouts and mods.
   On macOS, Threads uses Herdr's native window blur behind the tab strip and panel gaps; tabs, sidebar panels, and terminals stay opaque.
+  Threads uses the Oh My Pi session name for tab titles, without the run-state glyph. Manual Herdr tab names take precedence.
 
 ## How live configuration reload works
 
