@@ -1,7 +1,7 @@
 # Codex CLI release binaries for the supported macOS and NixOS hosts.
 final: prev:
 let
-  version = "0.164.0";
+  version = "0.172.0";
   platform =
     if prev.stdenv.hostPlatform.system == "aarch64-darwin" then
       "aarch64-apple-darwin"
@@ -10,12 +10,12 @@ let
     else
       throw "codex overlay: unsupported system ${prev.stdenv.hostPlatform.system}";
   hashes = {
-    aarch64-apple-darwin = "sha256-qoKZwWnYARGqwFVDrSYhyb2+25vCUskF/j9aW6+aQUI=";
-    x86_64-unknown-linux-musl = "sha256-kN0LA7KK/Lf6czpPc7QT2ykWpHNH79Q/tmnMHHdO6OQ=";
+    aarch64-apple-darwin = "sha256-vRIfir1rKLP8R22gSjSOJag+ie2hnTkQf2j46WYFMJI=";
+    x86_64-unknown-linux-musl = "sha256-ojQqj39o8Ii+MGIMz+nLhBYsk6a1YXeFWWHNo+1r45I=";
   };
   hostHashes = {
-    aarch64-apple-darwin = "sha256-e8PKaXVnvIhKdiM5mcRssisCOwny1NSrNRjxNUxk5BU=";
-    x86_64-unknown-linux-musl = "sha256-/q3nAmQ2uqToLomAUMfvgqitvZgWPcUEdxJ1te8iTy8=";
+    aarch64-apple-darwin = "sha256-6rJPiObiDIgdjBG39w7iIP0ZqUxYbsa86tEqIOAstuQ=";
+    x86_64-unknown-linux-musl = "sha256-ILCkvPMyQVpZl5FMlD0Er2w2J68MN5/b9lQAVQ41K7Q=";
   };
 in
 {
